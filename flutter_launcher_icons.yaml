@@ -1,0 +1,8 @@
+# flutter pub run flutter_launcher_icons
+flutter_launcher_icons:
+  image_path: "assets/external/icon.png"
+  android: "ic_launcher"
+  min_sdk_android: 21
+  ios: true
+  image_path_ios: "assets/external/icon.png"
+  remove_alpha_channel_ios: true
