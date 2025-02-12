@@ -98,7 +98,7 @@ class BottomSheetScreen extends StatelessWidget {
                                 child: Text(
                                   closeButtonText ?? S.of(context).back,
                                   style: textStyles.regularBody13.copyWith(
-                                    color: theme.textPrimary,
+                                    color: theme.primary,
                                   ),
                                 ),
                               ),

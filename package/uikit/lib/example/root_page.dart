@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uikit/example/bottom_sheets_screen.dart';
 import 'package:uikit/example/buttons_screen.dart';
 import 'package:uikit/resources/resources.dart';
 import 'package:uikit/widgets/bottom/app_bottom_nav_bar.dart';
@@ -17,7 +18,7 @@ class _RootPageState extends State<RootPage> {
   final List<Widget> _pages = [
     const ButtonsScreen(),
     const ButtonsScreen(),
-    const ButtonsScreen(),
+    const BottomSheetsScreen(),
     const ButtonsScreen(),
   ];
 

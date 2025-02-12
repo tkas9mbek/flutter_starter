@@ -18,17 +18,20 @@ class S {
   static S? _current;
 
   static S get current {
-    assert(_current != null,
-        'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.');
+    assert(
+      _current != null,
+      'No instance of S was loaded. Try to initialize the S delegate before accessing S.current.',
+    );
     return _current!;
   }
 
   static const AppLocalizationDelegate delegate = AppLocalizationDelegate();
 
   static Future<S> load(Locale locale) {
-    final name = (locale.countryCode?.isEmpty ?? false)
-        ? locale.languageCode
-        : locale.toString();
+    final name =
+        (locale.countryCode?.isEmpty ?? false)
+            ? locale.languageCode
+            : locale.toString();
     final localeName = Intl.canonicalizedLocale(name);
     return initializeMessages(localeName).then((_) {
       Intl.defaultLocale = localeName;
@@ -41,8 +44,10 @@ class S {
 
   static S of(BuildContext context) {
     final instance = S.maybeOf(context);
-    assert(instance != null,
-        'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of S present in the widget tree. Did you add S.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -52,12 +57,7 @@ class S {
 
   /// `Close`
   String get close {
-    return Intl.message(
-      'Close',
-      name: 'close',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Close', name: 'close', desc: '', args: []);
   }
 
   /// `Required field`
@@ -92,22 +92,12 @@ class S {
 
   /// `Refresh`
   String get retry {
-    return Intl.message(
-      'Refresh',
-      name: 'retry',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Refresh', name: 'retry', desc: '', args: []);
   }
 
   /// `Done`
   String get done {
-    return Intl.message(
-      'Done',
-      name: 'done',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Done', name: 'done', desc: '', args: []);
   }
 
   /// `Incorrect code`
@@ -142,12 +132,7 @@ class S {
 
   /// `the`
   String get withThe {
-    return Intl.message(
-      'the',
-      name: 'withThe',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('the', name: 'withThe', desc: '', args: []);
   }
 
   /// `Privacy Policy`
@@ -162,12 +147,7 @@ class S {
 
   /// `and`
   String get and {
-    return Intl.message(
-      'and',
-      name: 'and',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('and', name: 'and', desc: '', args: []);
   }
 
   /// `Terms and Conditions`
@@ -182,12 +162,7 @@ class S {
 
   /// `Resend code`
   String get sendAgain {
-    return Intl.message(
-      'Resend code',
-      name: 'sendAgain',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Resend code', name: 'sendAgain', desc: '', args: []);
   }
 
   /// `You can request a new code in {time}`
@@ -202,122 +177,62 @@ class S {
 
   /// `Phone`
   String get phone {
-    return Intl.message(
-      'Phone',
-      name: 'phone',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Phone', name: 'phone', desc: '', args: []);
   }
 
   /// `June`
   String get montJune {
-    return Intl.message(
-      'June',
-      name: 'montJune',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('June', name: 'montJune', desc: '', args: []);
   }
 
   /// `April`
   String get monthApril {
-    return Intl.message(
-      'April',
-      name: 'monthApril',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('April', name: 'monthApril', desc: '', args: []);
   }
 
   /// `August`
   String get monthAugust {
-    return Intl.message(
-      'August',
-      name: 'monthAugust',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('August', name: 'monthAugust', desc: '', args: []);
   }
 
   /// `December`
   String get monthDecember {
-    return Intl.message(
-      'December',
-      name: 'monthDecember',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('December', name: 'monthDecember', desc: '', args: []);
   }
 
   /// `February`
   String get monthFebruary {
-    return Intl.message(
-      'February',
-      name: 'monthFebruary',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('February', name: 'monthFebruary', desc: '', args: []);
   }
 
   /// `January`
   String get monthJanuary {
-    return Intl.message(
-      'January',
-      name: 'monthJanuary',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('January', name: 'monthJanuary', desc: '', args: []);
   }
 
   /// `July`
   String get monthJuly {
-    return Intl.message(
-      'July',
-      name: 'monthJuly',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('July', name: 'monthJuly', desc: '', args: []);
   }
 
   /// `March`
   String get monthMarch {
-    return Intl.message(
-      'March',
-      name: 'monthMarch',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('March', name: 'monthMarch', desc: '', args: []);
   }
 
   /// `May`
   String get monthMay {
-    return Intl.message(
-      'May',
-      name: 'monthMay',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('May', name: 'monthMay', desc: '', args: []);
   }
 
   /// `November`
   String get monthNovember {
-    return Intl.message(
-      'November',
-      name: 'monthNovember',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('November', name: 'monthNovember', desc: '', args: []);
   }
 
   /// `October`
   String get monthOctober {
-    return Intl.message(
-      'October',
-      name: 'monthOctober',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('October', name: 'monthOctober', desc: '', args: []);
   }
 
   /// `September`
@@ -362,72 +277,37 @@ class S {
 
   /// `Back`
   String get back {
-    return Intl.message(
-      'Back',
-      name: 'back',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Back', name: 'back', desc: '', args: []);
   }
 
   /// `Cancel`
   String get toCancel {
-    return Intl.message(
-      'Cancel',
-      name: 'toCancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Cancel', name: 'toCancel', desc: '', args: []);
   }
 
   /// `Select date`
   String get selectDate {
-    return Intl.message(
-      'Select date',
-      name: 'selectDate',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Select date', name: 'selectDate', desc: '', args: []);
   }
 
   /// `Next`
   String get goNext {
-    return Intl.message(
-      'Next',
-      name: 'goNext',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Next', name: 'goNext', desc: '', args: []);
   }
 
   /// `Copied`
   String get copied {
-    return Intl.message(
-      'Copied',
-      name: 'copied',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Copied', name: 'copied', desc: '', args: []);
   }
 
   /// `Select`
   String get select {
-    return Intl.message(
-      'Select',
-      name: 'select',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Select', name: 'select', desc: '', args: []);
   }
 
   /// `Today`
   String get today {
-    return Intl.message(
-      'Today',
-      name: 'today',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Today', name: 'today', desc: '', args: []);
   }
 
   /// `Cancellation`
@@ -442,22 +322,12 @@ class S {
 
   /// `Camera`
   String get camera {
-    return Intl.message(
-      'Camera',
-      name: 'camera',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Camera', name: 'camera', desc: '', args: []);
   }
 
   /// `Gallery`
   String get gallery {
-    return Intl.message(
-      'Gallery',
-      name: 'gallery',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Gallery', name: 'gallery', desc: '', args: []);
   }
 
   /// `Check your network connection and refresh the page`
@@ -515,9 +385,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<S> {
   const AppLocalizationDelegate();
 
   List<Locale> get supportedLocales {
-    return const <Locale>[
-      Locale.fromSubtags(languageCode: 'en'),
-    ];
+    return const <Locale>[Locale.fromSubtags(languageCode: 'en')];
   }
 
   @override
