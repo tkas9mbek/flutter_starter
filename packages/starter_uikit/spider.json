@@ -1,0 +1,33 @@
+{
+  "generate_tests": false,
+  "no_comments": true,
+  "export": true,
+  "use_part_of": true,
+  "use_references_list": false,
+  "fonts": true,
+  "package": "resources",
+  "groups": [
+    {
+      "path": "assets/icons",
+      "class_name": "UiSvgIcons",
+      "package": "res",
+      "types": [
+        "svg"
+      ]
+    },
+    {
+      "path": "assets/images",
+      "class_name": "Images",
+      "package": "res",
+      "types": [
+        "jpg",
+        "jpeg",
+        "png",
+        "webp",
+        "gif",
+        "bmp",
+        "wbmp"
+      ]
+    }
+  ]
+}

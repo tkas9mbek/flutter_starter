@@ -1,0 +1,15 @@
+{
+  "@@locale": "ru",
+  "login": "Вход",
+  "signUp": "Регистрация",
+  "phoneNumber": "Номер телефона",
+  "enterPhoneNumber": "Введите номер телефона",
+  "password": "Пароль",
+  "enterPassword": "Введите пароль",
+  "toLogin": "Войти",
+  "toRegister": "Зарегистрироваться",
+  "toLogout": "Выйти",
+  "calendar": "Календарь",
+  "haveNoAccount": "Нет аккаунта?",
+  "haveAccount": "Уже есть аккаунт?"
+}

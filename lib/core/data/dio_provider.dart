@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
-import 'package:flutter_starter/core/consts.dart';
-import 'package:flutter_starter/core/data/interceptor/app_error_interceptor.dart';
-import 'package:flutter_starter/core/data/interceptor/auth_refresh_interceptor.dart';
+import 'package:starter/core/consts/core_consts.dart';
+import 'package:starter_toolkit/data/interceptor/app_error_interceptor.dart';
+import 'package:starter_toolkit/data/interceptor/auth_refresh_interceptor.dart';
 
 class ApiProvider {
   final Interceptor? authInterceptor;
@@ -22,10 +22,8 @@ class ApiProvider {
     final baseOptions = BaseOptions(
       receiveDataWhenStatusError: true,
       contentType: 'application/json',
-      connectTimeout:
-          const Duration(seconds: Consts.apiTimeoutSeconds),
-      receiveTimeout:
-          const Duration(seconds: Consts.apiTimeoutSeconds),
+      connectTimeout: const Duration(seconds: CoreConsts.apiTimeoutSeconds),
+      receiveTimeout: const Duration(seconds: CoreConsts.apiTimeoutSeconds),
     );
     final dio = Dio(baseOptions);
     final dioWithoutAuthInterceptor = Dio(baseOptions);

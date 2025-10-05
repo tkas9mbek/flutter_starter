@@ -1,0 +1,96 @@
+name: starter_uikit
+
+description: "Mobile application for starter"
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+dependency_overrides:
+  test_api: 0.7.4
+  analyzer: 6.4.1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  auto_route: ^9.2.2
+  bloc: ^9.0.0
+  collection: ^1.19.1
+  dio: ^5.9.0
+  equatable: ^2.0.7
+  flutter_bloc: ^9.1.1
+  flutter_form_builder: ^10.1.0
+  flutter_localizations:
+    sdk: flutter
+  flutter_secure_storage: ^9.2.4
+  flutter_svg: ^2.2.1
+  freezed_annotation: ^2.4.4
+  get_it: ^8.2.0
+  intl: ^0.20.2
+  intl_utils: ^2.8.8
+  retrofit: ^4.7.2
+  shared_preferences: ^2.5.3
+  bloc_concurrency: ^0.3.0
+  image: ^4.5.4
+  image_picker: ^1.2.0
+  modal_bottom_sheet: ^3.0.0
+  flutter_keyboard_visibility: ^6.0.0
+  cached_network_image: ^3.4.1
+  top_snackbar_flutter: ^3.3.0
+  starter_toolkit:
+    path: ../starter_toolkit
+  form_builder_validators: ^11.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+
+  fonts:
+    - family: SFUIText
+      fonts:
+        - asset: assets/fonts/SFUIText/SFUIText-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/SFUIText/SFUIText-BoldItalic.ttf
+          weight: 700
+          style: italic
+        - asset: assets/fonts/SFUIText/SFUIText-Heavy.ttf
+          weight: 900
+        - asset: assets/fonts/SFUIText/SFUIText-HeavyItalic.ttf
+          weight: 900
+          style: italic
+        - asset: assets/fonts/SFUIText/SFUIText-Light.ttf
+          weight: 300
+        - asset: assets/fonts/SFUIText/SFUIText-LightItalic.ttf
+          weight: 300
+          style: italic
+        - asset: assets/fonts/SFUIText/SFUIText-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/SFUIText/SFUIText-MediumItalic.ttf
+          weight: 500
+          style: italic
+        - asset: assets/fonts/SFUIText/SFUIText-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/SFUIText/SFUIText-RegularItalic.ttf
+          weight: 400
+          style: italic
+        - asset: assets/fonts/SFUIText/SFUIText-Semibold.ttf
+          weight: 600
+        - asset: assets/fonts/SFUIText/SFUIText-SemiboldItalic.ttf
+          weight: 600
+          style: italic
+          
+flutter_intl:
+  enabled: true
+  main_locale: ru
+  class_name: UiLocalizer
+  output_dir: lib/l10n/generated
