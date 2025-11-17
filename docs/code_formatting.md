@@ -149,23 +149,6 @@ class _CounterWidgetState extends State<CounterWidget> {
 }
 ```
 
-### 3. Declare Theme Variables in build()
-
-Don't store theme as state or pass as parameters - each widget accesses from context:
-
-```dart
-// ✓ Correct
-class _MyScreenState extends State<MyScreen> {
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context).extension<CustomMainThemeData>();
-    return Scaffold(backgroundColor: theme?.background);
-  }
-}
-
-// ✗ Wrong
-CustomMainThemeData? _theme;  // Don't store as state
-```
 
 ### 4. Arrow Expression for Single-Line Callbacks
 

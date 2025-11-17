@@ -19,6 +19,7 @@ class LanguageOption {
 
 List<LanguageOption> languageOptionsAvailable = [
   const LanguageOption('ru', 'Русский'),
+  const LanguageOption('en', 'English'),
 ];
 
 LanguageOption defaultLanguageOption = languageOptionsAvailable.firstWhere(

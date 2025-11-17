@@ -37,9 +37,9 @@ class _RootScreenState extends State<RootScreen> {
 
     final routes = [
       const CalendarRoute(),
-      const CalendarRoute(),
-      const CalendarRoute(),
-      const CalendarRoute(),
+      const TasksListRoute(),
+      const SettingsRoute(),
+      const ProfileRoute(),
     ];
 
     return AutoTabsScaffold(
@@ -67,28 +67,28 @@ class _RootScreenState extends State<RootScreen> {
                 package: UiConsts.package,
                 title: Localizer.of(context).calendar,
                 isActive: tabsRouter.activeIndex == 0,
-                onTap: () => context.router.replaceAll([routes[0]]),
+                onTap: () => tabsRouter.setActiveIndex(0),
               ),
               BottomNavItem(
                 iconPath: UiSvgIcons.calendar,
                 package: UiConsts.package,
-                title: Localizer.of(context).calendar,
-                isActive: tabsRouter.activeIndex == 0,
-                onTap: () => context.router.replaceAll([routes[0]]),
+                title: 'Tasks',
+                isActive: tabsRouter.activeIndex == 1,
+                onTap: () => tabsRouter.setActiveIndex(1),
               ),
               BottomNavItem(
                 iconPath: UiSvgIcons.calendar,
                 package: UiConsts.package,
-                title: Localizer.of(context).calendar,
-                isActive: tabsRouter.activeIndex == 0,
-                onTap: () => context.router.replaceAll([routes[0]]),
+                title: 'Settings',
+                isActive: tabsRouter.activeIndex == 2,
+                onTap: () => tabsRouter.setActiveIndex(2),
               ),
               BottomNavItem(
                 iconPath: UiSvgIcons.calendar,
                 package: UiConsts.package,
-                title: Localizer.of(context).calendar,
-                isActive: tabsRouter.activeIndex == 0,
-                onTap: () => context.router.replaceAll([routes[0]]),
+                title: 'Profile',
+                isActive: tabsRouter.activeIndex == 3,
+                onTap: () => tabsRouter.setActiveIndex(3),
               ),
             ],
           ),

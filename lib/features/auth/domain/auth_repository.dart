@@ -64,12 +64,16 @@ class AuthRepository {
   }
 
   Future<void> register({
+    required String name,
     required String phone,
     required String password,
+    required DateTime birthday,
   }) async {
     final body = AuthRegisterRequestBody(
+      name: name,
       phone: phone,
       password: password,
+      birthday: birthday,
     );
     final response = await _repositoryExecutor.execute(
       () => _unauthorizedDataSource.register(body),

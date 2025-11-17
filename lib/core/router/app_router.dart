@@ -3,7 +3,10 @@ import 'package:starter/features/application/root/screen/authenticated_wrapper.d
 import 'package:starter/features/application/root/screen/root_screen.dart';
 import 'package:starter/features/auth/ui/login/screen/login_screen.dart';
 import 'package:starter/features/auth/ui/register/screen/registration_screen.dart';
-import 'package:starter/features/home/calendar_screen.dart';
+import 'package:starter/features/profile/ui/screen/profile_screen.dart';
+import 'package:starter/features/settings/ui/screen/settings_screen.dart';
+import 'package:starter/features/task/ui/calendar/screen/calendar_screen.dart';
+import 'package:starter/features/task/ui/tasks/screen/tasks_list_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -33,6 +36,18 @@ class AppRouter extends RootStackRouter {
             AutoRoute(
               page: CalendarRoute.page,
               initial: true,
+            ),
+            AutoRoute(
+              page: TasksListRoute.page,
+              path: 'tasks',
+            ),
+            AutoRoute(
+              page: SettingsRoute.page,
+              path: 'settings',
+            ),
+            AutoRoute(
+              page: ProfileRoute.page,
+              path: 'profile',
             ),
           ],
         ),

@@ -23,6 +23,7 @@ mixin _$User {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   String get phone => throw _privateConstructorUsedError;
+  DateTime get birthday => throw _privateConstructorUsedError;
 
   /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -38,7 +39,7 @@ abstract class $UserCopyWith<$Res> {
   factory $UserCopyWith(User value, $Res Function(User) then) =
       _$UserCopyWithImpl<$Res, User>;
   @useResult
-  $Res call({String id, String name, String phone});
+  $Res call({String id, String name, String phone, DateTime birthday});
 }
 
 /// @nodoc
@@ -59,6 +60,7 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     Object? id = null,
     Object? name = null,
     Object? phone = null,
+    Object? birthday = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -73,6 +75,10 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String,
+      birthday: null == birthday
+          ? _value.birthday
+          : birthday // ignore: cast_nullable_to_non_nullable
+              as DateTime,
     ) as $Val);
   }
 }
@@ -84,7 +90,7 @@ abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
       __$$UserImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String id, String name, String phone});
+  $Res call({String id, String name, String phone, DateTime birthday});
 }
 
 /// @nodoc
@@ -102,6 +108,7 @@ class __$$UserImplCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? phone = null,
+    Object? birthday = null,
   }) {
     return _then(_$UserImpl(
       id: null == id
@@ -116,6 +123,10 @@ class __$$UserImplCopyWithImpl<$Res>
           ? _value.phone
           : phone // ignore: cast_nullable_to_non_nullable
               as String,
+      birthday: null == birthday
+          ? _value.birthday
+          : birthday // ignore: cast_nullable_to_non_nullable
+              as DateTime,
     ));
   }
 }
@@ -123,7 +134,11 @@ class __$$UserImplCopyWithImpl<$Res>
 /// @nodoc
 @JsonSerializable()
 class _$UserImpl implements _User {
-  const _$UserImpl({required this.id, required this.name, required this.phone});
+  const _$UserImpl(
+      {required this.id,
+      required this.name,
+      required this.phone,
+      required this.birthday});
 
   factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
       _$$UserImplFromJson(json);
@@ -134,10 +149,12 @@ class _$UserImpl implements _User {
   final String name;
   @override
   final String phone;
+  @override
+  final DateTime birthday;
 
   @override
   String toString() {
-    return 'User(id: $id, name: $name, phone: $phone)';
+    return 'User(id: $id, name: $name, phone: $phone, birthday: $birthday)';
   }
 
   @override
@@ -147,12 +164,14 @@ class _$UserImpl implements _User {
             other is _$UserImpl &&
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
-            (identical(other.phone, phone) || other.phone == phone));
+            (identical(other.phone, phone) || other.phone == phone) &&
+            (identical(other.birthday, birthday) ||
+                other.birthday == birthday));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, phone);
+  int get hashCode => Object.hash(runtimeType, id, name, phone, birthday);
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
@@ -174,7 +193,8 @@ abstract class _User implements User {
   const factory _User(
       {required final String id,
       required final String name,
-      required final String phone}) = _$UserImpl;
+      required final String phone,
+      required final DateTime birthday}) = _$UserImpl;
 
   factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
 
@@ -184,6 +204,8 @@ abstract class _User implements User {
   String get name;
   @override
   String get phone;
+  @override
+  DateTime get birthday;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.

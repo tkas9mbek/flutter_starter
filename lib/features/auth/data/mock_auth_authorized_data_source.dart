@@ -8,10 +8,11 @@ class MockAuthAuthorizedDataSource implements AuthAuthorizedDataSource {
   Future<User> getUserProfile() async {
     await Future.delayed(const Duration(seconds: 1));
 
-    return const User(
+    return User(
       id: 'mock_id',
       name: 'Mock User',
       phone: '+1234567890',
+      birthday: DateTime(1990, 5, 15),
     );
   }
 

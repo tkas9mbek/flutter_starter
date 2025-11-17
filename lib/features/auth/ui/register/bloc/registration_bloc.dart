@@ -39,9 +39,11 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
           emit(const RegistrationState.loading());
 
           try {
-            await authRepository.login(
+            await authRepository.register(
+              name: form.name,
               phone: form.phone,
               password: form.password,
+              birthday: form.birthday,
             );
 
             return emit(const RegistrationState.success());

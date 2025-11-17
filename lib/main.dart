@@ -9,6 +9,7 @@ import 'package:starter/features/application/application.dart';
 import 'package:starter/features/application/environment/configs/environment_module.dart';
 import 'package:starter/features/auth/configs/auth_module.dart';
 import 'package:starter/features/preferences/configs/preferences_module.dart';
+import 'package:starter/features/task/configs/task_module.dart';
 
 Future<void> configureApplication() async {
   final modules = <AppModule>[
@@ -17,6 +18,7 @@ Future<void> configureApplication() async {
     EnvironmentModule(),
     AuthModule(),
     PreferencesModule(),
+    TaskModule(),
   ];
 
   for (final module in modules) {

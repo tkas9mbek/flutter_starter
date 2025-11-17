@@ -70,6 +70,35 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         child: Column(
                           children: [
                             AppTextField(
+                              name: RegistrationForm.nameField,
+                              label: 'Name',
+                              hint: 'Enter your name',
+                              keyboardType: TextInputType.name,
+                              required: true,
+                            ),
+                            const SizedBox(height: 20),
+                            FormBuilderDateTimePicker(
+                              name: RegistrationForm.birthdayField,
+                              inputType: InputType.date,
+                              decoration: InputDecoration(
+                                labelText: 'Birthday',
+                                hintText: 'Select your birthday',
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
+                              initialDate: DateTime(2000),
+                              firstDate: DateTime(1900),
+                              lastDate: DateTime.now(),
+                              validator: (value) {
+                                if (value == null) {
+                                  return 'Birthday is required';
+                                }
+                                return null;
+                              },
+                            ),
+                            const SizedBox(height: 20),
+                            AppTextField(
                               name: RegistrationForm.phoneField,
                               label: Localizer.of(context).phoneNumber,
                               hint: Localizer.of(context).enterPhoneNumber,
