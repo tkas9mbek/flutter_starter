@@ -1,8 +1,8 @@
 ### Naming Conventions
 
-Мы должны стремиться к тому, чтобы, прочитав название класса, функции или переменной, разработчики
-могли легко понять его назначение, тип и принадлежность к определённому функционалу. Это можно
-достичь, следуя приведённым ниже соглашениям об именовании и принципу единственной ответственности.
+We should strive to ensure that by reading the name of a class, function, or variable, developers
+can easily understand its purpose, type, and belonging to a specific functionality. This can be
+achieved by following the naming conventions and single responsibility principle outlined below.
 
 ### General
 
@@ -70,7 +70,7 @@
 
 ```
 
-Примеры названий классов и объяснения их соответствия правилам
+Examples of Class Names and Explanations of Their Compliance with the Rules
 ==============================================================
 
 * * * * *
@@ -78,12 +78,13 @@
 ### 1\. TaxRepository
 
 - **Feature:** Tax
-- **Description:** (опционально, так как репозиторий предполагается один для фичи Tax)
+- **Description:** (optional, as only one repository is expected for the Tax feature)
 - **Type:** Repository
-- **Объяснение:**
-  Название **TaxRepository** чётко указывает, что данный класс предназначен для работы с данными,
-  связанными с функционалом налогов, и выполняет роль репозитория. Поскольку в рамках фичи Tax
-  ожидается единственная реализация данного типа, опускание дополнительного описания допустимо.
+- **Explanation:**
+  The name **TaxRepository** clearly indicates that this class is designed to work with data
+  related to tax functionality and serves the role of a repository. Since only a single
+  implementation of this type is expected within the Tax feature, omitting additional description
+  is acceptable.
 
 * * * * *
 
@@ -92,10 +93,10 @@
 - **Feature:** Tax
 - **Description:** Payment
 - **Type:** Screen
-- **Объяснение:**
-  Название **TaxPaymentScreen** информирует, что данный экран (Screen) предназначен для работы с
-  операциями, связанными с оплатой налогов. Функциональные аспекты (налоговый платеж) и тип (
-  UI-экран) выражены явно.
+- **Explanation:**
+  The name **TaxPaymentScreen** indicates that this screen is designed to work with operations
+  related to tax payments. The functional aspects (tax payment) and type (UI screen) are clearly
+  expressed.
 
 * * * * *
 
@@ -104,10 +105,10 @@
 - **Feature:** Tax
 - **Description:** DebtsList
 - **Type:** Bloc
-- **Объяснение:**
-  В имени **TaxDebtsListBloc** указано, что класс управляет логикой, связанной с отображением или
-  обработкой списка долгов (DebtsList) по налоговой тематике. Тип класса -- Bloc -- подчеркивает,
-  что он отвечает за бизнес-логику.
+- **Explanation:**
+  The name **TaxDebtsListBloc** indicates that the class manages logic related to displaying or
+  processing a list of debts (DebtsList) in the tax domain. The class type -- Bloc -- emphasizes
+  that it is responsible for business logic.
 
 * * * * *
 
@@ -116,10 +117,10 @@
 - **Feature:** Credit
 - **Description:** Approval
 - **Type:** Bloc
-- **Объяснение:**
-  Название **CreditApprovalBloc** указывает на то, что класс работает с процессом утверждения
-  кредитов (Approval) в рамках функционала кредитов. Данный Bloc предназначен для реализации
-  бизнес-логики, связанной с одобрением.
+- **Explanation:**
+  The name **CreditApprovalBloc** indicates that the class works with the credit approval process
+  (Approval) within credit functionality. This Bloc is designed to implement business logic
+  related to approval.
 
 * * * * *
 
@@ -128,10 +129,10 @@
 - **Feature:** Credit
 - **Description:** Application
 - **Type:** Screen
-- **Объяснение:**
-  В **CreditApplicationScreen** ясно выражено, что данный экран предназначен для подачи кредитных
-  заявок (Application) в функционале Credit. Название интуитивно понятное и соответствует
-  предполагаемой роли UI-элемента.
+- **Explanation:**
+  In **CreditApplicationScreen**, it is clearly expressed that this screen is designed for
+  submitting credit applications (Application) within the Credit functionality. The name is
+  intuitive and corresponds to the intended role of the UI element.
 
 * * * * *
 
@@ -140,10 +141,10 @@
 - **Feature:** Credit
 - **Description:** Score
 - **Type:** Card
-- **Объяснение:**
-  Название **CreditScoreCard** говорит о том, что класс представляет карточку (Card) с информацией о
-  кредитном скоре (Score) для функционала Credit. Использование слова "Card" вместо общего "Widget"
-  делает тип элемента более конкретным и понятным.
+- **Explanation:**
+  The name **CreditScoreCard** indicates that the class represents a card (Card) with information
+  about credit score (Score) for the Credit functionality. Using the word "Card" instead of the
+  generic "Widget" makes the element type more specific and understandable.
 
 * * * * *
 
@@ -152,10 +153,11 @@
 - **Feature:** Notifications
 - **Description:** UnreadList
 - **Type:** ListView
-- **Объяснение:**
-  Имя **NotificationsUnreadListView** информирует, что это виджет (ListView), отвечающий за
-  отображение списка непрочитанных уведомлений (UnreadList) в рамках функционала уведомлений (
-  Notifications). Название точно определяет как функционал, так и тип виджета.
+- **Explanation:**
+  The name **NotificationsUnreadListView** indicates that this is a widget (ListView) responsible
+  for displaying a list of unread notifications (UnreadList) within the notifications
+  functionality (Notifications). The name accurately defines both the functionality and the widget
+  type.
 
 * * * * *
 
@@ -164,10 +166,10 @@
 - **Feature:** Notification
 - **Description:** Remote
 - **Type:** DataSource
-- **Объяснение:**
-  **RemoteNotificationDataSource** четко указывает, что данный класс (DataSource) является
-  конкретной реализацией для получения уведомлений с удалённого сервера (Remote). Это соответствует
-  правилу SpecificImplementation + AbstractClassName.
+- **Explanation:**
+  **RemoteNotificationDataSource** clearly indicates that this class (DataSource) is a specific
+  implementation for retrieving notifications from a remote server (Remote). This corresponds to
+  the SpecificImplementation + AbstractClassName rule.
 
 * * * * *
 
@@ -176,10 +178,10 @@
 - **Feature:** Notifications
 - **Description:** List
 - **Type:** Bloc
-- **Объяснение:**
-  Название **NotificationsListBloc** говорит, что этот Bloc управляет списком уведомлений (List) для
-  функционала Notifications. Оно ясно разделяет ответственность и соответствует структуре Feature +
-  Description + Type.
+- **Explanation:**
+  The name **NotificationsListBloc** indicates that this Bloc manages the list of notifications
+  (List) for the Notifications functionality. It clearly separates responsibilities and
+  corresponds to the Feature + Description + Type structure.
 
 * * * * *
 
@@ -188,125 +190,126 @@
 - **Feature:** Notifications
 - **Description:** ListRequested
 - **Type:** Event
-- **Объяснение:**
-  ListRequested -- указывает на запрос списка уведомлений; использование прошедшего времени ("
-  Requested") соответствует правилам для именования событий. Такое название сразу сообщает, что
-  класс представляет собой событие, произошедшее в системе.
+- **Explanation:**
+  ListRequested -- indicates a request for the list of notifications; using the past tense
+  ("Requested") complies with event naming rules. This name immediately communicates that the
+  class represents an event that occurred in the system.
 
 * * * * *
 
-Примеры плохих имен классов с объяснениями и их исправления
+Examples of Bad Class Names with Explanations and Their Corrections
 ===========================================================
 
 * * * * *
 
 ### 1\. Property
 
-- **Почему плохо:**
-  Название "Property" слишком общее и не отражает ни конкретную функциональность, ни тип данных.
-  Разработчик не сможет понять, что именно представляет этот класс.
-- **Исправлено:** `RealEstateProperty`
-- **Объяснение:**
-  Новое название включает конкретику -- оно явно указывает, что класс описывает информацию о
-  недвижимости (RealEstate), что делает его назначение понятным.
+- **Why It's Bad:**
+  The name "Property" is too generic and does not reflect either specific functionality or data
+  type. A developer cannot understand what this class represents.
+- **Fixed:** `RealEstateProperty`
+- **Explanation:**
+  The new name includes specificity -- it explicitly indicates that the class describes
+  information about real estate (RealEstate), which makes its purpose clear.
 
 * * * * *
 
 ### 2\. TaxPropertyDebtModel
 
-- **Почему плохо:**
-  Использование слова `Model` является избыточным, так как этот термин не добавляет конкретики.
-- **Исправлено:** `TaxPropertyDebt`
-- **Объяснение:**
-  Название состоит из фичи (Tax), описания (PropertyDebt) и опускает слово "Model", которое было
-  слишком общим. Это позволяет сразу понять, что класс работает с долгами по свойствам в налоговом
-  контексте.
+- **Why It's Bad:**
+  Using the word `Model` is redundant, as this term does not add specificity.
+- **Fixed:** `TaxPropertyDebt`
+- **Explanation:**
+  The name consists of the feature (Tax), description (PropertyDebt), and omits the word "Model",
+  which was too generic. This allows immediate understanding that the class works with property
+  debts in a tax context.
 
 * * * * *
 
 ### 3\. TitleValueTile
 
-- **Почему плохо:**
-  "TitleValueTile" слишком абстрактное имя -- оно не указывает, к какому функционалу относится
-  данный компонент и для чего он предназначен.
-- **Исправлено:** `TaxPropertyTitleValueTile`
-- **Объяснение:**
-  Добавление фичи (TaxProperty) конкретизирует область применения, а "TitleValueTile" остается в
-  качестве описания типа виджета. Теперь название соответствует схеме: Feature (TaxProperty) +
-  Description (TitleValue) + Type (Tile).
+- **Why It's Bad:**
+  "TitleValueTile" is too abstract a name -- it does not indicate what functionality this
+  component belongs to or what it is intended for.
+- **Fixed:** `TaxPropertyTitleValueTile`
+- **Explanation:**
+  Adding the feature (TaxProperty) specifies the scope of application, while "TitleValueTile"
+  remains as the description of the widget type. Now the name follows the pattern: Feature
+  (TaxProperty) + Description (TitleValue) + Type (Tile).
 
 * * * * *
 
 ### 4\. ImageContainer
 
-- **Почему плохо:**
-  Использование слова "Container" слишком общее и не показывает назначение компонента. Неясно,
-  используется ли он для форматирования, отображения или другой цели.
-- **Исправлено:** `PropertyImageDisplayCard`
-- **Объяснение:**
-  "Property" - конкретизирует область применения, "ImageDisplay" уточняет, что компонент отвечает за
-  показ изображения, а "Card" -- конкретный тип UI-компонента с визуальным оформлением. Название
-  стало более информативным и специфичным.
+- **Why It's Bad:**
+  Using the word "Container" is too generic and does not show the component's purpose. It's
+  unclear whether it's used for formatting, display, or another purpose.
+- **Fixed:** `PropertyImageDisplayCard`
+- **Explanation:**
+  "Property" - specifies the scope of application, "ImageDisplay" clarifies that the component is
+  responsible for displaying images, and "Card" -- a specific type of UI component with visual
+  decoration. The name became more informative and specific.
 
 * * * * *
 
 ### 5\. AddCompanyBloc
 
-- **Почему плохо:**
-  Глагол "Add" нарушает правило использования описательных существительных (например, Creation или
-  Addition), а само имя не отражает конкретную зону ответственности Bloc.
-- **Исправлено:** `CompanyCreationBloc`
-- **Объяснение:**
-  Новое название следует схеме: Feature (Company) + Description (Creation) + Type (Bloc). Это ясно
-  даёт понять, что данный Bloc отвечает за логику создания компании.
+- **Why It's Bad:**
+  The verb "Add" violates the rule of using descriptive nouns (e.g., Creation or Addition), and
+  the name itself does not reflect the specific area of responsibility of the Bloc.
+- **Fixed:** `CompanyCreationBloc`
+- **Explanation:**
+  The new name follows the pattern: Feature (Company) + Description (Creation) + Type (Bloc). This
+  clearly communicates that this Bloc is responsible for company creation logic.
 
 * * * * *
 
 ### 6\. CompanyFetchEvent
 
-- **Почему плохо:**
-  Название события должно быть более конкретным и, как правило, использовать прошедшее время или
-  уточняющий термин для обозначения запроса (например, Requested). "Fetch" само по себе остаётся
-  недостаточно описательным.
-- **Исправлено:** `CompanyRequestedEvent`
-- **Объяснение:**
-  Теперь название содержит Feature (Company), описание (Requested, что указывает на то, что
-  произошло запрос на получение данных) и тип (Event). Это соответствует требованиям именования
-  событий.
+- **Why It's Bad:**
+  The event name should be more specific and typically use past tense or a clarifying term to
+  denote a request (e.g., Requested). "Fetch" itself remains insufficiently descriptive.
+- **Fixed:** `CompanyRequestedEvent`
+- **Explanation:**
+  Now the name contains Feature (Company), description (Requested, indicating that a request to
+  retrieve data occurred) and type (Event). This complies with event naming requirements.
 
 * * * * *
 
 ### 7\. CompanyLocalDataSource
 
-- **Почему плохо:**
-  Порядок компонентов не соответствует паттерну для конкретных реализаций -- согласно критерию
-  SpecificImplementation + AbstractClassName, конкретная реализация должна идти первой.
-- **Исправлено:** `LocalCompanyDataSource`
-- **Объяснение:**
-  Новое имя начинается с описания конкретной реализации (`Local`), затем следует фича (Company) и
-  тип (DataSource). Такая перестановка улучшает читаемость и соответствует установленным правилам.
+- **Why It's Bad:**
+  The order of components does not match the pattern for concrete implementations -- according to
+  the SpecificImplementation + AbstractClassName criterion, the specific implementation should
+  come first.
+- **Fixed:** `LocalCompanyDataSource`
+- **Explanation:**
+  The new name starts with the description of the specific implementation (`Local`), followed by
+  the feature (Company) and type (DataSource). This rearrangement improves readability and
+  complies with established rules.
 
 * * * * *
 
 ### 8\. AddCompanyWidget
 
-- **Почему плохо:**
-  Использование слова "Widget" слишком расплывчато, так как оно не указывает на конкретный тип
-  UI-компонента (например, Button или Form), а глагол "Add" не соответствует схеме именования.
-- **Исправлено:** `CompanyCreationButton`
-- **Объяснение:**
-  В исправленном имени используется существительное "Creation" вместо глагола "Add", что, вместе с
-  указанием конкретного типа UI-компонента (Button), делает название более конкретным и понятным по
-  схеме Feature (Company) + Description (Creation) + Type (Button).
+- **Why It's Bad:**
+  Using the word "Widget" is too vague, as it does not indicate the specific type of UI component
+  (e.g., Button or Form), and the verb "Add" does not correspond to the naming pattern.
+- **Fixed:** `CompanyCreationButton`
+- **Explanation:**
+  The corrected name uses the noun "Creation" instead of the verb "Add", which, together with
+  specifying the specific UI component type (Button), makes the name more specific and
+  understandable according to the Feature (Company) + Description (Creation) + Type (Button)
+  pattern.
 
 * * * * *
 
 ### 9\. MainScreen
 
-- **Почему плохо:**
-  "MainScreen" --- слишком общее название, не указывающее на принадлежность к конкретной
-  функциональной области или описывающее его назначение.
-- **Исправлено:** `HomeDashboardScreen`
-- **Объяснение:**
-  Новое название включает фичу (Home), описание (Dashboard) и тип (Screen), что делает
-  предназначение экрана очевидным и однозначно определённым.
+- **Why It's Bad:**
+  "MainScreen" --- is too generic a name, not indicating belonging to a specific functional area
+  or describing its purpose.
+- **Fixed:** `HomeDashboardScreen`
+- **Explanation:**
+  The new name includes the feature (Home), description (Dashboard), and type (Screen), which
+  makes the screen's purpose obvious and clearly defined.
