@@ -370,6 +370,16 @@ class ToolkitLocalizer {
     );
   }
 
+  /// `Завтра`
+  String get tomorrow {
+    return Intl.message(
+      'Завтра',
+      name: 'tomorrow',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `{hours} ч. {minutes} мин.`
   String durationInHoursMinutes(Object hours, Object minutes) {
     return Intl.message(

@@ -3,7 +3,8 @@ import 'package:starter_toolkit/data/exceptions/url_launch_exception.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UrlLauncherHelper {
-  static Future<void> _launch(Uri uri, {
+  static Future<void> _launch(
+    Uri uri, {
     LaunchMode mode = LaunchMode.platformDefault,
   }) async {
     try {
@@ -17,10 +18,11 @@ class UrlLauncherHelper {
     await _launch(Uri(scheme: 'tel', path: phone));
   }
 
-  static Future<void> launchMessenger(String baseUrl,
-      String contact, {
-        String message = '',
-      }) async {
+  static Future<void> launchMessenger(
+    String baseUrl,
+    String contact, {
+    String message = '',
+  }) async {
     final url = '$baseUrl$contact';
     await _launch(
       Uri.parse(message.isEmpty ? url : '$url?text=$message'),
@@ -67,7 +69,8 @@ class UrlLauncherHelper {
     );
   }
 
-  static Future<void> launchWebUrl(String url, {
+  static Future<void> launchWebUrl(
+    String url, {
     bool useExternalBrowser = false,
   }) async {
     await _launch(

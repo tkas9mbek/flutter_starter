@@ -5,8 +5,9 @@ import 'package:starter_toolkit/data/exceptions/development_error.dart';
 import 'package:starter_toolkit/data/exceptions/unknown_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
-/// Repository executor with simple caching capability
-/// Demonstrates feature-specific executor implementation
+/// Repository executor with time-based caching.
+///
+/// Caches operation results using optional cache keys for configurable duration.
 class CachingRepositoryExecutor extends RepositoryExecutor {
   CachingRepositoryExecutor({
     this.cacheDuration = const Duration(minutes: 5),
@@ -16,7 +17,10 @@ class CachingRepositoryExecutor extends RepositoryExecutor {
   final Map<String, _CacheEntry> _cache = {};
 
   @override
-  Future<T> execute<T>(Future<T> Function() function, {String? cacheKey}) async {
+  Future<T> execute<T>(
+    Future<T> Function() function, {
+    String? cacheKey,
+  }) async {
     // Try to get from cache if key provided
     if (cacheKey != null) {
       final cached = _cache[cacheKey];
@@ -32,7 +36,7 @@ class CachingRepositoryExecutor extends RepositoryExecutor {
       // Cache the result if key provided
       if (cacheKey != null) {
         _cache[cacheKey] = _CacheEntry(
-          data: result,
+          data: result as Object,
           timestamp: DateTime.now(),
           duration: cacheDuration,
         );

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/app_colors.dart';
 
+/// Application theme configuration with light and dark mode support.
 class AppTheme {
   final ThemeMode themeMode;
 
@@ -37,7 +38,7 @@ class AppTheme {
         secondary: AppColors.brightAmber,
         surface: AppColors.pureWhite,
         background: AppColors.lightGrey,
-        border: AppColors.blackText.withValues(alpha: 0.1),
+        border: AppColors.lightBorder,
         error: AppColors.deepRed,
         success: AppColors.vibrantGreen,
         onPrimary: AppColors.whiteText,
@@ -45,4 +46,29 @@ class AppTheme {
         textPrimary: AppColors.blackText,
         textSecondary: AppColors.greyText,
       );
+
+  factory AppTheme.dark() => AppTheme._(
+        themeMode: ThemeMode.dark,
+        primary: AppColors.lightPurple,
+        secondary: AppColors.brightAmber,
+        surface: AppColors.darkSurface,
+        background: AppColors.darkGrey,
+        border: AppColors.darkBorder,
+        error: AppColors.lightRed,
+        success: AppColors.vibrantGreen,
+        onPrimary: AppColors.blackText,
+        onStatus: AppColors.statusText,
+        textPrimary: AppColors.whiteText,
+        textSecondary: AppColors.lightGreyText,
+      );
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is AppTheme &&
+          runtimeType == other.runtimeType &&
+          themeMode == other.themeMode;
+
+  @override
+  int get hashCode => themeMode.hashCode;
 }

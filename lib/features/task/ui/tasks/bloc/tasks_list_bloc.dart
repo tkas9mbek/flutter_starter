@@ -110,9 +110,8 @@ class TasksListBloc extends Bloc<TasksListEvent, TasksListState> {
     try {
       await _repository.deleteTask(taskId);
 
-      final updatedTasks = currentState.tasks
-          .where((task) => task.id != taskId)
-          .toList();
+      final updatedTasks =
+          currentState.tasks.where((task) => task.id != taskId).toList();
 
       final groupedTasks = _groupTasksByDate(updatedTasks);
 
@@ -144,7 +143,6 @@ class TasksListBloc extends Bloc<TasksListEvent, TasksListState> {
       }
     }
 
-    // Sort tasks within each group by start time
     for (final entry in grouped.entries) {
       entry.value.sort((a, b) => a.startTime.compareTo(b.startTime));
     }

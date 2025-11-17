@@ -94,6 +94,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "errorRequiredField":
             MessageLookupByLibrary.simpleMessage("Обязательное поле"),
         "today": MessageLookupByLibrary.simpleMessage("Сегодня"),
+        "tomorrow": MessageLookupByLibrary.simpleMessage("Завтра"),
         "yesterday": MessageLookupByLibrary.simpleMessage("Вчера")
       };
 }

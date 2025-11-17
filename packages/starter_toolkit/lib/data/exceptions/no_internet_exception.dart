@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/l10n/generated/l10n.dart';
 
+/// Exception thrown when there is no internet connection.
 class NoInternetException extends AppException {
   @override
   String getTitle(BuildContext context) =>

@@ -5,7 +5,7 @@ import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/application/global/bloc/auth_bloc.dart';
 import 'package:starter/features/application/root/bloc/user_bloc.dart';
 import 'package:starter/features/application/root/widget/user_provider.dart';
-import 'package:starter/features/auth/domain/auth_repository.dart';
+import 'package:starter/features/profile/domain/profile_repository.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
 import 'package:starter_uikit/widgets/misc/safe_vertical_box.dart';
@@ -22,7 +22,7 @@ class AuthenticatedWrapper extends StatelessWidget {
       providers: [
         BlocProvider<UserBloc>(
           create: (context) => UserBloc(
-            getIt<AuthRepository>(),
+            getIt<ProfileRepository>(),
           )..add(const UserEvent.requested()),
         ),
       ],

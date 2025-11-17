@@ -4,9 +4,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
+import 'package:starter/features/profile/domain/profile_repository.dart';
 import 'package:starter/features/profile/ui/bloc/profile_bloc.dart';
 import 'package:starter/l10n/generated/l10n.dart';
-import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/starter_uikit.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
 
@@ -17,8 +18,10 @@ class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => ProfileBloc(getIt<AuthRepository>())
-        ..add(const ProfileEvent.loaded()),
+      create: (context) => ProfileBloc(
+        getIt<ProfileRepository>(),
+        getIt<AuthRepository>(),
+      )..add(const ProfileEvent.loaded()),
       child: const _ProfileView(),
     );
   }
@@ -32,21 +35,24 @@ class _ProfileView extends StatelessWidget {
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
 
+    final localizer = Localizer.of(context);
+
     return Scaffold(
-      appBar: const TitleAppBar(
-        title: 'Profile',
+      appBar: TitleAppBar(
+        title: localizer.profile,
       ),
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) {
           return state.when(
-            initial: () => const Center(child: Text('Initial')),
-            loading: () => const Center(child: CircularProgressIndicator()),
+            initial: () =>
+                const Center(child: CustomCircularProgressIndicator()),
+            loading: () =>
+                const Center(child: CustomCircularProgressIndicator()),
             success: (user) => SingleChildScrollView(
               padding: const EdgeInsets.all(16),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  // Profile Card
                   Container(
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
@@ -62,12 +68,13 @@ class _ProfileView extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        // Avatar
                         CircleAvatar(
                           radius: 50,
                           backgroundColor: theme.primary,
                           child: Text(
-                            user.name.isNotEmpty ? user.name[0].toUpperCase() : 'U',
+                            user.name.isNotEmpty
+                                ? user.name[0].toUpperCase()
+                                : '',
                             style: textStyles.boldTitle20.copyWith(
                               color: Colors.white,
                               fontSize: 24,
@@ -75,16 +82,12 @@ class _ProfileView extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 16),
-
-                        // Name
                         Text(
                           user.name,
                           style: textStyles.boldTitle20,
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 8),
-
-                        // Phone
                         Text(
                           user.phone,
                           style: textStyles.regularBody14.copyWith(
@@ -92,27 +95,24 @@ class _ProfileView extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 24),
-
-                        // Birthday Info
                         _InfoTile(
                           icon: Icons.cake_outlined,
-                          label: 'Birthday',
-                          value: DateFormat('MMMM dd, yyyy').format(user.birthday),
+                          label: localizer.birthday,
+                          value:
+                              DateFormat('MMMM dd, yyyy').format(user.birthday),
                         ),
                         const SizedBox(height: 12),
-
-                        // Age Info
                         _InfoTile(
                           icon: Icons.person_outline,
-                          label: 'Age',
-                          value: '${DateTime.now().year - user.birthday.year} years old',
+                          label: localizer.age,
+                          value: localizer.yearsOld(
+                            DateTime.now().year - user.birthday.year,
+                          ),
                         ),
                       ],
                     ),
                   ),
                   const SizedBox(height: 24),
-
-                  // Logout Button
                   AppElevatedButton.big(
                     context: context,
                     text: Localizer.of(context).toLogout,
@@ -132,7 +132,7 @@ class _ProfileView extends StatelessWidget {
                   const Icon(Icons.error_outline, size: 64, color: Colors.red),
                   const SizedBox(height: 16),
                   Text(
-                    'Failed to load profile',
+                    localizer.failedToLoadProfile,
                     style: textStyles.boldBody16,
                   ),
                   const SizedBox(height: 8),
@@ -148,18 +148,18 @@ class _ProfileView extends StatelessWidget {
                     onPressed: () => context.read<ProfileBloc>().add(
                           const ProfileEvent.loaded(),
                         ),
-                    child: const Text('Retry'),
+                    child: Text(localizer.retry),
                   ),
                 ],
               ),
             ),
-            loggingOut: () => const Center(
+            loggingOut: () => Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  CircularProgressIndicator(),
-                  SizedBox(height: 16),
-                  Text('Logging out...'),
+                  const CircularProgressIndicator(),
+                  const SizedBox(height: 16),
+                  Text(localizer.loggingOut),
                 ],
               ),
             ),

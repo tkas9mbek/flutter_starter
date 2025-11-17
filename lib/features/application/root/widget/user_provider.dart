@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:starter/features/auth/model/user.dart';
+import 'package:starter/features/profile/model/user.dart';
 
 class UserProvider extends InheritedWidget {
   const UserProvider({

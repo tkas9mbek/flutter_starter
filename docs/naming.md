@@ -1,315 +1,381 @@
-### Naming Conventions
+# Naming Conventions
 
-We should strive to ensure that by reading the name of a class, function, or variable, developers
-can easily understand its purpose, type, and belonging to a specific functionality. This can be
-achieved by following the naming conventions and single responsibility principle outlined below.
+> **AI Context**: Class and variable naming standards. Names should reveal purpose, type, and feature ownership.
 
-### General
+## Core Principle
 
-- Functions & Methods: Should be named starting with a verb, indicating the action they perform,
-  e.g. `doSomething()`, `fetchData()`
+**AI Instruction**: Follow the pattern: **Feature + Description + Type**
 
-- Classes follow the pattern: **Feature + Description + Type**:
+By reading a name, developers should understand:
+- What feature it belongs to
+- What it does (description)
+- What type of component it is
 
-- Description: Describes the specific use case or data being represented (e.g., `Certificate`,
-  `NotesList`, `ItemCreation`).
+---
 
-    - Single Implementations: For classes where only one implementation of a certain type is
-      expected within a feature, the **Description** part can be omitted, e.g. `FeatureRepository`
-      instead of `FeatureMainRepository`
-- Type: Indicates the type of class (e.g., `RequestBody`, `Details`, `Column`, `Bloc`, `Screen`).
-  Avoid generic names like Model or Data.
+## General Rules
 
-    - For data models if the type is self-evident from the context, it can be omitted, e.g.
-      `FeatureItemPrice` instead of `FeatureItemPriceDetails`.
+### Functions & Methods
 
-### Abstraction
+**AI Instruction**: Start with a verb indicating the action
 
-- Abstract Classes: Follow the main naming rule (e.g., FeatureDataProvider).
-- Concrete Implementations: Follow the pattern: SpecificImplementation + AbstractClassName, e.g.
-  `RemoteFeatureDataProvider`, `LocalFeatureDataProvider`.
+```dart
+// ✓ Correct
+void fetchUsers() { ... }
+void calculateTotal() { ... }
+Future<void> saveData() { ... }
 
-### Widget
-
-- **Generic Widgets** If a widget doesn't have a more descriptive name based on its function, use
-  its basic widget type, e.g. `FeatureDescriptionRow`, `UserProfileColumn`.
-- **Avoid `Container`, `Widget`** Generally, avoid using Container in widget names as it's too
-  generic. Prefer Card for containers with visual decoration (e.g., FeatureDetailsCard).
-- **Example** `FeatureItemsListView`, `FeatureDetailsScreen`, `FeatureItemDeletionButton`,
-  `FeatureTitleValueTile`.
-
-### Bloc
-
-- Adhere to the official Bloc Library naming
-  conventions: <https://bloclibrary.dev/naming-conventions/>
-- For naming BLoCs and their primary states and events, follow the **Feature + Description + Type**
-  pattern, e.g. `FeatureItemListBloc`, `FeatureOperationState`, `UserAuthenticationEvent`.
-- **Events** Event names should typically be in the past tense, as they represent actions that have
-  already occurred from the BLoC's perspective, e.g. `itemRequested`, `formSubmitted`.
-- **States** State names should be nouns, representing a snapshot of the BLoC's state at a
-  particular point in time, e.g. `success`, `failure`, `loading`.
-- Common Bloc Names:
-    - For fetching lists of data: FeatureListBloc (e.g., NotesListBloc).
-    - For creating or editing single items: FeatureOperationBloc (e.g., NoteOperationBloc).
-    - For managing the details of a specific item: FeatureDetailsBloc (e.g., UserDetailsBloc).
-
-### Comments
-
-- Minimize Code Comments: Aim to write self-documenting code that is clear enough not to require
-  extensive comments. Excessive commenting can make classes large and less readable.
-- Focus on Public API Documentation: For common module, uikit follow Flutter's convention for
-  documentation comments using `///`. Provide a concise summary and explain the purpose and usage of
-  the API. For example:
-
-```
-    /// A box with a specified size.
-    ///
-    /// If not given a child, [SizedBox] will try to size itself as close to the
-    /// specified height and width as possible given the parent's constraints. If
-    /// [height] or [width] is null or unspecified, it will be treated as zero.
-
+// ✗ Wrong
+void users() { ... }
+void total() { ... }
+void data() { ... }
 ```
 
-Examples of Class Names and Explanations of Their Compliance with the Rules
-==============================================================
+### Classes
 
-* * * * *
+**Pattern**: `Feature + Description + Type`
 
-### 1\. TaxRepository
+- **Feature**: Domain/module name (e.g., `Tax`, `User`, `Note`)
+- **Description**: Specific use case or data (optional if single implementation)
+- **Type**: Component type (`Repository`, `Bloc`, `Screen`, `Widget`)
 
-- **Feature:** Tax
-- **Description:** (optional, as only one repository is expected for the Tax feature)
-- **Type:** Repository
-- **Explanation:**
-  The name **TaxRepository** clearly indicates that this class is designed to work with data
-  related to tax functionality and serves the role of a repository. Since only a single
-  implementation of this type is expected within the Tax feature, omitting additional description
-  is acceptable.
+```dart
+// ✓ Correct
+class TaxRepository { ... }           // Single implementation, omit description
+class TaxPaymentScreen { ... }        // Payment is the description
+class UserListBloc { ... }            // List is the description
 
-* * * * *
+// ✗ Wrong
+class TaxData { ... }                 // Too generic
+class TaxModel { ... }                // Avoid "Model"
+class UserScreen { ... }              // Missing description
+```
 
-### 2\. TaxPaymentScreen
+---
 
-- **Feature:** Tax
-- **Description:** Payment
-- **Type:** Screen
-- **Explanation:**
-  The name **TaxPaymentScreen** indicates that this screen is designed to work with operations
-  related to tax payments. The functional aspects (tax payment) and type (UI screen) are clearly
-  expressed.
+## File Names
 
-* * * * *
+**AI Instruction**: Use `snake_case`. Match the main class name
 
-### 3\. TaxDebtsListBloc
+```dart
+// Class: TaxPaymentScreen
+// File: tax_payment_screen.dart
 
-- **Feature:** Tax
-- **Description:** DebtsList
-- **Type:** Bloc
-- **Explanation:**
-  The name **TaxDebtsListBloc** indicates that the class manages logic related to displaying or
-  processing a list of debts (DebtsList) in the tax domain. The class type -- Bloc -- emphasizes
-  that it is responsible for business logic.
+// Class: UserListBloc
+// File: user_list_bloc.dart
 
-* * * * *
+// Class: RemoteAuthDataSource
+// File: remote_auth_data_source.dart
+```
 
-### 4\. CreditApprovalBloc
+---
 
-- **Feature:** Credit
-- **Description:** Approval
-- **Type:** Bloc
-- **Explanation:**
-  The name **CreditApprovalBloc** indicates that the class works with the credit approval process
-  (Approval) within credit functionality. This Bloc is designed to implement business logic
-  related to approval.
+## Abstraction Naming
 
-* * * * *
+### Abstract Classes
 
-### 5\. CreditApplicationScreen
+**AI Instruction**: Use the base pattern without implementation prefix
 
-- **Feature:** Credit
-- **Description:** Application
-- **Type:** Screen
-- **Explanation:**
-  In **CreditApplicationScreen**, it is clearly expressed that this screen is designed for
-  submitting credit applications (Application) within the Credit functionality. The name is
-  intuitive and corresponds to the intended role of the UI element.
+```dart
+// ✓ Correct - Abstract
+abstract class UserDataSource { ... }
+abstract class TaskRepository { ... }  // Only if truly needed
 
-* * * * *
+// ✗ Wrong
+abstract class IUserDataSource { ... }  // No "I" prefix
+abstract class AbstractUserDataSource { ... }  // No "Abstract" prefix
+```
 
-### 6\. CreditScoreCard
+### Concrete Implementations
 
-- **Feature:** Credit
-- **Description:** Score
-- **Type:** Card
-- **Explanation:**
-  The name **CreditScoreCard** indicates that the class represents a card (Card) with information
-  about credit score (Score) for the Credit functionality. Using the word "Card" instead of the
-  generic "Widget" makes the element type more specific and understandable.
+**AI Instruction**: Prefix with implementation type
 
-* * * * *
+```dart
+// ✓ Correct - Implementations
+class RemoteUserDataSource implements UserDataSource { ... }
+class LocalUserDataSource implements UserDataSource { ... }
+class MockUserDataSource implements UserDataSource { ... }
 
-### 7\. NotificationsUnreadListView
+class RemoteAuthDataSource implements AuthDataSource { ... }
+class SecureAuthLocalDataSource implements AuthLocalDataSource { ... }
+```
 
-- **Feature:** Notifications
-- **Description:** UnreadList
-- **Type:** ListView
-- **Explanation:**
-  The name **NotificationsUnreadListView** indicates that this is a widget (ListView) responsible
-  for displaying a list of unread notifications (UnreadList) within the notifications
-  functionality (Notifications). The name accurately defines both the functionality and the widget
-  type.
+---
 
-* * * * *
+## Widget Naming
 
-### 8\. RemoteNotificationDataSource
+**AI Instruction**: Use descriptive names based on purpose, not just widget type
 
-- **Feature:** Notification
-- **Description:** Remote
-- **Type:** DataSource
-- **Explanation:**
-  **RemoteNotificationDataSource** clearly indicates that this class (DataSource) is a specific
-  implementation for retrieving notifications from a remote server (Remote). This corresponds to
-  the SpecificImplementation + AbstractClassName rule.
+### Generic Widgets
 
-* * * * *
+Describe what the widget displays or does:
 
-### 9\. NotificationsListBloc
+```dart
+// ✓ Correct
+class UserProfileCard extends StatelessWidget { ... }
+class TaskListView extends StatelessWidget { ... }
+class PriceRow extends StatelessWidget { ... }
+class SubmitButton extends StatelessWidget { ... }
 
-- **Feature:** Notifications
-- **Description:** List
-- **Type:** Bloc
-- **Explanation:**
-  The name **NotificationsListBloc** indicates that this Bloc manages the list of notifications
-  (List) for the Notifications functionality. It clearly separates responsibilities and
-  corresponds to the Feature + Description + Type structure.
+// ✗ Wrong
+class UserContainer extends StatelessWidget { ... }  // Too generic
+class TaskWidget extends StatelessWidget { ... }     // Too generic
+```
 
-* * * * *
+### Avoid Generic Names
 
-### 10\. NotificationsListRequestedEvent
+**AI Instruction**: Never use `Container`, `Widget`, `Component` in names
 
-- **Feature:** Notifications
-- **Description:** ListRequested
-- **Type:** Event
-- **Explanation:**
-  ListRequested -- indicates a request for the list of notifications; using the past tense
-  ("Requested") complies with event naming rules. This name immediately communicates that the
-  class represents an event that occurred in the system.
+```dart
+// ✓ Correct
+class ProductDetailsCard { ... }
+class UserInfoTile { ... }
 
-* * * * *
+// ✗ Wrong
+class ProductContainer { ... }
+class UserWidget { ... }
+class InfoComponent { ... }
+```
 
-Examples of Bad Class Names with Explanations and Their Corrections
-===========================================================
+---
 
-* * * * *
+## BLoC Naming
 
-### 1\. Property
+**AI Instruction**: Follow official [BLoC naming conventions](https://bloclibrary.dev/naming-conventions/)
 
-- **Why It's Bad:**
-  The name "Property" is too generic and does not reflect either specific functionality or data
-  type. A developer cannot understand what this class represents.
-- **Fixed:** `RealEstateProperty`
-- **Explanation:**
-  The new name includes specificity -- it explicitly indicates that the class describes
-  information about real estate (RealEstate), which makes its purpose clear.
+### BLoC Classes
 
-* * * * *
+Pattern: `Feature + Description + Bloc`
 
-### 2\. TaxPropertyDebtModel
+```dart
+class UserListBloc extends Bloc<UserListEvent, UserListState> { ... }
+class TaskOperationBloc extends Bloc<TaskOperationEvent, TaskOperationState> { ... }
+class ProfileDetailsBloc extends Bloc<ProfileDetailsEvent, ProfileDetailsState> { ... }
+```
 
-- **Why It's Bad:**
-  Using the word `Model` is redundant, as this term does not add specificity.
-- **Fixed:** `TaxPropertyDebt`
-- **Explanation:**
-  The name consists of the feature (Tax), description (PropertyDebt), and omits the word "Model",
-  which was too generic. This allows immediate understanding that the class works with property
-  debts in a tax context.
+### Events
 
-* * * * *
+**AI Instruction**: Use **past tense** (events represent actions that already occurred)
 
-### 3\. TitleValueTile
+```dart
+@freezed
+class UserListEvent with _$UserListEvent {
+  const factory UserListEvent.requested() = _RequestedUserListEvent;
+  const factory UserListEvent.refreshed() = _RefreshedUserListEvent;
+  const factory UserListEvent.itemSelected(String id) = _ItemSelectedUserListEvent;
+}
 
-- **Why It's Bad:**
-  "TitleValueTile" is too abstract a name -- it does not indicate what functionality this
-  component belongs to or what it is intended for.
-- **Fixed:** `TaxPropertyTitleValueTile`
-- **Explanation:**
-  Adding the feature (TaxProperty) specifies the scope of application, while "TitleValueTile"
-  remains as the description of the widget type. Now the name follows the pattern: Feature
-  (TaxProperty) + Description (TitleValue) + Type (Tile).
+// ✓ Correct: requested, submitted, deleted, refreshed, updated
+// ✗ Wrong: request, submit, delete, refresh, update
+```
 
-* * * * *
+### States
 
-### 4\. ImageContainer
+**AI Instruction**: Use **nouns** (states represent snapshots)
 
-- **Why It's Bad:**
-  Using the word "Container" is too generic and does not show the component's purpose. It's
-  unclear whether it's used for formatting, display, or another purpose.
-- **Fixed:** `PropertyImageDisplayCard`
-- **Explanation:**
-  "Property" - specifies the scope of application, "ImageDisplay" clarifies that the component is
-  responsible for displaying images, and "Card" -- a specific type of UI component with visual
-  decoration. The name became more informative and specific.
+```dart
+@freezed
+class UserListState with _$UserListState {
+  const factory UserListState.initial() = _InitialUserListState;
+  const factory UserListState.loading() = _LoadingUserListState;
+  const factory UserListState.success(List<User> users) = _SuccessUserListState;
+  const factory UserListState.failure(AppException exception) = _FailureUserListState;
+}
 
-* * * * *
+// ✓ Correct: initial, loading, success, failure
+// ✗ Wrong: initializing, loaded, succeeded, failed
+```
 
-### 5\. AddCompanyBloc
+### Common BLoC Names
 
-- **Why It's Bad:**
-  The verb "Add" violates the rule of using descriptive nouns (e.g., Creation or Addition), and
-  the name itself does not reflect the specific area of responsibility of the Bloc.
-- **Fixed:** `CompanyCreationBloc`
-- **Explanation:**
-  The new name follows the pattern: Feature (Company) + Description (Creation) + Type (Bloc). This
-  clearly communicates that this Bloc is responsible for company creation logic.
+**AI Instruction**: Use these standard patterns:
 
-* * * * *
+| Purpose | Pattern | Example |
+|---------|---------|---------|
+| List fetching | `FeatureListBloc` | `NotesListBloc`, `UsersListBloc` |
+| Create/Edit | `FeatureOperationBloc` | `NoteOperationBloc`, `TaskOperationBloc` |
+| Details view | `FeatureDetailsBloc` | `UserDetailsBloc`, `OrderDetailsBloc` |
 
-### 6\. CompanyFetchEvent
+---
 
-- **Why It's Bad:**
-  The event name should be more specific and typically use past tense or a clarifying term to
-  denote a request (e.g., Requested). "Fetch" itself remains insufficiently descriptive.
-- **Fixed:** `CompanyRequestedEvent`
-- **Explanation:**
-  Now the name contains Feature (Company), description (Requested, indicating that a request to
-  retrieve data occurred) and type (Event). This complies with event naming requirements.
+## Model Naming
 
-* * * * *
+**AI Instruction**: Use domain-specific names, avoid generic suffixes
 
-### 7\. CompanyLocalDataSource
+```dart
+// ✓ Correct
+class User { ... }
+class Task { ... }
+class OrderItem { ... }
+class PaymentDetails { ... }
 
-- **Why It's Bad:**
-  The order of components does not match the pattern for concrete implementations -- according to
-  the SpecificImplementation + AbstractClassName criterion, the specific implementation should
-  come first.
-- **Fixed:** `LocalCompanyDataSource`
-- **Explanation:**
-  The new name starts with the description of the specific implementation (`Local`), followed by
-  the feature (Company) and type (DataSource). This rearrangement improves readability and
-  complies with established rules.
+// ✗ Wrong
+class UserModel { ... }         // Avoid "Model"
+class TaskData { ... }          // Avoid "Data"
+class OrderItemDto { ... }      // We don't use DTOs
+```
 
-* * * * *
+### Request/Response Models
 
-### 8\. AddCompanyWidget
+```dart
+// ✓ Correct
+class LoginRequest { ... }
+class TaskCreateRequest { ... }
+class AuthRegisterRequestBody { ... }
 
-- **Why It's Bad:**
-  Using the word "Widget" is too vague, as it does not indicate the specific type of UI component
-  (e.g., Button or Form), and the verb "Add" does not correspond to the naming pattern.
-- **Fixed:** `CompanyCreationButton`
-- **Explanation:**
-  The corrected name uses the noun "Creation" instead of the verb "Add", which, together with
-  specifying the specific UI component type (Button), makes the name more specific and
-  understandable according to the Feature (Company) + Description (Creation) + Type (Button)
-  pattern.
+// For responses, use domain model directly
+class User { ... }  // Used for both request and response
+class Task { ... }
+```
 
-* * * * *
+---
 
-### 9\. MainScreen
+## Repository & DataSource Naming
 
-- **Why It's Bad:**
-  "MainScreen" --- is too generic a name, not indicating belonging to a specific functional area
-  or describing its purpose.
-- **Fixed:** `HomeDashboardScreen`
-- **Explanation:**
-  The new name includes the feature (Home), description (Dashboard), and type (Screen), which
-  makes the screen's purpose obvious and clearly defined.
+### Repository
+
+**AI Instruction**: Usually one per feature, omit description
+
+```dart
+// ✓ Correct - Single implementation
+class UserRepository { ... }
+class TaskRepository { ... }
+class AuthRepository { ... }
+
+// ✓ Correct - Multiple implementations (rare)
+abstract class PaymentRepository { ... }
+class StripePaymentRepository implements PaymentRepository { ... }
+class PayPalPaymentRepository implements PaymentRepository { ... }
+```
+
+### DataSource
+
+**AI Instruction**: Always abstract, prefix implementations
+
+```dart
+// Abstract
+abstract class UserDataSource { ... }
+abstract class AuthAuthorizedDataSource { ... }
+
+// Implementations
+class RemoteUserDataSource implements UserDataSource { ... }
+class LocalUserDataSource implements UserDataSource { ... }
+class MockUserDataSource implements UserDataSource { ... }
+
+class RemoteAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
+class MockAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
+```
+
+---
+
+## Service Naming
+
+**AI Instruction**: API services use `Feature + Service`
+
+```dart
+// ✓ Correct - Retrofit services
+@RestApi()
+abstract class UserService {
+  factory UserService(Dio dio) = _UserService;
+
+  @GET('/users')
+  Future<List<User>> getUsers();
+}
+
+@RestApi()
+abstract class TaskService {
+  factory TaskService(Dio dio) = _TaskService;
+
+  @GET('/tasks')
+  Future<List<Task>> getTasks();
+}
+```
+
+---
+
+## Examples
+
+### Example 1: Tax Feature Repository
+
+**Class**: `TaxRepository`
+- **Feature**: Tax
+- **Description**: (omitted - single implementation)
+- **Type**: Repository
+
+Single repository for tax feature, no description needed.
+
+### Example 2: Tax Payment Screen
+
+**Class**: `TaxPaymentScreen`
+- **Feature**: Tax
+- **Description**: Payment
+- **Type**: Screen
+
+Screen for handling tax payments.
+
+### Example 3: Tax Debts List BLoC
+
+**Class**: `TaxDebtsListBloc`
+- **Feature**: Tax
+- **Description**: DebtsList
+- **Type**: Bloc
+
+BLoC managing the list of tax debts.
+
+### Example 4: User Data Source
+
+**Abstract**: `UserDataSource`
+**Implementations**:
+- `RemoteUserDataSource` - API implementation
+- `LocalUserDataSource` - Database implementation
+- `MockUserDataSource` - Testing implementation
+
+### Example 5: Authentication
+
+**BLoC**: `LoginBloc`
+- **Feature**: Login
+- **Type**: Bloc
+
+**Events**:
+```dart
+const factory LoginEvent.submitted(String phone, String password) = _SubmittedLoginEvent;
+const factory LoginEvent.passwordVisibilityToggled() = _PasswordVisibilityToggledLoginEvent;
+```
+
+**States**:
+```dart
+const factory LoginState.initial() = _InitialLoginState;
+const factory LoginState.loading() = _LoadingLoginState;
+const factory LoginState.success() = _SuccessLoginState;
+const factory LoginState.failure(AppException exception) = _FailureLoginState;
+```
+
+---
+
+## Quick Reference
+
+| Component | Pattern | Example |
+|-----------|---------|---------|
+| Repository | `FeatureRepository` | `UserRepository` |
+| Abstract DS | `FeatureDataSource` | `UserDataSource` |
+| Remote DS | `RemoteFeatureDataSource` | `RemoteUserDataSource` |
+| Local DS | `LocalFeatureDataSource` | `LocalUserDataSource` |
+| Mock DS | `MockFeatureDataSource` | `MockUserDataSource` |
+| BLoC | `FeatureDescriptionBloc` | `UserListBloc` |
+| Screen | `FeatureDescriptionScreen` | `LoginScreen` |
+| Widget | `DescriptiveWidget` | `UserProfileCard` |
+| Service | `FeatureService` | `UserService` |
+| Model | `DomainName` | `User`, `Task` |
+| Request | `FeatureActionRequest` | `LoginRequest` |
+
+---
+
+## Related Documentation
+
+- [Architecture](./architecture.md) - Layer structure
+- [Structure](./structure.md) - File organization
+- [BLoC & Freezed](./bloc_freezed.md) - BLoC patterns
+
+---
+
+**Last Updated**: January 18, 2025

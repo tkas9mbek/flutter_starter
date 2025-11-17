@@ -1,136 +1,54 @@
 # Project Structure Guide
 
-> **AI Context**: This document defines the file and folder organization for the Flutter starter project. Follow these patterns when creating new features.
-
-## Table of Contents
-
-1. [Root Structure](#root-structure)
-2. [Core Structure](#core-structure)
-3. [Feature Structure](#feature-structure)
-4. [Feature Grouping](#feature-grouping)
-5. [UI Organization](#ui-organization)
-6. [Package Structure](#package-structure)
-
----
+> **AI Context**: File and folder organization patterns. Follow these when creating features.
 
 ## Root Structure
+
+**AI Instruction**: Three main directories: `lib/`, `packages/`, `assets/`
 
 ```
 flutter_starter/
 ├── lib/
 │   ├── core/              # Core application components
 │   ├── features/          # Feature modules
-│   ├── l10n/             # Localization files (generated)
-│   └── main.dart         # Application entry point
+│   └── l10n/             # Localization (generated)
 ├── packages/
-│   ├── starter_toolkit/  # Common utilities and configurations
-│   └── starter_uikit/    # Reusable UI components and theme
-├── assets/
-│   ├── images/           # Image assets
-│   └── icons/            # Icon assets
-├── test/                 # Unit and integration tests
-├── android/              # Android platform code
-├── ios/                  # iOS platform code
-├── docs/                 # Project documentation
-└── pubspec.yaml          # Project dependencies
+│   ├── starter_toolkit/  # Utilities (pure Dart)
+│   └── starter_uikit/    # UI components (Flutter)
+├── assets/               # Images, icons
+└── test/                 # Tests
 ```
 
 ---
 
 ## Core Structure
 
-The `lib/core/` directory contains application-wide components:
+**AI Instruction**: Only application-wide, feature-independent code
 
 ```
 lib/core/
-├── consts/               # Application constants
-│   ├── api_constants.dart
-│   └── app_constants.dart
-├── data/                 # Core data layer
-│   ├── error/           # Error handling
-│   ├── network/         # Network configuration
-│   └── storage/         # Local storage utilities
+├── consts/               # Constants
+├── data/                 # Core data (NO Flutter imports)
+│   ├── error/
+│   ├── network/
+│   └── storage/
 ├── di/                   # Dependency injection
-│   ├── injection.dart    # GetIt configuration
-│   └── modules/         # DI modules
-└── router/              # Navigation
-    ├── app_router.dart   # auto_route configuration
-    └── app_router.gr.dart # Generated routes
+│   └── modules/
+└── router/              # auto_route configuration
 ```
-
-### Key Rules
-
-- **No Flutter Dependencies**: `core/data/` must not import Flutter framework
-- **Global Scope**: Only truly application-wide code belongs in core
-- **Feature Independence**: Core should not depend on specific features
-
----
 
 ## Feature Structure
 
-Each feature follows a consistent structure based on the layered architecture:
-
-### Standard Feature Layout
+**AI Instruction**: Standard pattern: data → domain → model → configs → ui
 
 ```
-lib/features/{feature_name}/
-├── data/                 # Data Layer
-│   ├── {feature}_data_source.dart        # Abstract DataSource
-│   └── remote_{feature}_data_source.dart # Concrete implementation
-├── domain/               # Domain Layer
-│   └── {feature}_repository.dart         # Repository (usually concrete)
-├── model/                # Data Models
-│   ├── {feature}_model.dart
-│   ├── {feature}_model.freezed.dart      # Generated
-│   └── {feature}_model.g.dart            # Generated
-├── configs/              # Configuration
-│   └── {feature}_module.dart             # DI module
-├── custom/               # Utilities & Extensions
-│   ├── extensions/
-│   └── utils/
-└── ui/                   # Presentation Layer
+lib/features/{feature}/
+├── data/                 # DataSource (abstract + implementations)
+├── domain/               # Repository (usually concrete)
+├── model/                # Freezed models (*.freezed.dart, *.g.dart)
+├── configs/              # DI module
+└── ui/                   # BLoC + screens + widgets
     └── {ui_feature}/
-        ├── bloc/         # State management
-        │   ├── {feature}_bloc.dart
-        │   ├── {feature}_event.dart
-        │   ├── {feature}_state.dart
-        │   └── {feature}_bloc.freezed.dart
-        ├── screen/       # Screens and routes
-        │   └── {feature}_screen.dart
-        ├── widget/       # Feature-specific widgets
-        │   └── {feature}_widget.dart
-        └── custom/       # Additional helpers
-```
-
-### Example: Authentication Feature
-
-```
-lib/features/authentication/
-├── data/
-│   ├── authentication_data_source.dart
-│   └── remote_authentication_data_source.dart
-├── domain/
-│   └── authentication_repository.dart
-├── model/
-│   ├── user.dart
-│   ├── user.freezed.dart
-│   ├── user.g.dart
-│   ├── login_request.dart
-│   └── auth_token.dart
-├── configs/
-│   └── authentication_module.dart
-└── ui/
-    ├── login/
-    │   ├── bloc/
-    │   │   ├── login_bloc.dart
-    │   │   ├── login_event.dart
-    │   │   └── login_state.dart
-    │   ├── screen/
-    │   │   └── login_screen.dart
-    │   └── widget/
-    │       ├── login_form.dart
-    │       └── login_button.dart
-    └── registration/
         ├── bloc/
         ├── screen/
         └── widget/
@@ -138,344 +56,122 @@ lib/features/authentication/
 
 ### Layer Rules
 
-#### Data Layer (`data/`)
+**AI Instruction**: Follow these strictly
 
-**Purpose**: Handle external data operations
-
-**Contents**:
-- Abstract DataSource definitions
-- Concrete DataSource implementations (Remote, Local)
-- API Services (Retrofit)
-- DTOs (Data Transfer Objects)
-
-**Rules**:
-- ❌ No Flutter framework imports
-- ✅ Implements Domain abstractions
-- ✅ Pure Dart code only
-
-#### Domain Layer (`domain/`)
-
-**Purpose**: Define business contracts
-
-**Contents**:
-- Repository implementations (usually concrete)
-- Abstract Repository (only when multiple implementations needed)
-
-**Rules**:
-- ❌ No Flutter framework imports
-- ✅ Pure Dart code only
-- ✅ Delegates to Abstract DataSources
-
-#### Model Layer (`model/`)
-
-**Purpose**: Define data structures
-
-**Contents**:
-- Domain models
-- Request/Response models
-- Freezed data classes
-- JSON serialization
-
-**Rules**:
-- ✅ Use `freezed` for immutability
-- ✅ Use `json_serializable` for API models
-- ❌ No business logic in models
-
-#### UI Layer (`ui/`)
-
-**Purpose**: Presentation and user interaction
-
-**Contents**:
-- BLoCs for state management
-- Screens with routes
-- Feature-specific widgets
-
-**Rules**:
-- ✅ Can import Flutter framework
-- ✅ Can have horizontal dependencies (widget ↔ widget)
-- ❌ Should not contain business logic (use BLoC)
-
----
+| Layer | Flutter? | Contains | Rules |
+|-------|----------|----------|-------|
+| **data/** | ❌ | Abstract DS, Remote/Local DS, Services | Pure Dart, implements Domain |
+| **domain/** | ❌ | Repository (concrete) | Pure Dart, delegates to DS |
+| **model/** | ❌ | Freezed classes, JSON | Use `freezed` + `json_serializable` |
+| **ui/** | ✅ | BLoC, Screens, Widgets | Horizontal deps OK, no business logic |
 
 ## Feature Grouping
 
-### When to Group Features
-
-Small, related features can be grouped under a common directory:
+**AI Instruction**: Group only small (< 5 files), tightly related features
 
 ```
 lib/features/application/
-├── environment/
-│   ├── data/
-│   ├── domain/
-│   ├── model/
-│   └── configs/
-├── global/
-│   ├── data/
-│   ├── domain/
-│   └── ui/
-└── root/
-    ├── ui/
-    └── configs/
+├── environment/    # Small feature
+├── global/         # Small feature
+└── root/          # Small feature
 ```
 
-### Examples of Grouped Features
-
-**Application-level features:**
-```
-features/application/
-├── environment/    # Environment configuration
-├── global/         # Global app state
-└── root/          # App initialization
-```
-
-**Settings features:**
-```
-features/settings/
-├── profile/        # User profile
-├── preferences/    # User preferences
-└── notifications/  # Notification settings
-```
-
-### Grouping Guidelines
-
-**Group features when:**
-- Features are small (< 5 files each)
-- Features are tightly related
-- Features are always used together
-
-**Don't group when:**
-- Features are large and complex
-- Features can be used independently
-- Features have different lifecycles
-
----
+**Group when**: Small, tightly related, used together
+**Don't group when**: Large, independent, different lifecycles
 
 ## UI Organization
 
-The `ui/` folder structure depends on feature complexity.
+**AI Instruction**: Flat structure for simple, subdivided for complex
 
-### Simple Features
-
-For features with 1-2 simple screens:
+### Simple Features (1-2 screens)
 
 ```
 ui/
 ├── bloc/
-│   ├── feature_bloc.dart
-│   ├── feature_event.dart
-│   └── feature_state.dart
 ├── screen/
-│   └── feature_screen.dart
 └── widget/
-    ├── feature_header.dart
-    └── feature_footer.dart
 ```
 
-**Use when:**
-- Single screen or simple flow
-- Minimal UI complexity
-- Few widgets
-
-### Complex Features
-
-For features with multiple screens and flows:
+### Complex Features (multiple screens/flows)
 
 ```
 ui/
-├── list/
-│   ├── bloc/
-│   │   ├── feature_list_bloc.dart
-│   │   ├── feature_list_event.dart
-│   │   └── feature_list_state.dart
-│   ├── screen/
-│   │   └── feature_list_screen.dart
-│   └── widget/
-│       ├── feature_list_item.dart
-│       └── feature_list_filter.dart
-├── details/
+├── list/          # List view
 │   ├── bloc/
 │   ├── screen/
 │   └── widget/
-└── operation/
-    ├── bloc/
-    ├── screen/
-    └── widget/
+├── details/       # Detail view
+└── operation/     # Create/Edit
 ```
 
-**Use when:**
-- Multiple distinct screens (list, details, create, edit)
-- Complex user flows
-- Many widgets per screen
-- Different BLoCs for different screens
-
-### UI Subdivision Guidelines
-
-**Common subdivisions:**
-- `list/` - List or grid views
-- `details/` - Detail or view screens
-- `operation/` - Create, edit, delete operations
-- `settings/` - Configuration screens
-
-**Each subdivision contains:**
-- `bloc/` - State management for that UI section
-- `screen/` - Screens and routes
-- `widget/` - Widgets specific to that UI section
-
----
+**Common subdivisions**: `list/`, `details/`, `operation/`, `settings/`
 
 ## Package Structure
 
-### starter_toolkit
+**AI Instruction**: Extract to packages only when used in 3+ features
 
-Common utilities shared across projects:
-
-```
-packages/starter_toolkit/
-├── lib/
-│   ├── extensions/        # Dart extensions
-│   ├── utils/            # Utility functions
-│   ├── validators/       # Input validators
-│   └── helpers/          # Helper classes
-└── pubspec.yaml
-```
-
-**Purpose**: Code that can be reused across multiple projects
-
-**Examples**:
-- Date formatting utilities
-- String extensions
-- Validation helpers
-- Common constants
-
-### starter_uikit
-
-Reusable UI components and theming:
+### starter_toolkit (Pure Dart)
 
 ```
-packages/starter_uikit/
-├── lib/
-│   ├── theme/            # App theming
-│   │   ├── colors.dart
-│   │   ├── typography.dart
-│   │   └── theme_data.dart
-│   ├── widgets/          # Reusable widgets
-│   │   ├── buttons/
-│   │   ├── cards/
-│   │   ├── inputs/
-│   │   └── dialogs/
-│   └── assets/           # UI kit assets
-└── pubspec.yaml
+packages/starter_toolkit/lib/
+├── extensions/        # Dart extensions
+├── utils/            # Utilities
+└── validators/       # Input validators
 ```
 
-**Purpose**: UI components reused across multiple features
+**Use when**: Pure Dart, no business logic, multi-feature
 
-**Examples**:
-- Custom buttons
-- Form inputs
-- Cards and containers
-- Loading indicators
-- Theme configurations
+### starter_uikit (Flutter)
 
-### When to Use Packages
+```
+packages/starter_uikit/lib/
+├── theme/            # Theming
+└── widgets/          # Generic widgets (buttons, inputs, cards)
+```
 
-**Use starter_toolkit when:**
-- Code is pure Dart (no Flutter)
-- Code is used by multiple features
-- Code has no business logic
+**Use when**: Used in 3+ features, generic, no feature logic
+**Keep in feature when**: Feature-specific or single use
 
-**Use starter_uikit when:**
-- Widget is used in 3+ features
-- Widget is generic and configurable
-- Widget has no feature-specific logic
+## File Naming
 
-**Keep in feature when:**
-- Code is feature-specific
-- Code contains business logic
-- Code is used only in one feature
+**AI Instruction**: `snake_case` for files, `PascalCase` for classes
+
+```
+authentication_data_source.dart          → AuthenticationDataSource
+remote_authentication_data_source.dart   → RemoteAuthenticationDataSource
+authentication_repository.dart           → AuthenticationRepository
+user.dart                                → User
+login_bloc.dart                          → LoginBloc
+login_screen.dart                        → LoginScreen
+authentication_module.dart               → AuthenticationModule
+```
+
+**Generated**: `*.g.dart`, `*.freezed.dart`, `*.config.dart`
 
 ---
 
-## File Naming Conventions
+## Adding New Feature
 
-### General Rules
+**AI Instruction**: Follow this order
 
-- **Files**: `snake_case` (e.g., `user_profile_screen.dart`)
-- **Classes**: `PascalCase` (e.g., `UserProfileScreen`)
-- **Generated files**: `*.g.dart`, `*.freezed.dart`, `*.config.dart`
-
-### Pattern Examples
-
-**Data Layer:**
-```
-authentication_data_source.dart
-remote_authentication_data_source.dart
-local_authentication_data_source.dart
-authentication_service.dart
-```
-
-**Domain Layer:**
-```
-authentication_repository.dart
-user_repository.dart
-```
-
-**Models:**
-```
-user.dart
-login_request.dart
-auth_token.dart
-```
-
-**UI Layer:**
-```
-login_screen.dart
-login_bloc.dart
-login_event.dart
-login_state.dart
-login_form_widget.dart
-```
-
-**Configuration:**
-```
-authentication_module.dart
-app_module.dart
-```
-
----
-
-## Migration Guidelines
-
-### Adding a New Feature
-
-1. **Create feature directory**: `lib/features/{feature_name}/`
-2. **Add data layer**: Abstract DataSource, implementation, service
-3. **Add domain layer**: Repository
-4. **Add models**: Domain models with freezed
-5. **Add DI module**: Configure dependency injection
-6. **Add UI**: BLoC, screens, widgets
-7. **Register module**: Add to `main.dart` modules list
-8. **Add routes**: Configure in `app_router.dart`
-
-### Refactoring Existing Code
-
-When moving code to packages:
-
-1. **Identify reusable code**: Used in 3+ features
-2. **Remove dependencies**: Ensure no feature-specific logic
-3. **Move to package**: `starter_toolkit` or `starter_uikit`
-4. **Update imports**: Change to package imports
-5. **Test thoroughly**: Ensure no regressions
+1. Create `lib/features/{feature}/`
+2. Add data layer (abstract DS, implementation, service)
+3. Add domain layer (repository)
+4. Add models (freezed)
+5. Add DI module
+6. Add UI (BLoC, screens, widgets)
+7. Register module in `main.dart`
+8. Add routes in `app_router.dart`
 
 ---
 
 ## Related Documentation
 
-- [Architecture Guide](./architecture.md) - Layered architecture principles
-- [Naming Conventions](./naming.md) - Naming standards for classes
-- [Code Formatting](./code-formatting.md) - Code style guidelines
-- [Testing Guide](./testing.md) - Testing strategies
+- [Architecture](./architecture.md) - Layer structure
+- [Naming](./naming.md) - Naming standards
+- [Code Formatting](./code_formatting.md) - Style guide
+- [Testing](./testing.md) - Test strategies
 
 ---
 
-**Last Updated**: January 17, 2025
+**Last Updated**: January 18, 2025

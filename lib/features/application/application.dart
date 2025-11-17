@@ -10,9 +10,9 @@ import 'package:starter/features/application/global/bloc/auth_bloc.dart';
 import 'package:starter/features/application/global/widget/application_wrapper.dart';
 import 'package:starter/features/application/global/widget/global_route_wrapper.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
-import 'package:starter/features/preferences/bloc/language_cubit.dart';
-import 'package:starter/features/preferences/model/language_option.dart';
-import 'package:starter/features/preferences/repository/preferences_repository.dart';
+import 'package:starter/features/settings/bloc/language_cubit.dart';
+import 'package:starter/features/settings/domain/settings_repository.dart';
+import 'package:starter/features/settings/model/language_option.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
@@ -39,7 +39,7 @@ class Application extends StatelessWidget {
         ),
         BlocProvider<LanguageCubit>(
           create: (context) => LanguageCubit(
-            getIt<PreferencesRepository>(),
+            getIt<SettingsRepository>(),
           ),
         ),
       ],
@@ -61,11 +61,11 @@ class Application extends StatelessWidget {
                 themeMode: ThemeMode.light,
                 theme: themeDataFromTheme(
                   theme: AppTheme.light(),
-                  textStyles: AppTextStyles(),
+                  textStyles: AppTextStyles(AppTheme.light()),
                 ),
                 darkTheme: themeDataFromTheme(
-                  theme: AppTheme.light(),
-                  textStyles: AppTextStyles(),
+                  theme: AppTheme.dark(),
+                  textStyles: AppTextStyles(AppTheme.dark()),
                 ),
                 routerDelegate: _router.delegate(),
                 routeInformationParser: _router.defaultRouteParser(),

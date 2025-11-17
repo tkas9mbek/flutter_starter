@@ -1,81 +1,49 @@
-# Flutter Testing Guidelines
+# Testing Guide
 
-> **AI Context**: This document defines the testing strategy and standards for this Flutter project. It covers integration testing for the BLoC-Repository-DataSource stack, unit testing for services, test quality requirements, code coverage measurement, and practical examples using `bloc_test`, `mocktail`, and `http_mock_adapter`. All tests must be fast (<1 second per class), independent (no real network/database), and aim for 100% coverage of business logic.
+> **AI Context**: Testing strategy for Flutter project with BLoC pattern. Every BLoC must have integration tests. Write unit tests for classes with logic.
+
+## Core Testing Strategy
+
+**AI Instruction**: Two types of tests - integration tests for BLoC stack, unit tests for logic
+
+### 1. BLoC Integration Tests (Required)
+
+**AI Instruction**: Test entire BLoC → Repository → DataSource → Service chain with only Service mocked
+
+```
+BLoC (Real) → Repository (Real) → DataSource (Real) → Service (Mock)
+```
+
+**Minimum**: Every BLoC must have integration tests covering all events and states.
+
+### 2. Unit Tests (Conditional)
+
+**AI Instruction**: Write unit tests when class has logic beyond simple delegation
+
+**Write unit tests for:**
+- Service: Always test API serialization/deserialization
+- DataSource: When has transformation logic or error handling
+- Repository: When has complex coordination or business logic
+- State helpers: Test custom getters/methods
+
+**Don't write unit tests when:**
+- Class only delegates to another (e.g., simple Repository)
+- No logic to test
 
 ---
 
-This document outlines the standards and best practices for writing tests in this project. The goal is to ensure our codebase is reliable, maintainable, and easy to refactor with confidence.
+## Test Quality Requirements
 
-## 1. Our Core Testing Strategy
+**AI Instruction**: All tests must meet these standards
 
-We divide our logic into two categories, each with its own testing approach. The goal is to achieve nearly 100% coverage for these classes.
+- **Fast**: < 1 second per test class
+- **Independent**: No real network/database/backend
+- **Reliable**: No flaky tests
+- **High Coverage**: Aim for 100% for BLoC, Service, logic classes
 
-### a. Unit Tests
+---
 
-Unit tests focus on testing individual classes or methods in isolation. All external dependencies are mocked to ensure the test runs independently.
-
-### b. Integration Tests for the BLoC Stack
-
-BLoC, Repository, and DataSource work together as a single unit to manage application state. We test them jointly to verify the entire data flow from user events to state changes.
-
-**Minimum Requirement**: Every BLoC must have an integration test that covers its interaction with real Repository and DataSource instances. The deepest dependency of the DataSource (e.g., Service or local storage) is mocked.
-
-```
-BLoC (Real) -> Repository (Real) -> DataSource (Real) -> Service (Mock)
-```
-
-**Note**: If a BLoC depends on Repositories from other features (e.g., CoreRepository), you can mock them because they should be tested in their respective features.
-
-**Conditional Unit Tests**: While integration testing is primary, you should also write unit tests for Repository or DataSource if they contain complex logic that goes beyond simple method calls.
-
-## 2. How to Calculate Test Coverage
-
-Verifying coverage requirements is mandatory.
-
-**Step 1: Collect Coverage Data**
-Run the following command to execute all tests and generate raw coverage data at `coverage/lcov.info`:
-
-```bash
-flutter test --coverage
-```
-
-**Step 2: Install LCOV (if not installed)**
-
-```bash
-brew install lcov
-```
-
-**Step 3: Generate HTML Report**
-Run this command to create a user-friendly HTML report:
-
-```bash
-genhtml coverage/lcov.info -o coverage/html
-```
-
-**Step 4: View the Report**
-Open the index.html file in your browser to see the detailed report:
-
-```bash
-open coverage/html/index.html
-```
-
-## 3. Test Quality Requirements
-
-All tests must meet these standards:
-
-**Fast Execution**: Tests should be very fast. The entire test suite for a single class should run in less than one second.
-
-**High Coverage**: Aim for 100% test coverage for all BLoCs, Repositories, DataSources, and Services. Use the coverage report to identify and eliminate gaps.
-
-**Independence**: Tests cannot depend on a running backend, local database, or network connection. All external dependencies must be mocked.
-
-**Reliability**: A test should consistently pass if the code is correct, and consistently fail if the code is incorrect. "Flaky" tests are unacceptable.
-
-## 4. Required Packages and Useful Methods
-
-### a. Development Dependencies (dev_dependencies)
-
-Add the following packages to your pubspec.yaml file:
+## Required Packages
 
 ```yaml
 dev_dependencies:
@@ -86,282 +54,470 @@ dev_dependencies:
   http_mock_adapter: ^0.6.1
 ```
 
-**bloc_test**: Simplifies BLoC testing by providing the blocTest function.
+---
 
-**mocktail**: A powerful and simple library for creating mocks.
+## BLoC Integration Test Pattern
 
-**http_mock_adapter**: Allows easy mocking of HTTP requests when using the Dio client.
+**AI Instruction**: Follow this exact pattern for all BLoC tests
 
-### b. Core Methods and Functions
-
-Here are the most commonly used functions you'll need:
-
-**From flutter_test**
-
-`group(description, body)`: Groups multiple tests into one block. Helps organize tests.
-
-`test(description, body)`: Defines an individual test.
-
-`setUp(body)`: Runs before each test in a group. Ideal for initializing objects.
-
-`tearDown(body)`: Runs after each test. Used for cleaning up resources.
-
-`expect(actual, matcher)`: Asserts that the actual value matches the expected matcher.
-
-**From mocktail**
-
-`class MockMyService extends Mock implements MyService {}`: Creates a mock class.
-
-`when(() => mock.someMethod(any())).thenAnswer((_) async => ...)`: Sets the behavior of a mock object for an async method when called with any arguments.
-
-`when(() => mock.someMethod()).thenThrow(Exception())`: Sets the mock to throw an exception when the method is called.
-
-`verify(() => mock.someMethod()).called(1)`: Verifies that the method was called exactly once.
-
-`registerFallbackValue(MyFakeObject())`: Registers a "fallback" value for complex objects that cannot be matched with any().
-
-**From bloc_test**
-
-`blocTest(description, build: ..., act: ..., expect: ..., verify: ...)`: Main function for testing BLoCs.
-
-`build`: Returns an instance of the BLoC for the test.
-
-`act`: Function that takes the BLoC and adds events to it.
-
-`expect`: Returns a list of states that the BLoC should emit in response to the event.
-
-`verify`: Function to verify that dependency methods were called (e.g., from repository).
-
-## 5. How to Write an Integration Test for the BLoC Stack
-
-Follow this structured approach to keep your tests for BLoCs and their dependencies consistent.
-
-**Step 1: Create Helper Classes for Mock Data**
-
-Centralize your mock data and models in a separate file (e.g., mock_models.dart). This keeps your test files clean and allows easy reuse of test data, often loaded from JSON files in the test/assets directory.
+### Step 1: Create Mock Models Helper
 
 ```dart
-class SocialFundMockModels {
-  static dynamic getJsonFromFile(String fileName) {
-    const basePath = 'test/social_fund/assets';
-    final jsonString = File('$basePath/$fileName').readAsStringSync();
+// test/features/user/helpers/user_mock_models.dart
+class UserMockModels {
+  static Map<String, dynamic> get rawUserListJson => {
+    'users': [
+      {'id': '1', 'name': 'John'},
+      {'id': '2', 'name': 'Jane'}
+    ]
+  };
 
-    return json.decode(jsonString);
-  }
+  static List<User> get userList => [
+    const User(id: '1', name: 'John'),
+    const User(id: '2', name: 'Jane'),
+  ];
 
-  static Map<String, dynamic> get rawSocialFundBudgetClassifications =>
-      getJsonFromFile('social_fund_budget_classification_list.json')
-          as Map<String, dynamic>;
-
-  static SocialFundBudgetClassificationList
-      get socialFundBudgetClassifications =>
-          SocialFundBudgetClassificationList.fromJson(
-            rawSocialFundBudgetClassifications,
-          );
+  static const emptyUserList = <User>[];
 }
 ```
 
-**Step 2: Create a Helper Class for Dependency Injection**
-
-To avoid repetitive setup code in your test files, create a helper class that instantiates your BLoC's dependency chain. This class will use real instances of DataSource and Repository, while mocking the Service and Repositories from other features if the BLoC depends on them.
+### Step 2: Create Integration Test Helper
 
 ```dart
-class MockSocialFundService extends Mock implements SocialFundService {}
+// test/features/user/helpers/user_integration_test_helper.dart
+class MockUserService extends Mock implements UserService {}
 
-class SocialFundIntegrationTestHelper {
-  late SocialFundService socialFundService;
-  late SocialFundProvider socialFundProvider;
-  late SocialFundRepository repository;
+class UserIntegrationTestHelper {
+  late UserService service;
+  late UserDataSource dataSource;
+  late UserRepository repository;
 
   void setUp() {
-    socialFundService = MockSocialFundService();
-    socialFundProvider = RemoteSocialFundProvider(socialFundService);
-    repository = SocialFundRepository(socialFundProvider);
+    service = MockUserService();
+    dataSource = RemoteUserDataSource(service);
+    repository = UserRepository(dataSource);
   }
 }
 ```
 
-**Step 3: Set Up the Test File for BLoC**
+### Step 3: Write BLoC Tests
 
-In your _test.dart file, use the helper class to set up the BLoC instance. Use setUp and tearDown for initialization and cleanup.
+**AI Instruction**: Test all scenarios for each event: success, empty, failure
 
 ```dart
+// test/features/user/ui/list/bloc/user_list_bloc_test.dart
 void main() {
-  late SocialFundDebtsBloc bloc;
-  final helper = SocialFundIntegrationTestHelper();
-
-  registerFallbackValue(
-    FakeSocialFundDebtsRequestBody(),
-  );
+  late UserListBloc bloc;
+  final helper = UserIntegrationTestHelper();
 
   setUp(() {
     helper.setUp();
-    bloc = SocialFundDebtsBloc(helper.repository);
+    bloc = UserListBloc(helper.repository);
   });
 
   tearDown(() {
     bloc.close();
   });
+
+  test('initial state is UserListState.initial()', () {
+    expect(bloc.state, const UserListState.initial());
+  });
+
+  group('on requested event', () {
+    const event = UserListEvent.requested();
+
+    blocTest<UserListBloc, UserListState>(
+      'emits [loading, success] when getUsers returns data',
+      build: () {
+        when(() => helper.service.getUsers())
+            .thenAnswer((_) async => UserMockModels.userList);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [
+        const UserListState.loading(),
+        UserListState.success(UserMockModels.userList),
+      ],
+    );
+
+    blocTest<UserListBloc, UserListState>(
+      'emits [loading, success with empty] when getUsers returns empty list',
+      build: () {
+        when(() => helper.service.getUsers())
+            .thenAnswer((_) async => UserMockModels.emptyUserList);
+        return bloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [
+        const UserListState.loading(),
+        const UserListState.success([]),
+      ],
+    );
+
+    blocTest<UserListBloc, UserListState>(
+      'emits [loading, failure] when getUsers throws exception',
+      build: () {
+        when(() => helper.service.getUsers())
+            .thenThrow(Exception('Network error'));
+        return bloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [
+        const UserListState.loading(),
+        predicate<UserListState>(
+          (state) => state.maybeWhen(
+            failure: (exception) => exception is Exception,
+            orElse: () => false,
+          ),
+        ),
+      ],
+    );
+  });
+
+  group('state helper methods', () {
+    const initialState = UserListState.initial();
+    const loadingState = UserListState.loading();
+    final failureState = UserListState.failure(Exception('Error'));
+    final successState = UserListState.success(UserMockModels.userList);
+
+    test('isLoading returns correct values', () {
+      expect(loadingState.isLoading, true);
+      expect(initialState.isLoading, false);
+      expect(failureState.isLoading, false);
+      expect(successState.isLoading, false);
+    });
+
+    test('hasData returns correct values', () {
+      expect(successState.hasData, true);
+      expect(initialState.hasData, false);
+      expect(loadingState.hasData, false);
+      expect(failureState.hasData, false);
+    });
+  });
 }
 ```
 
-**Step 4: Test All Scenarios for Each Event**
+---
 
-For each BLoC event, write a blocTest for each possible outcome:
+## Service Unit Test Pattern
 
-**Success State**: The "happy path" when dependencies return correct data.
+**AI Instruction**: Always write unit tests for Service classes
 
-**Empty State**: A successful response that returns an empty list or no data.
-
-**Error State**: A scenario where the dependency throws an exception.
+### Example: Testing Retrofit Service
 
 ```dart
-test('initial state is SocialFundDebtsState.initial()', () {
-  expect(bloc.state, const SocialFundDebtsState.initial());
-});
-
-group('on requested event', () {
-  final debtsForm = SocialFundMockModels.socialFundDebtsForm;
-  final event = SocialFundDebtsEvent.requested(debtsForm);
-  final requestBody = debtsForm.toRequestBody();
-
-  blocTest<SocialFundDebtsBloc, SocialFundDebtsState>(
-    'emits [loading, success with data] when getDebts returns data',
-    build: () {
-      when(() => helper.socialFundProvider.getDebts(requestBody))
-          .thenAnswer((_) async => debts);
-      return bloc;
-    },
-    act: (bloc) => bloc.add(event),
-    expect: () => [
-      const SocialFundDebtsState.loading(),
-      SocialFundDebtsState.success(debts.data),
-    ],
-  );
-
-  blocTest<SocialFundDebtsBloc, SocialFundDebtsState>(
-    'emits [loading, success with empty list] when getDebts returns 404',
-    build: () {
-      when(
-        () => helper.socialFundProvider
-            .getDebts(any(that: isA<SocialFundDebtsRequestBody>())),
-      ).thenThrow(MockExceptions.notFoundException);
-      return bloc;
-    },
-    act: (bloc) => bloc.add(
-      SocialFundDebtsEvent.requested(
-        SocialFundMockModels.socialFundDebtsForm,
-      ),
-    ),
-    expect: () => [
-      const SocialFundDebtsState.loading(),
-      const SocialFundDebtsState.success([]),
-    ],
-  );
-
-  blocTest<SocialFundDebtsBloc, SocialFundDebtsState>(
-    'emits [loading, failure] when getDebts throws a generic Exception',
-    build: () {
-      when(
-        () => helper.socialFundProvider
-            .getDebts(any(that: isA<SocialFundDebtsRequestBody>())),
-      ).thenThrow(MockExceptions.defaultException);
-      return bloc;
-    },
-    act: (bloc) => bloc.add(event),
-    expect: () => [
-      const SocialFundDebtsState.loading(),
-      predicate<SocialFundDebtsState>(
-        (state) => state.maybeWhen(
-          failure: (exception) => exception is Exception,
-          orElse: () => false,
-        ),
-      ),
-    ],
-  );
-});
-```
-
-**Step 5: Test State Helper Methods**
-
-Add a final group to test any helper methods or getters in your state class (e.g., isLoading). This ensures 100% coverage of the state file.
-
-```dart
-group('bloc state helper methods', () {
-  const initialState = SocialFundDebtsState.initial();
-  const loadingState = SocialFundDebtsState.loading();
-  final failureState = SocialFundDebtsState.failure(Exception('Error'));
-  final successState = SocialFundDebtsState.success(debts.data);
-
-  test('isLoading true when state is loading and false otherwise', () {
-    expect(loadingState.isLoading, true);
-    expect(initialState.isLoading, false);
-    expect(failureState.isLoading, false);
-    expect(successState.isLoading, false);
-  });
-});
-```
-
-## 6. How to Write a Unit Test for a Service
-
-A unit test for a Service class completely isolates it by mocking its HTTP client (e.g., Dio). This allows us to test request serialization logic and response parsing without making real network calls.
-
-**Step 1: Set Up the Service and Mock Client**
-
-In your test's setUp, instantiate the real Service and inject a mocked version of its HTTP client. You can mock the client using http_mock_adapter or mocktail.
-
-```dart
+// test/features/user/data/user_service_test.dart
 void main() {
   late Dio dio;
   late DioAdapter dioAdapter;
-  late SocialFundService socialFundService;
+  late UserService userService;
 
   const baseUrl = 'https://api.example.com/';
 
   setUp(() {
     dio = Dio(BaseOptions(baseUrl: baseUrl));
     dioAdapter = DioAdapter(dio: dio);
+    userService = UserService(dio);
+  });
 
-    socialFundService = SocialFundService(dio);
+  group('getUsers', () {
+    test('returns List<User> on successful request', () async {
+      dioAdapter.onGet(
+        'users',
+        (server) => server.reply(200, UserMockModels.rawUserListJson),
+      );
+
+      final result = await userService.getUsers();
+
+      expect(result, isA<List<User>>());
+      expect(result.length, 2);
+      expect(result[0].name, 'John');
+    });
+
+    test('throws DioException on 500 error', () async {
+      dioAdapter.onGet(
+        'users',
+        (server) => server.reply(500, {'message': 'Server error'}),
+      );
+
+      expect(
+        () => userService.getUsers(),
+        throwsA(isA<DioException>()),
+      );
+    });
+  });
+
+  group('createUser', () {
+    final requestBody = UserCreateRequest(name: 'Bob');
+    final mockResponse = {'id': '3', 'name': 'Bob'};
+
+    test('returns created User on successful request', () async {
+      dioAdapter.onPost(
+        'users',
+        (server) => server.reply(201, mockResponse),
+        data: requestBody.toJson(),
+      );
+
+      final result = await userService.createUser(requestBody);
+
+      expect(result, isA<User>());
+      expect(result.name, 'Bob');
+    });
+
+    test('throws DioException on 400 validation error', () async {
+      dioAdapter.onPost(
+        'users',
+        (server) => server.reply(400, {'message': 'Invalid name'}),
+        data: requestBody.toJson(),
+      );
+
+      expect(
+        () => userService.createUser(requestBody),
+        throwsA(isA<DioException>()),
+      );
+    });
   });
 }
 ```
 
-**Step 2: Group by Methods and Test Scenarios**
+---
 
-For each public method in the service, create a group. Inside this group, test the successful ("happy path") and failure scenarios.
+## DataSource Unit Test Pattern
 
-**Success Test**: Configure the mock client to return a successful status code (e.g., 200) with a correct JSON body. Ensure your service method returns a properly parsed data model.
+**AI Instruction**: Write unit tests for DataSource only when it has transformation or error handling logic
 
-**Failure Test**: Configure the mock client to return an error code (e.g., 400, 500). Ensure your service method throws the expected exception (e.g., DioException or custom exception).
+### Example: DataSource with Transformation
 
 ```dart
-group('initializePayment', () {
-  test('returns SocialFundPaymentParams on successful request', () async {
-    dioAdapter.onPost(
-      'gns-tunduk/api/v1/gns-tax-payment/create-insurance-payment',
-      (server) => server.reply(200, mockPaymentParamsJson),
-      data: paymentRequestBody,
-    );
+// test/features/user/data/remote_user_data_source_test.dart
+class MockUserService extends Mock implements UserService {}
 
-    final result =
-        await socialFundService.initializePayment(paymentRequestBody);
+void main() {
+  late MockUserService mockService;
+  late RemoteUserDataSource dataSource;
 
-    expect(result, isA<SocialFundPaymentParams>());
-    expect(result.transactionId, mockPaymentParams.transactionId);
+  setUp(() {
+    mockService = MockUserService();
+    dataSource = RemoteUserDataSource(mockService);
   });
 
-  test('throws DioException on failure', () async {
-    dioAdapter.onPost(
-      'gns-tunduk/api/v1/gns-tax-payment/create-insurance-payment',
-      (server) => server.reply(400, {'message': 'Invalid TIN'}),
-      data: paymentRequestBody,
-    );
+  group('getUsers', () {
+    test('returns transformed users from service', () async {
+      when(() => mockService.getUsers())
+          .thenAnswer((_) async => UserMockModels.userList);
 
-    expect(
-      () => socialFundService.initializePayment(paymentRequestBody),
-      throwsA(isA<DioException>()),
-    );
+      final result = await dataSource.getUsers();
+
+      expect(result, isA<List<User>>());
+      expect(result.length, 2);
+      verify(() => mockService.getUsers()).called(1);
+    });
+
+    test('throws AppException when service throws DioException', () async {
+      when(() => mockService.getUsers()).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: 'users'),
+          response: Response(
+            statusCode: 500,
+            requestOptions: RequestOptions(path: 'users'),
+          ),
+        ),
+      );
+
+      expect(
+        () => dataSource.getUsers(),
+        throwsA(isA<AppException>()),
+      );
+    });
   });
-});
+
+  group('createUser', () {
+    final requestBody = UserCreateRequest(name: 'Bob');
+    final mockUser = const User(id: '3', name: 'Bob');
+
+    test('creates user and returns result', () async {
+      when(() => mockService.createUser(requestBody))
+          .thenAnswer((_) async => mockUser);
+
+      final result = await dataSource.createUser(requestBody);
+
+      expect(result, mockUser);
+      verify(() => mockService.createUser(requestBody)).called(1);
+    });
+
+    test('handles 404 by returning null', () async {
+      when(() => mockService.createUser(requestBody)).thenThrow(
+        DioException(
+          requestOptions: RequestOptions(path: 'users'),
+          response: Response(
+            statusCode: 404,
+            requestOptions: RequestOptions(path: 'users'),
+          ),
+        ),
+      );
+
+      final result = await dataSource.createUser(requestBody);
+
+      expect(result, isNull);
+    });
+  });
+}
 ```
+
+### Example: Simple DataSource (No Unit Test Needed)
+
+```dart
+// This DataSource just delegates, no unit test needed
+// It's already tested by BLoC integration tests
+class RemoteUserDataSource implements UserDataSource {
+  final UserService _service;
+  const RemoteUserDataSource(this._service);
+
+  @override
+  Future<List<User>> getUsers() => _service.getUsers();
+
+  @override
+  Future<User> createUser(UserCreateRequest request) =>
+      _service.createUser(request);
+}
+```
+
+---
+
+## Coverage Measurement
+
+**AI Instruction**: Always verify 100% coverage for logic classes
+
+### Generate Coverage Report
+
+```bash
+# Run tests with coverage
+fvm flutter test --coverage
+
+# Install lcov (macOS)
+brew install lcov
+
+# Generate HTML report
+genhtml coverage/lcov.info -o coverage/html
+
+# View report
+open coverage/html/index.html
+```
+
+### Coverage Targets
+
+| Class Type | Target | Required Tests |
+|------------|--------|----------------|
+| BLoC | 100% | Integration tests |
+| Service | 100% | Unit tests |
+| DataSource (with logic) | 100% | Unit tests |
+| DataSource (simple) | N/A | Covered by integration |
+| Repository (with logic) | 100% | Unit tests |
+| Repository (simple) | N/A | Covered by integration |
+| State helpers | 100% | Tested in BLoC tests |
+
+---
+
+## Testing Checklist
+
+**AI Instruction**: Use this checklist for every feature
+
+### BLoC Tests
+- [ ] Integration test helper created
+- [ ] Mock models helper created
+- [ ] Initial state tested
+- [ ] All events tested with success scenario
+- [ ] All events tested with empty scenario
+- [ ] All events tested with failure scenario
+- [ ] All state helper methods tested
+- [ ] Coverage verified (100%)
+
+### Service Tests
+- [ ] All methods tested with success response
+- [ ] All methods tested with error responses (400, 404, 500)
+- [ ] Request serialization tested
+- [ ] Response deserialization tested
+- [ ] Coverage verified (100%)
+
+### DataSource Tests (if has logic)
+- [ ] All methods tested with success
+- [ ] Error handling tested
+- [ ] Transformations tested
+- [ ] Coverage verified (100%)
+
+### Test Quality
+- [ ] All tests pass consistently
+- [ ] Test suite runs in < 1 second per class
+- [ ] No real network/database dependencies
+- [ ] No flaky tests
+
+---
+
+## Common Testing Patterns
+
+### Testing with Fallback Values
+
+```dart
+// For complex objects in any() matcher
+class FakeUserCreateRequest extends Fake implements UserCreateRequest {}
+
+void main() {
+  setUpAll(() {
+    registerFallbackValue(FakeUserCreateRequest());
+  });
+
+  test('example', () {
+    when(() => mock.createUser(any())).thenAnswer((_) async => mockUser);
+  });
+}
+```
+
+### Testing State Predicates
+
+```dart
+// When you need to check state properties, not exact equality
+expect: () => [
+  const UserListState.loading(),
+  predicate<UserListState>(
+    (state) => state.maybeWhen(
+      success: (users) => users.length == 2,
+      orElse: () => false,
+    ),
+  ),
+],
+```
+
+### Testing Error Types
+
+```dart
+blocTest<UserListBloc, UserListState>(
+  'emits failure with NetworkException',
+  build: () {
+    when(() => helper.service.getUsers())
+        .thenThrow(NetworkException('No connection'));
+    return bloc;
+  },
+  act: (bloc) => bloc.add(const UserListEvent.requested()),
+  expect: () => [
+    const UserListState.loading(),
+    predicate<UserListState>(
+      (state) => state.maybeWhen(
+        failure: (exception) => exception is NetworkException,
+        orElse: () => false,
+      ),
+    ),
+  ],
+);
+```
+
+---
+
+## Related Documentation
+
+- [Architecture](./architecture.md) - Layer structure
+- [BLoC & Freezed](./bloc_freezed.md) - BLoC patterns
+- [Code Formatting](./code_formatting.md) - Style guide
+
+---
+
+**Last Updated**: January 18, 2025

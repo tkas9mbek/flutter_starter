@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:starter/features/auth/model/auth_token.dart';
-import 'package:starter/features/auth/model/user.dart';
+import 'package:starter/features/profile/model/user.dart';
 
 class AuthMockModels {
   static dynamic getJsonFromFile(String fileName) {

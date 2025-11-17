@@ -8,9 +8,11 @@ part 'calendar_bloc.freezed.dart';
 
 @freezed
 class CalendarEvent with _$CalendarEvent {
-  const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
+  const factory CalendarEvent.dateSelected(DateTime date) =
+      _DateSelectedCalendarEvent;
 
-  const factory CalendarEvent.taskToggled(String taskId) = _TaskToggledCalendarEvent;
+  const factory CalendarEvent.taskToggled(String taskId) =
+      _TaskToggledCalendarEvent;
 }
 
 @freezed

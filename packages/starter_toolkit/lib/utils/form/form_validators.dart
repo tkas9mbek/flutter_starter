@@ -47,7 +47,8 @@ class FormValidators {
         }
 
         if (value.length < 10 || value.length > 16) {
-          return message ?? ToolkitLocalizer.of(context).errorInvalidPhoneFormat;
+          return message ??
+              ToolkitLocalizer.of(context).errorInvalidPhoneFormat;
         }
 
         return null;

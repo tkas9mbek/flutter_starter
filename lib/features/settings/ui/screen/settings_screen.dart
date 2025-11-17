@@ -2,9 +2,10 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/core/di/injection.dart';
-import 'package:starter/features/preferences/bloc/language_cubit.dart';
-import 'package:starter/features/preferences/model/language_option.dart';
-import 'package:starter/features/preferences/repository/preferences_repository.dart';
+import 'package:starter/features/settings/bloc/language_cubit.dart';
+import 'package:starter/features/settings/domain/settings_repository.dart';
+import 'package:starter/features/settings/model/language_option.dart';
+import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 
@@ -15,7 +16,7 @@ class SettingsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => LanguageCubit(getIt<PreferencesRepository>()),
+      create: (context) => LanguageCubit(getIt<SettingsRepository>()),
       child: const _SettingsView(),
     );
   }
@@ -27,30 +28,29 @@ class _SettingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
+    final localizer = Localizer.of(context);
 
     return Scaffold(
-      appBar: const TitleAppBar(
-        title: 'Settings',
+      appBar: TitleAppBar(
+        title: localizer.settings,
       ),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          // Appearance Section
-          const _SectionHeader(title: 'Appearance'),
+          _SectionHeader(title: localizer.appearance),
           const SizedBox(height: 12),
           _SettingsCard(
             children: [
               _SettingsTile(
                 icon: Icons.palette_outlined,
-                title: 'Theme',
-                subtitle: 'Light',
+                title: localizer.theme,
+                subtitle: localizer.light,
                 trailing: Switch(
                   value: false,
                   onChanged: (value) {
-                    // TODO(feature): Implement theme switching
                     ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Theme switching coming soon!'),
+                      SnackBar(
+                        content: Text(localizer.themeSwitchingComingSoon),
                       ),
                     );
                   },
@@ -59,9 +59,7 @@ class _SettingsView extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 24),
-
-          // Language Section
-          const _SectionHeader(title: 'Language'),
+          _SectionHeader(title: localizer.language),
           const SizedBox(height: 12),
           BlocBuilder<LanguageCubit, LanguageOption>(
             builder: (context, currentLanguage) {
@@ -69,7 +67,7 @@ class _SettingsView extends StatelessWidget {
                 children: [
                   _SettingsTile(
                     icon: Icons.language_outlined,
-                    title: 'Language',
+                    title: localizer.language,
                     subtitle: currentLanguage.name,
                     onTap: () => _showLanguageDialog(context),
                     trailing: Icon(
@@ -82,29 +80,27 @@ class _SettingsView extends StatelessWidget {
             },
           ),
           const SizedBox(height: 24),
-
-          // About Section
-          const _SectionHeader(title: 'About'),
+          _SectionHeader(title: localizer.about),
           const SizedBox(height: 12),
           _SettingsCard(
             children: [
               _SettingsTile(
                 icon: Icons.info_outline,
-                title: 'Version',
+                title: localizer.version,
                 subtitle: '1.0.0',
               ),
               const Divider(height: 1),
               _SettingsTile(
                 icon: Icons.description_outlined,
-                title: 'Terms & Conditions',
+                title: localizer.termsAndConditions,
                 trailing: Icon(
                   Icons.chevron_right,
                   color: theme.textSecondary,
                 ),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Terms & Conditions coming soon!'),
+                    SnackBar(
+                      content: Text(localizer.termsComingSoon),
                     ),
                   );
                 },
@@ -112,15 +108,15 @@ class _SettingsView extends StatelessWidget {
               const Divider(height: 1),
               _SettingsTile(
                 icon: Icons.privacy_tip_outlined,
-                title: 'Privacy Policy',
+                title: localizer.privacyPolicy,
                 trailing: Icon(
                   Icons.chevron_right,
                   color: theme.textSecondary,
                 ),
                 onTap: () {
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Privacy Policy coming soon!'),
+                    SnackBar(
+                      content: Text(localizer.privacyPolicyComingSoon),
                     ),
                   );
                 },
@@ -134,11 +130,12 @@ class _SettingsView extends StatelessWidget {
 
   void _showLanguageDialog(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
+    final localizer = Localizer.of(context);
 
     showDialog(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Select Language'),
+        title: Text(localizer.selectLanguage),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: languageOptionsAvailable.map((language) {

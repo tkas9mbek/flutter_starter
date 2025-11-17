@@ -5,6 +5,9 @@ import 'package:starter_toolkit/data/exceptions/development_error.dart';
 import 'package:starter_toolkit/data/exceptions/unknown_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
+/// Repository executor with automatic retry logic and exponential backoff.
+///
+/// Retries failed operations up to [maxRetries] times, skipping 4xx client errors.
 class RetriableRepositoryExecutor extends RepositoryExecutor {
   const RetriableRepositoryExecutor({
     this.maxRetries = 3,

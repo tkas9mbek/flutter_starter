@@ -15,12 +15,10 @@ class TaskModule extends AppModule {
   @override
   Future<void> registerDependencies() async {
     final getIt = GetIt.instance;
-    // API
     getIt.registerFactory<TaskApi>(
       () => TaskApi(getIt<Dio>()),
     );
 
-    // DataSource - Use Mock in Dev, Remote in Prod
     getIt.registerFactory<TaskDataSource>(
       () {
         final env = getIt<AppEnvironment>();
@@ -33,17 +31,15 @@ class TaskModule extends AppModule {
       },
     );
 
-    // Repository with Caching Executor
     getIt.registerFactory(
       () => TaskRepository(
         CachingRepositoryExecutor(
-          cacheDuration: const Duration(minutes: 5), // Cache tasks for 5 minutes
+          cacheDuration: const Duration(minutes: 5),
         ),
         getIt<TaskDataSource>(),
       ),
     );
 
-    // BLoCs
     getIt.registerFactory(
       () => CalendarBloc(getIt<TaskRepository>()),
     );

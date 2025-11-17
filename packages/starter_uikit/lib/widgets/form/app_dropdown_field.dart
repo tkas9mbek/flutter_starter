@@ -74,9 +74,9 @@ class _AppDropdownFieldState<T extends Object>
   }
 
   Future<void> openOptionsSheet(
-      BuildContext context, {
-        required T? value,
-      }) async {
+    BuildContext context, {
+    required T? value,
+  }) async {
     FocusManager.instance.primaryFocus?.unfocus();
 
     final selected = await BottomSheetScreen.show(

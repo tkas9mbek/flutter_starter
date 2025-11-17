@@ -43,11 +43,11 @@ class AppRadioGroup<T extends Object> extends StatelessWidget {
         children: [
           ...options.mapIndexed(
             (index, option) {
-              final selected =  field.value == option;
+              final selected = field.value == option;
 
               return GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () => field.didChange(option) ,
+                onTap: () => field.didChange(option),
                 child: Column(
                   children: [
                     if (index != 0) ...[
@@ -63,16 +63,14 @@ class AppRadioGroup<T extends Object> extends StatelessWidget {
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
                             border: Border.all(
-                              color:
-                              selected ? theme.primary : theme.border,
+                              color: selected ? theme.primary : theme.border,
                               width: 2,
                             ),
                           ),
                           child: DecoratedBox(
                             decoration: BoxDecoration(
-                              color: selected
-                                  ? theme.primary
-                                  : Colors.transparent,
+                              color:
+                                  selected ? theme.primary : Colors.transparent,
                               shape: BoxShape.circle,
                             ),
                           ),

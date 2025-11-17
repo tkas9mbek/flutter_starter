@@ -5,6 +5,9 @@ import 'package:starter_toolkit/data/exceptions/development_error.dart';
 import 'package:starter_toolkit/data/exceptions/unknown_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
+/// Standard repository executor with basic error handling.
+///
+/// Converts exceptions to AppException types without additional features.
 class DefaultRepositoryExecutor extends RepositoryExecutor {
   const DefaultRepositoryExecutor();
 

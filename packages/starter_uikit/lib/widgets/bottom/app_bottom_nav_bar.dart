@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
-
 class AppBottomNavBar extends StatelessWidget {
   /// Bottom navigation bar with rounded corners, white background, small elevation
   /// and shadow.

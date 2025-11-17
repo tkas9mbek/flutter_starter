@@ -289,6 +289,16 @@ class UiLocalizer {
       args: [],
     );
   }
+
+  /// `Нет данных`
+  String get noDataAvailable {
+    return Intl.message(
+      'Нет данных',
+      name: 'noDataAvailable',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<UiLocalizer> {

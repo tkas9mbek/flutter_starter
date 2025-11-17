@@ -9,9 +9,7 @@ class FormsScreen extends StatelessWidget {
     return Scaffold(
       appBar: const TitleAppBar(title: 'Forms'),
       body: Column(
-        children: [
-
-        ],
+        children: [],
       ),
     );
   }

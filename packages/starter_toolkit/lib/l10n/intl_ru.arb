@@ -32,6 +32,7 @@
   "errorMessagePermissionRequired": "Требуется разрешение",
   "today": "Сегодня",
   "yesterday": "Вчера",
+  "tomorrow": "Завтра",
   "durationInHoursMinutes": "{hours} ч. {minutes} мин.",
   "durationInMinutes": "{minutes} мин."
 }

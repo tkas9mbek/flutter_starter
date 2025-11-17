@@ -8,7 +8,8 @@ import 'package:starter/core/di/data_module.dart';
 import 'package:starter/features/application/application.dart';
 import 'package:starter/features/application/environment/configs/environment_module.dart';
 import 'package:starter/features/auth/configs/auth_module.dart';
-import 'package:starter/features/preferences/configs/preferences_module.dart';
+import 'package:starter/features/profile/configs/profile_module.dart';
+import 'package:starter/features/settings/configs/settings_module.dart';
 import 'package:starter/features/task/configs/task_module.dart';
 
 Future<void> configureApplication() async {
@@ -17,7 +18,8 @@ Future<void> configureApplication() async {
     DataModule(),
     EnvironmentModule(),
     AuthModule(),
-    PreferencesModule(),
+    SettingsModule(),
+    ProfileModule(),
     TaskModule(),
   ];
 

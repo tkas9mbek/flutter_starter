@@ -11,5 +11,47 @@
   "toLogout": "Выйти",
   "calendar": "Календарь",
   "haveNoAccount": "Нет аккаунта?",
-  "haveAccount": "Уже есть аккаунт?"
+  "haveAccount": "Уже есть аккаунт?",
+  "tasks": "Задачи",
+  "noTasksYet": "Пока нет задач",
+  "taskDeleted": "{title} удалена",
+  "task": "задача",
+  "tasks_plural": "задачи",
+  "tasks_many": "задач",
+  "selectDate": "Выберите дату",
+  "noTasksForDate": "Нет задач на эту дату",
+  "today": "Сегодня",
+  "tomorrow": "Завтра",
+  "settings": "Настройки",
+  "appearance": "Внешний вид",
+  "theme": "Тема",
+  "light": "Светлая",
+  "dark": "Тёмная",
+  "themeSwitchingComingSoon": "Переключение темы скоро появится!",
+  "language": "Язык",
+  "selectLanguage": "Выберите язык",
+  "about": "О приложении",
+  "version": "Версия",
+  "termsAndConditions": "Условия использования",
+  "termsComingSoon": "Условия использования скоро появятся!",
+  "privacyPolicy": "Политика конфиденциальности",
+  "privacyPolicyComingSoon": "Политика конфиденциальности скоро появится!",
+  "profile": "Профиль",
+  "birthday": "День рождения",
+  "age": "Возраст",
+  "yearsOld": "{count, plural, one{{count} год} few{{count} года} other{{count} лет}}",
+  "@yearsOld": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "failedToLoadProfile": "Не удалось загрузить профиль",
+  "retry": "Повторить",
+  "loggingOut": "Выход из системы...",
+  "name": "Имя",
+  "enterYourName": "Введите ваше имя",
+  "selectYourBirthday": "Выберите дату рождения",
+  "birthdayIsRequired": "Дата рождения обязательна"
 }

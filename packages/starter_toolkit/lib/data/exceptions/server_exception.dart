@@ -53,7 +53,8 @@ class ServerException implements AppException {
 
   @override
   String getDescription(BuildContext context) {
-    return message ?? ToolkitLocalizer.of(context).errorMessageDefaultRequestError;
+    return message ??
+        ToolkitLocalizer.of(context).errorMessageDefaultRequestError;
   }
 
   @override

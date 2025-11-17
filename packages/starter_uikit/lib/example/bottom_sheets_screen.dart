@@ -10,7 +10,6 @@ class BottomSheetsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       appBar: const TitleAppBar(title: 'BottomSheets'),
       body: SingleChildScrollView(

@@ -2,41 +2,27 @@ import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
 import 'package:starter/features/application/root/bloc/user_bloc.dart';
-import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
-import 'package:starter/features/auth/domain/auth_local_data_source.dart';
-import 'package:starter/features/auth/domain/auth_repository.dart';
-import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart';
+import 'package:starter/features/profile/domain/profile_data_source.dart';
+import 'package:starter/features/profile/domain/profile_repository.dart';
 import 'package:starter_toolkit/data/exceptions/auth_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/retriable_repository_executor.dart';
 
 import '../model/auth_mock_models.dart';
 
-class MockAuthorizedDataSource extends Mock
-    implements AuthAuthorizedDataSource {}
-
-class MockUnauthorizedDataSource extends Mock
-    implements AuthUnauthorizedDataSource {}
-
-class MockLocalDataSource extends Mock implements AuthLocalDataSource {}
+class MockProfileDataSource extends Mock implements ProfileDataSource {}
 
 void main() {
   late UserBloc userBloc;
-  late MockAuthorizedDataSource authorizedDataSource;
-  late MockUnauthorizedDataSource unauthorizedDataSource;
-  late MockLocalDataSource localDataSource;
-  late AuthRepository authRepository;
+  late MockProfileDataSource profileDataSource;
+  late ProfileRepository profileRepository;
 
   setUp(() {
-    authorizedDataSource = MockAuthorizedDataSource();
-    unauthorizedDataSource = MockUnauthorizedDataSource();
-    localDataSource = MockLocalDataSource();
-    authRepository = AuthRepository(
+    profileDataSource = MockProfileDataSource();
+    profileRepository = ProfileRepository(
       const RetriableRepositoryExecutor(),
-      authorizedDataSource,
-      unauthorizedDataSource,
-      localDataSource,
+      profileDataSource,
     );
-    userBloc = UserBloc(authRepository);
+    userBloc = UserBloc(profileRepository);
   });
 
   test('initial state is initial()', () {
@@ -52,7 +38,7 @@ void main() {
       blocTest<UserBloc, UserState>(
         'emits [success] when getUserProfile is successful.',
         build: () {
-          when(() => authorizedDataSource.getUserProfile())
+          when(() => profileDataSource.getUserProfile())
               .thenAnswer((_) async => user);
           return userBloc;
         },
@@ -61,7 +47,7 @@ void main() {
           UserState.success(user: user),
         ],
         verify: (_) {
-          verify(() => authorizedDataSource.getUserProfile()).called(1);
+          verify(() => profileDataSource.getUserProfile()).called(1);
         },
       );
 
@@ -70,7 +56,7 @@ void main() {
       blocTest<UserBloc, UserState>(
         'emits [failure] when getUserProfile throws an exception.',
         build: () {
-          when(() => authorizedDataSource.getUserProfile())
+          when(() => profileDataSource.getUserProfile())
               .thenThrow(exception);
           return userBloc;
         },
@@ -79,7 +65,7 @@ void main() {
           const UserState.failure(exception),
         ],
         verify: (_) {
-          verify(() => authorizedDataSource.getUserProfile()).called(1);
+          verify(() => profileDataSource.getUserProfile()).called(1);
         },
       );
     },

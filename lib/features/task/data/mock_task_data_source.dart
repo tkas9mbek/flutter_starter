@@ -27,8 +27,12 @@ class MockTaskDataSource implements TaskDataSource {
       title: 'Project Planning',
       description: 'Plan next sprint features',
       date: DateTime.now().add(const Duration(days: 1)),
-      startTime: DateTime.now().add(const Duration(days: 1)).copyWith(hour: 10, minute: 0),
-      endTime: DateTime.now().add(const Duration(days: 1)).copyWith(hour: 12, minute: 0),
+      startTime: DateTime.now()
+          .add(const Duration(days: 1))
+          .copyWith(hour: 10, minute: 0),
+      endTime: DateTime.now()
+          .add(const Duration(days: 1))
+          .copyWith(hour: 12, minute: 0),
       isCompleted: false,
     ),
     Task(
@@ -36,8 +40,12 @@ class MockTaskDataSource implements TaskDataSource {
       title: 'Documentation',
       description: 'Update project documentation',
       date: DateTime.now().add(const Duration(days: 1)),
-      startTime: DateTime.now().add(const Duration(days: 1)).copyWith(hour: 15, minute: 0),
-      endTime: DateTime.now().add(const Duration(days: 1)).copyWith(hour: 17, minute: 0),
+      startTime: DateTime.now()
+          .add(const Duration(days: 1))
+          .copyWith(hour: 15, minute: 0),
+      endTime: DateTime.now()
+          .add(const Duration(days: 1))
+          .copyWith(hour: 17, minute: 0),
       isCompleted: false,
     ),
   ];

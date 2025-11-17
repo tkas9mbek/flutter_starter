@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthOctober": MessageLookupByLibrary.simpleMessage("Октябрь"),
         "monthSeptember": MessageLookupByLibrary.simpleMessage("Сентябрь"),
         "next": MessageLookupByLibrary.simpleMessage("Далее"),
+        "noDataAvailable": MessageLookupByLibrary.simpleMessage("Нет данных"),
         "retry": MessageLookupByLibrary.simpleMessage("Повторить"),
         "toSelect": MessageLookupByLibrary.simpleMessage("Выбрать"),
         "tryRefreshPage":

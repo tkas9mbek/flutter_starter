@@ -1,7 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
-import 'package:starter/features/auth/model/user.dart';
+import 'package:starter/features/profile/domain/profile_repository.dart';
+import 'package:starter/features/profile/model/user.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 part 'profile_bloc.freezed.dart';
@@ -34,9 +35,13 @@ class ProfileState with _$ProfileState {
 }
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+  final ProfileRepository _profileRepository;
   final AuthRepository _authRepository;
 
-  ProfileBloc(this._authRepository) : super(const ProfileState.initial()) {
+  ProfileBloc(
+    this._profileRepository,
+    this._authRepository,
+  ) : super(const ProfileState.initial()) {
     on<ProfileEvent>(
       (event, emit) => event.when(
         loaded: () => _onLoaded(emit),
@@ -49,7 +54,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     emit(const ProfileState.loading());
 
     try {
-      final user = await _authRepository.getUserProfile();
+      final user = await _profileRepository.getUserProfile();
       emit(ProfileState.success(user));
     } on AppException catch (e) {
       emit(ProfileState.failure(e));
@@ -61,7 +66,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
 
     try {
       await _authRepository.logout();
-      // Note: Navigation will be handled by AuthBloc listening to auth status
     } on AppException catch (e) {
       emit(ProfileState.failure(e));
     }

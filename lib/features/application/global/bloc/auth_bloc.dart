@@ -64,7 +64,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         },
         logoutRequested: _authRepository.logout,
         loggedOut: () => emit(const AuthState.unauthenticated()),
-        signedIn: ()  => emit(const AuthState.authenticated()),
+        signedIn: () => emit(const AuthState.authenticated()),
       ),
     );
   }

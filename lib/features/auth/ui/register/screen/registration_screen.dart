@@ -13,6 +13,7 @@ import 'package:starter_toolkit/utils/form/form_validators.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
+import 'package:starter_uikit/widgets/form/app_date_picker_field.dart';
 import 'package:starter_uikit/widgets/form/app_text_field.dart';
 
 @RoutePage()
@@ -71,31 +72,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                           children: [
                             AppTextField(
                               name: RegistrationForm.nameField,
-                              label: 'Name',
-                              hint: 'Enter your name',
+                              label: Localizer.of(context).name,
+                              hint: Localizer.of(context).enterYourName,
                               keyboardType: TextInputType.name,
                               required: true,
                             ),
                             const SizedBox(height: 20),
-                            FormBuilderDateTimePicker(
+                            AppDatePickerField(
                               name: RegistrationForm.birthdayField,
-                              inputType: InputType.date,
-                              decoration: InputDecoration(
-                                labelText: 'Birthday',
-                                hintText: 'Select your birthday',
-                                border: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                              ),
-                              initialDate: DateTime(2000),
-                              firstDate: DateTime(1900),
-                              lastDate: DateTime.now(),
-                              validator: (value) {
-                                if (value == null) {
-                                  return 'Birthday is required';
-                                }
-                                return null;
-                              },
+                              label: Localizer.of(context).birthday,
+                              hint: Localizer.of(context).selectYourBirthday,
+                              minDate: DateTime(1900),
+                              maxDate: DateTime.now(),
+                              required: true,
                             ),
                             const SizedBox(height: 20),
                             AppTextField(

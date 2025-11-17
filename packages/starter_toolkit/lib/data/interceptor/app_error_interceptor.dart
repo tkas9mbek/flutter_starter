@@ -4,8 +4,9 @@ import 'package:dio/dio.dart';
 import 'package:starter_toolkit/data/exceptions/no_internet_exception.dart';
 import 'package:starter_toolkit/data/exceptions/server_exception.dart';
 
+/// Dio interceptor that converts network errors to AppException types.
 class AppErrorInterceptor extends Interceptor {
-  /// provide custom dioErrorHandler in order to override default behaviour
+  /// Provide custom dioErrorHandler to override default behavior.
   final Function(DioException err)? customDioErrorHandler;
 
   AppErrorInterceptor({

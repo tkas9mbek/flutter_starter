@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_base_button.dart';
 
+/// Customizable outlined button with loading and icon support.
 class AppOutlinedButton extends StatelessWidget {
   const AppOutlinedButton({
     required this.text,

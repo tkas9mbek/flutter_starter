@@ -16,7 +16,8 @@ class RemoteTaskDataSource implements TaskDataSource {
       _api.getTasksByDate(date.toIso8601String());
 
   @override
-  Future<Task> createTask(TaskCreateRequest request) => _api.createTask(request);
+  Future<Task> createTask(TaskCreateRequest request) =>
+      _api.createTask(request);
 
   @override
   Future<Task> updateTask(String id, TaskCreateRequest request) =>

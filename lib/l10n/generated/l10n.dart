@@ -169,6 +169,359 @@ class Localizer {
       args: [],
     );
   }
+
+  /// `Задачи`
+  String get tasks {
+    return Intl.message(
+      'Задачи',
+      name: 'tasks',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Пока нет задач`
+  String get noTasksYet {
+    return Intl.message(
+      'Пока нет задач',
+      name: 'noTasksYet',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{title} удалена`
+  String taskDeleted(Object title) {
+    return Intl.message(
+      '$title удалена',
+      name: 'taskDeleted',
+      desc: '',
+      args: [title],
+    );
+  }
+
+  /// `задача`
+  String get task {
+    return Intl.message(
+      'задача',
+      name: 'task',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `задачи`
+  String get tasks_plural {
+    return Intl.message(
+      'задачи',
+      name: 'tasks_plural',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `задач`
+  String get tasks_many {
+    return Intl.message(
+      'задач',
+      name: 'tasks_many',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Выберите дату`
+  String get selectDate {
+    return Intl.message(
+      'Выберите дату',
+      name: 'selectDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Нет задач на эту дату`
+  String get noTasksForDate {
+    return Intl.message(
+      'Нет задач на эту дату',
+      name: 'noTasksForDate',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Сегодня`
+  String get today {
+    return Intl.message(
+      'Сегодня',
+      name: 'today',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Завтра`
+  String get tomorrow {
+    return Intl.message(
+      'Завтра',
+      name: 'tomorrow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Настройки`
+  String get settings {
+    return Intl.message(
+      'Настройки',
+      name: 'settings',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Внешний вид`
+  String get appearance {
+    return Intl.message(
+      'Внешний вид',
+      name: 'appearance',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Тема`
+  String get theme {
+    return Intl.message(
+      'Тема',
+      name: 'theme',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Светлая`
+  String get light {
+    return Intl.message(
+      'Светлая',
+      name: 'light',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Тёмная`
+  String get dark {
+    return Intl.message(
+      'Тёмная',
+      name: 'dark',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Переключение темы скоро появится!`
+  String get themeSwitchingComingSoon {
+    return Intl.message(
+      'Переключение темы скоро появится!',
+      name: 'themeSwitchingComingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Язык`
+  String get language {
+    return Intl.message(
+      'Язык',
+      name: 'language',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Выберите язык`
+  String get selectLanguage {
+    return Intl.message(
+      'Выберите язык',
+      name: 'selectLanguage',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `О приложении`
+  String get about {
+    return Intl.message(
+      'О приложении',
+      name: 'about',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Версия`
+  String get version {
+    return Intl.message(
+      'Версия',
+      name: 'version',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Условия использования`
+  String get termsAndConditions {
+    return Intl.message(
+      'Условия использования',
+      name: 'termsAndConditions',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Условия использования скоро появятся!`
+  String get termsComingSoon {
+    return Intl.message(
+      'Условия использования скоро появятся!',
+      name: 'termsComingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Политика конфиденциальности`
+  String get privacyPolicy {
+    return Intl.message(
+      'Политика конфиденциальности',
+      name: 'privacyPolicy',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Политика конфиденциальности скоро появится!`
+  String get privacyPolicyComingSoon {
+    return Intl.message(
+      'Политика конфиденциальности скоро появится!',
+      name: 'privacyPolicyComingSoon',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Профиль`
+  String get profile {
+    return Intl.message(
+      'Профиль',
+      name: 'profile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `День рождения`
+  String get birthday {
+    return Intl.message(
+      'День рождения',
+      name: 'birthday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Возраст`
+  String get age {
+    return Intl.message(
+      'Возраст',
+      name: 'age',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{count, plural, one{{count} год} few{{count} года} other{{count} лет}}`
+  String yearsOld(int count) {
+    return Intl.plural(
+      count,
+      one: '$count год',
+      few: '$count года',
+      other: '$count лет',
+      name: 'yearsOld',
+      desc: '',
+      args: [count],
+    );
+  }
+
+  /// `Не удалось загрузить профиль`
+  String get failedToLoadProfile {
+    return Intl.message(
+      'Не удалось загрузить профиль',
+      name: 'failedToLoadProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Повторить`
+  String get retry {
+    return Intl.message(
+      'Повторить',
+      name: 'retry',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Выход из системы...`
+  String get loggingOut {
+    return Intl.message(
+      'Выход из системы...',
+      name: 'loggingOut',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Имя`
+  String get name {
+    return Intl.message(
+      'Имя',
+      name: 'name',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Введите ваше имя`
+  String get enterYourName {
+    return Intl.message(
+      'Введите ваше имя',
+      name: 'enterYourName',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Выберите дату рождения`
+  String get selectYourBirthday {
+    return Intl.message(
+      'Выберите дату рождения',
+      name: 'selectYourBirthday',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Дата рождения обязательна`
+  String get birthdayIsRequired {
+    return Intl.message(
+      'Дата рождения обязательна',
+      name: 'birthdayIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<Localizer> {

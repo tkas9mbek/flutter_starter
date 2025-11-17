@@ -21,7 +21,8 @@
   "errorMessageUnexpectedError": "Неожиданная ошибка",
   "errorMessageCheckAndTryLater": "Проверьте соединение и попробуйте снова",
   "tryRefreshPage": "Попробуйте обновить страницу",
-   "cancellation": "Отмена",
-   "gallery": "Галерея",
-   "camera": "Камера"
+  "cancellation": "Отмена",
+  "gallery": "Галерея",
+  "camera": "Камера",
+  "noDataAvailable": "Нет данных"
 }

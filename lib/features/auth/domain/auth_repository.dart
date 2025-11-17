@@ -5,7 +5,6 @@ import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart'
 import 'package:starter/features/auth/model/auth_login_request_body.dart';
 import 'package:starter/features/auth/model/auth_register_request_body.dart';
 import 'package:starter/features/auth/model/auth_status.dart';
-import 'package:starter/features/auth/model/user.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 class AuthRepository {
@@ -33,8 +32,6 @@ class AuthRepository {
 
     return token != null;
   }
-
-  Future<User> getUserProfile() async => _authorizedDataSource.getUserProfile();
 
   Future<void> logout() async {
     _controller.add(AuthStatus.unauthenticated);
