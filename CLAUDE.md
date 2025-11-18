@@ -210,6 +210,54 @@ See [Code Formatting Guide](./docs/code-formatting.md) for complete details.
 - **File Organization**: One public class per file (exceptions: BLoC states/events, private helpers)
 - **Class Size**: Keep classes < 100 lines; split if > 200 lines (SRP violation)
 
+### BLoC Formatting Rules
+
+**AI Instruction**: ALL BLoC event handlers must follow these formatting rules:
+
+1. **Return emit pattern**: Always use `return emit(state)` for final emit
+2. **Whitespace separation**: Add blank line before every `emit()` call
+3. **Try-catch structure**: Separate try and catch blocks with whitespace
+4. **Variable naming**: Use descriptive names (`successState`, `failureState`) instead of `s` in listeners
+5. **Helper methods**: Add `isLoading` getters to states instead of using `maybeMap` checks
+
+**Correct Example:**
+```dart
+Future<void> _onRequested(
+  _Requested event,
+  Emitter<State> emit,
+) async {
+  emit(const State.loading());
+
+  try {
+    final data = await _repository.getData();
+
+    return emit(State.success(data));
+  } on AppException catch (e) {
+    return emit(State.failure(e));
+  }
+}
+```
+
+**State Helper Example:**
+```dart
+@freezed
+class MyState with _$MyState {
+  const factory MyState.initial() = _InitialMyState;
+  const factory MyState.loading() = _LoadingMyState;
+
+  const MyState._();
+
+  // ✓ Add helper instead of maybeMap
+  bool get isLoading => this is _LoadingMyState;
+}
+
+// ✓ Usage
+if (state.isLoading) { ... }
+
+// ✗ Wrong - verbose
+final isLoading = state.maybeMap(loading: (_) => true, orElse: () => false);
+```
+
 ### Comments and Documentation
 
 **IMPORTANT**: Write self-documenting code. Minimize inline comments.
@@ -233,7 +281,9 @@ class TaskRepository {
 
 See `analysis_options.yaml` for full configuration.
 
-**Excluded files**: `*.g.dart`, `*.freezed.dart`, `*.config.dart`, `lib/l10n/generated/`
+**Excluded files**: `*.g.dart`, `*.freezed.dart`, `*.config.dart`, `**/l10n/generated/**`, `lib/gen/**`
+
+**AI Instruction**: Use glob pattern `**/` to exclude directories across all packages, not just `lib/`
 
 ---
 
@@ -299,30 +349,43 @@ if (DateTime.now().year == date.year && ...) { ... }
 **Purpose**: Reusable UI components and theme
 
 **Available:**
-- **Status Widgets**: `EmptyInformationBody`, `FailureWidgetLarge`, `FailureWidgetSmall`, `CustomCircularProgressIndicator`
+- **Status Widgets** (exported from `starter_uikit.dart`):
+  - `EmptyInformationBody`, `FailureWidgetLarge`, `FailureWidgetSmall`, `CustomCircularProgressIndicator`
 - **Notifications**: `NotificationSnackBar`
 - **Theme**: `AppTheme` (light/dark), `AppTextStyles`, `ThemeProvider`
 - **AppBars**: `TitleAppBar`, `BaseAppBar`, `TransparentAppBar`
 - **Forms**: `AppTextField`, `AppDropdownField`, `AppCheckbox`, `AppDatePickerField`
 - **Buttons**: `AppElevatedButton`, `AppOutlinedButton`
 
-**IMPORTANT**: Many widgets are NOT exported from `starter_uikit.dart`. Use explicit imports:
+**AI Instruction - Import Strategy:**
+- Status widgets are exported from `starter_uikit.dart` - import once
+- Other widgets require explicit imports by path
+- Always import `NotificationSnackBar` explicitly when using it
+
+**Import Examples:**
 ```dart
-import 'package:starter_uikit/starter_uikit.dart';  // For status widgets, theme
+// Status widgets
+import 'package:starter_uikit/starter_uikit.dart';
+
+// Other widgets - explicit imports
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
 import 'package:starter_uikit/widgets/form/app_text_field.dart';
-import 'package:starter_uikit/widgets/form/app_date_picker_field.dart';
+import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 ```
 
 **Usage:**
 ```dart
-// ✓ Correct - Use uikit widgets
+// ✓ Correct - Use uikit widgets with descriptive names
 BlocBuilder<Bloc, State>(
   builder: (context, state) => state.maybeMap(
     loading: (_) => const CustomCircularProgressIndicator(),
     empty: (_) => EmptyInformationBody(text: Localizer.of(context).noData),
-    failure: (s) => FailureWidgetLarge(exception: s.exception, onRetry: _retry),
+    failure: (failureState) => FailureWidgetLarge(
+      exception: failureState.exception,
+      onRetry: _retry,
+    ),
     orElse: () => ...,
   ),
 )
@@ -330,6 +393,9 @@ BlocBuilder<Bloc, State>(
 // ✗ Wrong - Manual implementation
 loading: (_) => const Center(child: CircularProgressIndicator()),
 empty: (_) => const Center(child: Text('No data')),
+
+// ✗ Wrong - Using 's' for state variable
+failure: (s) => FailureWidgetLarge(exception: s.exception, onRetry: _retry),
 ```
 
 **Form Widgets:**
@@ -378,6 +444,10 @@ Container(color: Color(0xFF6200EE))
 9. **No Useless Comments**: Remove obvious comments that add no value - only use `///` doc comments
 10. **Arrow Functions**: Use arrow syntax for single-line callbacks and builders
 11. **whenOrNull Over maybeWhen**: For single-case listeners, use `whenOrNull`
+12. **Descriptive Variable Names**: Never use `s` for state - use `successState`, `failureState`, etc.
+13. **State Helpers**: Add getter methods to states instead of verbose `maybeMap` checks
+14. **Async Context**: Use `if (!mounted) return` or capture Navigator before async gaps
+15. **Dependency Sorting**: SDK dependencies first, then alphabetical in pubspec.yaml files
 
 **File Creation:**
 - Do what has been asked; nothing more, nothing less
@@ -401,6 +471,72 @@ For detailed information, see:
 - [BLoC & Freezed Guide](./docs/bloc_freezed.md) - BLoC patterns with AI Instructions
 
 ---
+
+## BLoC State Patterns
+
+**AI Instruction**: Follow these patterns for better state management:
+
+### Nested Status Pattern
+
+For states that need persistent data (like selectedDate) across status changes:
+
+```dart
+// ✓ Correct - Nested status
+@freezed
+class CalendarStatus with _$CalendarStatus {
+  const factory CalendarStatus.initial() = _InitialCalendarStatus;
+  const factory CalendarStatus.loading() = _LoadingCalendarStatus;
+  const factory CalendarStatus.success({required List<Task> tasks}) = _SuccessCalendarStatus;
+  const factory CalendarStatus.failure({required AppException exception}) = _FailureCalendarStatus;
+}
+
+@freezed
+class CalendarState with _$CalendarState {
+  const factory CalendarState({
+    required DateTime selectedDate,
+    required CalendarStatus status,
+  }) = _CalendarState;
+
+  const CalendarState._();
+
+  factory CalendarState.initial() => CalendarState(
+    selectedDate: DateTime.now(),
+    status: const CalendarStatus.initial(),
+  );
+
+  bool get isLoading => status is _LoadingCalendarStatus;
+}
+
+// Usage in UI
+state.status.when(
+  initial: () => EmptyView(),
+  loading: () => LoadingView(),
+  success: (tasks) => SuccessView(tasks),
+  failure: (exception) => FailureView(exception),
+)
+
+// Access persistent data
+CalendarPicker(selectedDate: state.selectedDate)
+```
+
+### Refreshed Event Pattern
+
+Add a `refreshed()` event to avoid extracting state data for reload:
+
+```dart
+@freezed
+class CalendarEvent with _$CalendarEvent {
+  const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
+  const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;  // ✓ Add this
+}
+
+// ✓ Clean usage
+context.read<CalendarBloc>().add(const CalendarEvent.refreshed());
+
+// ✗ Wrong - extracting state
+final date = state.selectedDate;
+context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
+```
 
 ---
 
@@ -426,4 +562,48 @@ For detailed information, see:
 
 ---
 
-**Last Updated**: January 18, 2025
+---
+
+## Common Issues & Solutions
+
+**AI Instruction**: Reference this section when encountering these issues:
+
+### Analyzer Errors
+
+1. **"Target of URI doesn't exist: 'package:starter_uikit/starter_uikit.dart'"**
+   - Create/update `packages/starter_uikit/lib/starter_uikit.dart` export file
+   - Export commonly used widgets (status widgets)
+
+2. **"Dependencies not sorted alphabetically"**
+   - Sort pubspec.yaml: SDK dependencies first, then alphabetical
+   - Pattern: `flutter:`, `flutter_localizations:`, then `a-z` packages
+
+3. **"use_build_context_synchronously"**
+   - Add `if (!mounted) return` after async operations
+   - Or capture Navigator/context before async: `final nav = Navigator.of(context)`
+
+4. **"omit_local_variable_types"**
+   - Use `var` instead of explicit types for local variables
+   - Example: `var attempt = 0` not `int attempt = 0`
+
+5. **Deprecated API warnings**
+   - `Color.value` → `Color.toARGB32()`
+   - Check Flutter migration guides for replacements
+
+### Import Issues
+
+- Status widgets: `import 'package:starter_uikit/starter_uikit.dart'`
+- NotificationSnackBar: `import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart'`
+- ThemeProvider: `import 'package:starter_uikit/theme/theme_provider.dart'`
+- TitleAppBar: `import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart'`
+
+### Empty Directories in Git
+
+Add `.gitkeep` files to track empty but necessary directories:
+- `assets/icons/.gitkeep`
+- `assets/images/.gitkeep`
+- `packages/starter_uikit/assets/images/.gitkeep`
+
+---
+
+**Last Updated**: November 18, 2025
