@@ -8,44 +8,41 @@ import 'package:starter/features/task/data/task_api.dart';
 import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
 import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
-import 'package:starter/features/task/ui/tasks/bloc/tasks_list_bloc.dart';
+import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
 import 'package:starter_toolkit/data/repository_executor/caching_repository_executor.dart';
 
 class TaskModule extends AppModule {
   @override
   Future<void> registerDependencies() async {
     final getIt = GetIt.instance;
-    getIt.registerFactory<TaskApi>(
-      () => TaskApi(getIt<Dio>()),
-    );
+    getIt
+      ..registerFactory<TaskApi>(
+        () => TaskApi(getIt<Dio>()),
+      )
+      ..registerFactory<TaskDataSource>(
+        () {
+          final env = getIt<AppEnvironment>();
 
-    getIt.registerFactory<TaskDataSource>(
-      () {
-        final env = getIt<AppEnvironment>();
+          if (env.name == 'dev') {
+            return MockTaskDataSource();
+          }
 
-        if (env.name == 'dev') {
-          return MockTaskDataSource();
-        }
-
-        return RemoteTaskDataSource(getIt<TaskApi>());
-      },
-    );
-
-    getIt.registerFactory(
-      () => TaskRepository(
-        CachingRepositoryExecutor(
-          cacheDuration: const Duration(minutes: 5),
+          return RemoteTaskDataSource(getIt<TaskApi>());
+        },
+      )
+      ..registerFactory(
+        () => TaskRepository(
+          CachingRepositoryExecutor(
+            cacheDuration: const Duration(minutes: 5),
+          ),
+          getIt<TaskDataSource>(),
         ),
-        getIt<TaskDataSource>(),
-      ),
-    );
-
-    getIt.registerFactory(
-      () => CalendarBloc(getIt<TaskRepository>()),
-    );
-
-    getIt.registerFactory(
-      () => TasksListBloc(getIt<TaskRepository>()),
-    );
+      )
+      ..registerFactory(
+        () => CalendarBloc(getIt<TaskRepository>()),
+      )
+      ..registerFactory(
+        () => TasksListBloc(getIt<TaskRepository>()),
+      );
   }
 }

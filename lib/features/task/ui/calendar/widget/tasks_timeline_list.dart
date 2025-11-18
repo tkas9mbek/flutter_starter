@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:starter/features/task/model/task.dart';
-import 'package:starter/features/task/ui/calendar/widget/task_timeline_item.dart';
+import 'package:starter/features/task/ui/calendar/widget/task_timeline_item_card.dart';
 
-class TasksTimeline extends StatelessWidget {
-  const TasksTimeline({
+class TasksTimelineList extends StatelessWidget {
+  const TasksTimelineList({
     required this.tasks,
     super.key,
   });
@@ -15,7 +15,8 @@ class TasksTimeline extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: tasks.length,
-      itemBuilder: (context, index) => TaskTimelineItem(task: tasks[index]),
+      itemBuilder: (context, index) =>
+          TaskTimelineItemCard(task: tasks[index]),
     );
   }
 }

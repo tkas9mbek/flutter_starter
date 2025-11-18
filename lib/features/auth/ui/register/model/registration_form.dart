@@ -16,12 +16,11 @@ class RegistrationForm {
   final String password;
   final DateTime birthday;
 
-  factory RegistrationForm.fromForm(Map<String, dynamic> form) {
-    return RegistrationForm(
-      name: form[nameField] as String,
-      phone: form[phoneField] as String,
-      password: form[passwordField] as String,
-      birthday: form[birthdayField] as DateTime,
-    );
-  }
+  factory RegistrationForm.fromForm(Map<String, dynamic> form) =>
+      RegistrationForm(
+        name: form[nameField] as String,
+        phone: form[phoneField] as String,
+        password: form[passwordField] as String,
+        birthday: form[birthdayField] as DateTime,
+      );
 }

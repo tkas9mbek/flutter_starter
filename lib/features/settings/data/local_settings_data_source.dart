@@ -16,4 +16,14 @@ class LocalSettingsDataSource implements SettingsDataSource {
         SharedPreferencesKeys.languageCode,
         code,
       );
+
+  @override
+  String? getThemeMode() =>
+      _sharedPreferences.getString(SharedPreferencesKeys.themeMode);
+
+  @override
+  Future<void> setThemeMode(String mode) => _sharedPreferences.setString(
+        SharedPreferencesKeys.themeMode,
+        mode,
+      );
 }

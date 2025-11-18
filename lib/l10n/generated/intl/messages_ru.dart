@@ -34,14 +34,28 @@ class MessageLookup extends MessageLookupByLibrary {
         "birthdayIsRequired":
             MessageLookupByLibrary.simpleMessage("Дата рождения обязательна"),
         "calendar": MessageLookupByLibrary.simpleMessage("Календарь"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Отмена"),
+        "completed": MessageLookupByLibrary.simpleMessage("Завершена"),
         "dark": MessageLookupByLibrary.simpleMessage("Тёмная"),
+        "delete": MessageLookupByLibrary.simpleMessage("Удалить"),
+        "deleteTask": MessageLookupByLibrary.simpleMessage("Удалить задачу"),
+        "deleteTaskConfirmation": MessageLookupByLibrary.simpleMessage(
+            "Вы уверены, что хотите удалить эту задачу?"),
+        "description": MessageLookupByLibrary.simpleMessage("Описание"),
+        "endTime": MessageLookupByLibrary.simpleMessage("Время окончания"),
         "enterPassword": MessageLookupByLibrary.simpleMessage("Введите пароль"),
         "enterPhoneNumber":
             MessageLookupByLibrary.simpleMessage("Введите номер телефона"),
         "enterYourName":
             MessageLookupByLibrary.simpleMessage("Введите ваше имя"),
+        "failedToDeleteTask":
+            MessageLookupByLibrary.simpleMessage("Не удалось удалить задачу"),
         "failedToLoadProfile": MessageLookupByLibrary.simpleMessage(
             "Не удалось загрузить профиль"),
+        "failedToLoadTaskDetails": MessageLookupByLibrary.simpleMessage(
+            "Не удалось загрузить детали задачи"),
+        "failedToToggleTask": MessageLookupByLibrary.simpleMessage(
+            "Не удалось изменить статус задачи"),
         "haveAccount":
             MessageLookupByLibrary.simpleMessage("Уже есть аккаунт?"),
         "haveNoAccount": MessageLookupByLibrary.simpleMessage("Нет аккаунта?"),
@@ -54,6 +68,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "noTasksForDate":
             MessageLookupByLibrary.simpleMessage("Нет задач на эту дату"),
         "noTasksYet": MessageLookupByLibrary.simpleMessage("Пока нет задач"),
+        "notCompleted": MessageLookupByLibrary.simpleMessage("Не завершена"),
         "password": MessageLookupByLibrary.simpleMessage("Пароль"),
         "phoneNumber": MessageLookupByLibrary.simpleMessage("Номер телефона"),
         "privacyPolicy":
@@ -61,6 +76,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "privacyPolicyComingSoon": MessageLookupByLibrary.simpleMessage(
             "Политика конфиденциальности скоро появится!"),
         "profile": MessageLookupByLibrary.simpleMessage("Профиль"),
+        "refresh": MessageLookupByLibrary.simpleMessage("Обновить"),
         "retry": MessageLookupByLibrary.simpleMessage("Повторить"),
         "selectDate": MessageLookupByLibrary.simpleMessage("Выберите дату"),
         "selectLanguage": MessageLookupByLibrary.simpleMessage("Выберите язык"),
@@ -68,8 +84,13 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Выберите дату рождения"),
         "settings": MessageLookupByLibrary.simpleMessage("Настройки"),
         "signUp": MessageLookupByLibrary.simpleMessage("Регистрация"),
+        "startTime": MessageLookupByLibrary.simpleMessage("Время начала"),
+        "status": MessageLookupByLibrary.simpleMessage("Статус"),
         "task": MessageLookupByLibrary.simpleMessage("задача"),
         "taskDeleted": m0,
+        "taskDeletedSuccessfully":
+            MessageLookupByLibrary.simpleMessage("Задача успешно удалена"),
+        "taskDetails": MessageLookupByLibrary.simpleMessage("Детали задачи"),
         "tasks": MessageLookupByLibrary.simpleMessage("Задачи"),
         "tasks_many": MessageLookupByLibrary.simpleMessage("задач"),
         "tasks_plural": MessageLookupByLibrary.simpleMessage("задачи"),

@@ -1,13 +1,15 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/task/model/task.dart';
-import 'package:starter/features/task/ui/tasks/bloc/tasks_list_bloc.dart';
-import 'package:starter/l10n/generated/l10n.dart';
-import 'package:starter_uikit/starter_uikit.dart';
+import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
+import 'package:starter/features/task/ui/details/bloc/task_toggle_bloc.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 
-class TaskTile extends StatelessWidget {
-  const TaskTile({
+class TaskListItemTile extends StatelessWidget {
+  const TaskListItemTile({
     required this.task,
     super.key,
   });
@@ -40,18 +42,14 @@ class TaskTile extends StatelessWidget {
         ),
       ),
       onDismissed: (_) {
-        context.read<TasksListBloc>().add(
-              TasksListEvent.taskDeleted(task.id),
+        context.read<TaskDeleteBloc>().add(
+              TaskDeleteEvent.deleted(task.id),
             );
-
-        NotificationSnackBar.showMessage(
-          context,
-          isSuccess: true,
-          message: Localizer.of(context).taskDeleted(task.title),
-        );
       },
       child: InkWell(
-        onTap: () {},
+        onTap: () => context.router.push(
+          TaskDetailsRoute(task: task),
+        ),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),
@@ -60,8 +58,8 @@ class TaskTile extends StatelessWidget {
               Checkbox(
                 value: task.isCompleted,
                 onChanged: (_) {
-                  context.read<TasksListBloc>().add(
-                        TasksListEvent.taskToggled(task.id),
+                  context.read<TaskToggleBloc>().add(
+                        TaskToggleEvent.toggled(task.id),
                       );
                 },
                 shape: RoundedRectangleBorder(

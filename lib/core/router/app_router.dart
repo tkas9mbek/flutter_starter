@@ -1,12 +1,15 @@
 import 'package:auto_route/auto_route.dart';
+import 'package:flutter/material.dart';
 import 'package:starter/features/application/root/screen/authenticated_wrapper.dart';
 import 'package:starter/features/application/root/screen/root_screen.dart';
 import 'package:starter/features/auth/ui/login/screen/login_screen.dart';
 import 'package:starter/features/auth/ui/register/screen/registration_screen.dart';
 import 'package:starter/features/profile/ui/screen/profile_screen.dart';
 import 'package:starter/features/settings/ui/screen/settings_screen.dart';
+import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/calendar/screen/calendar_screen.dart';
-import 'package:starter/features/task/ui/tasks/screen/tasks_list_screen.dart';
+import 'package:starter/features/task/ui/details/screen/task_details_screen.dart';
+import 'package:starter/features/task/ui/list/screen/tasks_list_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -50,6 +53,10 @@ class AppRouter extends RootStackRouter {
               path: 'profile',
             ),
           ],
+        ),
+        AutoRoute(
+          page: TaskDetailsRoute.page,
+          path: 'task/:taskId',
         ),
       ],
     ),

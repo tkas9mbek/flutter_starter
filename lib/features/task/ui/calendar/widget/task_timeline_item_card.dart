@@ -1,12 +1,14 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
+import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/task/model/task.dart';
-import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
-import 'package:starter_uikit/starter_uikit.dart';
+import 'package:starter/features/task/ui/details/bloc/task_toggle_bloc.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 
-class TaskTimelineItem extends StatelessWidget {
-  const TaskTimelineItem({
+class TaskTimelineItemCard extends StatelessWidget {
+  const TaskTimelineItemCard({
     required this.task,
     super.key,
   });
@@ -65,9 +67,9 @@ class TaskTimelineItem extends StatelessWidget {
           const SizedBox(width: 16),
           Expanded(
             child: GestureDetector(
-              onTap: () => context.read<CalendarBloc>().add(
-                    CalendarEvent.taskToggled(task.id),
-                  ),
+              onTap: () => context.router.push(
+                TaskDetailsRoute(task: task),
+              ),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
@@ -90,6 +92,18 @@ class TaskTimelineItem extends StatelessWidget {
                   children: [
                     Row(
                       children: [
+                        Checkbox(
+                          value: task.isCompleted,
+                          onChanged: (_) {
+                            context.read<TaskToggleBloc>().add(
+                                  TaskToggleEvent.toggled(task.id),
+                                );
+                          },
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             task.title,
@@ -101,12 +115,6 @@ class TaskTimelineItem extends StatelessWidget {
                                 : textStyles.mediumBody14,
                           ),
                         ),
-                        if (task.isCompleted)
-                          Icon(
-                            Icons.check_circle,
-                            color: theme.primary,
-                            size: 20,
-                          ),
                       ],
                     ),
                     if (task.description.isNotEmpty) ...[

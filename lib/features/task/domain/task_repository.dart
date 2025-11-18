@@ -13,7 +13,7 @@ class TaskRepository {
   );
 
   Future<List<Task>> getTasks() =>
-      _executor.execute(() => _dataSource.getTasks());
+      _executor.execute(_dataSource.getTasks);
 
   Future<List<Task>> getTasksByDate(DateTime date) =>
       _executor.execute(() => _dataSource.getTasksByDate(date));

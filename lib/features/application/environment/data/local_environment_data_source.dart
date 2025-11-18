@@ -19,9 +19,7 @@ class LocalEnvironmentDataSource implements EnvironmentDataSource {
   }
 
   @override
-  String? getEnvName() {
-    return _sharedPreferences.getString(_envUrlKey);
-  }
+  String? getEnvName() => _sharedPreferences.getString(_envUrlKey);
 
   @override
   Future<void> clearSecureStorage() async {

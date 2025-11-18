@@ -18,45 +18,33 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$TasksListEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() loaded,
-    required TResult Function(String taskId) taskToggled,
-    required TResult Function(String taskId) taskDeleted,
+    required TResult Function() requested,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? loaded,
-    TResult? Function(String taskId)? taskToggled,
-    TResult? Function(String taskId)? taskDeleted,
+    TResult? Function()? requested,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? loaded,
-    TResult Function(String taskId)? taskToggled,
-    TResult Function(String taskId)? taskDeleted,
+    TResult Function()? requested,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadedTasksListEvent value) loaded,
-    required TResult Function(_TaskToggledTasksListEvent value) taskToggled,
-    required TResult Function(_TaskDeletedTasksListEvent value) taskDeleted,
+    required TResult Function(_RequestedTasksListEvent value) requested,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_LoadedTasksListEvent value)? loaded,
-    TResult? Function(_TaskToggledTasksListEvent value)? taskToggled,
-    TResult? Function(_TaskDeletedTasksListEvent value)? taskDeleted,
+    TResult? Function(_RequestedTasksListEvent value)? requested,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadedTasksListEvent value)? loaded,
-    TResult Function(_TaskToggledTasksListEvent value)? taskToggled,
-    TResult Function(_TaskDeletedTasksListEvent value)? taskDeleted,
+    TResult Function(_RequestedTasksListEvent value)? requested,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -84,18 +72,20 @@ class _$TasksListEventCopyWithImpl<$Res, $Val extends TasksListEvent>
 }
 
 /// @nodoc
-abstract class _$$LoadedTasksListEventImplCopyWith<$Res> {
-  factory _$$LoadedTasksListEventImplCopyWith(_$LoadedTasksListEventImpl value,
-          $Res Function(_$LoadedTasksListEventImpl) then) =
-      __$$LoadedTasksListEventImplCopyWithImpl<$Res>;
+abstract class _$$RequestedTasksListEventImplCopyWith<$Res> {
+  factory _$$RequestedTasksListEventImplCopyWith(
+          _$RequestedTasksListEventImpl value,
+          $Res Function(_$RequestedTasksListEventImpl) then) =
+      __$$RequestedTasksListEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LoadedTasksListEventImplCopyWithImpl<$Res>
-    extends _$TasksListEventCopyWithImpl<$Res, _$LoadedTasksListEventImpl>
-    implements _$$LoadedTasksListEventImplCopyWith<$Res> {
-  __$$LoadedTasksListEventImplCopyWithImpl(_$LoadedTasksListEventImpl _value,
-      $Res Function(_$LoadedTasksListEventImpl) _then)
+class __$$RequestedTasksListEventImplCopyWithImpl<$Res>
+    extends _$TasksListEventCopyWithImpl<$Res, _$RequestedTasksListEventImpl>
+    implements _$$RequestedTasksListEventImplCopyWith<$Res> {
+  __$$RequestedTasksListEventImplCopyWithImpl(
+      _$RequestedTasksListEventImpl _value,
+      $Res Function(_$RequestedTasksListEventImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of TasksListEvent
@@ -104,19 +94,19 @@ class __$$LoadedTasksListEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LoadedTasksListEventImpl implements _LoadedTasksListEvent {
-  const _$LoadedTasksListEventImpl();
+class _$RequestedTasksListEventImpl implements _RequestedTasksListEvent {
+  const _$RequestedTasksListEventImpl();
 
   @override
   String toString() {
-    return 'TasksListEvent.loaded()';
+    return 'TasksListEvent.requested()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LoadedTasksListEventImpl);
+            other is _$RequestedTasksListEventImpl);
   }
 
   @override
@@ -125,33 +115,27 @@ class _$LoadedTasksListEventImpl implements _LoadedTasksListEvent {
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() loaded,
-    required TResult Function(String taskId) taskToggled,
-    required TResult Function(String taskId) taskDeleted,
+    required TResult Function() requested,
   }) {
-    return loaded();
+    return requested();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? loaded,
-    TResult? Function(String taskId)? taskToggled,
-    TResult? Function(String taskId)? taskDeleted,
+    TResult? Function()? requested,
   }) {
-    return loaded?.call();
+    return requested?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? loaded,
-    TResult Function(String taskId)? taskToggled,
-    TResult Function(String taskId)? taskDeleted,
+    TResult Function()? requested,
     required TResult orElse(),
   }) {
-    if (loaded != null) {
-      return loaded();
+    if (requested != null) {
+      return requested();
     }
     return orElse();
   }
@@ -159,340 +143,34 @@ class _$LoadedTasksListEventImpl implements _LoadedTasksListEvent {
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadedTasksListEvent value) loaded,
-    required TResult Function(_TaskToggledTasksListEvent value) taskToggled,
-    required TResult Function(_TaskDeletedTasksListEvent value) taskDeleted,
+    required TResult Function(_RequestedTasksListEvent value) requested,
   }) {
-    return loaded(this);
+    return requested(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_LoadedTasksListEvent value)? loaded,
-    TResult? Function(_TaskToggledTasksListEvent value)? taskToggled,
-    TResult? Function(_TaskDeletedTasksListEvent value)? taskDeleted,
+    TResult? Function(_RequestedTasksListEvent value)? requested,
   }) {
-    return loaded?.call(this);
+    return requested?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadedTasksListEvent value)? loaded,
-    TResult Function(_TaskToggledTasksListEvent value)? taskToggled,
-    TResult Function(_TaskDeletedTasksListEvent value)? taskDeleted,
+    TResult Function(_RequestedTasksListEvent value)? requested,
     required TResult orElse(),
   }) {
-    if (loaded != null) {
-      return loaded(this);
+    if (requested != null) {
+      return requested(this);
     }
     return orElse();
   }
 }
 
-abstract class _LoadedTasksListEvent implements TasksListEvent {
-  const factory _LoadedTasksListEvent() = _$LoadedTasksListEventImpl;
-}
-
-/// @nodoc
-abstract class _$$TaskToggledTasksListEventImplCopyWith<$Res> {
-  factory _$$TaskToggledTasksListEventImplCopyWith(
-          _$TaskToggledTasksListEventImpl value,
-          $Res Function(_$TaskToggledTasksListEventImpl) then) =
-      __$$TaskToggledTasksListEventImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String taskId});
-}
-
-/// @nodoc
-class __$$TaskToggledTasksListEventImplCopyWithImpl<$Res>
-    extends _$TasksListEventCopyWithImpl<$Res, _$TaskToggledTasksListEventImpl>
-    implements _$$TaskToggledTasksListEventImplCopyWith<$Res> {
-  __$$TaskToggledTasksListEventImplCopyWithImpl(
-      _$TaskToggledTasksListEventImpl _value,
-      $Res Function(_$TaskToggledTasksListEventImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of TasksListEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? taskId = null,
-  }) {
-    return _then(_$TaskToggledTasksListEventImpl(
-      null == taskId
-          ? _value.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$TaskToggledTasksListEventImpl implements _TaskToggledTasksListEvent {
-  const _$TaskToggledTasksListEventImpl(this.taskId);
-
-  @override
-  final String taskId;
-
-  @override
-  String toString() {
-    return 'TasksListEvent.taskToggled(taskId: $taskId)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TaskToggledTasksListEventImpl &&
-            (identical(other.taskId, taskId) || other.taskId == taskId));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, taskId);
-
-  /// Create a copy of TasksListEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TaskToggledTasksListEventImplCopyWith<_$TaskToggledTasksListEventImpl>
-      get copyWith => __$$TaskToggledTasksListEventImplCopyWithImpl<
-          _$TaskToggledTasksListEventImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() loaded,
-    required TResult Function(String taskId) taskToggled,
-    required TResult Function(String taskId) taskDeleted,
-  }) {
-    return taskToggled(taskId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? loaded,
-    TResult? Function(String taskId)? taskToggled,
-    TResult? Function(String taskId)? taskDeleted,
-  }) {
-    return taskToggled?.call(taskId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? loaded,
-    TResult Function(String taskId)? taskToggled,
-    TResult Function(String taskId)? taskDeleted,
-    required TResult orElse(),
-  }) {
-    if (taskToggled != null) {
-      return taskToggled(taskId);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_LoadedTasksListEvent value) loaded,
-    required TResult Function(_TaskToggledTasksListEvent value) taskToggled,
-    required TResult Function(_TaskDeletedTasksListEvent value) taskDeleted,
-  }) {
-    return taskToggled(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_LoadedTasksListEvent value)? loaded,
-    TResult? Function(_TaskToggledTasksListEvent value)? taskToggled,
-    TResult? Function(_TaskDeletedTasksListEvent value)? taskDeleted,
-  }) {
-    return taskToggled?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadedTasksListEvent value)? loaded,
-    TResult Function(_TaskToggledTasksListEvent value)? taskToggled,
-    TResult Function(_TaskDeletedTasksListEvent value)? taskDeleted,
-    required TResult orElse(),
-  }) {
-    if (taskToggled != null) {
-      return taskToggled(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _TaskToggledTasksListEvent implements TasksListEvent {
-  const factory _TaskToggledTasksListEvent(final String taskId) =
-      _$TaskToggledTasksListEventImpl;
-
-  String get taskId;
-
-  /// Create a copy of TasksListEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TaskToggledTasksListEventImplCopyWith<_$TaskToggledTasksListEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$TaskDeletedTasksListEventImplCopyWith<$Res> {
-  factory _$$TaskDeletedTasksListEventImplCopyWith(
-          _$TaskDeletedTasksListEventImpl value,
-          $Res Function(_$TaskDeletedTasksListEventImpl) then) =
-      __$$TaskDeletedTasksListEventImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String taskId});
-}
-
-/// @nodoc
-class __$$TaskDeletedTasksListEventImplCopyWithImpl<$Res>
-    extends _$TasksListEventCopyWithImpl<$Res, _$TaskDeletedTasksListEventImpl>
-    implements _$$TaskDeletedTasksListEventImplCopyWith<$Res> {
-  __$$TaskDeletedTasksListEventImplCopyWithImpl(
-      _$TaskDeletedTasksListEventImpl _value,
-      $Res Function(_$TaskDeletedTasksListEventImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of TasksListEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? taskId = null,
-  }) {
-    return _then(_$TaskDeletedTasksListEventImpl(
-      null == taskId
-          ? _value.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$TaskDeletedTasksListEventImpl implements _TaskDeletedTasksListEvent {
-  const _$TaskDeletedTasksListEventImpl(this.taskId);
-
-  @override
-  final String taskId;
-
-  @override
-  String toString() {
-    return 'TasksListEvent.taskDeleted(taskId: $taskId)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$TaskDeletedTasksListEventImpl &&
-            (identical(other.taskId, taskId) || other.taskId == taskId));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, taskId);
-
-  /// Create a copy of TasksListEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TaskDeletedTasksListEventImplCopyWith<_$TaskDeletedTasksListEventImpl>
-      get copyWith => __$$TaskDeletedTasksListEventImplCopyWithImpl<
-          _$TaskDeletedTasksListEventImpl>(this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() loaded,
-    required TResult Function(String taskId) taskToggled,
-    required TResult Function(String taskId) taskDeleted,
-  }) {
-    return taskDeleted(taskId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? loaded,
-    TResult? Function(String taskId)? taskToggled,
-    TResult? Function(String taskId)? taskDeleted,
-  }) {
-    return taskDeleted?.call(taskId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? loaded,
-    TResult Function(String taskId)? taskToggled,
-    TResult Function(String taskId)? taskDeleted,
-    required TResult orElse(),
-  }) {
-    if (taskDeleted != null) {
-      return taskDeleted(taskId);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_LoadedTasksListEvent value) loaded,
-    required TResult Function(_TaskToggledTasksListEvent value) taskToggled,
-    required TResult Function(_TaskDeletedTasksListEvent value) taskDeleted,
-  }) {
-    return taskDeleted(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_LoadedTasksListEvent value)? loaded,
-    TResult? Function(_TaskToggledTasksListEvent value)? taskToggled,
-    TResult? Function(_TaskDeletedTasksListEvent value)? taskDeleted,
-  }) {
-    return taskDeleted?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadedTasksListEvent value)? loaded,
-    TResult Function(_TaskToggledTasksListEvent value)? taskToggled,
-    TResult Function(_TaskDeletedTasksListEvent value)? taskDeleted,
-    required TResult orElse(),
-  }) {
-    if (taskDeleted != null) {
-      return taskDeleted(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _TaskDeletedTasksListEvent implements TasksListEvent {
-  const factory _TaskDeletedTasksListEvent(final String taskId) =
-      _$TaskDeletedTasksListEventImpl;
-
-  String get taskId;
-
-  /// Create a copy of TasksListEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TaskDeletedTasksListEventImplCopyWith<_$TaskDeletedTasksListEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+abstract class _RequestedTasksListEvent implements TasksListEvent {
+  const factory _RequestedTasksListEvent() = _$RequestedTasksListEventImpl;
 }
 
 /// @nodoc

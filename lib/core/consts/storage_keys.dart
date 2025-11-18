@@ -1,5 +1,6 @@
 class SharedPreferencesKeys {
   static const String languageCode = 'language_code';
+  static const String themeMode = 'theme_mode';
   static const String launchedBefore = 'launched_before';
 }
 

@@ -8,6 +8,7 @@ import 'package:starter/features/settings/ui/common/widget/section_header.dart';
 import 'package:starter/features/settings/ui/common/widget/settings_card.dart';
 import 'package:starter/features/settings/ui/language/bloc/language_cubit.dart';
 import 'package:starter/features/settings/ui/language/widget/language_settings_tile.dart';
+import 'package:starter/features/settings/ui/theme/bloc/theme_cubit.dart';
 import 'package:starter/features/settings/ui/theme/widget/theme_settings_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
@@ -18,8 +19,15 @@ class SettingsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => LanguageCubit(getIt<SettingsRepository>()),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => LanguageCubit(getIt<SettingsRepository>()),
+        ),
+        BlocProvider(
+          create: (context) => ThemeCubit(getIt<SettingsRepository>()),
+        ),
+      ],
       child: const _SettingsView(),
     );
   }

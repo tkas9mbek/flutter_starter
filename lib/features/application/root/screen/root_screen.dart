@@ -11,10 +11,8 @@ import 'package:starter_uikit/widgets/bottom/bottom_nav_item.dart';
 class RootScreen extends StatefulWidget {
   const RootScreen({super.key});
 
-  static BuildContext? maybeContext(BuildContext context) {
-    final result = context.findAncestorStateOfType<_RootScreenState>();
-    return result?.context;
-  }
+  static BuildContext? maybeContext(BuildContext context) =>
+      context.findAncestorStateOfType<_RootScreenState>()?.context;
 
   static BuildContext context(BuildContext context) {
     final result = context.findAncestorStateOfType<_RootScreenState>();

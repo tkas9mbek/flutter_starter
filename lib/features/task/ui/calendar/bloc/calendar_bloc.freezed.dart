@@ -19,38 +19,38 @@ mixin _$CalendarEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(DateTime date) dateSelected,
-    required TResult Function(String taskId) taskToggled,
+    required TResult Function() refreshed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(DateTime date)? dateSelected,
-    TResult? Function(String taskId)? taskToggled,
+    TResult? Function()? refreshed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(DateTime date)? dateSelected,
-    TResult Function(String taskId)? taskToggled,
+    TResult Function()? refreshed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_DateSelectedCalendarEvent value) dateSelected,
-    required TResult Function(_TaskToggledCalendarEvent value) taskToggled,
+    required TResult Function(_RefreshedCalendarEvent value) refreshed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_DateSelectedCalendarEvent value)? dateSelected,
-    TResult? Function(_TaskToggledCalendarEvent value)? taskToggled,
+    TResult? Function(_RefreshedCalendarEvent value)? refreshed,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_DateSelectedCalendarEvent value)? dateSelected,
-    TResult Function(_TaskToggledCalendarEvent value)? taskToggled,
+    TResult Function(_RefreshedCalendarEvent value)? refreshed,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -149,7 +149,7 @@ class _$DateSelectedCalendarEventImpl implements _DateSelectedCalendarEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(DateTime date) dateSelected,
-    required TResult Function(String taskId) taskToggled,
+    required TResult Function() refreshed,
   }) {
     return dateSelected(date);
   }
@@ -158,7 +158,7 @@ class _$DateSelectedCalendarEventImpl implements _DateSelectedCalendarEvent {
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(DateTime date)? dateSelected,
-    TResult? Function(String taskId)? taskToggled,
+    TResult? Function()? refreshed,
   }) {
     return dateSelected?.call(date);
   }
@@ -167,7 +167,7 @@ class _$DateSelectedCalendarEventImpl implements _DateSelectedCalendarEvent {
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(DateTime date)? dateSelected,
-    TResult Function(String taskId)? taskToggled,
+    TResult Function()? refreshed,
     required TResult orElse(),
   }) {
     if (dateSelected != null) {
@@ -180,7 +180,7 @@ class _$DateSelectedCalendarEventImpl implements _DateSelectedCalendarEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_DateSelectedCalendarEvent value) dateSelected,
-    required TResult Function(_TaskToggledCalendarEvent value) taskToggled,
+    required TResult Function(_RefreshedCalendarEvent value) refreshed,
   }) {
     return dateSelected(this);
   }
@@ -189,7 +189,7 @@ class _$DateSelectedCalendarEventImpl implements _DateSelectedCalendarEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_DateSelectedCalendarEvent value)? dateSelected,
-    TResult? Function(_TaskToggledCalendarEvent value)? taskToggled,
+    TResult? Function(_RefreshedCalendarEvent value)? refreshed,
   }) {
     return dateSelected?.call(this);
   }
@@ -198,7 +198,7 @@ class _$DateSelectedCalendarEventImpl implements _DateSelectedCalendarEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_DateSelectedCalendarEvent value)? dateSelected,
-    TResult Function(_TaskToggledCalendarEvent value)? taskToggled,
+    TResult Function(_RefreshedCalendarEvent value)? refreshed,
     required TResult orElse(),
   }) {
     if (dateSelected != null) {
@@ -222,100 +222,73 @@ abstract class _DateSelectedCalendarEvent implements CalendarEvent {
 }
 
 /// @nodoc
-abstract class _$$TaskToggledCalendarEventImplCopyWith<$Res> {
-  factory _$$TaskToggledCalendarEventImplCopyWith(
-          _$TaskToggledCalendarEventImpl value,
-          $Res Function(_$TaskToggledCalendarEventImpl) then) =
-      __$$TaskToggledCalendarEventImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({String taskId});
+abstract class _$$RefreshedCalendarEventImplCopyWith<$Res> {
+  factory _$$RefreshedCalendarEventImplCopyWith(
+          _$RefreshedCalendarEventImpl value,
+          $Res Function(_$RefreshedCalendarEventImpl) then) =
+      __$$RefreshedCalendarEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$TaskToggledCalendarEventImplCopyWithImpl<$Res>
-    extends _$CalendarEventCopyWithImpl<$Res, _$TaskToggledCalendarEventImpl>
-    implements _$$TaskToggledCalendarEventImplCopyWith<$Res> {
-  __$$TaskToggledCalendarEventImplCopyWithImpl(
-      _$TaskToggledCalendarEventImpl _value,
-      $Res Function(_$TaskToggledCalendarEventImpl) _then)
+class __$$RefreshedCalendarEventImplCopyWithImpl<$Res>
+    extends _$CalendarEventCopyWithImpl<$Res, _$RefreshedCalendarEventImpl>
+    implements _$$RefreshedCalendarEventImplCopyWith<$Res> {
+  __$$RefreshedCalendarEventImplCopyWithImpl(
+      _$RefreshedCalendarEventImpl _value,
+      $Res Function(_$RefreshedCalendarEventImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of CalendarEvent
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? taskId = null,
-  }) {
-    return _then(_$TaskToggledCalendarEventImpl(
-      null == taskId
-          ? _value.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
 }
 
 /// @nodoc
 
-class _$TaskToggledCalendarEventImpl implements _TaskToggledCalendarEvent {
-  const _$TaskToggledCalendarEventImpl(this.taskId);
-
-  @override
-  final String taskId;
+class _$RefreshedCalendarEventImpl implements _RefreshedCalendarEvent {
+  const _$RefreshedCalendarEventImpl();
 
   @override
   String toString() {
-    return 'CalendarEvent.taskToggled(taskId: $taskId)';
+    return 'CalendarEvent.refreshed()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TaskToggledCalendarEventImpl &&
-            (identical(other.taskId, taskId) || other.taskId == taskId));
+            other is _$RefreshedCalendarEventImpl);
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, taskId);
-
-  /// Create a copy of CalendarEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$TaskToggledCalendarEventImplCopyWith<_$TaskToggledCalendarEventImpl>
-      get copyWith => __$$TaskToggledCalendarEventImplCopyWithImpl<
-          _$TaskToggledCalendarEventImpl>(this, _$identity);
+  int get hashCode => runtimeType.hashCode;
 
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(DateTime date) dateSelected,
-    required TResult Function(String taskId) taskToggled,
+    required TResult Function() refreshed,
   }) {
-    return taskToggled(taskId);
+    return refreshed();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(DateTime date)? dateSelected,
-    TResult? Function(String taskId)? taskToggled,
+    TResult? Function()? refreshed,
   }) {
-    return taskToggled?.call(taskId);
+    return refreshed?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(DateTime date)? dateSelected,
-    TResult Function(String taskId)? taskToggled,
+    TResult Function()? refreshed,
     required TResult orElse(),
   }) {
-    if (taskToggled != null) {
-      return taskToggled(taskId);
+    if (refreshed != null) {
+      return refreshed();
     }
     return orElse();
   }
@@ -324,99 +297,678 @@ class _$TaskToggledCalendarEventImpl implements _TaskToggledCalendarEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_DateSelectedCalendarEvent value) dateSelected,
-    required TResult Function(_TaskToggledCalendarEvent value) taskToggled,
+    required TResult Function(_RefreshedCalendarEvent value) refreshed,
   }) {
-    return taskToggled(this);
+    return refreshed(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_DateSelectedCalendarEvent value)? dateSelected,
-    TResult? Function(_TaskToggledCalendarEvent value)? taskToggled,
+    TResult? Function(_RefreshedCalendarEvent value)? refreshed,
   }) {
-    return taskToggled?.call(this);
+    return refreshed?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_DateSelectedCalendarEvent value)? dateSelected,
-    TResult Function(_TaskToggledCalendarEvent value)? taskToggled,
+    TResult Function(_RefreshedCalendarEvent value)? refreshed,
     required TResult orElse(),
   }) {
-    if (taskToggled != null) {
-      return taskToggled(this);
+    if (refreshed != null) {
+      return refreshed(this);
     }
     return orElse();
   }
 }
 
-abstract class _TaskToggledCalendarEvent implements CalendarEvent {
-  const factory _TaskToggledCalendarEvent(final String taskId) =
-      _$TaskToggledCalendarEventImpl;
-
-  String get taskId;
-
-  /// Create a copy of CalendarEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TaskToggledCalendarEventImplCopyWith<_$TaskToggledCalendarEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+abstract class _RefreshedCalendarEvent implements CalendarEvent {
+  const factory _RefreshedCalendarEvent() = _$RefreshedCalendarEventImpl;
 }
 
 /// @nodoc
-mixin _$CalendarState {
+mixin _$CalendarStatus {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() initial,
-    required TResult Function(DateTime selectedDate) loading,
-    required TResult Function(DateTime selectedDate, List<Task> tasks) success,
-    required TResult Function(DateTime selectedDate, AppException exception)
-        failure,
+    required TResult Function() loading,
+    required TResult Function(List<Task> tasks) success,
+    required TResult Function(AppException exception) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
-    TResult? Function(DateTime selectedDate)? loading,
-    TResult? Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult? Function(DateTime selectedDate, AppException exception)? failure,
+    TResult? Function()? loading,
+    TResult? Function(List<Task> tasks)? success,
+    TResult? Function(AppException exception)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
-    TResult Function(DateTime selectedDate)? loading,
-    TResult Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult Function(DateTime selectedDate, AppException exception)? failure,
+    TResult Function()? loading,
+    TResult Function(List<Task> tasks)? success,
+    TResult Function(AppException exception)? failure,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_InitialCalendarState value) initial,
-    required TResult Function(_LoadingCalendarState value) loading,
-    required TResult Function(_SuccessCalendarState value) success,
-    required TResult Function(_FailureCalendarState value) failure,
+    required TResult Function(_InitialCalendarStatus value) initial,
+    required TResult Function(_LoadingCalendarStatus value) loading,
+    required TResult Function(_SuccessCalendarStatus value) success,
+    required TResult Function(_FailureCalendarStatus value) failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialCalendarState value)? initial,
-    TResult? Function(_LoadingCalendarState value)? loading,
-    TResult? Function(_SuccessCalendarState value)? success,
-    TResult? Function(_FailureCalendarState value)? failure,
+    TResult? Function(_InitialCalendarStatus value)? initial,
+    TResult? Function(_LoadingCalendarStatus value)? loading,
+    TResult? Function(_SuccessCalendarStatus value)? success,
+    TResult? Function(_FailureCalendarStatus value)? failure,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialCalendarState value)? initial,
-    TResult Function(_LoadingCalendarState value)? loading,
-    TResult Function(_SuccessCalendarState value)? success,
-    TResult Function(_FailureCalendarState value)? failure,
+    TResult Function(_InitialCalendarStatus value)? initial,
+    TResult Function(_LoadingCalendarStatus value)? loading,
+    TResult Function(_SuccessCalendarStatus value)? success,
+    TResult Function(_FailureCalendarStatus value)? failure,
     required TResult orElse(),
   }) =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $CalendarStatusCopyWith<$Res> {
+  factory $CalendarStatusCopyWith(
+          CalendarStatus value, $Res Function(CalendarStatus) then) =
+      _$CalendarStatusCopyWithImpl<$Res, CalendarStatus>;
+}
+
+/// @nodoc
+class _$CalendarStatusCopyWithImpl<$Res, $Val extends CalendarStatus>
+    implements $CalendarStatusCopyWith<$Res> {
+  _$CalendarStatusCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+abstract class _$$InitialCalendarStatusImplCopyWith<$Res> {
+  factory _$$InitialCalendarStatusImplCopyWith(
+          _$InitialCalendarStatusImpl value,
+          $Res Function(_$InitialCalendarStatusImpl) then) =
+      __$$InitialCalendarStatusImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$InitialCalendarStatusImplCopyWithImpl<$Res>
+    extends _$CalendarStatusCopyWithImpl<$Res, _$InitialCalendarStatusImpl>
+    implements _$$InitialCalendarStatusImplCopyWith<$Res> {
+  __$$InitialCalendarStatusImplCopyWithImpl(_$InitialCalendarStatusImpl _value,
+      $Res Function(_$InitialCalendarStatusImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$InitialCalendarStatusImpl implements _InitialCalendarStatus {
+  const _$InitialCalendarStatusImpl();
+
+  @override
+  String toString() {
+    return 'CalendarStatus.initial()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$InitialCalendarStatusImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(List<Task> tasks) success,
+    required TResult Function(AppException exception) failure,
+  }) {
+    return initial();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(List<Task> tasks)? success,
+    TResult? Function(AppException exception)? failure,
+  }) {
+    return initial?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(List<Task> tasks)? success,
+    TResult Function(AppException exception)? failure,
+    required TResult orElse(),
+  }) {
+    if (initial != null) {
+      return initial();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_InitialCalendarStatus value) initial,
+    required TResult Function(_LoadingCalendarStatus value) loading,
+    required TResult Function(_SuccessCalendarStatus value) success,
+    required TResult Function(_FailureCalendarStatus value) failure,
+  }) {
+    return initial(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_InitialCalendarStatus value)? initial,
+    TResult? Function(_LoadingCalendarStatus value)? loading,
+    TResult? Function(_SuccessCalendarStatus value)? success,
+    TResult? Function(_FailureCalendarStatus value)? failure,
+  }) {
+    return initial?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_InitialCalendarStatus value)? initial,
+    TResult Function(_LoadingCalendarStatus value)? loading,
+    TResult Function(_SuccessCalendarStatus value)? success,
+    TResult Function(_FailureCalendarStatus value)? failure,
+    required TResult orElse(),
+  }) {
+    if (initial != null) {
+      return initial(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _InitialCalendarStatus implements CalendarStatus {
+  const factory _InitialCalendarStatus() = _$InitialCalendarStatusImpl;
+}
+
+/// @nodoc
+abstract class _$$LoadingCalendarStatusImplCopyWith<$Res> {
+  factory _$$LoadingCalendarStatusImplCopyWith(
+          _$LoadingCalendarStatusImpl value,
+          $Res Function(_$LoadingCalendarStatusImpl) then) =
+      __$$LoadingCalendarStatusImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$LoadingCalendarStatusImplCopyWithImpl<$Res>
+    extends _$CalendarStatusCopyWithImpl<$Res, _$LoadingCalendarStatusImpl>
+    implements _$$LoadingCalendarStatusImplCopyWith<$Res> {
+  __$$LoadingCalendarStatusImplCopyWithImpl(_$LoadingCalendarStatusImpl _value,
+      $Res Function(_$LoadingCalendarStatusImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$LoadingCalendarStatusImpl implements _LoadingCalendarStatus {
+  const _$LoadingCalendarStatusImpl();
+
+  @override
+  String toString() {
+    return 'CalendarStatus.loading()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LoadingCalendarStatusImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(List<Task> tasks) success,
+    required TResult Function(AppException exception) failure,
+  }) {
+    return loading();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(List<Task> tasks)? success,
+    TResult? Function(AppException exception)? failure,
+  }) {
+    return loading?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(List<Task> tasks)? success,
+    TResult Function(AppException exception)? failure,
+    required TResult orElse(),
+  }) {
+    if (loading != null) {
+      return loading();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_InitialCalendarStatus value) initial,
+    required TResult Function(_LoadingCalendarStatus value) loading,
+    required TResult Function(_SuccessCalendarStatus value) success,
+    required TResult Function(_FailureCalendarStatus value) failure,
+  }) {
+    return loading(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_InitialCalendarStatus value)? initial,
+    TResult? Function(_LoadingCalendarStatus value)? loading,
+    TResult? Function(_SuccessCalendarStatus value)? success,
+    TResult? Function(_FailureCalendarStatus value)? failure,
+  }) {
+    return loading?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_InitialCalendarStatus value)? initial,
+    TResult Function(_LoadingCalendarStatus value)? loading,
+    TResult Function(_SuccessCalendarStatus value)? success,
+    TResult Function(_FailureCalendarStatus value)? failure,
+    required TResult orElse(),
+  }) {
+    if (loading != null) {
+      return loading(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _LoadingCalendarStatus implements CalendarStatus {
+  const factory _LoadingCalendarStatus() = _$LoadingCalendarStatusImpl;
+}
+
+/// @nodoc
+abstract class _$$SuccessCalendarStatusImplCopyWith<$Res> {
+  factory _$$SuccessCalendarStatusImplCopyWith(
+          _$SuccessCalendarStatusImpl value,
+          $Res Function(_$SuccessCalendarStatusImpl) then) =
+      __$$SuccessCalendarStatusImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({List<Task> tasks});
+}
+
+/// @nodoc
+class __$$SuccessCalendarStatusImplCopyWithImpl<$Res>
+    extends _$CalendarStatusCopyWithImpl<$Res, _$SuccessCalendarStatusImpl>
+    implements _$$SuccessCalendarStatusImplCopyWith<$Res> {
+  __$$SuccessCalendarStatusImplCopyWithImpl(_$SuccessCalendarStatusImpl _value,
+      $Res Function(_$SuccessCalendarStatusImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? tasks = null,
+  }) {
+    return _then(_$SuccessCalendarStatusImpl(
+      tasks: null == tasks
+          ? _value._tasks
+          : tasks // ignore: cast_nullable_to_non_nullable
+              as List<Task>,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$SuccessCalendarStatusImpl implements _SuccessCalendarStatus {
+  const _$SuccessCalendarStatusImpl({required final List<Task> tasks})
+      : _tasks = tasks;
+
+  final List<Task> _tasks;
+  @override
+  List<Task> get tasks {
+    if (_tasks is EqualUnmodifiableListView) return _tasks;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_tasks);
+  }
+
+  @override
+  String toString() {
+    return 'CalendarStatus.success(tasks: $tasks)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$SuccessCalendarStatusImpl &&
+            const DeepCollectionEquality().equals(other._tasks, _tasks));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(_tasks));
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$SuccessCalendarStatusImplCopyWith<_$SuccessCalendarStatusImpl>
+      get copyWith => __$$SuccessCalendarStatusImplCopyWithImpl<
+          _$SuccessCalendarStatusImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(List<Task> tasks) success,
+    required TResult Function(AppException exception) failure,
+  }) {
+    return success(tasks);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(List<Task> tasks)? success,
+    TResult? Function(AppException exception)? failure,
+  }) {
+    return success?.call(tasks);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(List<Task> tasks)? success,
+    TResult Function(AppException exception)? failure,
+    required TResult orElse(),
+  }) {
+    if (success != null) {
+      return success(tasks);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_InitialCalendarStatus value) initial,
+    required TResult Function(_LoadingCalendarStatus value) loading,
+    required TResult Function(_SuccessCalendarStatus value) success,
+    required TResult Function(_FailureCalendarStatus value) failure,
+  }) {
+    return success(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_InitialCalendarStatus value)? initial,
+    TResult? Function(_LoadingCalendarStatus value)? loading,
+    TResult? Function(_SuccessCalendarStatus value)? success,
+    TResult? Function(_FailureCalendarStatus value)? failure,
+  }) {
+    return success?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_InitialCalendarStatus value)? initial,
+    TResult Function(_LoadingCalendarStatus value)? loading,
+    TResult Function(_SuccessCalendarStatus value)? success,
+    TResult Function(_FailureCalendarStatus value)? failure,
+    required TResult orElse(),
+  }) {
+    if (success != null) {
+      return success(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _SuccessCalendarStatus implements CalendarStatus {
+  const factory _SuccessCalendarStatus({required final List<Task> tasks}) =
+      _$SuccessCalendarStatusImpl;
+
+  List<Task> get tasks;
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$SuccessCalendarStatusImplCopyWith<_$SuccessCalendarStatusImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$FailureCalendarStatusImplCopyWith<$Res> {
+  factory _$$FailureCalendarStatusImplCopyWith(
+          _$FailureCalendarStatusImpl value,
+          $Res Function(_$FailureCalendarStatusImpl) then) =
+      __$$FailureCalendarStatusImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({AppException exception});
+}
+
+/// @nodoc
+class __$$FailureCalendarStatusImplCopyWithImpl<$Res>
+    extends _$CalendarStatusCopyWithImpl<$Res, _$FailureCalendarStatusImpl>
+    implements _$$FailureCalendarStatusImplCopyWith<$Res> {
+  __$$FailureCalendarStatusImplCopyWithImpl(_$FailureCalendarStatusImpl _value,
+      $Res Function(_$FailureCalendarStatusImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? exception = null,
+  }) {
+    return _then(_$FailureCalendarStatusImpl(
+      exception: null == exception
+          ? _value.exception
+          : exception // ignore: cast_nullable_to_non_nullable
+              as AppException,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$FailureCalendarStatusImpl implements _FailureCalendarStatus {
+  const _$FailureCalendarStatusImpl({required this.exception});
+
+  @override
+  final AppException exception;
+
+  @override
+  String toString() {
+    return 'CalendarStatus.failure(exception: $exception)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$FailureCalendarStatusImpl &&
+            (identical(other.exception, exception) ||
+                other.exception == exception));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, exception);
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$FailureCalendarStatusImplCopyWith<_$FailureCalendarStatusImpl>
+      get copyWith => __$$FailureCalendarStatusImplCopyWithImpl<
+          _$FailureCalendarStatusImpl>(this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() initial,
+    required TResult Function() loading,
+    required TResult Function(List<Task> tasks) success,
+    required TResult Function(AppException exception) failure,
+  }) {
+    return failure(exception);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? initial,
+    TResult? Function()? loading,
+    TResult? Function(List<Task> tasks)? success,
+    TResult? Function(AppException exception)? failure,
+  }) {
+    return failure?.call(exception);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? initial,
+    TResult Function()? loading,
+    TResult Function(List<Task> tasks)? success,
+    TResult Function(AppException exception)? failure,
+    required TResult orElse(),
+  }) {
+    if (failure != null) {
+      return failure(exception);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_InitialCalendarStatus value) initial,
+    required TResult Function(_LoadingCalendarStatus value) loading,
+    required TResult Function(_SuccessCalendarStatus value) success,
+    required TResult Function(_FailureCalendarStatus value) failure,
+  }) {
+    return failure(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_InitialCalendarStatus value)? initial,
+    TResult? Function(_LoadingCalendarStatus value)? loading,
+    TResult? Function(_SuccessCalendarStatus value)? success,
+    TResult? Function(_FailureCalendarStatus value)? failure,
+  }) {
+    return failure?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_InitialCalendarStatus value)? initial,
+    TResult Function(_LoadingCalendarStatus value)? loading,
+    TResult Function(_SuccessCalendarStatus value)? success,
+    TResult Function(_FailureCalendarStatus value)? failure,
+    required TResult orElse(),
+  }) {
+    if (failure != null) {
+      return failure(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _FailureCalendarStatus implements CalendarStatus {
+  const factory _FailureCalendarStatus(
+      {required final AppException exception}) = _$FailureCalendarStatusImpl;
+
+  AppException get exception;
+
+  /// Create a copy of CalendarStatus
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$FailureCalendarStatusImplCopyWith<_$FailureCalendarStatusImpl>
+      get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$CalendarState {
+  DateTime get selectedDate => throw _privateConstructorUsedError;
+  CalendarStatus get status => throw _privateConstructorUsedError;
+
+  /// Create a copy of CalendarState
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $CalendarStateCopyWith<CalendarState> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -425,6 +977,10 @@ abstract class $CalendarStateCopyWith<$Res> {
   factory $CalendarStateCopyWith(
           CalendarState value, $Res Function(CalendarState) then) =
       _$CalendarStateCopyWithImpl<$Res, CalendarState>;
+  @useResult
+  $Res call({DateTime selectedDate, CalendarStatus status});
+
+  $CalendarStatusCopyWith<$Res> get status;
 }
 
 /// @nodoc
@@ -439,143 +995,55 @@ class _$CalendarStateCopyWithImpl<$Res, $Val extends CalendarState>
 
   /// Create a copy of CalendarState
   /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-abstract class _$$InitialCalendarStateImplCopyWith<$Res> {
-  factory _$$InitialCalendarStateImplCopyWith(_$InitialCalendarStateImpl value,
-          $Res Function(_$InitialCalendarStateImpl) then) =
-      __$$InitialCalendarStateImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$InitialCalendarStateImplCopyWithImpl<$Res>
-    extends _$CalendarStateCopyWithImpl<$Res, _$InitialCalendarStateImpl>
-    implements _$$InitialCalendarStateImplCopyWith<$Res> {
-  __$$InitialCalendarStateImplCopyWithImpl(_$InitialCalendarStateImpl _value,
-      $Res Function(_$InitialCalendarStateImpl) _then)
-      : super(_value, _then);
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? selectedDate = null,
+    Object? status = null,
+  }) {
+    return _then(_value.copyWith(
+      selectedDate: null == selectedDate
+          ? _value.selectedDate
+          : selectedDate // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as CalendarStatus,
+    ) as $Val);
+  }
 
   /// Create a copy of CalendarState
   /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $CalendarStatusCopyWith<$Res> get status {
+    return $CalendarStatusCopyWith<$Res>(_value.status, (value) {
+      return _then(_value.copyWith(status: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
-
-class _$InitialCalendarStateImpl extends _InitialCalendarState {
-  const _$InitialCalendarStateImpl() : super._();
-
+abstract class _$$CalendarStateImplCopyWith<$Res>
+    implements $CalendarStateCopyWith<$Res> {
+  factory _$$CalendarStateImplCopyWith(
+          _$CalendarStateImpl value, $Res Function(_$CalendarStateImpl) then) =
+      __$$CalendarStateImplCopyWithImpl<$Res>;
   @override
-  String toString() {
-    return 'CalendarState.initial()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$InitialCalendarStateImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function(DateTime selectedDate) loading,
-    required TResult Function(DateTime selectedDate, List<Task> tasks) success,
-    required TResult Function(DateTime selectedDate, AppException exception)
-        failure,
-  }) {
-    return initial();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function(DateTime selectedDate)? loading,
-    TResult? Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult? Function(DateTime selectedDate, AppException exception)? failure,
-  }) {
-    return initial?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function(DateTime selectedDate)? loading,
-    TResult Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult Function(DateTime selectedDate, AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialCalendarState value) initial,
-    required TResult Function(_LoadingCalendarState value) loading,
-    required TResult Function(_SuccessCalendarState value) success,
-    required TResult Function(_FailureCalendarState value) failure,
-  }) {
-    return initial(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialCalendarState value)? initial,
-    TResult? Function(_LoadingCalendarState value)? loading,
-    TResult? Function(_SuccessCalendarState value)? success,
-    TResult? Function(_FailureCalendarState value)? failure,
-  }) {
-    return initial?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialCalendarState value)? initial,
-    TResult Function(_LoadingCalendarState value)? loading,
-    TResult Function(_SuccessCalendarState value)? success,
-    TResult Function(_FailureCalendarState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _InitialCalendarState extends CalendarState {
-  const factory _InitialCalendarState() = _$InitialCalendarStateImpl;
-  const _InitialCalendarState._() : super._();
-}
-
-/// @nodoc
-abstract class _$$LoadingCalendarStateImplCopyWith<$Res> {
-  factory _$$LoadingCalendarStateImplCopyWith(_$LoadingCalendarStateImpl value,
-          $Res Function(_$LoadingCalendarStateImpl) then) =
-      __$$LoadingCalendarStateImplCopyWithImpl<$Res>;
   @useResult
-  $Res call({DateTime selectedDate});
+  $Res call({DateTime selectedDate, CalendarStatus status});
+
+  @override
+  $CalendarStatusCopyWith<$Res> get status;
 }
 
 /// @nodoc
-class __$$LoadingCalendarStateImplCopyWithImpl<$Res>
-    extends _$CalendarStateCopyWithImpl<$Res, _$LoadingCalendarStateImpl>
-    implements _$$LoadingCalendarStateImplCopyWith<$Res> {
-  __$$LoadingCalendarStateImplCopyWithImpl(_$LoadingCalendarStateImpl _value,
-      $Res Function(_$LoadingCalendarStateImpl) _then)
+class __$$CalendarStateImplCopyWithImpl<$Res>
+    extends _$CalendarStateCopyWithImpl<$Res, _$CalendarStateImpl>
+    implements _$$CalendarStateImplCopyWith<$Res> {
+  __$$CalendarStateImplCopyWithImpl(
+      _$CalendarStateImpl _value, $Res Function(_$CalendarStateImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of CalendarState
@@ -584,485 +1052,74 @@ class __$$LoadingCalendarStateImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? selectedDate = null,
+    Object? status = null,
   }) {
-    return _then(_$LoadingCalendarStateImpl(
+    return _then(_$CalendarStateImpl(
       selectedDate: null == selectedDate
           ? _value.selectedDate
           : selectedDate // ignore: cast_nullable_to_non_nullable
               as DateTime,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as CalendarStatus,
     ));
   }
 }
 
 /// @nodoc
 
-class _$LoadingCalendarStateImpl extends _LoadingCalendarState {
-  const _$LoadingCalendarStateImpl({required this.selectedDate}) : super._();
-
-  @override
-  final DateTime selectedDate;
-
-  @override
-  String toString() {
-    return 'CalendarState.loading(selectedDate: $selectedDate)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LoadingCalendarStateImpl &&
-            (identical(other.selectedDate, selectedDate) ||
-                other.selectedDate == selectedDate));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, selectedDate);
-
-  /// Create a copy of CalendarState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$LoadingCalendarStateImplCopyWith<_$LoadingCalendarStateImpl>
-      get copyWith =>
-          __$$LoadingCalendarStateImplCopyWithImpl<_$LoadingCalendarStateImpl>(
-              this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function(DateTime selectedDate) loading,
-    required TResult Function(DateTime selectedDate, List<Task> tasks) success,
-    required TResult Function(DateTime selectedDate, AppException exception)
-        failure,
-  }) {
-    return loading(selectedDate);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function(DateTime selectedDate)? loading,
-    TResult? Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult? Function(DateTime selectedDate, AppException exception)? failure,
-  }) {
-    return loading?.call(selectedDate);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function(DateTime selectedDate)? loading,
-    TResult Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult Function(DateTime selectedDate, AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading(selectedDate);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialCalendarState value) initial,
-    required TResult Function(_LoadingCalendarState value) loading,
-    required TResult Function(_SuccessCalendarState value) success,
-    required TResult Function(_FailureCalendarState value) failure,
-  }) {
-    return loading(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialCalendarState value)? initial,
-    TResult? Function(_LoadingCalendarState value)? loading,
-    TResult? Function(_SuccessCalendarState value)? success,
-    TResult? Function(_FailureCalendarState value)? failure,
-  }) {
-    return loading?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialCalendarState value)? initial,
-    TResult Function(_LoadingCalendarState value)? loading,
-    TResult Function(_SuccessCalendarState value)? success,
-    TResult Function(_FailureCalendarState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _LoadingCalendarState extends CalendarState {
-  const factory _LoadingCalendarState({required final DateTime selectedDate}) =
-      _$LoadingCalendarStateImpl;
-  const _LoadingCalendarState._() : super._();
-
-  DateTime get selectedDate;
-
-  /// Create a copy of CalendarState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$LoadingCalendarStateImplCopyWith<_$LoadingCalendarStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$SuccessCalendarStateImplCopyWith<$Res> {
-  factory _$$SuccessCalendarStateImplCopyWith(_$SuccessCalendarStateImpl value,
-          $Res Function(_$SuccessCalendarStateImpl) then) =
-      __$$SuccessCalendarStateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({DateTime selectedDate, List<Task> tasks});
-}
-
-/// @nodoc
-class __$$SuccessCalendarStateImplCopyWithImpl<$Res>
-    extends _$CalendarStateCopyWithImpl<$Res, _$SuccessCalendarStateImpl>
-    implements _$$SuccessCalendarStateImplCopyWith<$Res> {
-  __$$SuccessCalendarStateImplCopyWithImpl(_$SuccessCalendarStateImpl _value,
-      $Res Function(_$SuccessCalendarStateImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CalendarState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? selectedDate = null,
-    Object? tasks = null,
-  }) {
-    return _then(_$SuccessCalendarStateImpl(
-      selectedDate: null == selectedDate
-          ? _value.selectedDate
-          : selectedDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      tasks: null == tasks
-          ? _value._tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<Task>,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$SuccessCalendarStateImpl extends _SuccessCalendarState {
-  const _$SuccessCalendarStateImpl(
-      {required this.selectedDate, required final List<Task> tasks})
-      : _tasks = tasks,
-        super._();
-
-  @override
-  final DateTime selectedDate;
-  final List<Task> _tasks;
-  @override
-  List<Task> get tasks {
-    if (_tasks is EqualUnmodifiableListView) return _tasks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tasks);
-  }
-
-  @override
-  String toString() {
-    return 'CalendarState.success(selectedDate: $selectedDate, tasks: $tasks)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SuccessCalendarStateImpl &&
-            (identical(other.selectedDate, selectedDate) ||
-                other.selectedDate == selectedDate) &&
-            const DeepCollectionEquality().equals(other._tasks, _tasks));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-      runtimeType, selectedDate, const DeepCollectionEquality().hash(_tasks));
-
-  /// Create a copy of CalendarState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SuccessCalendarStateImplCopyWith<_$SuccessCalendarStateImpl>
-      get copyWith =>
-          __$$SuccessCalendarStateImplCopyWithImpl<_$SuccessCalendarStateImpl>(
-              this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function(DateTime selectedDate) loading,
-    required TResult Function(DateTime selectedDate, List<Task> tasks) success,
-    required TResult Function(DateTime selectedDate, AppException exception)
-        failure,
-  }) {
-    return success(selectedDate, tasks);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function(DateTime selectedDate)? loading,
-    TResult? Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult? Function(DateTime selectedDate, AppException exception)? failure,
-  }) {
-    return success?.call(selectedDate, tasks);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function(DateTime selectedDate)? loading,
-    TResult Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult Function(DateTime selectedDate, AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(selectedDate, tasks);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialCalendarState value) initial,
-    required TResult Function(_LoadingCalendarState value) loading,
-    required TResult Function(_SuccessCalendarState value) success,
-    required TResult Function(_FailureCalendarState value) failure,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialCalendarState value)? initial,
-    TResult? Function(_LoadingCalendarState value)? loading,
-    TResult? Function(_SuccessCalendarState value)? success,
-    TResult? Function(_FailureCalendarState value)? failure,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialCalendarState value)? initial,
-    TResult Function(_LoadingCalendarState value)? loading,
-    TResult Function(_SuccessCalendarState value)? success,
-    TResult Function(_FailureCalendarState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _SuccessCalendarState extends CalendarState {
-  const factory _SuccessCalendarState(
-      {required final DateTime selectedDate,
-      required final List<Task> tasks}) = _$SuccessCalendarStateImpl;
-  const _SuccessCalendarState._() : super._();
-
-  DateTime get selectedDate;
-  List<Task> get tasks;
-
-  /// Create a copy of CalendarState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SuccessCalendarStateImplCopyWith<_$SuccessCalendarStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$FailureCalendarStateImplCopyWith<$Res> {
-  factory _$$FailureCalendarStateImplCopyWith(_$FailureCalendarStateImpl value,
-          $Res Function(_$FailureCalendarStateImpl) then) =
-      __$$FailureCalendarStateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({DateTime selectedDate, AppException exception});
-}
-
-/// @nodoc
-class __$$FailureCalendarStateImplCopyWithImpl<$Res>
-    extends _$CalendarStateCopyWithImpl<$Res, _$FailureCalendarStateImpl>
-    implements _$$FailureCalendarStateImplCopyWith<$Res> {
-  __$$FailureCalendarStateImplCopyWithImpl(_$FailureCalendarStateImpl _value,
-      $Res Function(_$FailureCalendarStateImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CalendarState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? selectedDate = null,
-    Object? exception = null,
-  }) {
-    return _then(_$FailureCalendarStateImpl(
-      selectedDate: null == selectedDate
-          ? _value.selectedDate
-          : selectedDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      exception: null == exception
-          ? _value.exception
-          : exception // ignore: cast_nullable_to_non_nullable
-              as AppException,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$FailureCalendarStateImpl extends _FailureCalendarState {
-  const _$FailureCalendarStateImpl(
-      {required this.selectedDate, required this.exception})
+class _$CalendarStateImpl extends _CalendarState {
+  const _$CalendarStateImpl({required this.selectedDate, required this.status})
       : super._();
 
   @override
   final DateTime selectedDate;
   @override
-  final AppException exception;
+  final CalendarStatus status;
 
   @override
   String toString() {
-    return 'CalendarState.failure(selectedDate: $selectedDate, exception: $exception)';
+    return 'CalendarState(selectedDate: $selectedDate, status: $status)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$FailureCalendarStateImpl &&
+            other is _$CalendarStateImpl &&
             (identical(other.selectedDate, selectedDate) ||
                 other.selectedDate == selectedDate) &&
-            (identical(other.exception, exception) ||
-                other.exception == exception));
+            (identical(other.status, status) || other.status == status));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, selectedDate, exception);
+  int get hashCode => Object.hash(runtimeType, selectedDate, status);
 
   /// Create a copy of CalendarState
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$FailureCalendarStateImplCopyWith<_$FailureCalendarStateImpl>
-      get copyWith =>
-          __$$FailureCalendarStateImplCopyWithImpl<_$FailureCalendarStateImpl>(
-              this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function(DateTime selectedDate) loading,
-    required TResult Function(DateTime selectedDate, List<Task> tasks) success,
-    required TResult Function(DateTime selectedDate, AppException exception)
-        failure,
-  }) {
-    return failure(selectedDate, exception);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function(DateTime selectedDate)? loading,
-    TResult? Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult? Function(DateTime selectedDate, AppException exception)? failure,
-  }) {
-    return failure?.call(selectedDate, exception);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function(DateTime selectedDate)? loading,
-    TResult Function(DateTime selectedDate, List<Task> tasks)? success,
-    TResult Function(DateTime selectedDate, AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(selectedDate, exception);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialCalendarState value) initial,
-    required TResult Function(_LoadingCalendarState value) loading,
-    required TResult Function(_SuccessCalendarState value) success,
-    required TResult Function(_FailureCalendarState value) failure,
-  }) {
-    return failure(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialCalendarState value)? initial,
-    TResult? Function(_LoadingCalendarState value)? loading,
-    TResult? Function(_SuccessCalendarState value)? success,
-    TResult? Function(_FailureCalendarState value)? failure,
-  }) {
-    return failure?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialCalendarState value)? initial,
-    TResult Function(_LoadingCalendarState value)? loading,
-    TResult Function(_SuccessCalendarState value)? success,
-    TResult Function(_FailureCalendarState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(this);
-    }
-    return orElse();
-  }
+  _$$CalendarStateImplCopyWith<_$CalendarStateImpl> get copyWith =>
+      __$$CalendarStateImplCopyWithImpl<_$CalendarStateImpl>(this, _$identity);
 }
 
-abstract class _FailureCalendarState extends CalendarState {
-  const factory _FailureCalendarState(
+abstract class _CalendarState extends CalendarState {
+  const factory _CalendarState(
       {required final DateTime selectedDate,
-      required final AppException exception}) = _$FailureCalendarStateImpl;
-  const _FailureCalendarState._() : super._();
+      required final CalendarStatus status}) = _$CalendarStateImpl;
+  const _CalendarState._() : super._();
 
+  @override
   DateTime get selectedDate;
-  AppException get exception;
+  @override
+  CalendarStatus get status;
 
   /// Create a copy of CalendarState
   /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FailureCalendarStateImplCopyWith<_$FailureCalendarStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  _$$CalendarStateImplCopyWith<_$CalendarStateImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }

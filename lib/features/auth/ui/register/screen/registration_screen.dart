@@ -9,6 +9,7 @@ import 'package:starter/features/auth/ui/register/bloc/registration_bloc.dart';
 import 'package:starter/features/auth/ui/register/model/registration_form.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/utils/form/focus_on_invalid_field.dart';
+import 'package:starter_toolkit/utils/form/form_input_formatters.dart';
 import 'package:starter_toolkit/utils/form/form_validators.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
@@ -52,24 +53,23 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             appBar: TitleAppBar(title: Localizer.of(context).login),
             body: Center(
               child: SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        Localizer.of(context).login,
-                        style: textStyles.boldTitle18,
+                padding: const EdgeInsets.all(24),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      Localizer.of(context).signUp,
+                      style: textStyles.boldTitle20,
+                    ),
+                    const SizedBox(height: 24),
+                    Container(
+                      padding: const EdgeInsets.all(24),
+                      decoration: BoxDecoration(
+                        color: theme.surface,
+                        borderRadius: BorderRadius.circular(16),
                       ),
-                      const SizedBox(height: 20),
-                      Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: theme.surface,
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        child: Column(
-                          children: [
+                      child: Column(
+                        children: [
                             AppTextField(
                               name: RegistrationForm.nameField,
                               label: Localizer.of(context).name,
@@ -92,6 +92,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               label: Localizer.of(context).phoneNumber,
                               hint: Localizer.of(context).enterPhoneNumber,
                               keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FormInputFormatters.phoneMaxLength,
+                              ],
                               required: true,
                               validators: [
                                 FormValidators.phone(context),
@@ -103,29 +106,30 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               label: Localizer.of(context).password,
                               hint: Localizer.of(context).enterPassword,
                               keyboardType: TextInputType.visiblePassword,
+                              canObscureText: true,
                               required: true,
                             ),
-                            const SizedBox(height: 16),
+                            const SizedBox(height: 24),
                           ],
                         ),
                       ),
-                      const SizedBox(height: 20),
-                      GestureDetector(
-                        onTap: () => context.router.push(const LoginRoute()),
-                        child: Text(
-                          Localizer.of(context).haveAccount,
-                          style: textStyles.boldBody13.copyWith(
-                            color: theme.primary,
-                          ),
+                    const SizedBox(height: 24),
+                    GestureDetector(
+                      onTap: () => context.router.push(const LoginRoute()),
+                      child: Text(
+                        Localizer.of(context).haveAccount,
+                        style: textStyles.boldBody13.copyWith(
+                          color: theme.primary,
                         ),
                       ),
-                      AppElevatedButton.big(
-                        context: context,
-                        text: Localizer.of(context).toRegister,
-                        onPressed: () => onSubmitted(context),
-                      ),
-                    ],
-                  ),
+                    ),
+                    const SizedBox(height: 32),
+                    AppElevatedButton.big(
+                      context: context,
+                      text: Localizer.of(context).toRegister,
+                      onPressed: () => onSubmitted(context),
+                    ),
+                  ],
                 ),
               ),
             ),

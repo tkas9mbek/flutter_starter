@@ -10,9 +10,8 @@ class UserProvider extends InheritedWidget {
 
   final User user;
 
-  static UserProvider? maybeOf(BuildContext context) {
-    return context.dependOnInheritedWidgetOfExactType<UserProvider>();
-  }
+  static UserProvider? maybeOf(BuildContext context) =>
+      context.dependOnInheritedWidgetOfExactType<UserProvider>();
 
   static UserProvider of(BuildContext context) {
     final result = maybeOf(context);

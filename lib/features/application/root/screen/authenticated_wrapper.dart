@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/application/global/bloc/auth_bloc.dart';
-import 'package:starter/features/application/root/bloc/user_bloc.dart';
 import 'package:starter/features/application/root/widget/user_provider.dart';
 import 'package:starter/features/profile/domain/profile_repository.dart';
+import 'package:starter/features/profile/ui/bloc/profile_bloc.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
 import 'package:starter_uikit/widgets/misc/safe_vertical_box.dart';
@@ -18,15 +18,11 @@ class AuthenticatedWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider<UserBloc>(
-          create: (context) => UserBloc(
-            getIt<ProfileRepository>(),
-          )..add(const UserEvent.requested()),
-        ),
-      ],
-      child: BlocBuilder<UserBloc, UserState>(
+    return BlocProvider<ProfileBloc>(
+      create: (context) => ProfileBloc(
+        getIt<ProfileRepository>(),
+      )..add(const ProfileEvent.requested()),
+      child: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) => state.maybeMap(
           orElse: () => const Scaffold(
             body: CustomCircularProgressIndicator(),
@@ -38,8 +34,8 @@ class AuthenticatedWrapper extends StatelessWidget {
                   child: FailureWidgetLarge(
                     exception: state.exception,
                     onRetry: () => context
-                        .read<UserBloc>()
-                        .add(const UserEvent.requested()),
+                        .read<ProfileBloc>()
+                        .add(const ProfileEvent.requested()),
                   ),
                 ),
                 Padding(

@@ -18,40 +18,33 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ProfileEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() loaded,
-    required TResult Function() logoutRequested,
+    required TResult Function() requested,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? loaded,
-    TResult? Function()? logoutRequested,
+    TResult? Function()? requested,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? loaded,
-    TResult Function()? logoutRequested,
+    TResult Function()? requested,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadedProfileEvent value) loaded,
-    required TResult Function(_LogoutRequestedProfileEvent value)
-        logoutRequested,
+    required TResult Function(_RequestedProfileEvent value) requested,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_LoadedProfileEvent value)? loaded,
-    TResult? Function(_LogoutRequestedProfileEvent value)? logoutRequested,
+    TResult? Function(_RequestedProfileEvent value)? requested,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadedProfileEvent value)? loaded,
-    TResult Function(_LogoutRequestedProfileEvent value)? logoutRequested,
+    TResult Function(_RequestedProfileEvent value)? requested,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -79,18 +72,19 @@ class _$ProfileEventCopyWithImpl<$Res, $Val extends ProfileEvent>
 }
 
 /// @nodoc
-abstract class _$$LoadedProfileEventImplCopyWith<$Res> {
-  factory _$$LoadedProfileEventImplCopyWith(_$LoadedProfileEventImpl value,
-          $Res Function(_$LoadedProfileEventImpl) then) =
-      __$$LoadedProfileEventImplCopyWithImpl<$Res>;
+abstract class _$$RequestedProfileEventImplCopyWith<$Res> {
+  factory _$$RequestedProfileEventImplCopyWith(
+          _$RequestedProfileEventImpl value,
+          $Res Function(_$RequestedProfileEventImpl) then) =
+      __$$RequestedProfileEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
-class __$$LoadedProfileEventImplCopyWithImpl<$Res>
-    extends _$ProfileEventCopyWithImpl<$Res, _$LoadedProfileEventImpl>
-    implements _$$LoadedProfileEventImplCopyWith<$Res> {
-  __$$LoadedProfileEventImplCopyWithImpl(_$LoadedProfileEventImpl _value,
-      $Res Function(_$LoadedProfileEventImpl) _then)
+class __$$RequestedProfileEventImplCopyWithImpl<$Res>
+    extends _$ProfileEventCopyWithImpl<$Res, _$RequestedProfileEventImpl>
+    implements _$$RequestedProfileEventImplCopyWith<$Res> {
+  __$$RequestedProfileEventImplCopyWithImpl(_$RequestedProfileEventImpl _value,
+      $Res Function(_$RequestedProfileEventImpl) _then)
       : super(_value, _then);
 
   /// Create a copy of ProfileEvent
@@ -99,128 +93,19 @@ class __$$LoadedProfileEventImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$LoadedProfileEventImpl implements _LoadedProfileEvent {
-  const _$LoadedProfileEventImpl();
+class _$RequestedProfileEventImpl implements _RequestedProfileEvent {
+  const _$RequestedProfileEventImpl();
 
   @override
   String toString() {
-    return 'ProfileEvent.loaded()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$LoadedProfileEventImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() loaded,
-    required TResult Function() logoutRequested,
-  }) {
-    return loaded();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? loaded,
-    TResult? Function()? logoutRequested,
-  }) {
-    return loaded?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? loaded,
-    TResult Function()? logoutRequested,
-    required TResult orElse(),
-  }) {
-    if (loaded != null) {
-      return loaded();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_LoadedProfileEvent value) loaded,
-    required TResult Function(_LogoutRequestedProfileEvent value)
-        logoutRequested,
-  }) {
-    return loaded(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_LoadedProfileEvent value)? loaded,
-    TResult? Function(_LogoutRequestedProfileEvent value)? logoutRequested,
-  }) {
-    return loaded?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadedProfileEvent value)? loaded,
-    TResult Function(_LogoutRequestedProfileEvent value)? logoutRequested,
-    required TResult orElse(),
-  }) {
-    if (loaded != null) {
-      return loaded(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _LoadedProfileEvent implements ProfileEvent {
-  const factory _LoadedProfileEvent() = _$LoadedProfileEventImpl;
-}
-
-/// @nodoc
-abstract class _$$LogoutRequestedProfileEventImplCopyWith<$Res> {
-  factory _$$LogoutRequestedProfileEventImplCopyWith(
-          _$LogoutRequestedProfileEventImpl value,
-          $Res Function(_$LogoutRequestedProfileEventImpl) then) =
-      __$$LogoutRequestedProfileEventImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LogoutRequestedProfileEventImplCopyWithImpl<$Res>
-    extends _$ProfileEventCopyWithImpl<$Res, _$LogoutRequestedProfileEventImpl>
-    implements _$$LogoutRequestedProfileEventImplCopyWith<$Res> {
-  __$$LogoutRequestedProfileEventImplCopyWithImpl(
-      _$LogoutRequestedProfileEventImpl _value,
-      $Res Function(_$LogoutRequestedProfileEventImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ProfileEvent
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$LogoutRequestedProfileEventImpl
-    implements _LogoutRequestedProfileEvent {
-  const _$LogoutRequestedProfileEventImpl();
-
-  @override
-  String toString() {
-    return 'ProfileEvent.logoutRequested()';
+    return 'ProfileEvent.requested()';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LogoutRequestedProfileEventImpl);
+            other is _$RequestedProfileEventImpl);
   }
 
   @override
@@ -229,30 +114,27 @@ class _$LogoutRequestedProfileEventImpl
   @override
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() loaded,
-    required TResult Function() logoutRequested,
+    required TResult Function() requested,
   }) {
-    return logoutRequested();
+    return requested();
   }
 
   @override
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? loaded,
-    TResult? Function()? logoutRequested,
+    TResult? Function()? requested,
   }) {
-    return logoutRequested?.call();
+    return requested?.call();
   }
 
   @override
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? loaded,
-    TResult Function()? logoutRequested,
+    TResult Function()? requested,
     required TResult orElse(),
   }) {
-    if (logoutRequested != null) {
-      return logoutRequested();
+    if (requested != null) {
+      return requested();
     }
     return orElse();
   }
@@ -260,39 +142,34 @@ class _$LogoutRequestedProfileEventImpl
   @override
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
-    required TResult Function(_LoadedProfileEvent value) loaded,
-    required TResult Function(_LogoutRequestedProfileEvent value)
-        logoutRequested,
+    required TResult Function(_RequestedProfileEvent value) requested,
   }) {
-    return logoutRequested(this);
+    return requested(this);
   }
 
   @override
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_LoadedProfileEvent value)? loaded,
-    TResult? Function(_LogoutRequestedProfileEvent value)? logoutRequested,
+    TResult? Function(_RequestedProfileEvent value)? requested,
   }) {
-    return logoutRequested?.call(this);
+    return requested?.call(this);
   }
 
   @override
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
-    TResult Function(_LoadedProfileEvent value)? loaded,
-    TResult Function(_LogoutRequestedProfileEvent value)? logoutRequested,
+    TResult Function(_RequestedProfileEvent value)? requested,
     required TResult orElse(),
   }) {
-    if (logoutRequested != null) {
-      return logoutRequested(this);
+    if (requested != null) {
+      return requested(this);
     }
     return orElse();
   }
 }
 
-abstract class _LogoutRequestedProfileEvent implements ProfileEvent {
-  const factory _LogoutRequestedProfileEvent() =
-      _$LogoutRequestedProfileEventImpl;
+abstract class _RequestedProfileEvent implements ProfileEvent {
+  const factory _RequestedProfileEvent() = _$RequestedProfileEventImpl;
 }
 
 /// @nodoc
@@ -303,7 +180,6 @@ mixin _$ProfileState {
     required TResult Function() loading,
     required TResult Function(User user) success,
     required TResult Function(AppException exception) failure,
-    required TResult Function() loggingOut,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -312,7 +188,6 @@ mixin _$ProfileState {
     TResult? Function()? loading,
     TResult? Function(User user)? success,
     TResult? Function(AppException exception)? failure,
-    TResult? Function()? loggingOut,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -321,7 +196,6 @@ mixin _$ProfileState {
     TResult Function()? loading,
     TResult Function(User user)? success,
     TResult Function(AppException exception)? failure,
-    TResult Function()? loggingOut,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -331,7 +205,6 @@ mixin _$ProfileState {
     required TResult Function(_LoadingProfileState value) loading,
     required TResult Function(_SuccessProfileState value) success,
     required TResult Function(_FailureProfileState value) failure,
-    required TResult Function(_LoggingOutProfileState value) loggingOut,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -340,7 +213,6 @@ mixin _$ProfileState {
     TResult? Function(_LoadingProfileState value)? loading,
     TResult? Function(_SuccessProfileState value)? success,
     TResult? Function(_FailureProfileState value)? failure,
-    TResult? Function(_LoggingOutProfileState value)? loggingOut,
   }) =>
       throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -349,7 +221,6 @@ mixin _$ProfileState {
     TResult Function(_LoadingProfileState value)? loading,
     TResult Function(_SuccessProfileState value)? success,
     TResult Function(_FailureProfileState value)? failure,
-    TResult Function(_LoggingOutProfileState value)? loggingOut,
     required TResult orElse(),
   }) =>
       throw _privateConstructorUsedError;
@@ -422,7 +293,6 @@ class _$InitialProfileStateImpl extends _InitialProfileState {
     required TResult Function() loading,
     required TResult Function(User user) success,
     required TResult Function(AppException exception) failure,
-    required TResult Function() loggingOut,
   }) {
     return initial();
   }
@@ -434,7 +304,6 @@ class _$InitialProfileStateImpl extends _InitialProfileState {
     TResult? Function()? loading,
     TResult? Function(User user)? success,
     TResult? Function(AppException exception)? failure,
-    TResult? Function()? loggingOut,
   }) {
     return initial?.call();
   }
@@ -446,7 +315,6 @@ class _$InitialProfileStateImpl extends _InitialProfileState {
     TResult Function()? loading,
     TResult Function(User user)? success,
     TResult Function(AppException exception)? failure,
-    TResult Function()? loggingOut,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -462,7 +330,6 @@ class _$InitialProfileStateImpl extends _InitialProfileState {
     required TResult Function(_LoadingProfileState value) loading,
     required TResult Function(_SuccessProfileState value) success,
     required TResult Function(_FailureProfileState value) failure,
-    required TResult Function(_LoggingOutProfileState value) loggingOut,
   }) {
     return initial(this);
   }
@@ -474,7 +341,6 @@ class _$InitialProfileStateImpl extends _InitialProfileState {
     TResult? Function(_LoadingProfileState value)? loading,
     TResult? Function(_SuccessProfileState value)? success,
     TResult? Function(_FailureProfileState value)? failure,
-    TResult? Function(_LoggingOutProfileState value)? loggingOut,
   }) {
     return initial?.call(this);
   }
@@ -486,7 +352,6 @@ class _$InitialProfileStateImpl extends _InitialProfileState {
     TResult Function(_LoadingProfileState value)? loading,
     TResult Function(_SuccessProfileState value)? success,
     TResult Function(_FailureProfileState value)? failure,
-    TResult Function(_LoggingOutProfileState value)? loggingOut,
     required TResult orElse(),
   }) {
     if (initial != null) {
@@ -547,7 +412,6 @@ class _$LoadingProfileStateImpl extends _LoadingProfileState {
     required TResult Function() loading,
     required TResult Function(User user) success,
     required TResult Function(AppException exception) failure,
-    required TResult Function() loggingOut,
   }) {
     return loading();
   }
@@ -559,7 +423,6 @@ class _$LoadingProfileStateImpl extends _LoadingProfileState {
     TResult? Function()? loading,
     TResult? Function(User user)? success,
     TResult? Function(AppException exception)? failure,
-    TResult? Function()? loggingOut,
   }) {
     return loading?.call();
   }
@@ -571,7 +434,6 @@ class _$LoadingProfileStateImpl extends _LoadingProfileState {
     TResult Function()? loading,
     TResult Function(User user)? success,
     TResult Function(AppException exception)? failure,
-    TResult Function()? loggingOut,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -587,7 +449,6 @@ class _$LoadingProfileStateImpl extends _LoadingProfileState {
     required TResult Function(_LoadingProfileState value) loading,
     required TResult Function(_SuccessProfileState value) success,
     required TResult Function(_FailureProfileState value) failure,
-    required TResult Function(_LoggingOutProfileState value) loggingOut,
   }) {
     return loading(this);
   }
@@ -599,7 +460,6 @@ class _$LoadingProfileStateImpl extends _LoadingProfileState {
     TResult? Function(_LoadingProfileState value)? loading,
     TResult? Function(_SuccessProfileState value)? success,
     TResult? Function(_FailureProfileState value)? failure,
-    TResult? Function(_LoggingOutProfileState value)? loggingOut,
   }) {
     return loading?.call(this);
   }
@@ -611,7 +471,6 @@ class _$LoadingProfileStateImpl extends _LoadingProfileState {
     TResult Function(_LoadingProfileState value)? loading,
     TResult Function(_SuccessProfileState value)? success,
     TResult Function(_FailureProfileState value)? failure,
-    TResult Function(_LoggingOutProfileState value)? loggingOut,
     required TResult orElse(),
   }) {
     if (loading != null) {
@@ -711,7 +570,6 @@ class _$SuccessProfileStateImpl extends _SuccessProfileState {
     required TResult Function() loading,
     required TResult Function(User user) success,
     required TResult Function(AppException exception) failure,
-    required TResult Function() loggingOut,
   }) {
     return success(user);
   }
@@ -723,7 +581,6 @@ class _$SuccessProfileStateImpl extends _SuccessProfileState {
     TResult? Function()? loading,
     TResult? Function(User user)? success,
     TResult? Function(AppException exception)? failure,
-    TResult? Function()? loggingOut,
   }) {
     return success?.call(user);
   }
@@ -735,7 +592,6 @@ class _$SuccessProfileStateImpl extends _SuccessProfileState {
     TResult Function()? loading,
     TResult Function(User user)? success,
     TResult Function(AppException exception)? failure,
-    TResult Function()? loggingOut,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -751,7 +607,6 @@ class _$SuccessProfileStateImpl extends _SuccessProfileState {
     required TResult Function(_LoadingProfileState value) loading,
     required TResult Function(_SuccessProfileState value) success,
     required TResult Function(_FailureProfileState value) failure,
-    required TResult Function(_LoggingOutProfileState value) loggingOut,
   }) {
     return success(this);
   }
@@ -763,7 +618,6 @@ class _$SuccessProfileStateImpl extends _SuccessProfileState {
     TResult? Function(_LoadingProfileState value)? loading,
     TResult? Function(_SuccessProfileState value)? success,
     TResult? Function(_FailureProfileState value)? failure,
-    TResult? Function(_LoggingOutProfileState value)? loggingOut,
   }) {
     return success?.call(this);
   }
@@ -775,7 +629,6 @@ class _$SuccessProfileStateImpl extends _SuccessProfileState {
     TResult Function(_LoadingProfileState value)? loading,
     TResult Function(_SuccessProfileState value)? success,
     TResult Function(_FailureProfileState value)? failure,
-    TResult Function(_LoggingOutProfileState value)? loggingOut,
     required TResult orElse(),
   }) {
     if (success != null) {
@@ -873,7 +726,6 @@ class _$FailureProfileStateImpl extends _FailureProfileState {
     required TResult Function() loading,
     required TResult Function(User user) success,
     required TResult Function(AppException exception) failure,
-    required TResult Function() loggingOut,
   }) {
     return failure(exception);
   }
@@ -885,7 +737,6 @@ class _$FailureProfileStateImpl extends _FailureProfileState {
     TResult? Function()? loading,
     TResult? Function(User user)? success,
     TResult? Function(AppException exception)? failure,
-    TResult? Function()? loggingOut,
   }) {
     return failure?.call(exception);
   }
@@ -897,7 +748,6 @@ class _$FailureProfileStateImpl extends _FailureProfileState {
     TResult Function()? loading,
     TResult Function(User user)? success,
     TResult Function(AppException exception)? failure,
-    TResult Function()? loggingOut,
     required TResult orElse(),
   }) {
     if (failure != null) {
@@ -913,7 +763,6 @@ class _$FailureProfileStateImpl extends _FailureProfileState {
     required TResult Function(_LoadingProfileState value) loading,
     required TResult Function(_SuccessProfileState value) success,
     required TResult Function(_FailureProfileState value) failure,
-    required TResult Function(_LoggingOutProfileState value) loggingOut,
   }) {
     return failure(this);
   }
@@ -925,7 +774,6 @@ class _$FailureProfileStateImpl extends _FailureProfileState {
     TResult? Function(_LoadingProfileState value)? loading,
     TResult? Function(_SuccessProfileState value)? success,
     TResult? Function(_FailureProfileState value)? failure,
-    TResult? Function(_LoggingOutProfileState value)? loggingOut,
   }) {
     return failure?.call(this);
   }
@@ -937,7 +785,6 @@ class _$FailureProfileStateImpl extends _FailureProfileState {
     TResult Function(_LoadingProfileState value)? loading,
     TResult Function(_SuccessProfileState value)? success,
     TResult Function(_FailureProfileState value)? failure,
-    TResult Function(_LoggingOutProfileState value)? loggingOut,
     required TResult orElse(),
   }) {
     if (failure != null) {
@@ -959,131 +806,4 @@ abstract class _FailureProfileState extends ProfileState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FailureProfileStateImplCopyWith<_$FailureProfileStateImpl> get copyWith =>
       throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class _$$LoggingOutProfileStateImplCopyWith<$Res> {
-  factory _$$LoggingOutProfileStateImplCopyWith(
-          _$LoggingOutProfileStateImpl value,
-          $Res Function(_$LoggingOutProfileStateImpl) then) =
-      __$$LoggingOutProfileStateImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LoggingOutProfileStateImplCopyWithImpl<$Res>
-    extends _$ProfileStateCopyWithImpl<$Res, _$LoggingOutProfileStateImpl>
-    implements _$$LoggingOutProfileStateImplCopyWith<$Res> {
-  __$$LoggingOutProfileStateImplCopyWithImpl(
-      _$LoggingOutProfileStateImpl _value,
-      $Res Function(_$LoggingOutProfileStateImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ProfileState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$LoggingOutProfileStateImpl extends _LoggingOutProfileState {
-  const _$LoggingOutProfileStateImpl() : super._();
-
-  @override
-  String toString() {
-    return 'ProfileState.loggingOut()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LoggingOutProfileStateImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(User user) success,
-    required TResult Function(AppException exception) failure,
-    required TResult Function() loggingOut,
-  }) {
-    return loggingOut();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(User user)? success,
-    TResult? Function(AppException exception)? failure,
-    TResult? Function()? loggingOut,
-  }) {
-    return loggingOut?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(User user)? success,
-    TResult Function(AppException exception)? failure,
-    TResult Function()? loggingOut,
-    required TResult orElse(),
-  }) {
-    if (loggingOut != null) {
-      return loggingOut();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialProfileState value) initial,
-    required TResult Function(_LoadingProfileState value) loading,
-    required TResult Function(_SuccessProfileState value) success,
-    required TResult Function(_FailureProfileState value) failure,
-    required TResult Function(_LoggingOutProfileState value) loggingOut,
-  }) {
-    return loggingOut(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialProfileState value)? initial,
-    TResult? Function(_LoadingProfileState value)? loading,
-    TResult? Function(_SuccessProfileState value)? success,
-    TResult? Function(_FailureProfileState value)? failure,
-    TResult? Function(_LoggingOutProfileState value)? loggingOut,
-  }) {
-    return loggingOut?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialProfileState value)? initial,
-    TResult Function(_LoadingProfileState value)? loading,
-    TResult Function(_SuccessProfileState value)? success,
-    TResult Function(_FailureProfileState value)? failure,
-    TResult Function(_LoggingOutProfileState value)? loggingOut,
-    required TResult orElse(),
-  }) {
-    if (loggingOut != null) {
-      return loggingOut(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _LoggingOutProfileState extends ProfileState {
-  const factory _LoggingOutProfileState() = _$LoggingOutProfileStateImpl;
-  const _LoggingOutProfileState._() : super._();
 }

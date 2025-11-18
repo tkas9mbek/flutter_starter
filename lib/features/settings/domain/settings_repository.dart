@@ -1,5 +1,6 @@
 import 'package:starter/features/settings/data/settings_data_source.dart';
 import 'package:starter/features/settings/model/language_option.dart';
+import 'package:starter/features/settings/model/theme_mode_option.dart';
 
 class SettingsRepository {
   final SettingsDataSource _settingsDataSource;
@@ -20,5 +21,15 @@ class SettingsRepository {
     final option = getLanguageOption();
 
     return option.code;
+  }
+
+  ThemeModeOption getThemeModeOption() {
+    final themeMode = _settingsDataSource.getThemeMode();
+
+    return ThemeModeOption.fromString(themeMode);
+  }
+
+  Future<void> setThemeModeOption(ThemeModeOption themeModeOption) async {
+    await _settingsDataSource.setThemeMode(themeModeOption.toString());
   }
 }

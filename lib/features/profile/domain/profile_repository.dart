@@ -12,5 +12,5 @@ class ProfileRepository {
   );
 
   Future<User> getUserProfile() =>
-      _repositoryExecutor.execute(() => _profileDataSource.getUserProfile());
+      _repositoryExecutor.execute(_profileDataSource.getUserProfile);
 }

@@ -483,6 +483,16 @@ class Localizer {
     );
   }
 
+  /// `Обновить`
+  String get refresh {
+    return Intl.message(
+      'Обновить',
+      name: 'refresh',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Имя`
   String get name {
     return Intl.message(
@@ -518,6 +528,156 @@ class Localizer {
     return Intl.message(
       'Дата рождения обязательна',
       name: 'birthdayIsRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Детали задачи`
+  String get taskDetails {
+    return Intl.message(
+      'Детали задачи',
+      name: 'taskDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Удалить`
+  String get delete {
+    return Intl.message(
+      'Удалить',
+      name: 'delete',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Удалить задачу`
+  String get deleteTask {
+    return Intl.message(
+      'Удалить задачу',
+      name: 'deleteTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Вы уверены, что хотите удалить эту задачу?`
+  String get deleteTaskConfirmation {
+    return Intl.message(
+      'Вы уверены, что хотите удалить эту задачу?',
+      name: 'deleteTaskConfirmation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Отмена`
+  String get cancel {
+    return Intl.message(
+      'Отмена',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Задача успешно удалена`
+  String get taskDeletedSuccessfully {
+    return Intl.message(
+      'Задача успешно удалена',
+      name: 'taskDeletedSuccessfully',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Не удалось удалить задачу`
+  String get failedToDeleteTask {
+    return Intl.message(
+      'Не удалось удалить задачу',
+      name: 'failedToDeleteTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Не удалось изменить статус задачи`
+  String get failedToToggleTask {
+    return Intl.message(
+      'Не удалось изменить статус задачи',
+      name: 'failedToToggleTask',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Не удалось загрузить детали задачи`
+  String get failedToLoadTaskDetails {
+    return Intl.message(
+      'Не удалось загрузить детали задачи',
+      name: 'failedToLoadTaskDetails',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Время начала`
+  String get startTime {
+    return Intl.message(
+      'Время начала',
+      name: 'startTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Время окончания`
+  String get endTime {
+    return Intl.message(
+      'Время окончания',
+      name: 'endTime',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Описание`
+  String get description {
+    return Intl.message(
+      'Описание',
+      name: 'description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Завершена`
+  String get completed {
+    return Intl.message(
+      'Завершена',
+      name: 'completed',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Не завершена`
+  String get notCompleted {
+    return Intl.message(
+      'Не завершена',
+      name: 'notCompleted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Статус`
+  String get status {
+    return Intl.message(
+      'Статус',
+      name: 'status',
       desc: '',
       args: [],
     );

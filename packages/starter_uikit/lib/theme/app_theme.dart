@@ -61,14 +61,4 @@ class AppTheme {
         textPrimary: AppColors.whiteText,
         textSecondary: AppColors.lightGreyText,
       );
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is AppTheme &&
-          runtimeType == other.runtimeType &&
-          themeMode == other.themeMode;
-
-  @override
-  int get hashCode => themeMode.hashCode;
 }
