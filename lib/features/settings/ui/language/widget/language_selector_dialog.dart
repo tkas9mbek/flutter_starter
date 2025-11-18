@@ -30,9 +30,8 @@ class LanguageSelectorDialog extends StatelessWidget {
 
               return ListTile(
                 title: Text(language.name),
-                trailing: isSelected
-                    ? Icon(Icons.check, color: theme.primary)
-                    : null,
+                trailing:
+                    isSelected ? Icon(Icons.check, color: theme.primary) : null,
                 onTap: () {
                   languageCubit.setLanguageOption(language);
                   Navigator.of(context).pop();

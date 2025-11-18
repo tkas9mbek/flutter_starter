@@ -15,8 +15,7 @@ class TasksTimelineList extends StatelessWidget {
     return ListView.builder(
       padding: const EdgeInsets.all(16),
       itemCount: tasks.length,
-      itemBuilder: (context, index) =>
-          TaskTimelineItemCard(task: tasks[index]),
+      itemBuilder: (context, index) => TaskTimelineItemCard(task: tasks[index]),
     );
   }
 }

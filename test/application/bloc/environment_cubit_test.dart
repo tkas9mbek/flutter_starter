@@ -6,7 +6,8 @@ import 'package:starter/features/application/environment/domain/environment_repo
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/application/environment/ui/bloc/environment_cubit.dart';
 
-class MockEnvironmentLocalDataSource extends Mock implements EnvironmentDataSource {}
+class MockEnvironmentLocalDataSource extends Mock
+    implements EnvironmentDataSource {}
 
 void main() {
   late MockEnvironmentLocalDataSource mockDataSource;
@@ -41,7 +42,8 @@ void main() {
       'emits the new environment when setEnvironment is called successfully',
       setUp: () {
         // We need to stub the methods that the repository will call on the data source
-        when(() => mockDataSource.clearSecureStorage()).thenAnswer((_) async {});
+        when(() => mockDataSource.clearSecureStorage())
+            .thenAnswer((_) async {});
         when(() => mockDataSource.saveEnvName(any())).thenAnswer((_) async {});
       },
       build: () => environmentCubit,

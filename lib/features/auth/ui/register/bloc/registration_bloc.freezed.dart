@@ -684,6 +684,8 @@ abstract class _$$FailureRegistrationStateImplCopyWith<$Res> {
       __$$FailureRegistrationStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AppException exception});
+
+  $AppExceptionCopyWith<$Res> get exception;
 }
 
 /// @nodoc
@@ -709,6 +711,16 @@ class __$$FailureRegistrationStateImplCopyWithImpl<$Res>
           : exception // ignore: cast_nullable_to_non_nullable
               as AppException,
     ));
+  }
+
+  /// Create a copy of RegistrationState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AppExceptionCopyWith<$Res> get exception {
+    return $AppExceptionCopyWith<$Res>(_value.exception, (value) {
+      return _then(_value.copyWith(exception: value));
+    });
   }
 }
 

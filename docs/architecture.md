@@ -390,6 +390,188 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
 ---
 
+## Exception Handling
+
+**AI Instruction**: Use two-layer exception architecture:
+
+### Data Layer Exceptions
+
+**Location:** `packages/starter_toolkit/lib/data/exceptions/`
+
+**Purpose:** Pure Dart exceptions without UI dependencies
+
+```dart
+// Domain exceptions use Freezed union types
+@freezed
+class AppException with _$AppException {
+  @ExceptionUiConfig(
+    descriptionKey: 'noInternetConnection',
+    canRetry: true,
+  )
+  const factory AppException.noInternet() = _NoInternetAppException;
+
+  @ExceptionUiConfig(
+    descriptionKey: 'serverError',
+    canRetry: true,
+  )
+  const factory AppException.server() = _ServerAppException;
+
+  const AppException._();
+}
+```
+
+### UI Layer Exception Models
+
+**Location:** `packages/starter_uikit/lib/models/`
+
+**Purpose:** UI presentation with localized messages
+
+```dart
+// UI model with BuildContext-dependent localization
+class ExceptionUiModel extends Equatable {
+  final String? title;
+  final String description;
+  final String? snackbarDescription;
+  final bool canRefresh;
+  final bool canRetry;
+}
+
+// Mapper converts domain exceptions to UI models
+class ExceptionUiMapper {
+  final BuildContext context;
+
+  ExceptionUiModel map(AppException exception) {
+    return exception.when(
+      noInternet: () => ExceptionUiModel(
+        description: Localizer.of(context).noInternetConnection,
+        canRetry: true,
+      ),
+      // ... other cases
+    );
+  }
+}
+```
+
+### Usage in BLoC
+
+```dart
+Future<void> _onRequested(event, emit) async {
+  emit(const State.loading());
+
+  try {
+    final data = await _repository.getData();
+
+    return emit(State.success(data));
+  } on AppException catch (e) {
+    return emit(State.failure(e));  // Store domain exception
+  }
+}
+```
+
+### Usage in UI
+
+```dart
+// Map to UI model in widget
+state.when(
+  failure: (exception) {
+    final uiModel = ExceptionUiMapper(context).map(exception);
+    return FailureWidgetLarge(
+      uiModel: uiModel,
+      onRetry: _retry,
+    );
+  },
+)
+```
+
+**Benefits:**
+- Data layer has no BuildContext dependency
+- UI layer handles localization
+- Extensible via decorator pattern
+- Code generation reduces boilerplate
+
+See [Exception Refactoring Guide](./exception-refactoring.md) for complete details.
+
+---
+
+## Repository Executors
+
+**AI Instruction**: Use decorator pattern for cross-cutting concerns:
+
+### Decorator Pattern
+
+Repository executors add functionality through composition:
+
+```dart
+// Base executor - just executes function
+final executor = RawRepositoryExecutor()
+  .withErrorHandling()   // Converts exceptions to AppException
+  .withRetry()           // Adds retry logic with backoff
+  .withCaching();        // Adds time-based caching
+```
+
+### Available Decorators
+
+**ErrorHandlingExecutor**: Normalizes all errors to AppException
+```dart
+ErrorHandlingExecutor(wrapped)
+  // Converts DioException → AppException
+  // Handles unknown errors in production
+```
+
+**RetryExecutor**: Automatic retry with exponential backoff
+```dart
+RetryExecutor(
+  wrapped,
+  maxRetries: 3,
+  retryDelay: Duration(seconds: 2),
+)
+```
+
+**CachingExecutor**: Time-based caching with cleanup
+```dart
+final executor = CachingExecutor(
+  wrapped,
+  defaultTtl: Duration(minutes: 5),
+);
+
+// Use with key for caching
+executor.cached(
+  () => _service.getData(),
+  key: 'data_key',
+);
+```
+
+### Usage in Repository
+
+```dart
+class UserRepository {
+  final UserDataSource _dataSource;
+  final RepositoryExecutor _executor;
+
+  Future<List<User>> getUsers() {
+    return _executor.execute(() => _dataSource.getUsers());
+  }
+}
+
+// DI setup
+getIt.registerFactory<RepositoryExecutor>(() {
+  return RawRepositoryExecutor()
+    .withErrorHandling()
+    .withRetry()
+    .withCaching();
+});
+```
+
+**Benefits:**
+- Composable decorators
+- No code duplication
+- Easy to add new executors
+- Memory leak prevention (cleanup timer)
+
+See [Repository Executor Refactoring](./repository-executor-refactoring.md) for complete details.
+
+---
+
 ## Testing Strategy
 
 ### Minimum: BLoC Integration Tests
@@ -414,7 +596,9 @@ See [Testing Guide](./testing.md) for detailed examples.
 - [Project Structure](./structure.md) - File organization
 - [Testing Guide](./testing.md) - Testing strategies
 - [BLoC & Freezed](./bloc_freezed.md) - BLoC patterns
+- [Code Formatting](./code_formatting.md) - Code style guide
+- [Naming Conventions](./naming.md) - Naming standards
 
 ---
 
-**Last Updated**: January 18, 2025
+**Last Updated**: November 18, 2025

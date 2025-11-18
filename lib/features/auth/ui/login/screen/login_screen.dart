@@ -72,41 +72,41 @@ class _LoginScreenState extends State<LoginScreen> {
                       child: Column(
                         children: [
                           AppTextField(
-                              name: LoginForm.phoneField,
-                              label: Localizer.of(context).phoneNumber,
-                              hint: Localizer.of(context).enterPhoneNumber,
-                              keyboardType: TextInputType.phone,
-                              inputFormatters: [
-                                FormInputFormatters.phoneMaxLength,
-                              ],
-                              required: true,
-                              validators: [
-                                FormValidators.phone(context),
-                              ],
-                            ),
-                            const SizedBox(height: 20),
-                            AppTextField(
-                              name: LoginForm.passwordField,
-                              label: Localizer.of(context).password,
-                              hint: Localizer.of(context).enterPassword,
-                              keyboardType: TextInputType.visiblePassword,
-                              canObscureText: true,
-                              required: true,
-                            ),
-                            const SizedBox(height: 24),
-                          ],
-                        ),
+                            name: LoginForm.phoneField,
+                            label: Localizer.of(context).phoneNumber,
+                            hint: Localizer.of(context).enterPhoneNumber,
+                            keyboardType: TextInputType.phone,
+                            inputFormatters: [
+                              FormInputFormatters.phoneMaxLength,
+                            ],
+                            required: true,
+                            validators: [
+                              FormValidators.phone(context),
+                            ],
+                          ),
+                          const SizedBox(height: 20),
+                          AppTextField(
+                            name: LoginForm.passwordField,
+                            label: Localizer.of(context).password,
+                            hint: Localizer.of(context).enterPassword,
+                            keyboardType: TextInputType.visiblePassword,
+                            canObscureText: true,
+                            required: true,
+                          ),
+                          const SizedBox(height: 24),
+                        ],
                       ),
+                    ),
                     const SizedBox(height: 24),
                     GestureDetector(
-                        onTap: () =>
-                            context.router.push(const RegistrationRoute()),
-                        child: Text(
-                          Localizer.of(context).haveNoAccount,
-                          style: textStyles.boldBody13.copyWith(
-                            color: theme.primary,
-                          ),
+                      onTap: () =>
+                          context.router.push(const RegistrationRoute()),
+                      child: Text(
+                        Localizer.of(context).haveNoAccount,
+                        style: textStyles.boldBody13.copyWith(
+                          color: theme.primary,
                         ),
+                      ),
                     ),
                     const SizedBox(height: 32),
                     AppElevatedButton.big(

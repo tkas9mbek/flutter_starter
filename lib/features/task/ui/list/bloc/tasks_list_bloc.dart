@@ -22,7 +22,8 @@ class TasksListState with _$TasksListState {
     required List<Task> tasks,
     required Map<DateTime, List<Task>> groupedTasks,
   }) = _SuccessTasksListState;
-  const factory TasksListState.failure(AppException exception) = _FailureTasksListState;
+  const factory TasksListState.failure(AppException exception) =
+      _FailureTasksListState;
 
   bool get isLoading => this is _LoadingTasksListState;
 }

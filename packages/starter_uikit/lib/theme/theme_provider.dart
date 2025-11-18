@@ -15,8 +15,7 @@ class ThemeProvider extends InheritedWidget {
         textStyles = AppTextStyles(theme ?? AppTheme.light());
 
   @override
-  bool updateShouldNotify(ThemeProvider oldWidget) =>
-      theme != oldWidget.theme;
+  bool updateShouldNotify(ThemeProvider oldWidget) => theme != oldWidget.theme;
 
   static ThemeProvider of(BuildContext context) {
     final provider =

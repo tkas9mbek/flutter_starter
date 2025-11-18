@@ -19,11 +19,11 @@ class ProfileScreen extends StatelessWidget {
       body: BlocBuilder<ProfileBloc, ProfileState>(
         builder: (context, state) => state.when(
           initial: () => const Center(
-                child: CustomCircularProgressIndicator(),
-              ),
+            child: CustomCircularProgressIndicator(),
+          ),
           loading: () => const Center(
-                child: CustomCircularProgressIndicator(),
-              ),
+            child: CustomCircularProgressIndicator(),
+          ),
           success: (user) => ProfileSuccessView(user: user),
           failure: (exception) => ProfileFailureView(exception: exception),
         ),

@@ -8,7 +8,8 @@ part 'task_toggle_bloc.freezed.dart';
 
 @freezed
 class TaskToggleEvent with _$TaskToggleEvent {
-  const factory TaskToggleEvent.toggled(String taskId) = _ToggledTaskToggleEvent;
+  const factory TaskToggleEvent.toggled(String taskId) =
+      _ToggledTaskToggleEvent;
 }
 
 @freezed

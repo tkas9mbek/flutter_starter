@@ -47,7 +47,8 @@ class TaskDetailsContent extends StatelessWidget {
         _DetailRow(
           icon: Icons.check_circle_outline,
           label: localizer.status,
-          value: task.isCompleted ? localizer.completed : localizer.notCompleted,
+          value:
+              task.isCompleted ? localizer.completed : localizer.notCompleted,
         ),
         const SizedBox(height: 24),
         Text(

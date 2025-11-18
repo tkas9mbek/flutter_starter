@@ -680,6 +680,8 @@ abstract class _$$FailureTaskDeleteStateImplCopyWith<$Res> {
       __$$FailureTaskDeleteStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AppException exception});
+
+  $AppExceptionCopyWith<$Res> get exception;
 }
 
 /// @nodoc
@@ -704,6 +706,16 @@ class __$$FailureTaskDeleteStateImplCopyWithImpl<$Res>
           : exception // ignore: cast_nullable_to_non_nullable
               as AppException,
     ));
+  }
+
+  /// Create a copy of TaskDeleteState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $AppExceptionCopyWith<$Res> get exception {
+    return $AppExceptionCopyWith<$Res>(_value.exception, (value) {
+      return _then(_value.copyWith(exception: value));
+    });
   }
 }
 

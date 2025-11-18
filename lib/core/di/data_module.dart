@@ -6,7 +6,6 @@ import 'package:starter/core/di/app_module.dart';
 import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
-import 'package:starter_toolkit/data/repository_executor/retriable_repository_executor.dart';
 
 class DataModule extends AppModule {
   @override
@@ -37,7 +36,9 @@ class DataModule extends AppModule {
 
     getIt
       ..registerSingleton<RepositoryExecutor>(
-        const RetriableRepositoryExecutor(),
+        RawRepositoryExecutor()
+            .withErrorHandling()
+            .withRetry(maxRetries: 3, retryDelay: const Duration(seconds: 2)),
       )
       ..registerSingleton<Dio>(
         apiProvider.getDio(useToken: false),

@@ -40,6 +40,7 @@ open coverage/html/index.html                                    # View coverage
 **Code Generation:**
 ```bash
 fvm flutter pub run build_runner build --delete-conflicting-outputs  # Routes, JSON, Freezed
+dart run tool/generate_exception_mapper.dart                     # Exception mapper methods
 fvm flutter pub run spider build                                 # Asset references
 fvm flutter pub run flutter_launcher_icons                       # Launcher icons
 fvm flutter pub run flutter_native_splash:create                 # Splash screen
@@ -73,6 +74,9 @@ Run `build_runner` after modifying:
 - Freezed classes
 - Retrofit service interfaces
 
+Run `generate_exception_mapper.dart` after modifying:
+- AppException factories (adding/removing/changing `@ExceptionUiConfig` annotations)
+
 Run `intl_utils:generate` after modifying:
 - ARB files (`lib/l10n/intl_*.arb`)
 
@@ -95,6 +99,8 @@ Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, 
 3. **No Flutter in Data/Domain**: Only Presentation layer can import Flutter
 4. **Horizontal Dependencies**: Only widgets can depend on other widgets
 5. **Dependency Injection**: All dependencies via GetIt modules
+6. **Two-Layer Exceptions**: Domain exceptions (pure Dart) + UI models (with localization)
+7. **Decorator Pattern**: Repository executors and exception mappers use decorators for extensibility
 
 ### Repository Pattern
 
@@ -106,6 +112,78 @@ Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, 
 **Make abstract only when:**
 - Multiple implementations actually needed
 - Clear development time savings
+
+### Exception Handling
+
+**Two-layer architecture:**
+- **Data Layer** (`starter_toolkit`): `AppException` - Freezed union types with `@ExceptionUiConfig` annotations
+- **UI Layer** (`starter_uikit`): `ExceptionUiModel` - Equatable with localized messages
+
+**Usage:**
+```dart
+// BLoC stores domain exception
+try {
+  final data = await _repository.getData();
+  return emit(State.success(data));
+} on AppException catch (e) {
+  return emit(State.failure(e));
+}
+
+// UI maps to localized model
+failure: (failureState) {
+  final uiModel = ExceptionUiMapper(context).map(failureState.exception);
+  return FailureWidgetLarge(uiModel: uiModel, onRetry: _retry);
+}
+```
+
+**Extending exception mappers (feature-specific customization):**
+```dart
+// Feature-specific mapper with custom messages
+class TaskExceptionMapper extends ExceptionUiMapperDecorator {
+  TaskExceptionMapper(super.context, super.wrapped);
+
+  @override
+  ExceptionUiModel mapServer(int? statusCode, String? message) {
+    // Custom message for task feature
+    return ExceptionUiModel.simple(
+      description: Localizer.of(context).taskLoadError,
+      canRetry: true,
+    );
+  }
+}
+
+// Usage in DI
+getIt.registerFactory<ExceptionUiMapper>(
+  () => TaskExceptionMapper(context, ExceptionUiMapper(context)),
+);
+```
+
+**Adding new exceptions:**
+1. Add factory to `AppException` with `@ExceptionUiConfig` annotation
+2. Run `dart run tool/generate_exception_mapper.dart`
+3. Run `fvm flutter pub run build_runner build --delete-conflicting-outputs`
+4. Code generator automatically updates mapper and decorator
+
+### Repository Executors
+
+**Decorator pattern for cross-cutting concerns:**
+```dart
+final executor = RawRepositoryExecutor()
+  .withErrorHandling()  // Converts exceptions to AppException
+  .withRetry()          // Automatic retry with exponential backoff
+  .withCaching();       // Time-based caching with cleanup
+
+// In repository
+Future<List<User>> getUsers() {
+  return _executor.execute(() => _dataSource.getUsers());
+}
+```
+
+**Available executors:**
+- `RawRepositoryExecutor` - Base executor, just executes function
+- `ErrorHandlingExecutor` - Normalizes all errors to AppException
+- `RetryExecutor` - Retry logic with exponential backoff (configurable)
+- `CachingExecutor` - Time-based caching with automatic cleanup
 
 ---
 
@@ -463,7 +541,7 @@ Container(color: Color(0xFF6200EE))
 
 For detailed information, see:
 
-- [Architecture Guide](./docs/architecture.md) - Layered architecture and principles with AI Instructions
+- [Architecture Guide](./docs/architecture.md) - Layered architecture, exception handling, repository executors
 - [Structure Guide](./docs/structure.md) - File organization with AI Instructions
 - [Naming Conventions](./docs/naming.md) - Naming standards with AI Instructions
 - [Code Formatting](./docs/code_formatting.md) - **READ THIS FIRST** - Code style with AI Instructions
@@ -596,6 +674,38 @@ context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
 - NotificationSnackBar: `import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart'`
 - ThemeProvider: `import 'package:starter_uikit/theme/theme_provider.dart'`
 - TitleAppBar: `import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart'`
+- ExceptionUiMapper: `import 'package:starter_uikit/mappers/exception_ui_mapper.dart'`
+- ExceptionUiModel: `import 'package:starter_uikit/models/exception_ui_model.dart'`
+- AppException: `import 'package:starter_toolkit/data/exceptions/app_exception.dart'`
+- RepositoryExecutor: `import 'package:starter_toolkit/data/repository_executor/repository_executor.dart'`
+
+### Exception Handling Issues
+
+1. **BuildContext on data models**
+   - ✗ Never add context extensions on AppException
+   - ✓ Use ExceptionUiMapper to convert to UI model in widgets
+
+2. **Forgetting to run code generator**
+   - After adding new exception factory, run `dart run tool/generate_exception_mapper.dart`
+   - Generator updates both mapper and decorator automatically
+
+3. **Using wrong exception model in UI**
+   - ✗ Don't pass AppException directly to UI widgets
+   - ✓ Map to ExceptionUiModel first using ExceptionUiMapper
+
+### Repository Executor Issues
+
+1. **Old executor imports**
+   - ✗ `DefaultRepositoryExecutor`, `RetriableRepositoryExecutor`, `CachingRepositoryExecutor` are deprecated
+   - ✓ Use new decorator pattern: `RawRepositoryExecutor().withErrorHandling().withRetry()`
+
+2. **Missing error handling**
+   - Always include `.withErrorHandling()` as first decorator
+   - Converts all exceptions to AppException for consistent handling
+
+3. **CachingExecutor usage**
+   - Use `cached()` method with key, not `execute()`
+   - Regular `execute()` passes through without caching
 
 ### Empty Directories in Git
 

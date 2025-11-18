@@ -230,36 +230,6 @@ class UiLocalizer {
     );
   }
 
-  /// `Неожиданная ошибка`
-  String get errorMessageUnexpectedError {
-    return Intl.message(
-      'Неожиданная ошибка',
-      name: 'errorMessageUnexpectedError',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Проверьте соединение и попробуйте снова`
-  String get errorMessageCheckAndTryLater {
-    return Intl.message(
-      'Проверьте соединение и попробуйте снова',
-      name: 'errorMessageCheckAndTryLater',
-      desc: '',
-      args: [],
-    );
-  }
-
-  /// `Попробуйте обновить страницу`
-  String get tryRefreshPage {
-    return Intl.message(
-      'Попробуйте обновить страницу',
-      name: 'tryRefreshPage',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Отмена`
   String get cancellation {
     return Intl.message(
@@ -295,6 +265,146 @@ class UiLocalizer {
     return Intl.message(
       'Нет данных',
       name: 'noDataAvailable',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Нет соединения с сервером`
+  String get errorMessageNoConnection {
+    return Intl.message(
+      'Нет соединения с сервером',
+      name: 'errorMessageNoConnection',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Не удалось подключиться к серверу. Это может быть из-за проблем с сервером или вашим интернетом.`
+  String get errorMessageCouldNotConnectServer {
+    return Intl.message(
+      'Не удалось подключиться к серверу. Это может быть из-за проблем с сервером или вашим интернетом.',
+      name: 'errorMessageCouldNotConnectServer',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Проверьте ваше подключение к сети и попробуйте снова.`
+  String get errorMessageCheckAndTryLater {
+    return Intl.message(
+      'Проверьте ваше подключение к сети и попробуйте снова.',
+      name: 'errorMessageCheckAndTryLater',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ошибка приложения! Сообщите разработчикам.`
+  String get errorMessageMobileBug {
+    return Intl.message(
+      'Ошибка приложения! Сообщите разработчикам.',
+      name: 'errorMessageMobileBug',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Запрос не выполнен, попробуйте позже`
+  String get errorMessageDefaultRequestError {
+    return Intl.message(
+      'Запрос не выполнен, попробуйте позже',
+      name: 'errorMessageDefaultRequestError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Что-то пошло не так.`
+  String get errorMessageUnexpectedError {
+    return Intl.message(
+      'Что-то пошло не так.',
+      name: 'errorMessageUnexpectedError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Пожалуйста, войдите в систему, чтобы продолжить`
+  String get errorMessageAuthRequired {
+    return Intl.message(
+      'Пожалуйста, войдите в систему, чтобы продолжить',
+      name: 'errorMessageAuthRequired',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `У вас нет прав для просмотра этой страницы.`
+  String get errorMessageNoRightsToView {
+    return Intl.message(
+      'У вас нет прав для просмотра этой страницы.',
+      name: 'errorMessageNoRightsToView',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `У вас нет прав для выполнения этого действия.`
+  String get errorMessageNoRightsToPerform {
+    return Intl.message(
+      'У вас нет прав для выполнения этого действия.',
+      name: 'errorMessageNoRightsToPerform',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ошибка при выполнении запроса`
+  String get errorMessageErrorWhileRequesting {
+    return Intl.message(
+      'Ошибка при выполнении запроса',
+      name: 'errorMessageErrorWhileRequesting',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Ошибка при открытии ссылки`
+  String get errorMessageUrlLaunchError {
+    return Intl.message(
+      'Ошибка при открытии ссылки',
+      name: 'errorMessageUrlLaunchError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Технические работы на сервере`
+  String get errorMessageServerError {
+    return Intl.message(
+      'Технические работы на сервере',
+      name: 'errorMessageServerError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Извините за неудобства, сервер временно недоступен. Попробуйте позже.`
+  String get errorMessageServerInternalError {
+    return Intl.message(
+      'Извините за неудобства, сервер временно недоступен. Попробуйте позже.',
+      name: 'errorMessageServerInternalError',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Попробуйте обновить страницу`
+  String get tryRefreshPage {
+    return Intl.message(
+      'Попробуйте обновить страницу',
+      name: 'tryRefreshPage',
       desc: '',
       args: [],
     );

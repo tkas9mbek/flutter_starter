@@ -26,10 +26,33 @@ class MessageLookup extends MessageLookupByLibrary {
         "camera": MessageLookupByLibrary.simpleMessage("Камера"),
         "cancellation": MessageLookupByLibrary.simpleMessage("Отмена"),
         "done": MessageLookupByLibrary.simpleMessage("Готово"),
+        "errorMessageAuthRequired": MessageLookupByLibrary.simpleMessage(
+            "Пожалуйста, войдите в систему, чтобы продолжить"),
         "errorMessageCheckAndTryLater": MessageLookupByLibrary.simpleMessage(
-            "Проверьте соединение и попробуйте снова"),
+            "Проверьте ваше подключение к сети и попробуйте снова."),
+        "errorMessageCouldNotConnectServer": MessageLookupByLibrary.simpleMessage(
+            "Не удалось подключиться к серверу. Это может быть из-за проблем с сервером или вашим интернетом."),
+        "errorMessageDefaultRequestError": MessageLookupByLibrary.simpleMessage(
+            "Запрос не выполнен, попробуйте позже"),
+        "errorMessageErrorWhileRequesting":
+            MessageLookupByLibrary.simpleMessage(
+                "Ошибка при выполнении запроса"),
+        "errorMessageMobileBug": MessageLookupByLibrary.simpleMessage(
+            "Ошибка приложения! Сообщите разработчикам."),
+        "errorMessageNoConnection":
+            MessageLookupByLibrary.simpleMessage("Нет соединения с сервером"),
+        "errorMessageNoRightsToPerform": MessageLookupByLibrary.simpleMessage(
+            "У вас нет прав для выполнения этого действия."),
+        "errorMessageNoRightsToView": MessageLookupByLibrary.simpleMessage(
+            "У вас нет прав для просмотра этой страницы."),
+        "errorMessageServerError": MessageLookupByLibrary.simpleMessage(
+            "Технические работы на сервере"),
+        "errorMessageServerInternalError": MessageLookupByLibrary.simpleMessage(
+            "Извините за неудобства, сервер временно недоступен. Попробуйте позже."),
         "errorMessageUnexpectedError":
-            MessageLookupByLibrary.simpleMessage("Неожиданная ошибка"),
+            MessageLookupByLibrary.simpleMessage("Что-то пошло не так."),
+        "errorMessageUrlLaunchError":
+            MessageLookupByLibrary.simpleMessage("Ошибка при открытии ссылки"),
         "gallery": MessageLookupByLibrary.simpleMessage("Галерея"),
         "montJune": MessageLookupByLibrary.simpleMessage("Июнь"),
         "monthApril": MessageLookupByLibrary.simpleMessage("Апрель"),

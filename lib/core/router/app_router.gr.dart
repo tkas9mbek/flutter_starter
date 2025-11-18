@@ -14,7 +14,7 @@ part of 'app_router.dart';
 /// [AuthenticatedWrapper]
 class AuthenticatedRouter extends PageRouteInfo<void> {
   const AuthenticatedRouter({List<PageRouteInfo>? children})
-    : super(AuthenticatedRouter.name, initialChildren: children);
+      : super(AuthenticatedRouter.name, initialChildren: children);
 
   static const String name = 'AuthenticatedRouter';
 
@@ -30,7 +30,7 @@ class AuthenticatedRouter extends PageRouteInfo<void> {
 /// [CalendarScreen]
 class CalendarRoute extends PageRouteInfo<void> {
   const CalendarRoute({List<PageRouteInfo>? children})
-    : super(CalendarRoute.name, initialChildren: children);
+      : super(CalendarRoute.name, initialChildren: children);
 
   static const String name = 'CalendarRoute';
 
@@ -46,7 +46,7 @@ class CalendarRoute extends PageRouteInfo<void> {
 /// [LoginScreen]
 class LoginRoute extends PageRouteInfo<void> {
   const LoginRoute({List<PageRouteInfo>? children})
-    : super(LoginRoute.name, initialChildren: children);
+      : super(LoginRoute.name, initialChildren: children);
 
   static const String name = 'LoginRoute';
 
@@ -62,7 +62,7 @@ class LoginRoute extends PageRouteInfo<void> {
 /// [ProfileScreen]
 class ProfileRoute extends PageRouteInfo<void> {
   const ProfileRoute({List<PageRouteInfo>? children})
-    : super(ProfileRoute.name, initialChildren: children);
+      : super(ProfileRoute.name, initialChildren: children);
 
   static const String name = 'ProfileRoute';
 
@@ -78,7 +78,7 @@ class ProfileRoute extends PageRouteInfo<void> {
 /// [RegistrationScreen]
 class RegistrationRoute extends PageRouteInfo<void> {
   const RegistrationRoute({List<PageRouteInfo>? children})
-    : super(RegistrationRoute.name, initialChildren: children);
+      : super(RegistrationRoute.name, initialChildren: children);
 
   static const String name = 'RegistrationRoute';
 
@@ -94,7 +94,7 @@ class RegistrationRoute extends PageRouteInfo<void> {
 /// [RootScreen]
 class RootRoute extends PageRouteInfo<void> {
   const RootRoute({List<PageRouteInfo>? children})
-    : super(RootRoute.name, initialChildren: children);
+      : super(RootRoute.name, initialChildren: children);
 
   static const String name = 'RootRoute';
 
@@ -110,7 +110,7 @@ class RootRoute extends PageRouteInfo<void> {
 /// [SettingsScreen]
 class SettingsRoute extends PageRouteInfo<void> {
   const SettingsRoute({List<PageRouteInfo>? children})
-    : super(SettingsRoute.name, initialChildren: children);
+      : super(SettingsRoute.name, initialChildren: children);
 
   static const String name = 'SettingsRoute';
 
@@ -130,10 +130,10 @@ class TaskDetailsRoute extends PageRouteInfo<TaskDetailsRouteArgs> {
     Key? key,
     List<PageRouteInfo>? children,
   }) : super(
-         TaskDetailsRoute.name,
-         args: TaskDetailsRouteArgs(task: task, key: key),
-         initialChildren: children,
-       );
+          TaskDetailsRoute.name,
+          args: TaskDetailsRouteArgs(task: task, key: key),
+          initialChildren: children,
+        );
 
   static const String name = 'TaskDetailsRoute';
 
@@ -163,7 +163,7 @@ class TaskDetailsRouteArgs {
 /// [TasksListScreen]
 class TasksListRoute extends PageRouteInfo<void> {
   const TasksListRoute({List<PageRouteInfo>? children})
-    : super(TasksListRoute.name, initialChildren: children);
+      : super(TasksListRoute.name, initialChildren: children);
 
   static const String name = 'TasksListRoute';
 
