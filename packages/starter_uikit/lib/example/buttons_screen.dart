@@ -40,6 +40,8 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                   setState(() => _elevatedLoading = true);
 
                   Future.delayed(const Duration(seconds: 2), () {
+                    if (!mounted) return;
+
                     setState(() => _elevatedLoading = false);
 
                     NotificationSnackBar.showMessage(
@@ -59,6 +61,8 @@ class _ButtonsScreenState extends State<ButtonsScreen> {
                   setState(() => _outlinedLoading = true);
 
                   Future.delayed(const Duration(seconds: 2), () {
+                    if (!mounted) return;
+
                     setState(() => _outlinedLoading = false);
 
                     NotificationSnackBar.showMessage(

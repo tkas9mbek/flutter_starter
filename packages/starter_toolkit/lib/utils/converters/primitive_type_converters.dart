@@ -17,7 +17,7 @@ class PrimitiveTypeConverters {
 
   static String colorToJson(Color color) {
     final buffer = StringBuffer()
-      ..write(color.value.toRadixString(16).padLeft(8, '0'));
+      ..write(color.toARGB32().toRadixString(16).padLeft(8, '0'));
 
     return buffer.toString();
   }

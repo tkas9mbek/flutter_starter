@@ -21,7 +21,7 @@ class RetriableRepositoryExecutor extends RepositoryExecutor {
   Future<T> execute<T>(Future<T> Function() function) async {
     Exception? lastException;
 
-    for (int attempt = 0; attempt < maxRetries; attempt++) {
+    for (var attempt = 0; attempt < maxRetries; attempt++) {
       try {
         final result = await function();
         return result;

@@ -9,6 +9,10 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
   auto_route: ^9.2.2
   bloc: ^9.0.0
   bloc_concurrency: ^0.3.0
@@ -16,11 +20,8 @@ dependencies:
   dio: ^5.9.0
   equatable: ^2.0.7
   flutter_bloc: ^9.1.1
-  flutter:
-    sdk: flutter
-  flutter_localizations:
-    sdk: flutter
   flutter_form_builder: ^10.1.0
+  flutter_native_splash: ^2.4.6
   flutter_secure_storage: ^9.2.4
   flutter_svg: ^2.2.1
   freezed_annotation: ^2.4.4
@@ -28,26 +29,25 @@ dependencies:
   intl: ^0.20.2
   intl_utils: ^2.8.8
   retrofit: ^4.7.2
+  rxdart: ^0.28.0
   shared_preferences: ^2.5.3
   starter_toolkit:
     path: ./packages/starter_toolkit
   starter_uikit:
     path: ./packages/starter_uikit
-  rxdart: ^0.28.0
-  flutter_native_splash: ^2.4.6
 
 dev_dependencies:
-  auto_route_generator: ^9.3.1
-  build_runner: ^2.5.4
-  flutter_launcher_icons: ^0.14.4
   flutter_test:
     sdk: flutter
-  json_serializable: ^6.9.5
-  retrofit_generator: ^9.7.0
+  auto_route_generator: ^9.3.1
   bloc_test: ^10.0.0
-  mocktail: ^1.0.4
-  freezed: ^2.5.8
+  build_runner: ^2.5.4
   flutter_gen_runner: ^5.12.0
+  flutter_launcher_icons: ^0.14.4
+  freezed: ^2.5.8
+  json_serializable: ^6.9.5
+  mocktail: ^1.0.4
+  retrofit_generator: ^9.7.0
 
 
 flutter:

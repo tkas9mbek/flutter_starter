@@ -6,8 +6,8 @@ class FormsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const TitleAppBar(title: 'Forms'),
+    return const Scaffold(
+      appBar: TitleAppBar(title: 'Forms'),
       body: Column(
         children: [],
       ),

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:top_snackbar_flutter/top_snack_bar.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class NotificationSnackBar extends StatelessWidget {
   /// A notification bar that shows a message with an optional icon.

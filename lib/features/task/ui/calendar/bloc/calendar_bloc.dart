@@ -11,105 +11,95 @@ class CalendarEvent with _$CalendarEvent {
   const factory CalendarEvent.dateSelected(DateTime date) =
       _DateSelectedCalendarEvent;
 
-  const factory CalendarEvent.taskToggled(String taskId) =
-      _TaskToggledCalendarEvent;
+  const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;
+}
+
+@freezed
+class CalendarStatus with _$CalendarStatus {
+  const factory CalendarStatus.initial() = _InitialCalendarStatus;
+
+  const factory CalendarStatus.loading() = _LoadingCalendarStatus;
+
+  const factory CalendarStatus.success({
+    required List<Task> tasks,
+  }) = _SuccessCalendarStatus;
+
+  const factory CalendarStatus.failure({
+    required AppException exception,
+  }) = _FailureCalendarStatus;
 }
 
 @freezed
 class CalendarState with _$CalendarState {
+  const factory CalendarState({
+    required DateTime selectedDate,
+    required CalendarStatus status,
+  }) = _CalendarState;
+
   const CalendarState._();
 
-  const factory CalendarState.initial() = _InitialCalendarState;
-
-  const factory CalendarState.loading({
-    required DateTime selectedDate,
-  }) = _LoadingCalendarState;
-
-  const factory CalendarState.success({
-    required DateTime selectedDate,
-    required List<Task> tasks,
-  }) = _SuccessCalendarState;
-
-  const factory CalendarState.failure({
-    required DateTime selectedDate,
-    required AppException exception,
-  }) = _FailureCalendarState;
-
-  bool get isLoading => this is _LoadingCalendarState;
-
-  DateTime get selectedDate => when(
-        initial: () => DateTime.now(),
-        loading: (date) => date,
-        success: (date, _) => date,
-        failure: (date, _) => date,
+  factory CalendarState.initial() => CalendarState(
+        selectedDate: DateTime.now(),
+        status: const CalendarStatus.initial(),
       );
+
+  bool get isLoading => status is _LoadingCalendarStatus;
 }
 
 class CalendarBloc extends Bloc<CalendarEvent, CalendarState> {
   final TaskRepository _repository;
 
-  CalendarBloc(this._repository) : super(const CalendarState.initial()) {
-    on<CalendarEvent>(
-      (event, emit) => event.when(
-        dateSelected: (date) => _onDateSelected(date, emit),
-        taskToggled: (taskId) => _onTaskToggled(taskId, emit),
-      ),
-    );
+  CalendarBloc(this._repository) : super(CalendarState.initial()) {
+    on<_DateSelectedCalendarEvent>(_onDateSelected);
+    on<_RefreshedCalendarEvent>(_onRefreshed);
   }
 
   Future<void> _onDateSelected(
-    DateTime date,
+    _DateSelectedCalendarEvent event,
     Emitter<CalendarState> emit,
   ) async {
-    emit(CalendarState.loading(selectedDate: date));
+    emit(
+      state.copyWith(
+        selectedDate: event.date,
+        status: const CalendarStatus.loading(),
+      ),
+    );
 
     try {
-      final tasks = await _repository.getTasksByDate(date);
+      final tasks = await _repository.getTasksByDate(event.date);
 
-      emit(
-        CalendarState.success(
-          selectedDate: date,
-          tasks: tasks,
+      return emit(
+        state.copyWith(
+          status: CalendarStatus.success(tasks: tasks),
         ),
       );
     } on AppException catch (e) {
-      emit(
-        CalendarState.failure(
-          selectedDate: date,
-          exception: e,
+      return emit(
+        state.copyWith(
+          status: CalendarStatus.failure(exception: e),
         ),
       );
     }
   }
 
-  Future<void> _onTaskToggled(
-    String taskId,
+  Future<void> _onRefreshed(
+    _RefreshedCalendarEvent event,
     Emitter<CalendarState> emit,
   ) async {
-    final currentState = state;
-
-    if (currentState is! _SuccessCalendarState) {
-      return;
-    }
+    emit(state.copyWith(status: const CalendarStatus.loading()));
 
     try {
-      final updatedTask = await _repository.toggleTaskCompletion(taskId);
+      final tasks = await _repository.getTasksByDate(state.selectedDate);
 
-      final updatedTasks = currentState.tasks.map((task) {
-        return task.id == taskId ? updatedTask : task;
-      }).toList();
-
-      emit(
-        CalendarState.success(
-          selectedDate: currentState.selectedDate,
-          tasks: updatedTasks,
+      return emit(
+        state.copyWith(
+          status: CalendarStatus.success(tasks: tasks),
         ),
       );
     } on AppException catch (e) {
-      emit(
-        CalendarState.failure(
-          selectedDate: currentState.selectedDate,
-          exception: e,
+      return emit(
+        state.copyWith(
+          status: CalendarStatus.failure(exception: e),
         ),
       );
     }

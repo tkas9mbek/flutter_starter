@@ -3,27 +3,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
-import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
-import 'package:starter/features/task/ui/calendar/widget/calendar_horizontal_date_picker.dart';
-import 'package:starter/features/task/ui/calendar/widget/tasks_timeline_list.dart';
 import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
 import 'package:starter/features/task/ui/details/bloc/task_toggle_bloc.dart';
+import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
+import 'package:starter/features/task/ui/list/widget/task_date_group_card.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/starter_uikit.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
 
 @RoutePage()
-class CalendarScreen extends StatelessWidget {
-  const CalendarScreen({super.key});
+class TasksListScreen extends StatelessWidget {
+  const TasksListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => CalendarBloc(getIt<TaskRepository>())
-            ..add(CalendarEvent.dateSelected(DateTime.now())),
+          create: (context) => TasksListBloc(getIt<TaskRepository>())
+            ..add(const TasksListEvent.requested()),
         ),
         BlocProvider(
           create: (context) => TaskToggleBloc(getIt<TaskRepository>()),
@@ -32,13 +31,13 @@ class CalendarScreen extends StatelessWidget {
           create: (context) => TaskDeleteBloc(getIt<TaskRepository>()),
         ),
       ],
-      child: const _CalendarView(),
+      child: const _TasksListView(),
     );
   }
 }
 
-class _CalendarView extends StatelessWidget {
-  const _CalendarView();
+class _TasksListView extends StatelessWidget {
+  const _TasksListView();
 
   @override
   Widget build(BuildContext context) {
@@ -49,9 +48,11 @@ class _CalendarView extends StatelessWidget {
         BlocListener<TaskToggleBloc, TaskToggleState>(
           listener: (context, state) {
             state.mapOrNull(
-              success: (_) => context.read<CalendarBloc>().add(
-                    const CalendarEvent.refreshed(),
-                  ),
+              success: (_) {
+                context.read<TasksListBloc>().add(
+                      const TasksListEvent.requested(),
+                    );
+              },
               failure: (failureState) {
                 NotificationSnackBar.showMessage(
                   context,
@@ -71,8 +72,8 @@ class _CalendarView extends StatelessWidget {
                   isSuccess: true,
                   message: localizer.taskDeletedSuccessfully,
                 );
-                context.read<CalendarBloc>().add(
-                      const CalendarEvent.refreshed(),
+                context.read<TasksListBloc>().add(
+                      const TasksListEvent.requested(),
                     );
               },
               failure: (failureState) {
@@ -87,35 +88,41 @@ class _CalendarView extends StatelessWidget {
         ),
       ],
       child: Scaffold(
-        appBar: TitleAppBar(title: localizer.calendar),
-        body: BlocBuilder<CalendarBloc, CalendarState>(
-          builder: (context, state) => Column(
-            children: [
-              CalendarHorizontalDatePicker(selectedDate: state.selectedDate),
-              Expanded(
-                child: state.status.when(
-                  initial: () => EmptyInformationBody(
-                    text: localizer.selectDate,
-                  ),
-                  loading: () => const CustomCircularProgressIndicator(),
-                  success: (tasks) {
-                    if (tasks.isEmpty) {
-                      return EmptyInformationBody(
-                        text: localizer.noTasksForDate,
-                      );
-                    }
+        appBar: TitleAppBar(title: localizer.tasks),
+        body: BlocBuilder<TasksListBloc, TasksListState>(
+          builder: (context, state) => state.maybeMap(
+            success: (successState) {
+              final tasks = successState.tasks;
+              final groupedTasks = successState.groupedTasks;
 
-                    return TasksTimelineList(tasks: tasks);
-                  },
-                  failure: (exception) => FailureWidgetLarge(
-                    exception: exception,
-                    onRetry: () => context.read<CalendarBloc>().add(
-                          const CalendarEvent.refreshed(),
-                        ),
+              if (tasks.isEmpty) {
+                return EmptyInformationBody(text: localizer.noTasksYet);
+              }
+
+              final sortedDates = groupedTasks.keys.toList()
+                ..sort((a, b) => a.compareTo(b));
+
+              return ListView.builder(
+                padding: const EdgeInsets.all(16),
+                itemCount: sortedDates.length,
+                itemBuilder: (context, index) {
+                  final date = sortedDates[index];
+                  final tasksForDate = groupedTasks[date]!;
+
+                  return TaskDateGroupCard(
+                    date: date,
+                    tasks: tasksForDate,
+                  );
+                },
+              );
+            },
+            failure: (failureState) => FailureWidgetLarge(
+              exception: failureState.exception,
+              onRetry: () => context.read<TasksListBloc>().add(
+                    const TasksListEvent.requested(),
                   ),
-                ),
-              ),
-            ],
+            ),
+            orElse: () => const CustomCircularProgressIndicator(),
           ),
         ),
       ),

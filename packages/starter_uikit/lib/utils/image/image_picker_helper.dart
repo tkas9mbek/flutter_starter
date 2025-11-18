@@ -26,9 +26,13 @@ class ImagePickerHelper {
         ),
         actions: <CupertinoActionSheetAction>[
           CupertinoActionSheetAction(
-            onPressed: () async =>
-                ImagePickerHelper.pickImage(source: ImageSource.camera)
-                    .then((value) => Navigator.pop(context, value)),
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              final image = await ImagePickerHelper.pickImage(
+                source: ImageSource.camera,
+              );
+              navigator.pop(image);
+            },
             child: Text(
               UiLocalizer.of(context).camera,
               style: TextStyle(
@@ -37,9 +41,13 @@ class ImagePickerHelper {
             ),
           ),
           CupertinoActionSheetAction(
-            onPressed: () async =>
-                ImagePickerHelper.pickImage(source: ImageSource.gallery)
-                    .then((value) => Navigator.pop(context, value)),
+            onPressed: () async {
+              final navigator = Navigator.of(context);
+              final image = await ImagePickerHelper.pickImage(
+                source: ImageSource.gallery,
+              );
+              navigator.pop(image);
+            },
             child: Text(
               UiLocalizer.of(context).gallery,
               style: TextStyle(
