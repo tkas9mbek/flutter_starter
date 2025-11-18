@@ -131,6 +131,128 @@ class ItemOperationState with _$ItemOperationState {
 }
 ```
 
+### 4. Nested Status Pattern (For Persistent Data)
+
+**AI Instruction**: For states that need persistent data (like selectedDate, filters, pagination) across status changes, use a nested status pattern:
+
+```dart
+// Status union - handles loading/success/failure
+@freezed
+class CalendarStatus with _$CalendarStatus {
+  const factory CalendarStatus.initial() = _InitialCalendarStatus;
+  const factory CalendarStatus.loading() = _LoadingCalendarStatus;
+  const factory CalendarStatus.success({
+    required List<Task> tasks,
+  }) = _SuccessCalendarStatus;
+  const factory CalendarStatus.failure({
+    required AppException exception,
+  }) = _FailureCalendarStatus;
+}
+
+// State with persistent data + nested status
+@freezed
+class CalendarState with _$CalendarState {
+  const factory CalendarState({
+    required DateTime selectedDate,  // Persists across status changes
+    required CalendarStatus status,   // Changes with loading/success/failure
+  }) = _CalendarState;
+
+  const CalendarState._();
+
+  // Factory for initial state
+  factory CalendarState.initial() => CalendarState(
+    selectedDate: DateTime.now(),
+    status: const CalendarStatus.initial(),
+  );
+
+  // Helper methods
+  bool get isLoading => status is _LoadingCalendarStatus;
+}
+
+// Events
+@freezed
+class CalendarEvent with _$CalendarEvent {
+  const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
+  const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;  // Reloads current date
+}
+
+// BLoC handlers
+Future<void> _onDateSelected(
+  _DateSelectedCalendarEvent event,
+  Emitter<CalendarState> emit,
+) async {
+  // Update persistent data AND status
+  emit(state.copyWith(
+    selectedDate: event.date,
+    status: const CalendarStatus.loading(),
+  ));
+
+  try {
+    final tasks = await _repository.getTasksByDate(event.date);
+
+    return emit(state.copyWith(
+      status: CalendarStatus.success(tasks: tasks),
+    ));
+  } on AppException catch (e) {
+    return emit(state.copyWith(
+      status: CalendarStatus.failure(exception: e),
+    ));
+  }
+}
+
+Future<void> _onRefreshed(
+  _RefreshedCalendarEvent event,
+  Emitter<CalendarState> emit,
+) async {
+  // Reload using current persistent data
+  emit(state.copyWith(status: const CalendarStatus.loading()));
+
+  try {
+    final tasks = await _repository.getTasksByDate(state.selectedDate);
+
+    return emit(state.copyWith(
+      status: CalendarStatus.success(tasks: tasks),
+    ));
+  } on AppException catch (e) {
+    return emit(state.copyWith(
+      status: CalendarStatus.failure(exception: e),
+    ));
+  }
+}
+```
+
+**Usage in UI:**
+```dart
+BlocBuilder<CalendarBloc, CalendarState>(
+  builder: (context, state) => Column(
+    children: [
+      // Access persistent data directly
+      CalendarPicker(selectedDate: state.selectedDate),
+
+      // Use nested status for content
+      Expanded(
+        child: state.status.when(
+          initial: () => EmptyView(),
+          loading: () => LoadingIndicator(),
+          success: (tasks) => TasksList(tasks: tasks),
+          failure: (exception) => ErrorWidget(exception: exception),
+        ),
+      ),
+    ],
+  ),
+)
+```
+
+**When to use nested status:**
+- State needs to persist data across multiple load operations (filters, pagination, selection)
+- You need to refresh/reload without changing persistent data
+- You want to avoid duplicating persistent data in every status variant
+
+**When NOT to use nested status:**
+- Simple CRUD operations that don't need persistent data
+- One-time data fetch scenarios
+- States where all data changes together
+
 ---
 
 ## Standard Event Patterns
@@ -474,4 +596,4 @@ Add to your VS Code snippets for quick BLoC generation:
 
 ---
 
-**Last Updated**: January 18, 2025
+**Last Updated**: November 18, 2025
