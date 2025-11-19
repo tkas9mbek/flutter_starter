@@ -1,11 +1,17 @@
-import 'package:starter/features/auth/data/auth_service.dart';
 import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
+import 'package:starter_toolkit/data/client/api_client.dart';
+import 'package:starter_toolkit/data/client/http_method.dart';
 
 class RemoteAuthAuthorizedDataSource implements AuthAuthorizedDataSource {
-  final AuthService _authService;
+  const RemoteAuthAuthorizedDataSource(this._client);
 
-  const RemoteAuthAuthorizedDataSource(this._authService);
+  final ApiClient _client;
 
   @override
-  Future<void> logout() => _authService.logout();
+  Future<void> logout() {
+    return _client.requestVoid(
+      method: HttpMethod.post,
+      path: '/auth/logout',
+    );
+  }
 }

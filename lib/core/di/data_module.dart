@@ -5,9 +5,9 @@ import 'package:starter/core/data/dio_provider.dart';
 import 'package:starter/core/di/app_module.dart';
 import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
-import 'package:starter/features/auth/data/auth_service.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
-import 'package:starter/features/profile/data/profile_service.dart';
+import 'package:starter_toolkit/data/client/api_client.dart';
+import 'package:starter_toolkit/data/client/dio_api_client.dart';
 
 class DataModule extends AppModule {
   @override
@@ -49,15 +49,16 @@ class DataModule extends AppModule {
       ..registerSingleton<Dio>(
         apiProvider.getDio(useToken: true),
       )
-      ..registerFactory<AuthService>(
-        () => AuthService(
-          getIt<Dio>(instanceName: 'unauthorized'),
+      ..registerFactory<ApiClient>(
+        () => DioApiClient(
+          dio: getIt<Dio>(instanceName: 'unauthorized'),
           baseUrl: env.baseApiUrl,
         ),
+        instanceName: 'unauthorized',
       )
-      ..registerFactory<ProfileService>(
-        () => ProfileService(
-          getIt<Dio>(),
+      ..registerFactory<ApiClient>(
+        () => DioApiClient(
+          dio: getIt<Dio>(),
           baseUrl: env.baseApiUrl,
         ),
       );
