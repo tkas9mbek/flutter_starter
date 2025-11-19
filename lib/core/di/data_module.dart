@@ -4,6 +4,8 @@ import 'package:starter/core/consts/storage_keys.dart';
 import 'package:starter/core/data/dio_provider.dart';
 import 'package:starter/core/di/app_module.dart';
 import 'package:starter/core/di/injection.dart';
+import 'package:starter/features/application/environment/model/app_environment.dart';
+import 'package:starter/features/auth/data/auth_service.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
@@ -34,6 +36,8 @@ class DataModule extends AppModule {
       logout: () async => getIt.get<AuthRepository>().logout(),
     );
 
+    final env = getIt<AppEnvironment>();
+
     getIt
       ..registerSingleton<RepositoryExecutor>(
         const RawRepositoryExecutor()
@@ -46,6 +50,12 @@ class DataModule extends AppModule {
       )
       ..registerSingleton<Dio>(
         apiProvider.getDio(useToken: true),
+      )
+      ..registerFactory<AuthService>(
+        () => AuthService(
+          getIt<Dio>(instanceName: 'unauthorized'),
+          baseUrl: env.baseApiUrl,
+        ),
       );
   }
 }

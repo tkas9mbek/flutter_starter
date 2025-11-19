@@ -6,12 +6,14 @@ class AppEnvironment extends Equatable {
   final String baseUrl;
   final String name;
   final bool showBanner;
+  final bool useMock;
 
   const AppEnvironment({
     required this.name,
     required this.baseApiUrl,
     required this.baseUrl,
     required this.showBanner,
+    required this.useMock,
   });
 
   factory AppEnvironment.prod() => const AppEnvironment(
@@ -19,6 +21,7 @@ class AppEnvironment extends Equatable {
         baseApiUrl: CoreConsts.prodGeneralApiUrl,
         baseUrl: CoreConsts.prodBaseUrl,
         showBanner: false,
+        useMock: false,
       );
 
   factory AppEnvironment.dev() => const AppEnvironment(
@@ -26,6 +29,15 @@ class AppEnvironment extends Equatable {
         baseApiUrl: CoreConsts.devGeneralApiUrl,
         baseUrl: CoreConsts.devBaseUrl,
         showBanner: true,
+        useMock: false,
+      );
+
+  factory AppEnvironment.mock() => const AppEnvironment(
+        name: 'mock',
+        baseApiUrl: CoreConsts.devGeneralApiUrl,
+        baseUrl: CoreConsts.devBaseUrl,
+        showBanner: true,
+        useMock: true,
       );
 
   factory AppEnvironment.fromName(String? name) {
@@ -33,9 +45,13 @@ class AppEnvironment extends Equatable {
       return AppEnvironment.dev();
     }
 
+    if (name == AppEnvironment.mock().name) {
+      return AppEnvironment.mock();
+    }
+
     return AppEnvironment.prod();
   }
 
   @override
-  List<Object> get props => [baseUrl, name];
+  List<Object> get props => [baseUrl, name, useMock];
 }

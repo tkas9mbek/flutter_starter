@@ -23,7 +23,7 @@ class TaskModule extends AppModule {
         () {
           final env = getIt<AppEnvironment>();
 
-          if (env.name == 'dev') {
+          if (env.useMock) {
             return MockTaskDataSource();
           }
 
