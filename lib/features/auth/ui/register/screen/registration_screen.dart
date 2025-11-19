@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:starter/core/di/injection.dart';
 import 'package:starter/core/router/app_router.dart';
+import 'package:starter/features/application/environment/ui/widget/dev_mode_activator.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/auth/ui/register/bloc/registration_bloc.dart';
 import 'package:starter/features/auth/ui/register/model/registration_form.dart';
@@ -49,9 +50,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       child: BlocBuilder<RegistrationBloc, RegistrationState>(
         builder: (context, state) => FormBuilder(
           key: formKey,
-          child: Scaffold(
-            appBar: TitleAppBar(title: Localizer.of(context).login),
-            body: Center(
+          child: DevModeActivator(
+            child: Scaffold(
+              appBar: TitleAppBar(title: Localizer.of(context).login),
+              body: Center(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(24),
                 child: Column(
@@ -136,6 +138,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           ),
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

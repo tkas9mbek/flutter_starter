@@ -11,6 +11,9 @@ import 'package:starter/features/profile/data/profile_service.dart';
 
 class DataModule extends AppModule {
   @override
+  bool get requiresReconfiguration => true;
+
+  @override
   void registerDependencies() {
     final authInterceptor = InterceptorsWrapper(
       onRequest: (options, handler) async {

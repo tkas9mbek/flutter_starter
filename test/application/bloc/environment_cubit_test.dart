@@ -18,7 +18,7 @@ void main() {
 
   setUp(() {
     mockDataSource = MockEnvironmentLocalDataSource();
-    realRepository = EnvironmentRepository(mockDataSource);
+    realRepository = EnvironmentRepository(mockDataSource, null);
 
     prodEnv = AppEnvironment.prod();
     devEnv = AppEnvironment.dev();

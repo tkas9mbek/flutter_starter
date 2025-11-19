@@ -45,11 +45,11 @@ class AppEnvironment extends Equatable {
       return AppEnvironment.dev();
     }
 
-    if (name == AppEnvironment.mock().name) {
-      return AppEnvironment.mock();
+    if (name == AppEnvironment.prod().name) {
+      return AppEnvironment.prod();
     }
 
-    return AppEnvironment.prod();
+    return AppEnvironment.mock();
   }
 
   @override

@@ -13,6 +13,9 @@ import 'package:starter_toolkit/data/repository_executor/repository_executor.dar
 
 class TaskModule extends AppModule {
   @override
+  bool get requiresReconfiguration => true;
+
+  @override
   Future<void> registerDependencies() async {
     final getIt = GetIt.instance;
     getIt

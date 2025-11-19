@@ -10,6 +10,9 @@ import 'package:starter_toolkit/data/repository_executor/repository_executor.dar
 
 class ProfileModule extends AppModule {
   @override
+  bool get requiresReconfiguration => true;
+
+  @override
   void registerDependencies() {
     final env = getIt<AppEnvironment>();
 

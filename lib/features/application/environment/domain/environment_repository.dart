@@ -7,10 +7,10 @@ class EnvironmentRepository {
   final EnvironmentDataSource _environmentDataSource;
   final OnEnvironmentChanged? _onEnvironmentChanged;
 
-  EnvironmentRepository(
-    this._environmentDataSource, {
-    OnEnvironmentChanged? onEnvironmentChanged,
-  }) : _onEnvironmentChanged = onEnvironmentChanged;
+  const EnvironmentRepository(
+    this._environmentDataSource,
+    this._onEnvironmentChanged,
+  );
 
   Future<void> changeEnvironment(AppEnvironment env) async {
     await _environmentDataSource.saveEnvName(env.name);
