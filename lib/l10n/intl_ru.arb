@@ -62,7 +62,6 @@
   "cancel": "Отмена",
   "taskDeletedSuccessfully": "Задача успешно удалена",
   "failedToDeleteTask": "Не удалось удалить задачу",
-  "failedToToggleTask": "Не удалось изменить статус задачи",
   "failedToLoadTaskDetails": "Не удалось загрузить детали задачи",
   "startTime": "Время начала",
   "endTime": "Время окончания",

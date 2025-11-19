@@ -11,6 +11,4 @@ abstract class TaskDataSource {
   Future<Task> updateTask(String id, TaskCreateRequest request);
 
   Future<void> deleteTask(String id);
-
-  Future<Task> toggleTaskCompletion(String id);
 }

@@ -4,7 +4,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
 import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
-import 'package:starter/features/task/ui/details/bloc/task_toggle_bloc.dart';
 import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
 import 'package:starter/features/task/ui/list/widget/task_date_group_card.dart';
 import 'package:starter/l10n/generated/l10n.dart';
@@ -25,9 +24,6 @@ class TasksListScreen extends StatelessWidget {
             ..add(const TasksListEvent.requested()),
         ),
         BlocProvider(
-          create: (context) => TaskToggleBloc(getIt<TaskRepository>()),
-        ),
-        BlocProvider(
           create: (context) => TaskDeleteBloc(getIt<TaskRepository>()),
         ),
       ],
@@ -43,50 +39,28 @@ class _TasksListView extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizer = Localizer.of(context);
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<TaskToggleBloc, TaskToggleState>(
-          listener: (context, state) {
-            state.mapOrNull(
-              success: (_) {
-                context.read<TasksListBloc>().add(
-                      const TasksListEvent.requested(),
-                    );
-              },
-              failure: (failureState) {
-                NotificationSnackBar.showMessage(
-                  context,
-                  isSuccess: false,
-                  message: localizer.failedToToggleTask,
+    return BlocListener<TaskDeleteBloc, TaskDeleteState>(
+      listener: (context, state) {
+        state.mapOrNull(
+          success: (_) {
+            NotificationSnackBar.showMessage(
+              context,
+              isSuccess: true,
+              message: localizer.taskDeletedSuccessfully,
+            );
+            context.read<TasksListBloc>().add(
+                  const TasksListEvent.requested(),
                 );
-              },
+          },
+          failure: (failureState) {
+            NotificationSnackBar.showMessage(
+              context,
+              isSuccess: false,
+              message: localizer.failedToDeleteTask,
             );
           },
-        ),
-        BlocListener<TaskDeleteBloc, TaskDeleteState>(
-          listener: (context, state) {
-            state.mapOrNull(
-              success: (_) {
-                NotificationSnackBar.showMessage(
-                  context,
-                  isSuccess: true,
-                  message: localizer.taskDeletedSuccessfully,
-                );
-                context.read<TasksListBloc>().add(
-                      const TasksListEvent.requested(),
-                    );
-              },
-              failure: (failureState) {
-                NotificationSnackBar.showMessage(
-                  context,
-                  isSuccess: false,
-                  message: localizer.failedToDeleteTask,
-                );
-              },
-            );
-          },
-        ),
-      ],
+        );
+      },
       child: Scaffold(
         appBar: TitleAppBar(title: localizer.tasks),
         body: BlocBuilder<TasksListBloc, TasksListState>(

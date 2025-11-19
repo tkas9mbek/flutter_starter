@@ -117,30 +117,4 @@ class MockTaskDataSource implements TaskDataSource {
     await Future.delayed(const Duration(milliseconds: 500));
     _tasks.removeWhere((task) => task.id == id);
   }
-
-  @override
-  Future<Task> toggleTaskCompletion(String id) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    final index = _tasks.indexWhere((task) => task.id == id);
-
-    if (index == -1) {
-      throw Exception('Task not found');
-    }
-
-    final task = _tasks[index];
-    final updatedTask = Task(
-      id: task.id,
-      title: task.title,
-      description: task.description,
-      date: task.date,
-      startTime: task.startTime,
-      endTime: task.endTime,
-      isCompleted: !task.isCompleted,
-    );
-
-    _tasks[index] = updatedTask;
-
-    return updatedTask;
-  }
 }

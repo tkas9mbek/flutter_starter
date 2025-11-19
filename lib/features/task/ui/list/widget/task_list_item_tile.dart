@@ -5,7 +5,6 @@ import 'package:intl/intl.dart';
 import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
-import 'package:starter/features/task/ui/details/bloc/task_toggle_bloc.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class TaskListItemTile extends StatelessWidget {
@@ -55,18 +54,6 @@ class TaskListItemTile extends StatelessWidget {
           padding: const EdgeInsets.all(16),
           child: Row(
             children: [
-              Checkbox(
-                value: task.isCompleted,
-                onChanged: (_) {
-                  context.read<TaskToggleBloc>().add(
-                        TaskToggleEvent.toggled(task.id),
-                      );
-                },
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(4),
-                ),
-              ),
-              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

@@ -25,7 +25,4 @@ class RemoteTaskDataSource implements TaskDataSource {
 
   @override
   Future<void> deleteTask(String id) => _service.deleteTask(id);
-
-  @override
-  Future<Task> toggleTaskCompletion(String id) => _service.toggleTaskCompletion(id);
 }

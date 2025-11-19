@@ -54,8 +54,6 @@ class MessageLookup extends MessageLookupByLibrary {
             "Не удалось загрузить профиль"),
         "failedToLoadTaskDetails": MessageLookupByLibrary.simpleMessage(
             "Не удалось загрузить детали задачи"),
-        "failedToToggleTask": MessageLookupByLibrary.simpleMessage(
-            "Не удалось изменить статус задачи"),
         "haveAccount":
             MessageLookupByLibrary.simpleMessage("Уже есть аккаунт?"),
         "haveNoAccount": MessageLookupByLibrary.simpleMessage("Нет аккаунта?"),

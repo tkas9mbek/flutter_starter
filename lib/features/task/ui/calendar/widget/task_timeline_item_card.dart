@@ -1,10 +1,8 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/task/model/task.dart';
-import 'package:starter/features/task/ui/details/bloc/task_toggle_bloc.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class TaskTimelineItemCard extends StatelessWidget {
@@ -90,32 +88,14 @@ class TaskTimelineItemCard extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Checkbox(
-                          value: task.isCompleted,
-                          onChanged: (_) {
-                            context.read<TaskToggleBloc>().add(
-                                  TaskToggleEvent.toggled(task.id),
-                                );
-                          },
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Text(
-                            task.title,
-                            style: task.isCompleted
-                                ? textStyles.mediumBody14.copyWith(
-                                    decoration: TextDecoration.lineThrough,
-                                    color: theme.textSecondary,
-                                  )
-                                : textStyles.mediumBody14,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      task.title,
+                      style: task.isCompleted
+                          ? textStyles.mediumBody14.copyWith(
+                              decoration: TextDecoration.lineThrough,
+                              color: theme.textSecondary,
+                            )
+                          : textStyles.mediumBody14,
                     ),
                     if (task.description.isNotEmpty) ...[
                       const SizedBox(height: 8),

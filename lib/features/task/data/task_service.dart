@@ -26,7 +26,4 @@ abstract class TaskService {
 
   @DELETE('/tasks/{id}')
   Future<void> deleteTask(@Path('id') String id);
-
-  @POST('/tasks/{id}/toggle')
-  Future<Task> toggleTaskCompletion(@Path('id') String id);
 }

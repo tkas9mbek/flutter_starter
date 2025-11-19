@@ -25,7 +25,4 @@ class TaskRepository {
 
   Future<void> deleteTask(String id) =>
       _executor.execute(() => _dataSource.deleteTask(id));
-
-  Future<Task> toggleTaskCompletion(String id) =>
-      _executor.execute(() => _dataSource.toggleTaskCompletion(id));
 }

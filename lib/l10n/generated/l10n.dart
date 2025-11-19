@@ -603,16 +603,6 @@ class Localizer {
     );
   }
 
-  /// `Не удалось изменить статус задачи`
-  String get failedToToggleTask {
-    return Intl.message(
-      'Не удалось изменить статус задачи',
-      name: 'failedToToggleTask',
-      desc: '',
-      args: [],
-    );
-  }
-
   /// `Не удалось загрузить детали задачи`
   String get failedToLoadTaskDetails {
     return Intl.message(

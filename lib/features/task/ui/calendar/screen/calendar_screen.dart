@@ -7,7 +7,6 @@ import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
 import 'package:starter/features/task/ui/calendar/widget/calendar_horizontal_date_picker.dart';
 import 'package:starter/features/task/ui/calendar/widget/tasks_timeline_list.dart';
 import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
-import 'package:starter/features/task/ui/details/bloc/task_toggle_bloc.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/starter_uikit.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
@@ -26,9 +25,6 @@ class CalendarScreen extends StatelessWidget {
             ..add(CalendarEvent.dateSelected(DateTime.now())),
         ),
         BlocProvider(
-          create: (context) => TaskToggleBloc(getIt<TaskRepository>()),
-        ),
-        BlocProvider(
           create: (context) => TaskDeleteBloc(getIt<TaskRepository>()),
         ),
       ],
@@ -44,48 +40,28 @@ class _CalendarView extends StatelessWidget {
   Widget build(BuildContext context) {
     final localizer = Localizer.of(context);
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<TaskToggleBloc, TaskToggleState>(
-          listener: (context, state) {
-            state.mapOrNull(
-              success: (_) => context.read<CalendarBloc>().add(
-                    const CalendarEvent.refreshed(),
-                  ),
-              failure: (failureState) {
-                NotificationSnackBar.showMessage(
-                  context,
-                  isSuccess: false,
-                  message: localizer.failedToToggleTask,
+    return BlocListener<TaskDeleteBloc, TaskDeleteState>(
+      listener: (context, state) {
+        state.mapOrNull(
+          success: (_) {
+            NotificationSnackBar.showMessage(
+              context,
+              isSuccess: true,
+              message: localizer.taskDeletedSuccessfully,
+            );
+            context.read<CalendarBloc>().add(
+                  const CalendarEvent.refreshed(),
                 );
-              },
+          },
+          failure: (failureState) {
+            NotificationSnackBar.showMessage(
+              context,
+              isSuccess: false,
+              message: localizer.failedToDeleteTask,
             );
           },
-        ),
-        BlocListener<TaskDeleteBloc, TaskDeleteState>(
-          listener: (context, state) {
-            state.mapOrNull(
-              success: (_) {
-                NotificationSnackBar.showMessage(
-                  context,
-                  isSuccess: true,
-                  message: localizer.taskDeletedSuccessfully,
-                );
-                context.read<CalendarBloc>().add(
-                      const CalendarEvent.refreshed(),
-                    );
-              },
-              failure: (failureState) {
-                NotificationSnackBar.showMessage(
-                  context,
-                  isSuccess: false,
-                  message: localizer.failedToDeleteTask,
-                );
-              },
-            );
-          },
-        ),
-      ],
+        );
+      },
       child: Scaffold(
         appBar: TitleAppBar(title: localizer.calendar),
         body: BlocBuilder<CalendarBloc, CalendarState>(
