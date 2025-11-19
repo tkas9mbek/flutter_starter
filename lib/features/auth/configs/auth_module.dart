@@ -24,7 +24,7 @@ class AuthModule extends AppModule {
       ..registerLazySingleton<AuthAuthorizedDataSource>(
         () {
           if (env.useMock) {
-            return MockAuthAuthorizedDataSource();
+            return const MockAuthAuthorizedDataSource();
           }
 
           return RemoteAuthAuthorizedDataSource(getIt<AuthService>());
@@ -33,7 +33,7 @@ class AuthModule extends AppModule {
       ..registerLazySingleton<AuthUnauthorizedDataSource>(
         () {
           if (env.useMock) {
-            return MockAuthUnauthorizedDataSource();
+            return const MockAuthUnauthorizedDataSource();
           }
 
           return RemoteAuthUnauthorizedDataSource(getIt<AuthService>());

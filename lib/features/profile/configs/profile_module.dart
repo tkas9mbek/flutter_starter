@@ -17,7 +17,7 @@ class ProfileModule extends AppModule {
       ..registerLazySingleton<ProfileDataSource>(
         () {
           if (env.useMock) {
-            return MockProfileDataSource();
+            return const MockProfileDataSource();
           }
 
           return RemoteProfileDataSource(getIt<AuthService>());
