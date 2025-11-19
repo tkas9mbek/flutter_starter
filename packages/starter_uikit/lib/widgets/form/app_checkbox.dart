@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
@@ -41,7 +42,10 @@ class AppCheckBox extends StatelessWidget {
                 ),
           child: selected
               ? Center(
-                  child: SvgPicture.asset(UiSvgIcons.tick),
+                  child: SvgPicture.asset(
+                    UiSvgIcons.tick,
+                    package: UiConsts.package,
+                  ),
                 )
               : null,
         ),

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:starter_toolkit/utils/form/form_validators.dart';
+import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/form/decoration/filled_text_field_decoration.dart';
@@ -189,7 +190,10 @@ class _AppTextFieldState extends State<AppTextField> {
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () => controller?.didChange(null),
-                    child: SvgPicture.asset(UiSvgIcons.cross),
+                    child: SvgPicture.asset(
+                      UiSvgIcons.cross,
+                      package: UiConsts.package,
+                    ),
                   ),
                 ] else if (widget.canObscureText) ...[
                   const SizedBox(width: 12),

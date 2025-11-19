@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
@@ -51,6 +52,7 @@ class FailureWidgetLarge extends StatelessWidget {
                   children: [
                     SvgPicture.asset(
                       UiSvgIcons.refresh,
+                      package: UiConsts.package,
                       colorFilter: ColorFilter.mode(
                         theme.primary,
                         BlendMode.srcIn,
@@ -118,6 +120,7 @@ class FailureWidgetSmall extends StatelessWidget {
                   onTap: onRetry,
                   child: SvgPicture.asset(
                     UiSvgIcons.refresh,
+                    package: UiConsts.package,
                     colorFilter: ColorFilter.mode(
                       textColor ?? theme.textPrimary,
                       BlendMode.srcIn,

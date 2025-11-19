@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/utils/form/option_label_builders.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
@@ -120,7 +121,10 @@ class _AppDropdownFieldState<T extends Object>
         initialValue: field.value == null
             ? null
             : widget.optionLabelBuilder(field.value!),
-        suffix: SvgPicture.asset(UiSvgIcons.chevronRight),
+        suffix: SvgPicture.asset(
+          UiSvgIcons.chevronRight,
+          package: UiConsts.package,
+        ),
       ),
     );
   }

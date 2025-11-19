@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
@@ -31,6 +32,7 @@ class EmptyInformationBody extends StatelessWidget {
             if (iconPath != null)
               SvgPicture.asset(
                 iconPath!,
+                package: UiConsts.package,
                 width: 64,
                 height: 64,
                 colorFilter: ColorFilter.mode(
