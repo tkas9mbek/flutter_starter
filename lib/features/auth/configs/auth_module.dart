@@ -47,7 +47,7 @@ class AuthModule extends AppModule {
       )
       ..registerLazySingleton<AuthRepository>(
         () => AuthRepository(
-          getIt<RepositoryExecutor>(),
+          const RawRepositoryExecutor().withErrorHandling(),
           getIt<AuthAuthorizedDataSource>(),
           getIt<AuthUnauthorizedDataSource>(),
           getIt<AuthLocalDataSource>(),

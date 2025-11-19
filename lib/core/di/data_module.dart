@@ -8,7 +8,6 @@ import 'package:starter/features/application/environment/model/app_environment.d
 import 'package:starter/features/auth/data/auth_service.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/profile/data/profile_service.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 class DataModule extends AppModule {
   @override
@@ -40,11 +39,6 @@ class DataModule extends AppModule {
     final env = getIt<AppEnvironment>();
 
     getIt
-      ..registerSingleton<RepositoryExecutor>(
-        const RawRepositoryExecutor()
-            .withErrorHandling()
-            .withRetry(maxRetries: 3, retryDelay: const Duration(seconds: 2)),
-      )
       ..registerSingleton<Dio>(
         apiProvider.getDio(useToken: false),
         instanceName: 'unauthorized',

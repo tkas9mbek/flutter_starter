@@ -32,10 +32,7 @@ class TaskModule extends AppModule {
       )
       ..registerFactory(
         () => TaskRepository(
-          const RawRepositoryExecutor()
-              .withErrorHandling()
-              .withRetry()
-              .withCaching(defaultTtl: const Duration(minutes: 5)),
+          const RawRepositoryExecutor().withErrorHandling(),
           getIt<TaskDataSource>(),
         ),
       )

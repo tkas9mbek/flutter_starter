@@ -25,7 +25,9 @@ class ProfileModule extends AppModule {
       )
       ..registerLazySingleton<ProfileRepository>(
         () => ProfileRepository(
-          getIt<RepositoryExecutor>(),
+          const RawRepositoryExecutor()
+              .withErrorHandling()
+              .withRetry(maxRetries: 3, retryDelay: const Duration(seconds: 2)),
           getIt<ProfileDataSource>(),
         ),
       );

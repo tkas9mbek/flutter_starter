@@ -6,6 +6,7 @@ import 'package:starter/features/application/environment/data/local_environment_
 import 'package:starter/features/application/environment/domain/environment_data_source.dart';
 import 'package:starter/features/application/environment/domain/environment_repository.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
+import 'package:starter/main.dart';
 
 class EnvironmentModule extends AppModule {
   @override
@@ -20,6 +21,7 @@ class EnvironmentModule extends AppModule {
       ..registerLazySingleton(
         () => EnvironmentRepository(
           getIt<EnvironmentDataSource>(),
+          onEnvironmentChanged: reconfigureApplication,
         ),
       );
 
