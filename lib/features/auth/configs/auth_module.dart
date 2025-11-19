@@ -16,10 +16,10 @@ class AuthModule extends AppModule {
   void registerDependencies() {
     getIt
       ..registerLazySingleton<AuthAuthorizedDataSource>(
-        () => const MockAuthAuthorizedDataSource(),
+        () => MockAuthAuthorizedDataSource(),
       )
       ..registerLazySingleton<AuthUnauthorizedDataSource>(
-        () => const MockAuthUnauthorizedDataSource(),
+        () => MockAuthUnauthorizedDataSource(),
       )
       ..registerLazySingleton<AuthLocalDataSource>(
         () => SecureAuthLocalDataSource(

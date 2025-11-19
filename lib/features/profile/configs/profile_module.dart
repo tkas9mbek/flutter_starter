@@ -10,7 +10,7 @@ class ProfileModule extends AppModule {
   void registerDependencies() {
     getIt
       ..registerLazySingleton<ProfileDataSource>(
-        () => const MockProfileDataSource(),
+        () => MockProfileDataSource(),
       )
       ..registerLazySingleton<ProfileRepository>(
         () => ProfileRepository(

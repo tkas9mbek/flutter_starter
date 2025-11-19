@@ -4,7 +4,7 @@ import 'package:starter/core/di/app_module.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/task/data/mock_task_data_source.dart';
 import 'package:starter/features/task/data/remote_task_data_source.dart';
-import 'package:starter/features/task/data/task_api.dart';
+import 'package:starter/features/task/data/task_service.dart';
 import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
 import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
@@ -16,8 +16,8 @@ class TaskModule extends AppModule {
   Future<void> registerDependencies() async {
     final getIt = GetIt.instance;
     getIt
-      ..registerFactory<TaskApi>(
-        () => TaskApi(getIt<Dio>()),
+      ..registerFactory<TaskService>(
+        () => TaskService(getIt<Dio>()),
       )
       ..registerFactory<TaskDataSource>(
         () {
@@ -27,7 +27,7 @@ class TaskModule extends AppModule {
             return MockTaskDataSource();
           }
 
-          return RemoteTaskDataSource(getIt<TaskApi>());
+          return RemoteTaskDataSource(getIt<TaskService>());
         },
       )
       ..registerFactory(

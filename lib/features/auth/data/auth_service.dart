@@ -5,11 +5,11 @@ import 'package:starter/features/auth/model/auth_register_request_body.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
 import 'package:starter/features/profile/model/user.dart';
 
-part 'auth_api.g.dart';
+part 'auth_service.g.dart';
 
 @RestApi()
-abstract class AuthApi {
-  factory AuthApi(Dio dio, {required String baseUrl}) = _AuthApi;
+abstract class AuthService {
+  factory AuthService(Dio dio, {required String baseUrl}) = _AuthService;
 
   @GET('auth/profile')
   Future<User> getUserProfile();

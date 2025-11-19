@@ -3,11 +3,11 @@ import 'package:retrofit/retrofit.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/model/task_create_request.dart';
 
-part 'task_api.g.dart';
+part 'task_service.g.dart';
 
 @RestApi()
-abstract class TaskApi {
-  factory TaskApi(Dio dio) = _TaskApi;
+abstract class TaskService {
+  factory TaskService(Dio dio) = _TaskService;
 
   @GET('/tasks')
   Future<List<Task>> getTasks();
