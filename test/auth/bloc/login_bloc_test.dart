@@ -9,8 +9,8 @@ import 'package:starter/features/auth/model/auth_login_request_body.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
 import 'package:starter/features/auth/ui/login/bloc/login_bloc.dart';
 import 'package:starter/features/auth/ui/login/model/login_form.dart';
-import 'package:starter_toolkit/data/exceptions/auth_exception.dart';
-import 'package:starter_toolkit/data/repository_executor/retriable_repository_executor.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 import '../model/auth_mock_models.dart';
 
@@ -40,7 +40,7 @@ void main() {
     unauthorizedDataSource = MockUnauthorizedDataSource();
     localDataSource = MockLocalDataSource();
     authRepository = AuthRepository(
-      const RetriableRepositoryExecutor(),
+      const RawRepositoryExecutor().withErrorHandling().withRetry(maxRetries: 3),
       authorizedDataSource,
       unauthorizedDataSource,
       localDataSource,
@@ -60,7 +60,7 @@ void main() {
         password: 'password',
       );
       const event = LoginEvent.submitted(form);
-      const exception = AuthException('Auth failed');
+      const exception = UnauthorizedException();
       final requestBody = AuthLoginRequestBody(
         phone: form.phone,
         password: form.password,
@@ -137,7 +137,7 @@ void main() {
     const initialState = LoginState.initial();
     const successState = LoginState.success();
     const loadingState = LoginState.loading();
-    const failureState = LoginState.failure(AuthException('Auth failed'));
+    const failureState = LoginState.failure(UnauthorizedException());
 
     test('isLoading returns true for loading state', () {
       loginBloc.emit(loadingState);

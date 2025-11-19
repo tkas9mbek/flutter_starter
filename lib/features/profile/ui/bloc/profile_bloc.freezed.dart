@@ -659,8 +659,6 @@ abstract class _$$FailureProfileStateImplCopyWith<$Res> {
       __$$FailureProfileStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AppException exception});
-
-  $AppExceptionCopyWith<$Res> get exception;
 }
 
 /// @nodoc
@@ -684,16 +682,6 @@ class __$$FailureProfileStateImplCopyWithImpl<$Res>
           : exception // ignore: cast_nullable_to_non_nullable
               as AppException,
     ));
-  }
-
-  /// Create a copy of ProfileState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AppExceptionCopyWith<$Res> get exception {
-    return $AppExceptionCopyWith<$Res>(_value.exception, (value) {
-      return _then(_value.copyWith(exception: value));
-    });
   }
 }
 

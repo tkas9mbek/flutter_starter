@@ -1,6 +1,7 @@
 /// Annotation to configure exception UI mapping generation.
 ///
 /// Used by code generator to create ExceptionUiMapper methods automatically.
+/// The `canRetry` field is read from the exception class itself.
 class ExceptionUiConfig {
   /// Localization key for title (optional)
   final String? titleKey;
@@ -11,17 +12,9 @@ class ExceptionUiConfig {
   /// Localization key for snackbar (defaults to descriptionKey)
   final String? snackbarKey;
 
-  /// Whether automatic retry should be allowed
-  final bool canRetry;
-
-  /// Whether refresh button should be shown in UI
-  final bool canRefresh;
-
   const ExceptionUiConfig({
-    this.titleKey,
     required this.descriptionKey,
+    this.titleKey,
     this.snackbarKey,
-    this.canRetry = true,
-    this.canRefresh = true,
   });
 }

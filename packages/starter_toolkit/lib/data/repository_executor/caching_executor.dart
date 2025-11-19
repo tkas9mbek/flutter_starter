@@ -17,7 +17,6 @@ class CachingExecutor extends RepositoryExecutorDecorator {
     super.wrapped, {
     this.defaultTtl = const Duration(minutes: 5),
   }) {
-    // Start periodic cleanup of expired entries
     _cleanupTimer = Timer.periodic(
       const Duration(minutes: 5),
       (_) => _removeExpiredEntries(),
@@ -29,10 +28,8 @@ class CachingExecutor extends RepositoryExecutorDecorator {
   }
 
   @override
-  Future<T> execute<T>(Future<T> Function() function) async {
-    // Pass through without caching
-    return await wrapped.execute(function);
-  }
+  Future<T> execute<T>(Future<T> Function() function) async =>
+      wrapped.execute(function);
 
   /// Executes function with caching enabled.
   ///
@@ -45,7 +42,6 @@ class CachingExecutor extends RepositoryExecutorDecorator {
     required String key,
     Duration? ttl,
   }) async {
-    // Try to get from cache
     final cached = _cache[key];
     if (cached != null && !cached.isExpired) {
       return cached.data as T;

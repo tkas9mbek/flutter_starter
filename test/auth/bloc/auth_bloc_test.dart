@@ -6,7 +6,7 @@ import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart';
-import 'package:starter_toolkit/data/repository_executor/retriable_repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 import '../model/auth_mock_models.dart';
 
@@ -30,7 +30,7 @@ void main() {
     unauthorizedDataSource = MockUnauthorizedDataSource();
     localDataSource = MockLocalDataSource();
     authRepository = AuthRepository(
-      const RetriableRepositoryExecutor(),
+      const RawRepositoryExecutor().withErrorHandling().withRetry(maxRetries: 3),
       authorizedDataSource,
       unauthorizedDataSource,
       localDataSource,

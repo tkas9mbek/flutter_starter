@@ -728,8 +728,6 @@ abstract class _$$FailureTaskToggleStateImplCopyWith<$Res> {
       __$$FailureTaskToggleStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AppException exception});
-
-  $AppExceptionCopyWith<$Res> get exception;
 }
 
 /// @nodoc
@@ -754,16 +752,6 @@ class __$$FailureTaskToggleStateImplCopyWithImpl<$Res>
           : exception // ignore: cast_nullable_to_non_nullable
               as AppException,
     ));
-  }
-
-  /// Create a copy of TaskToggleState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $AppExceptionCopyWith<$Res> get exception {
-    return $AppExceptionCopyWith<$Res>(_value.exception, (value) {
-      return _then(_value.copyWith(exception: value));
-    });
   }
 }
 

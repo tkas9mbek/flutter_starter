@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 import 'package:top_snackbar_flutter/top_snack_bar.dart';
 
 class NotificationSnackBar extends StatelessWidget {
@@ -96,7 +97,8 @@ class NotificationSnackBar extends StatelessWidget {
     BuildContext context, {
     required AppException exception,
   }) {
-    final message = exception.getDescription(context);
+    final uiModel = ExceptionUiMapper(context).map(exception);
+    final message = uiModel.snackbarDescription;
 
     if (message.isNotEmpty) {
       showMessage(

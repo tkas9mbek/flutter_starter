@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:analyzer/dart/analysis/features.dart';
-import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
@@ -44,24 +43,21 @@ Future<void> main() async {
       '  fvm flutter pub run build_runner build --delete-conflicting-outputs');
 }
 
-/// Parsed exception factory information
+/// Parsed exception class information
 class ExceptionFactory {
-  final String name;
   final String className;
   final List<FactoryParameter> parameters;
   final ExceptionUiConfigData config;
+  final bool canRetry;
 
   ExceptionFactory({
-    required this.name,
     required this.className,
     required this.parameters,
     required this.config,
+    required this.canRetry,
   });
 
-  String get mapperMethodName => 'map${_capitalize(name)}';
-
-  String _capitalize(String s) =>
-      s.isEmpty ? s : s[0].toUpperCase() + s.substring(1);
+  String get mapperMethodName => 'map${className.replaceAll('Exception', '')}';
 }
 
 class FactoryParameter {
@@ -80,15 +76,11 @@ class ExceptionUiConfigData {
   final String? titleKey;
   final String descriptionKey;
   final String? snackbarKey;
-  final bool canRetry;
-  final bool canRefresh;
 
   ExceptionUiConfigData({
     this.titleKey,
     required this.descriptionKey,
     this.snackbarKey,
-    this.canRetry = true,
-    this.canRefresh = true,
   });
 }
 
@@ -116,56 +108,70 @@ class ExceptionAnalyzer extends SimpleAstVisitor<void> {
 
   @override
   void visitClassDeclaration(ClassDeclaration node) {
-    if (node.name.lexeme != 'AppException') return;
-
-    for (final member in node.members) {
-      if (member is ConstructorDeclaration && member.factoryKeyword != null) {
-        _parseFactory(member);
-      }
+    // Find sealed exception subclasses (not the base AppException class)
+    final extendsClause = node.extendsClause;
+    if (extendsClause != null &&
+        extendsClause.superclass.name2.toString() == 'AppException') {
+      _parseExceptionClass(node);
     }
   }
 
-  void _parseFactory(ConstructorDeclaration constructor) {
-    final factoryName = constructor.name?.lexeme;
-    if (factoryName == null || factoryName == '_') return;
+  void _parseExceptionClass(ClassDeclaration classNode) {
+    final className = classNode.name.lexeme;
 
-    final config = _parseAnnotation(constructor);
+    final config = _parseAnnotation(classNode);
     if (config == null) return;
 
+    // Find fields (which correspond to constructor parameters)
     final parameters = <FactoryParameter>[];
-    final params = constructor.parameters.parameters;
-    for (final param in params) {
-      if (param is SimpleFormalParameter) {
-        parameters.add(FactoryParameter(
-          name: param.name!.lexeme,
-          type: param.type?.toString() ?? 'dynamic',
-          isRequired: param.isRequired,
-        ));
-      } else if (param is DefaultFormalParameter) {
-        final normalParam = param.parameter;
-        if (normalParam is SimpleFormalParameter) {
+    for (final member in classNode.members) {
+      if (member is FieldDeclaration) {
+        for (final variable in member.fields.variables) {
+          final fieldName = variable.name.lexeme;
+          final fieldType = member.fields.type?.toString() ?? 'dynamic';
+
+          // Skip name and canRetry fields as they are getters
+          if (fieldName == 'name' || fieldName == 'canRetry') continue;
+
+          // Determine if required based on nullability
+          final isRequired = !fieldType.endsWith('?');
+
           parameters.add(FactoryParameter(
-            name: normalParam.name!.lexeme,
-            type: normalParam.type?.toString() ?? 'dynamic',
-            isRequired: param.isRequired,
+            name: fieldName,
+            type: fieldType,
+            isRequired: isRequired,
           ));
         }
       }
     }
 
-    final redirect = constructor.redirectedConstructor?.toString() ?? '';
-    final className = redirect.replaceAll('= ', '').trim();
+    // Find canRetry getter value
+    var canRetry = true; // default
+    for (final member in classNode.members) {
+      if (member is MethodDeclaration &&
+          member.isGetter &&
+          member.name.lexeme == 'canRetry') {
+        final body = member.body;
+        if (body is ExpressionFunctionBody) {
+          final expression = body.expression;
+          if (expression is BooleanLiteral) {
+            canRetry = expression.value;
+          }
+        }
+        break;
+      }
+    }
 
     factories.add(ExceptionFactory(
-      name: factoryName,
       className: className,
       parameters: parameters,
       config: config,
+      canRetry: canRetry,
     ));
   }
 
-  ExceptionUiConfigData? _parseAnnotation(ConstructorDeclaration constructor) {
-    for (final annotation in constructor.metadata) {
+  ExceptionUiConfigData? _parseAnnotation(ClassDeclaration classNode) {
+    for (final annotation in classNode.metadata) {
       final name = annotation.name.toString();
       if (name == 'ExceptionUiConfig') {
         final args = annotation.arguments?.arguments ?? [];
@@ -173,8 +179,6 @@ class ExceptionAnalyzer extends SimpleAstVisitor<void> {
         String? titleKey;
         String? descriptionKey;
         String? snackbarKey;
-        var canRetry = true;
-        var canRefresh = true;
 
         for (final arg in args) {
           if (arg is NamedExpression) {
@@ -188,17 +192,13 @@ class ExceptionAnalyzer extends SimpleAstVisitor<void> {
                 descriptionKey = _extractStringValue(value);
               case 'snackbarKey':
                 snackbarKey = _extractStringValue(value);
-              case 'canRetry':
-                canRetry = _extractBoolValue(value);
-              case 'canRefresh':
-                canRefresh = _extractBoolValue(value);
             }
           }
         }
 
         if (descriptionKey == null) {
           throw Exception(
-            'ExceptionUiConfig must have descriptionKey for ${constructor.name}',
+            'ExceptionUiConfig must have descriptionKey for ${classNode.name.lexeme}',
           );
         }
 
@@ -206,8 +206,6 @@ class ExceptionAnalyzer extends SimpleAstVisitor<void> {
           titleKey: titleKey,
           descriptionKey: descriptionKey,
           snackbarKey: snackbarKey,
-          canRetry: canRetry,
-          canRefresh: canRefresh,
         );
       }
     }
@@ -220,13 +218,6 @@ class ExceptionAnalyzer extends SimpleAstVisitor<void> {
       return expression.value;
     }
     return null;
-  }
-
-  bool _extractBoolValue(Expression expression) {
-    if (expression is BooleanLiteral) {
-      return expression.value;
-    }
-    return true;
   }
 }
 
@@ -241,13 +232,23 @@ class ExceptionUiMapperGenerator {
 
     buffer.writeln('  /// Maps domain exception to UI model');
     buffer.writeln('  ExceptionUiModel map(AppException exception) {');
-    buffer.writeln('    return exception.when(');
+    buffer.writeln('    return switch (exception) {');
 
     for (final factory in factories) {
-      buffer.writeln('      ${factory.name}: ${factory.mapperMethodName},');
+      if (factory.parameters.isEmpty) {
+        buffer.writeln(
+            '      ${factory.className}() => ${factory.mapperMethodName}(),');
+      } else {
+        final destructuredParams = factory.parameters
+            .map((p) => '${p.name}: final ${p.name}')
+            .join(', ');
+        final paramNames = factory.parameters.map((p) => p.name).join(', ');
+        buffer.writeln(
+            '      ${factory.className}($destructuredParams) => ${factory.mapperMethodName}($paramNames),');
+      }
     }
 
-    buffer.writeln('    );');
+    buffer.writeln('    };');
     buffer.writeln('  }');
     buffer.writeln();
 
@@ -275,32 +276,31 @@ class ExceptionUiMapperGenerator {
 
     buffer.writeln('    return ExceptionUiModel(');
 
-    if (config.titleKey != null) {
-      buffer.writeln('      title: _toolkitLocalizer.${config.titleKey},');
-    }
-
+    // Required parameters first
     final hasMessage = factory.parameters.any((p) => p.name == 'message');
     if (hasMessage) {
       buffer.writeln(
-        '      description: message ?? _toolkitLocalizer.${config.descriptionKey},',
+        '      description: message ?? _localizer.${config.descriptionKey},',
       );
     } else {
-      buffer.writeln(
-          '      description: _toolkitLocalizer.${config.descriptionKey},');
+      buffer.writeln('      description: _localizer.${config.descriptionKey},');
     }
 
     final snackbarKey = config.snackbarKey ?? config.descriptionKey;
     if (hasMessage) {
       buffer.writeln(
-        '      snackbarDescription: message ?? _toolkitLocalizer.$snackbarKey,',
+        '      snackbarDescription: message ?? _localizer.$snackbarKey,',
       );
     } else {
-      buffer.writeln(
-          '      snackbarDescription: _toolkitLocalizer.$snackbarKey,');
+      buffer.writeln('      snackbarDescription: _localizer.$snackbarKey,');
     }
 
-    buffer.writeln('      canRefresh: ${config.canRefresh},');
-    buffer.writeln('      canRetry: ${config.canRetry},');
+    // Optional parameters after required
+    if (config.titleKey != null) {
+      buffer.writeln('      title: _localizer.${config.titleKey},');
+    }
+
+    buffer.writeln('      canRetry: ${factory.canRetry},');
 
     buffer.writeln('    );');
     buffer.writeln('  }');

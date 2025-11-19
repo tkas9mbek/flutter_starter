@@ -5,6 +5,7 @@ analyzer:
     - "**/*.gr.dart"
     - "**/*.config.dart"
     - "lib/generated_plugin_registrant.dart"
+    - "**/l10n/generated/**"
 
   errors:
     missing_required_param: error
@@ -162,7 +163,7 @@ linter:
     slash_for_doc_comments: false
     sort_child_properties_last: true
     sort_constructors_first: false
-    sort_pub_dependencies: true
+    sort_pub_dependencies: false
     sort_unnamed_constructors_first: true
     test_types_in_equals: true
     throw_in_finally: true

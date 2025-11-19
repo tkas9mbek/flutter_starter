@@ -1,15 +1,14 @@
 import 'dart:io';
 
 import 'package:dio/dio.dart';
-import 'package:starter_toolkit/data/exceptions/no_internet_exception.dart';
-import 'package:starter_toolkit/data/exceptions/server_exception.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 /// Dio interceptor that converts network errors to AppException types.
 class AppErrorInterceptor extends Interceptor {
   /// Provide custom dioErrorHandler to override default behavior.
   final Function(DioException err)? customDioErrorHandler;
 
-  AppErrorInterceptor({
+  const AppErrorInterceptor({
     this.customDioErrorHandler,
   });
 
@@ -18,12 +17,17 @@ class AppErrorInterceptor extends Interceptor {
     customDioErrorHandler?.call(err);
 
     if (err.error is SocketException) {
-      throw NoInternetException();
+      throw const NoInternetException();
     }
 
-    throw ServerException.concrete(
+    final responseData = err.response?.data;
+    final message = responseData is Map<String, dynamic>
+        ? responseData['message'] as String?
+        : null;
+
+    throw ServerException(
       statusCode: err.response?.statusCode,
-      response: err.response,
+      message: message,
     );
   }
 }

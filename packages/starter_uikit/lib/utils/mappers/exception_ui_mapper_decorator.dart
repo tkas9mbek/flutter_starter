@@ -1,5 +1,3 @@
-import 'package:flutter/widgets.dart';
-import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_uikit/models/exception_ui_model.dart';
 import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 

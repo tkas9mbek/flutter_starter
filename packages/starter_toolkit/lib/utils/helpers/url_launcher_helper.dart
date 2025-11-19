@@ -1,5 +1,5 @@
 import 'package:starter_toolkit/configs/common_consts.dart';
-import 'package:starter_toolkit/data/exceptions/url_launch_exception.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class UrlLauncherHelper {
@@ -10,7 +10,7 @@ class UrlLauncherHelper {
     try {
       await launchUrl(uri, mode: mode);
     } catch (e) {
-      throw UrlLaunchException();
+      throw const UrlLaunchFailedException();
     }
   }
 

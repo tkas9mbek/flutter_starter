@@ -8,6 +8,6 @@ class RawRepositoryExecutor extends RepositoryExecutor {
 
   @override
   Future<T> execute<T>(Future<T> Function() function) async {
-    return await function();
+    return function();
   }
 }

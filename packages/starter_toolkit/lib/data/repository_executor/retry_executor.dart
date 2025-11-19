@@ -21,16 +21,8 @@ class RetryExecutor extends RepositoryExecutorDecorator {
       try {
         return await wrapped.execute(function);
       } on AppException catch (e) {
-        // Check if retryable using pattern matching
-        final canRetry = e.maybeWhen(
-          unauthorized: (_) => false,
-          forbidden: (_) => false,
-          development: () => false,
-          urlLaunchFailed: () => false,
-          orElse: () => true,
-        );
-
-        if (!canRetry || attempt == maxRetries - 1) {
+        // Check if exception allows retry
+        if (!e.canRetry || attempt == maxRetries - 1) {
           rethrow;
         }
 
@@ -40,6 +32,6 @@ class RetryExecutor extends RepositoryExecutorDecorator {
     }
 
     // Should never reach here
-    throw const AppException.development();
+    throw const DevelopmentException();
   }
 }

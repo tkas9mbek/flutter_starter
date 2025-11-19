@@ -36,7 +36,7 @@ class DataModule extends AppModule {
 
     getIt
       ..registerSingleton<RepositoryExecutor>(
-        RawRepositoryExecutor()
+        const RawRepositoryExecutor()
             .withErrorHandling()
             .withRetry(maxRetries: 3, retryDelay: const Duration(seconds: 2)),
       )

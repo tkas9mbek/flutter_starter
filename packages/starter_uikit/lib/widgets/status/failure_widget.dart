@@ -4,6 +4,7 @@ import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 
 class FailureWidgetLarge extends StatelessWidget {
   final AppException exception;
@@ -17,6 +18,7 @@ class FailureWidgetLarge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uiModel = ExceptionUiMapper(context).map(exception);
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
 
@@ -28,12 +30,12 @@ class FailureWidgetLarge extends StatelessWidget {
           children: [
             const Spacer(),
             Text(
-              exception.getDescription(context),
+              uiModel.description,
               style: textStyles.regularBody14,
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 8),
-            if (exception.canRefresh && onRetry != null) ...[
+            if (uiModel.canRetry && onRetry != null) ...[
               const SizedBox(height: 8),
               Text(
                 UiLocalizer.of(context).tryRefreshPage,
@@ -87,6 +89,7 @@ class FailureWidgetSmall extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final uiModel = ExceptionUiMapper(context).map(exception);
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
 
@@ -100,13 +103,13 @@ class FailureWidgetSmall extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              exception.getDescription(context),
+              uiModel.description,
               style: textStyles.regularBody14.copyWith(
                 color: textColor ?? theme.textPrimary,
               ),
               textAlign: TextAlign.center,
             ),
-            if (exception.canRefresh && onRetry != null) ...[
+            if (uiModel.canRetry && onRetry != null) ...[
               const SizedBox(width: 10),
               Padding(
                 padding: const EdgeInsets.all(6),

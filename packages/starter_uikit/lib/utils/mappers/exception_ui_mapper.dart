@@ -18,26 +18,28 @@ class ExceptionUiMapper {
   // START GENERATED METHODS
   /// Maps domain exception to UI model
   ExceptionUiModel map(AppException exception) {
-    return exception.when(
-      noInternet: mapNoInternet,
-      server: mapServer,
-      unauthorized: mapUnauthorized,
-      forbidden: mapForbidden,
-      internalServerError: mapInternalServerError,
-      unknown: mapUnknown,
-      development: mapDevelopment,
-      urlLaunchFailed: mapUrlLaunchFailed,
-    );
+    return switch (exception) {
+      NoInternetException() => mapNoInternet(),
+      ServerException(statusCode: final statusCode, message: final message) =>
+        mapServer(statusCode, message),
+      UnauthorizedException(message: final message) => mapUnauthorized(message),
+      ForbiddenException(message: final message) => mapForbidden(message),
+      InternalServerErrorException(message: final message) =>
+        mapInternalServerError(message),
+      UnknownException(error: final error, stackTrace: final stackTrace) =>
+        mapUnknown(error, stackTrace),
+      DevelopmentException() => mapDevelopment(),
+      UrlLaunchFailedException() => mapUrlLaunchFailed(),
+    };
   }
 
   /// Maps NoInternetException
   @protected
   ExceptionUiModel mapNoInternet() {
     return ExceptionUiModel(
-      title: _localizer.errorMessageNoConnection,
       description: _localizer.errorMessageCouldNotConnectServer,
       snackbarDescription: _localizer.errorMessageNoConnection,
-      canRefresh: true,
+      title: _localizer.errorMessageNoConnection,
       canRetry: true,
     );
   }
@@ -46,10 +48,10 @@ class ExceptionUiMapper {
   @protected
   ExceptionUiModel mapServer(int? statusCode, String? message) {
     return ExceptionUiModel(
-      title: _localizer.errorMessageErrorWhileRequesting,
       description: message ?? _localizer.errorMessageDefaultRequestError,
-      snackbarDescription: message ?? _localizer.errorMessageDefaultRequestError,
-      canRefresh: true,
+      snackbarDescription:
+          message ?? _localizer.errorMessageDefaultRequestError,
+      title: _localizer.errorMessageErrorWhileRequesting,
       canRetry: true,
     );
   }
@@ -60,7 +62,6 @@ class ExceptionUiMapper {
     return ExceptionUiModel(
       description: message ?? _localizer.errorMessageAuthRequired,
       snackbarDescription: message ?? _localizer.errorMessageAuthRequired,
-      canRefresh: false,
       canRetry: false,
     );
   }
@@ -71,7 +72,6 @@ class ExceptionUiMapper {
     return ExceptionUiModel(
       description: message ?? _localizer.errorMessageNoRightsToView,
       snackbarDescription: message ?? _localizer.errorMessageNoRightsToPerform,
-      canRefresh: false,
       canRetry: false,
     );
   }
@@ -80,10 +80,10 @@ class ExceptionUiMapper {
   @protected
   ExceptionUiModel mapInternalServerError(String? message) {
     return ExceptionUiModel(
-      title: _localizer.errorMessageServerError,
       description: message ?? _localizer.errorMessageServerInternalError,
-      snackbarDescription: message ?? _localizer.errorMessageServerInternalError,
-      canRefresh: true,
+      snackbarDescription:
+          message ?? _localizer.errorMessageServerInternalError,
+      title: _localizer.errorMessageServerError,
       canRetry: true,
     );
   }
@@ -94,7 +94,6 @@ class ExceptionUiMapper {
     return ExceptionUiModel(
       description: _localizer.errorMessageUnexpectedError,
       snackbarDescription: _localizer.errorMessageUnexpectedError,
-      canRefresh: true,
       canRetry: true,
     );
   }
@@ -105,7 +104,6 @@ class ExceptionUiMapper {
     return ExceptionUiModel(
       description: _localizer.errorMessageMobileBug,
       snackbarDescription: _localizer.errorMessageMobileBug,
-      canRefresh: false,
       canRetry: false,
     );
   }
@@ -116,7 +114,6 @@ class ExceptionUiMapper {
     return ExceptionUiModel(
       description: _localizer.errorMessageUrlLaunchError,
       snackbarDescription: _localizer.errorMessageUrlLaunchError,
-      canRefresh: false,
       canRetry: false,
     );
   }

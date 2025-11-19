@@ -16,42 +16,38 @@ class ExceptionUiModel extends Equatable {
   /// Brief description for snackbars (may differ from main)
   final String snackbarDescription;
 
-  /// Whether retry button should be shown
-  final bool canRefresh;
-
-  /// Whether automatic retry should be attempted
+  /// Whether retry/refresh actions should be shown
+  /// Controls both manual refresh button and automatic retry
   final bool canRetry;
 
   const ExceptionUiModel({
-    this.title,
     required this.description,
     required this.snackbarDescription,
-    this.canRefresh = true,
+    this.title,
     this.canRetry = true,
   });
 
   /// Creates UI model for "no retry" scenarios
   const ExceptionUiModel.noRetry({
-    String? title,
     required String description,
+    String? title,
     String? snackbarDescription,
   }) : this(
           title: title,
           description: description,
           snackbarDescription: snackbarDescription ?? description,
-          canRefresh: false,
           canRetry: false,
         );
 
   /// Creates UI model with all defaults
   const ExceptionUiModel.simple({
     required String description,
+    bool canRetry = true,
   }) : this(
           title: null,
           description: description,
           snackbarDescription: description,
-          canRefresh: true,
-          canRetry: true,
+          canRetry: canRetry,
         );
 
   @override
@@ -59,7 +55,6 @@ class ExceptionUiModel extends Equatable {
         title,
         description,
         snackbarDescription,
-        canRefresh,
         canRetry,
       ];
 
@@ -68,6 +63,5 @@ class ExceptionUiModel extends Equatable {
       'title: $title, '
       'description: $description, '
       'snackbarDescription: $snackbarDescription, '
-      'canRefresh: $canRefresh, '
       'canRetry: $canRetry)';
 }
