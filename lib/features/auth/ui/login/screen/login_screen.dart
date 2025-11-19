@@ -102,7 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const SizedBox(height: 24),
                     GestureDetector(
                       onTap: () =>
-                          context.router.push(const RegistrationRoute()),
+                          context.router.replace(const RegistrationRoute()),
                       child: Text(
                         Localizer.of(context).haveNoAccount,
                         style: textStyles.boldBody13.copyWith(

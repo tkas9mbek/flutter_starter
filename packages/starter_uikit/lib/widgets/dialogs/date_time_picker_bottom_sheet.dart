@@ -30,7 +30,33 @@ class DateTimePickerBottomSheet extends StatefulWidget {
 }
 
 class _DateTimePickerBottomSheetState extends State<DateTimePickerBottomSheet> {
-  late DateTime _selectedDate = widget.initialDate ?? DateTime.now();
+  late DateTime _selectedDate;
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedDate = _getValidInitialDate();
+  }
+
+  DateTime _getValidInitialDate() {
+    if (widget.initialDate != null) {
+      return widget.initialDate!;
+    }
+
+    final now = DateTime.now();
+    final minDate = widget.minDate;
+    final maxDate = widget.maxDate;
+
+    if (minDate != null && now.isBefore(minDate)) {
+      return minDate;
+    }
+
+    if (maxDate != null && now.isAfter(maxDate)) {
+      return maxDate;
+    }
+
+    return now;
+  }
 
   @override
   Widget build(BuildContext context) {

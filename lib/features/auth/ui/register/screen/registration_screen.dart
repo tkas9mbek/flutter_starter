@@ -117,7 +117,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     ),
                     const SizedBox(height: 24),
                     GestureDetector(
-                      onTap: () => context.router.push(const LoginRoute()),
+                      onTap: () => context.router.replace(const LoginRoute()),
                       child: Text(
                         Localizer.of(context).haveAccount,
                         style: textStyles.boldBody13.copyWith(

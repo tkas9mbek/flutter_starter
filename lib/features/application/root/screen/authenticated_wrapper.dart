@@ -5,7 +5,7 @@ import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/application/global/bloc/auth_bloc.dart';
 import 'package:starter/features/application/root/widget/user_provider.dart';
 import 'package:starter/features/profile/domain/profile_repository.dart';
-import 'package:starter/features/profile/ui/bloc/profile_bloc.dart';
+import 'package:starter/features/profile/ui/bloc/user_bloc.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
 import 'package:starter_uikit/widgets/misc/safe_vertical_box.dart';
@@ -18,24 +18,24 @@ class AuthenticatedWrapper extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ProfileBloc>(
-      create: (context) => ProfileBloc(
+    return BlocProvider<UserBloc>(
+      create: (context) => UserBloc(
         getIt<ProfileRepository>(),
-      )..add(const ProfileEvent.requested()),
-      child: BlocBuilder<ProfileBloc, ProfileState>(
+      )..add(const UserEvent.requested()),
+      child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) => state.maybeMap(
           orElse: () => const Scaffold(
             body: CustomCircularProgressIndicator(),
           ),
-          failure: (state) => Scaffold(
+          failure: (failureState) => Scaffold(
             body: Column(
               children: [
                 Expanded(
                   child: FailureWidgetLarge(
-                    exception: state.exception,
+                    exception: failureState.exception,
                     onRetry: () => context
-                        .read<ProfileBloc>()
-                        .add(const ProfileEvent.requested()),
+                        .read<UserBloc>()
+                        .add(const UserEvent.requested()),
                   ),
                 ),
                 Padding(
@@ -52,8 +52,8 @@ class AuthenticatedWrapper extends StatelessWidget {
               ],
             ),
           ),
-          success: (state) => UserProvider(
-            user: state.user,
+          success: (successState) => UserProvider(
+            user: successState.user,
             child: const AutoRouter(),
           ),
         ),

@@ -69,6 +69,7 @@ class FailureWidgetLarge extends StatelessWidget {
                   ],
                 ),
               ),
+              const Spacer(),
             ],
           ],
         ),

@@ -15,6 +15,7 @@ import 'package:starter/features/settings/model/language_option.dart';
 import 'package:starter/features/settings/model/theme_mode_option.dart';
 import 'package:starter/features/settings/ui/language/bloc/language_cubit.dart';
 import 'package:starter/features/settings/ui/theme/bloc/theme_cubit.dart';
+import 'package:starter/features/settings/ui/theme/helpers/theme_mode_helper.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
@@ -63,13 +64,15 @@ class Application extends StatelessWidget {
           child: BlocBuilder<LanguageCubit, LanguageOption>(
             builder: (context, language) => BlocBuilder<ThemeCubit, ThemeModeOption>(
               builder: (context, themeOption) {
-                final themeMode = switch (themeOption) {
-                  ThemeModeOption.light => ThemeMode.light,
-                  ThemeModeOption.dark => ThemeMode.dark,
-                  ThemeModeOption.system => ThemeMode.system,
-                };
+                final themeMode = ThemeModeHelper.getThemeMode(themeOption);
+                final brightness = MediaQuery.platformBrightnessOf(context);
+                final currentTheme = ThemeModeHelper.getCurrentTheme(
+                  themeOption,
+                  brightness,
+                );
 
                 return ThemeProvider(
+                  theme: currentTheme,
                   child: MaterialApp.router(
                     key: ValueKey('$language-$themeOption'),
                     locale: language.locale,

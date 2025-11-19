@@ -44,10 +44,12 @@ class _RootScreenState extends State<RootScreen> {
       routes: routes,
       bottomNavigationBuilder: (context, tabsRouter) => DecoratedBox(
         decoration: BoxDecoration(
-          color: theme.background,
+          color: theme.surface,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: theme.themeMode == ThemeMode.dark
+                  ? Colors.black.withValues(alpha: 0.3)
+                  : Colors.black.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, -3),
             ),

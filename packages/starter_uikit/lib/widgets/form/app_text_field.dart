@@ -127,7 +127,7 @@ class _AppTextFieldState extends State<AppTextField> {
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onTap: widget.onTap,
+      onTap: widget.enabled ? widget.onTap : null,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -139,6 +139,7 @@ class _AppTextFieldState extends State<AppTextField> {
                   child: FormBuilderTextField(
                     name: widget.name,
                     focusNode: widget.focusNode,
+                    onTap: widget.onTap,
                     onChanged: (v) {
                       widget.onChanged?.call(v);
                       setState(() => value = v);

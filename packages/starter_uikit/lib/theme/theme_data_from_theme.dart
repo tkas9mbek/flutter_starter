@@ -8,6 +8,10 @@ ThemeData themeDataFromTheme({
 }) {
   const border = InputBorder.none;
 
+  final brightness = theme.themeMode == ThemeMode.dark
+      ? Brightness.dark
+      : Brightness.light;
+
   return ThemeData(
     fontFamily: textStyles.fontFamily,
     scaffoldBackgroundColor: theme.background,
@@ -21,7 +25,7 @@ ThemeData themeDataFromTheme({
       onSecondary: theme.onPrimary,
       onSurface: theme.textPrimary,
       onError: theme.onStatus,
-      brightness: Brightness.light,
+      brightness: brightness,
     ),
     textTheme: TextTheme(
       titleLarge: textStyles.boldTitle20,
