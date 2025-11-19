@@ -68,7 +68,7 @@ class _RootScreenState extends State<RootScreen> {
                 onTap: () => tabsRouter.setActiveIndex(0),
               ),
               BottomNavItem(
-                iconPath: UiSvgIcons.checkboxCircle,
+                iconPath: UiSvgIcons.check,
                 package: UiConsts.package,
                 title: Localizer.of(context).tasks,
                 isActive: tabsRouter.activeIndex == 1,

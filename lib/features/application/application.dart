@@ -12,7 +12,9 @@ import 'package:starter/features/application/global/widget/global_route_wrapper.
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/settings/domain/settings_repository.dart';
 import 'package:starter/features/settings/model/language_option.dart';
+import 'package:starter/features/settings/model/theme_mode_option.dart';
 import 'package:starter/features/settings/ui/language/bloc/language_cubit.dart';
+import 'package:starter/features/settings/ui/theme/bloc/theme_cubit.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
@@ -42,6 +44,11 @@ class Application extends StatelessWidget {
             getIt<SettingsRepository>(),
           ),
         ),
+        BlocProvider<ThemeCubit>(
+          create: (context) => ThemeCubit(
+            getIt<SettingsRepository>(),
+          ),
+        ),
       ],
       child: BlocBuilder<EnvironmentCubit, AppEnvironment>(
         builder: (context, env) => MultiBlocProvider(
@@ -54,19 +61,27 @@ class Application extends StatelessWidget {
             ),
           ],
           child: BlocBuilder<LanguageCubit, LanguageOption>(
-            builder: (context, language) => ThemeProvider(
-              child: MaterialApp.router(
-                key: ValueKey(language),
-                locale: language.locale,
-                themeMode: ThemeMode.light,
-                theme: themeDataFromTheme(
-                  theme: AppTheme.light(),
-                  textStyles: AppTextStyles(AppTheme.light()),
-                ),
-                darkTheme: themeDataFromTheme(
-                  theme: AppTheme.dark(),
-                  textStyles: AppTextStyles(AppTheme.dark()),
-                ),
+            builder: (context, language) => BlocBuilder<ThemeCubit, ThemeModeOption>(
+              builder: (context, themeOption) {
+                final themeMode = switch (themeOption) {
+                  ThemeModeOption.light => ThemeMode.light,
+                  ThemeModeOption.dark => ThemeMode.dark,
+                  ThemeModeOption.system => ThemeMode.system,
+                };
+
+                return ThemeProvider(
+                  child: MaterialApp.router(
+                    key: ValueKey('$language-$themeOption'),
+                    locale: language.locale,
+                    themeMode: themeMode,
+                    theme: themeDataFromTheme(
+                      theme: AppTheme.light(),
+                      textStyles: AppTextStyles(AppTheme.light()),
+                    ),
+                    darkTheme: themeDataFromTheme(
+                      theme: AppTheme.dark(),
+                      textStyles: AppTextStyles(AppTheme.dark()),
+                    ),
                 routerDelegate: _router.delegate(),
                 routeInformationParser: _router.defaultRouteParser(),
                 localizationsDelegates: [
@@ -82,7 +97,9 @@ class Application extends StatelessWidget {
                   router: _router,
                   child: ApplicationWrapper(child: child!),
                 ),
-              ),
+                  ),
+                );
+              },
             ),
           ),
         ),

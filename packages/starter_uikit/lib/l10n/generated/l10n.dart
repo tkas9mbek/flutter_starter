@@ -50,360 +50,360 @@ class UiLocalizer {
     return Localizations.of<UiLocalizer>(context, UiLocalizer);
   }
 
-  /// `Назад`
+  /// `Back`
   String get back {
     return Intl.message(
-      'Назад',
+      'Back',
       name: 'back',
       desc: '',
       args: [],
     );
   }
 
-  /// `Далее`
+  /// `Next`
   String get next {
     return Intl.message(
-      'Далее',
+      'Next',
       name: 'next',
       desc: '',
       args: [],
     );
   }
 
-  /// `Июнь`
+  /// `June`
   String get monthJune {
     return Intl.message(
-      'Июнь',
+      'June',
       name: 'monthJune',
       desc: '',
       args: [],
     );
   }
 
-  /// `Апрель`
+  /// `April`
   String get monthApril {
     return Intl.message(
-      'Апрель',
+      'April',
       name: 'monthApril',
       desc: '',
       args: [],
     );
   }
 
-  /// `Август`
+  /// `August`
   String get monthAugust {
     return Intl.message(
-      'Август',
+      'August',
       name: 'monthAugust',
       desc: '',
       args: [],
     );
   }
 
-  /// `Декабрь`
+  /// `December`
   String get monthDecember {
     return Intl.message(
-      'Декабрь',
+      'December',
       name: 'monthDecember',
       desc: '',
       args: [],
     );
   }
 
-  /// `Февраль`
+  /// `February`
   String get monthFebruary {
     return Intl.message(
-      'Февраль',
+      'February',
       name: 'monthFebruary',
       desc: '',
       args: [],
     );
   }
 
-  /// `Январь`
+  /// `January`
   String get monthJanuary {
     return Intl.message(
-      'Январь',
+      'January',
       name: 'monthJanuary',
       desc: '',
       args: [],
     );
   }
 
-  /// `Июнь`
+  /// `June`
   String get montJune {
     return Intl.message(
-      'Июнь',
+      'June',
       name: 'montJune',
       desc: '',
       args: [],
     );
   }
 
-  /// `Июль`
+  /// `July`
   String get monthJuly {
     return Intl.message(
-      'Июль',
+      'July',
       name: 'monthJuly',
       desc: '',
       args: [],
     );
   }
 
-  /// `Март`
+  /// `March`
   String get monthMarch {
     return Intl.message(
-      'Март',
+      'March',
       name: 'monthMarch',
       desc: '',
       args: [],
     );
   }
 
-  /// `Май`
+  /// `May`
   String get monthMay {
     return Intl.message(
-      'Май',
+      'May',
       name: 'monthMay',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ноябрь`
+  /// `November`
   String get monthNovember {
     return Intl.message(
-      'Ноябрь',
+      'November',
       name: 'monthNovember',
       desc: '',
       args: [],
     );
   }
 
-  /// `Октябрь`
+  /// `October`
   String get monthOctober {
     return Intl.message(
-      'Октябрь',
+      'October',
       name: 'monthOctober',
       desc: '',
       args: [],
     );
   }
 
-  /// `Сентябрь`
+  /// `September`
   String get monthSeptember {
     return Intl.message(
-      'Сентябрь',
+      'September',
       name: 'monthSeptember',
       desc: '',
       args: [],
     );
   }
 
-  /// `Выбрать`
+  /// `Select`
   String get toSelect {
     return Intl.message(
-      'Выбрать',
+      'Select',
       name: 'toSelect',
       desc: '',
       args: [],
     );
   }
 
-  /// `Повторить`
+  /// `Retry`
   String get retry {
     return Intl.message(
-      'Повторить',
+      'Retry',
       name: 'retry',
       desc: '',
       args: [],
     );
   }
 
-  /// `Готово`
+  /// `Done`
   String get done {
     return Intl.message(
-      'Готово',
+      'Done',
       name: 'done',
       desc: '',
       args: [],
     );
   }
 
-  /// `Отмена`
+  /// `Cancel`
   String get cancellation {
     return Intl.message(
-      'Отмена',
+      'Cancel',
       name: 'cancellation',
       desc: '',
       args: [],
     );
   }
 
-  /// `Галерея`
+  /// `Gallery`
   String get gallery {
     return Intl.message(
-      'Галерея',
+      'Gallery',
       name: 'gallery',
       desc: '',
       args: [],
     );
   }
 
-  /// `Камера`
+  /// `Camera`
   String get camera {
     return Intl.message(
-      'Камера',
+      'Camera',
       name: 'camera',
       desc: '',
       args: [],
     );
   }
 
-  /// `Нет данных`
+  /// `No data available`
   String get noDataAvailable {
     return Intl.message(
-      'Нет данных',
+      'No data available',
       name: 'noDataAvailable',
       desc: '',
       args: [],
     );
   }
 
-  /// `Нет соединения с сервером`
+  /// `No connection to server`
   String get errorMessageNoConnection {
     return Intl.message(
-      'Нет соединения с сервером',
+      'No connection to server',
       name: 'errorMessageNoConnection',
       desc: '',
       args: [],
     );
   }
 
-  /// `Не удалось подключиться к серверу. Это может быть из-за проблем с сервером или вашим интернетом.`
+  /// `Could not connect to server. This may be due to server issues or your internet connection.`
   String get errorMessageCouldNotConnectServer {
     return Intl.message(
-      'Не удалось подключиться к серверу. Это может быть из-за проблем с сервером или вашим интернетом.',
+      'Could not connect to server. This may be due to server issues or your internet connection.',
       name: 'errorMessageCouldNotConnectServer',
       desc: '',
       args: [],
     );
   }
 
-  /// `Проверьте ваше подключение к сети и попробуйте снова.`
+  /// `Please check your network connection and try again.`
   String get errorMessageCheckAndTryLater {
     return Intl.message(
-      'Проверьте ваше подключение к сети и попробуйте снова.',
+      'Please check your network connection and try again.',
       name: 'errorMessageCheckAndTryLater',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ошибка приложения! Сообщите разработчикам.`
+  /// `Application error! Please report to developers.`
   String get errorMessageMobileBug {
     return Intl.message(
-      'Ошибка приложения! Сообщите разработчикам.',
+      'Application error! Please report to developers.',
       name: 'errorMessageMobileBug',
       desc: '',
       args: [],
     );
   }
 
-  /// `Запрос не выполнен, попробуйте позже`
+  /// `Request failed, please try again later`
   String get errorMessageDefaultRequestError {
     return Intl.message(
-      'Запрос не выполнен, попробуйте позже',
+      'Request failed, please try again later',
       name: 'errorMessageDefaultRequestError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Что-то пошло не так.`
+  /// `Something went wrong.`
   String get errorMessageUnexpectedError {
     return Intl.message(
-      'Что-то пошло не так.',
+      'Something went wrong.',
       name: 'errorMessageUnexpectedError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пожалуйста, войдите в систему, чтобы продолжить`
+  /// `Please log in to continue`
   String get errorMessageAuthRequired {
     return Intl.message(
-      'Пожалуйста, войдите в систему, чтобы продолжить',
+      'Please log in to continue',
       name: 'errorMessageAuthRequired',
       desc: '',
       args: [],
     );
   }
 
-  /// `У вас нет прав для просмотра этой страницы.`
+  /// `You don't have permission to view this page.`
   String get errorMessageNoRightsToView {
     return Intl.message(
-      'У вас нет прав для просмотра этой страницы.',
+      'You don\'t have permission to view this page.',
       name: 'errorMessageNoRightsToView',
       desc: '',
       args: [],
     );
   }
 
-  /// `У вас нет прав для выполнения этого действия.`
+  /// `You don't have permission to perform this action.`
   String get errorMessageNoRightsToPerform {
     return Intl.message(
-      'У вас нет прав для выполнения этого действия.',
+      'You don\'t have permission to perform this action.',
       name: 'errorMessageNoRightsToPerform',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ошибка при выполнении запроса`
+  /// `Error while making request`
   String get errorMessageErrorWhileRequesting {
     return Intl.message(
-      'Ошибка при выполнении запроса',
+      'Error while making request',
       name: 'errorMessageErrorWhileRequesting',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ошибка при открытии ссылки`
+  /// `Error opening link`
   String get errorMessageUrlLaunchError {
     return Intl.message(
-      'Ошибка при открытии ссылки',
+      'Error opening link',
       name: 'errorMessageUrlLaunchError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Технические работы на сервере`
+  /// `Server maintenance in progress`
   String get errorMessageServerError {
     return Intl.message(
-      'Технические работы на сервере',
+      'Server maintenance in progress',
       name: 'errorMessageServerError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Извините за неудобства, сервер временно недоступен. Попробуйте позже.`
+  /// `Sorry for the inconvenience, the server is temporarily unavailable. Please try again later.`
   String get errorMessageServerInternalError {
     return Intl.message(
-      'Извините за неудобства, сервер временно недоступен. Попробуйте позже.',
+      'Sorry for the inconvenience, the server is temporarily unavailable. Please try again later.',
       name: 'errorMessageServerInternalError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Попробуйте обновить страницу`
+  /// `Try refreshing the page`
   String get tryRefreshPage {
     return Intl.message(
-      'Попробуйте обновить страницу',
+      'Try refreshing the page',
       name: 'tryRefreshPage',
       desc: '',
       args: [],
@@ -416,6 +416,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<UiLocalizer> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
+      Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ru'),
     ];
   }

@@ -46,6 +46,6 @@ flutter:
 
 flutter_intl:
   enabled: true
-  main_locale: ru
+  main_locale: en
   class_name: ToolkitLocalizer
   output_dir: lib/l10n/generated

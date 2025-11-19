@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:starter/features/settings/ui/common/widget/settings_card.dart';
-import 'package:starter/features/settings/ui/common/widget/settings_tile.dart';
+import 'package:starter/features/settings/ui/menu/widget/settings_card.dart';
+import 'package:starter/features/settings/ui/menu/widget/settings_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
 
 class AboutSettingsSection extends StatelessWidget {
   const AboutSettingsSection({super.key});
@@ -28,10 +29,10 @@ class AboutSettingsSection extends StatelessWidget {
             color: theme.textSecondary,
           ),
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(localizer.termsComingSoon),
-              ),
+            NotificationSnackBar.showMessage(
+              context,
+              isSuccess: false,
+              message: localizer.termsComingSoon,
             );
           },
         ),
@@ -44,10 +45,10 @@ class AboutSettingsSection extends StatelessWidget {
             color: theme.textSecondary,
           ),
           onTap: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(localizer.privacyPolicyComingSoon),
-              ),
+            NotificationSnackBar.showMessage(
+              context,
+              isSuccess: false,
+              message: localizer.privacyPolicyComingSoon,
             );
           },
         ),

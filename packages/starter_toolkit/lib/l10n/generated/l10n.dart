@@ -50,350 +50,350 @@ class ToolkitLocalizer {
     return Localizations.of<ToolkitLocalizer>(context, ToolkitLocalizer);
   }
 
-  /// `Нет подключения к интернету`
+  /// `No internet connection`
   String get errorMessageNoInternetConnection {
     return Intl.message(
-      'Нет подключения к интернету',
+      'No internet connection',
       name: 'errorMessageNoInternetConnection',
       desc: '',
       args: [],
     );
   }
 
-  /// `Нет соединения с сервером`
+  /// `No connection to server`
   String get errorMessageNoConnection {
     return Intl.message(
-      'Нет соединения с сервером',
+      'No connection to server',
       name: 'errorMessageNoConnection',
       desc: '',
       args: [],
     );
   }
 
-  /// `Не удалось подключиться к серверу. Это может быть из-за проблем с сервером или вашим интернетом.`
+  /// `Could not connect to server. This may be due to server issues or your internet connection.`
   String get errorMessageCouldNotConnectServer {
     return Intl.message(
-      'Не удалось подключиться к серверу. Это может быть из-за проблем с сервером или вашим интернетом.',
+      'Could not connect to server. This may be due to server issues or your internet connection.',
       name: 'errorMessageCouldNotConnectServer',
       desc: '',
       args: [],
     );
   }
 
-  /// `Проверьте ваше подключение к сети и попробуйте снова.`
+  /// `Please check your network connection and try again.`
   String get errorMessageCheckAndTryLater {
     return Intl.message(
-      'Проверьте ваше подключение к сети и попробуйте снова.',
+      'Please check your network connection and try again.',
       name: 'errorMessageCheckAndTryLater',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ошибка приложения! Сообщите разработчикам.`
+  /// `Application error! Please report to developers.`
   String get errorMessageMobileBug {
     return Intl.message(
-      'Ошибка приложения! Сообщите разработчикам.',
+      'Application error! Please report to developers.',
       name: 'errorMessageMobileBug',
       desc: '',
       args: [],
     );
   }
 
-  /// `Запрос не выполнен, попробуйте позже`
+  /// `Request failed, please try again later`
   String get errorMessageDefaultRequestError {
     return Intl.message(
-      'Запрос не выполнен, попробуйте позже',
+      'Request failed, please try again later',
       name: 'errorMessageDefaultRequestError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Что-то пошло не так.`
+  /// `Something went wrong.`
   String get errorMessageUnexpectedError {
     return Intl.message(
-      'Что-то пошло не так.',
+      'Something went wrong.',
       name: 'errorMessageUnexpectedError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пожалуйста, войдите в систему, чтобы продолжить`
+  /// `Please log in to continue`
   String get errorMessageAuthRequired {
     return Intl.message(
-      'Пожалуйста, войдите в систему, чтобы продолжить',
+      'Please log in to continue',
       name: 'errorMessageAuthRequired',
       desc: '',
       args: [],
     );
   }
 
-  /// `У вас нет прав для просмотра этой страницы.`
+  /// `You don't have permission to view this page.`
   String get errorMessageNoRightsToView {
     return Intl.message(
-      'У вас нет прав для просмотра этой страницы.',
+      'You don\'t have permission to view this page.',
       name: 'errorMessageNoRightsToView',
       desc: '',
       args: [],
     );
   }
 
-  /// `У вас нет прав для выполнения этого действия.`
+  /// `You don't have permission to perform this action.`
   String get errorMessageNoRightsToPerform {
     return Intl.message(
-      'У вас нет прав для выполнения этого действия.',
+      'You don\'t have permission to perform this action.',
       name: 'errorMessageNoRightsToPerform',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ошибка при выполнении запроса`
+  /// `Error while making request`
   String get errorMessageErrorWhileRequesting {
     return Intl.message(
-      'Ошибка при выполнении запроса',
+      'Error while making request',
       name: 'errorMessageErrorWhileRequesting',
       desc: '',
       args: [],
     );
   }
 
-  /// `Ошибка при открытии ссылки`
+  /// `Error opening link`
   String get errorMessageUrlLaunchError {
     return Intl.message(
-      'Ошибка при открытии ссылки',
+      'Error opening link',
       name: 'errorMessageUrlLaunchError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пожалуйста, предоставьте необходимые разрешения для продолжения работы`
+  /// `Please grant the necessary permissions to continue`
   String get errorMessagePermissionDeniedSnackbar {
     return Intl.message(
-      'Пожалуйста, предоставьте необходимые разрешения для продолжения работы',
+      'Please grant the necessary permissions to continue',
       name: 'errorMessagePermissionDeniedSnackbar',
       desc: '',
       args: [],
     );
   }
 
-  /// `Технические работы на сервере`
+  /// `Server maintenance in progress`
   String get errorMessageServerError {
     return Intl.message(
-      'Технические работы на сервере',
+      'Server maintenance in progress',
       name: 'errorMessageServerError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Извините за неудобства, сервер временно недоступен. Попробуйте позже.`
+  /// `Sorry for the inconvenience, the server is temporarily unavailable. Please try again later.`
   String get errorMessageServerInternalError {
     return Intl.message(
-      'Извините за неудобства, сервер временно недоступен. Попробуйте позже.',
+      'Sorry for the inconvenience, the server is temporarily unavailable. Please try again later.',
       name: 'errorMessageServerInternalError',
       desc: '',
       args: [],
     );
   }
 
-  /// `Расписание пусто`
+  /// `Schedule is empty`
   String get errorMessageEmptySchedule {
     return Intl.message(
-      'Расписание пусто',
+      'Schedule is empty',
       name: 'errorMessageEmptySchedule',
       desc: '',
       args: [],
     );
   }
 
-  /// `Перейдите в профиль и заполните расписание`
+  /// `Go to profile and fill in the schedule`
   String get errorMessageEmptyScheduleFillInProfile {
     return Intl.message(
-      'Перейдите в профиль и заполните расписание',
+      'Go to profile and fill in the schedule',
       name: 'errorMessageEmptyScheduleFillInProfile',
       desc: '',
       args: [],
     );
   }
 
-  /// `Обязательное поле`
+  /// `Required field`
   String get errorRequiredField {
     return Intl.message(
-      'Обязательное поле',
+      'Required field',
       name: 'errorRequiredField',
       desc: '',
       args: [],
     );
   }
 
-  /// `Например, +7 (123) 456-78-90`
+  /// `For example, +7 (123) 456-78-90`
   String get errorInvalidPhoneFormat {
     return Intl.message(
-      'Например, +7 (123) 456-78-90',
+      'For example, +7 (123) 456-78-90',
       name: 'errorInvalidPhoneFormat',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пожалуйста, введите свой номер телефона`
+  /// `Please enter your phone number`
   String get errorPhoneRequired {
     return Intl.message(
-      'Пожалуйста, введите свой номер телефона',
+      'Please enter your phone number',
       name: 'errorPhoneRequired',
       desc: '',
       args: [],
     );
   }
 
-  /// `Введите только латинские буквы и цифры`
+  /// `Enter only Latin letters and numbers`
   String get errorInvalidLatinAlphanumeric {
     return Intl.message(
-      'Введите только латинские буквы и цифры',
+      'Enter only Latin letters and numbers',
       name: 'errorInvalidLatinAlphanumeric',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пароль должен содержать не менее {minLength} символов`
+  /// `Password must be at least {minLength} characters`
   String errorPasswordMinLength(Object minLength) {
     return Intl.message(
-      'Пароль должен содержать не менее $minLength символов',
+      'Password must be at least $minLength characters',
       name: 'errorPasswordMinLength',
       desc: '',
       args: [minLength],
     );
   }
 
-  /// `Пароль должен содержать хотя бы одну заглавную букву`
+  /// `Password must contain at least one uppercase letter`
   String get errorPasswordUppercase {
     return Intl.message(
-      'Пароль должен содержать хотя бы одну заглавную букву',
+      'Password must contain at least one uppercase letter',
       name: 'errorPasswordUppercase',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пароль должен содержать хотя бы одну строчную букву`
+  /// `Password must contain at least one lowercase letter`
   String get errorPasswordLowercase {
     return Intl.message(
-      'Пароль должен содержать хотя бы одну строчную букву',
+      'Password must contain at least one lowercase letter',
       name: 'errorPasswordLowercase',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пароль должен содержать хотя бы одну цифру`
+  /// `Password must contain at least one digit`
   String get errorPasswordDigit {
     return Intl.message(
-      'Пароль должен содержать хотя бы одну цифру',
+      'Password must contain at least one digit',
       name: 'errorPasswordDigit',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пароль должен содержать хотя бы один специальный символ`
+  /// `Password must contain at least one special character`
   String get errorPasswordSpecialChar {
     return Intl.message(
-      'Пароль должен содержать хотя бы один специальный символ',
+      'Password must contain at least one special character',
       name: 'errorPasswordSpecialChar',
       desc: '',
       args: [],
     );
   }
 
-  /// `Неверный формат URL`
+  /// `Invalid URL format`
   String get errorInvalidUrlFormat {
     return Intl.message(
-      'Неверный формат URL',
+      'Invalid URL format',
       name: 'errorInvalidUrlFormat',
       desc: '',
       args: [],
     );
   }
 
-  /// `Неверный формат электронной почты`
+  /// `Invalid email format`
   String get errorInvalidEmailFormat {
     return Intl.message(
-      'Неверный формат электронной почты',
+      'Invalid email format',
       name: 'errorInvalidEmailFormat',
       desc: '',
       args: [],
     );
   }
 
-  /// `Доступ запрещен`
+  /// `Access denied`
   String get errorMessagePermissionDenied {
     return Intl.message(
-      'Доступ запрещен',
+      'Access denied',
       name: 'errorMessagePermissionDenied',
       desc: '',
       args: [],
     );
   }
 
-  /// `Требуется разрешение`
+  /// `Permission required`
   String get errorMessagePermissionRequired {
     return Intl.message(
-      'Требуется разрешение',
+      'Permission required',
       name: 'errorMessagePermissionRequired',
       desc: '',
       args: [],
     );
   }
 
-  /// `Сегодня`
+  /// `Today`
   String get today {
     return Intl.message(
-      'Сегодня',
+      'Today',
       name: 'today',
       desc: '',
       args: [],
     );
   }
 
-  /// `Вчера`
+  /// `Yesterday`
   String get yesterday {
     return Intl.message(
-      'Вчера',
+      'Yesterday',
       name: 'yesterday',
       desc: '',
       args: [],
     );
   }
 
-  /// `Завтра`
+  /// `Tomorrow`
   String get tomorrow {
     return Intl.message(
-      'Завтра',
+      'Tomorrow',
       name: 'tomorrow',
       desc: '',
       args: [],
     );
   }
 
-  /// `{hours} ч. {minutes} мин.`
+  /// `{hours} h {minutes} min`
   String durationInHoursMinutes(Object hours, Object minutes) {
     return Intl.message(
-      '$hours ч. $minutes мин.',
+      '$hours h $minutes min',
       name: 'durationInHoursMinutes',
       desc: '',
       args: [hours, minutes],
     );
   }
 
-  /// `{minutes} мин.`
+  /// `{minutes} min`
   String durationInMinutes(Object minutes) {
     return Intl.message(
-      '$minutes мин.',
+      '$minutes min',
       name: 'durationInMinutes',
       desc: '',
       args: [minutes],
@@ -406,6 +406,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<ToolkitLocalizer> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
+      Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ru'),
     ];
   }

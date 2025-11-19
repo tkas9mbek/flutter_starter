@@ -5,7 +5,7 @@ import 'package:starter/features/application/root/screen/root_screen.dart';
 import 'package:starter/features/auth/ui/login/screen/login_screen.dart';
 import 'package:starter/features/auth/ui/register/screen/registration_screen.dart';
 import 'package:starter/features/profile/ui/screen/profile_screen.dart';
-import 'package:starter/features/settings/ui/screen/settings_screen.dart';
+import 'package:starter/features/settings/ui/menu/screen/settings_screen.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/calendar/screen/calendar_screen.dart';
 import 'package:starter/features/task/ui/details/screen/task_details_screen.dart';

@@ -50,623 +50,622 @@ class Localizer {
     return Localizations.of<Localizer>(context, Localizer);
   }
 
-  /// `Вход`
+  /// `Login`
   String get login {
     return Intl.message(
-      'Вход',
+      'Login',
       name: 'login',
       desc: '',
       args: [],
     );
   }
 
-  /// `Регистрация`
+  /// `Sign Up`
   String get signUp {
     return Intl.message(
-      'Регистрация',
+      'Sign Up',
       name: 'signUp',
       desc: '',
       args: [],
     );
   }
 
-  /// `Номер телефона`
+  /// `Phone Number`
   String get phoneNumber {
     return Intl.message(
-      'Номер телефона',
+      'Phone Number',
       name: 'phoneNumber',
       desc: '',
       args: [],
     );
   }
 
-  /// `Введите номер телефона`
+  /// `Enter phone number`
   String get enterPhoneNumber {
     return Intl.message(
-      'Введите номер телефона',
+      'Enter phone number',
       name: 'enterPhoneNumber',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пароль`
+  /// `Password`
   String get password {
     return Intl.message(
-      'Пароль',
+      'Password',
       name: 'password',
       desc: '',
       args: [],
     );
   }
 
-  /// `Введите пароль`
+  /// `Enter password`
   String get enterPassword {
     return Intl.message(
-      'Введите пароль',
+      'Enter password',
       name: 'enterPassword',
       desc: '',
       args: [],
     );
   }
 
-  /// `Войти`
+  /// `Log In`
   String get toLogin {
     return Intl.message(
-      'Войти',
+      'Log In',
       name: 'toLogin',
       desc: '',
       args: [],
     );
   }
 
-  /// `Зарегистрироваться`
+  /// `Register`
   String get toRegister {
     return Intl.message(
-      'Зарегистрироваться',
+      'Register',
       name: 'toRegister',
       desc: '',
       args: [],
     );
   }
 
-  /// `Выйти`
+  /// `Log Out`
   String get toLogout {
     return Intl.message(
-      'Выйти',
+      'Log Out',
       name: 'toLogout',
       desc: '',
       args: [],
     );
   }
 
-  /// `Календарь`
+  /// `Calendar`
   String get calendar {
     return Intl.message(
-      'Календарь',
+      'Calendar',
       name: 'calendar',
       desc: '',
       args: [],
     );
   }
 
-  /// `Нет аккаунта?`
+  /// `Don't have an account?`
   String get haveNoAccount {
     return Intl.message(
-      'Нет аккаунта?',
+      'Don\'t have an account?',
       name: 'haveNoAccount',
       desc: '',
       args: [],
     );
   }
 
-  /// `Уже есть аккаунт?`
+  /// `Already have an account?`
   String get haveAccount {
     return Intl.message(
-      'Уже есть аккаунт?',
+      'Already have an account?',
       name: 'haveAccount',
       desc: '',
       args: [],
     );
   }
 
-  /// `Задачи`
+  /// `Tasks`
   String get tasks {
     return Intl.message(
-      'Задачи',
+      'Tasks',
       name: 'tasks',
       desc: '',
       args: [],
     );
   }
 
-  /// `Пока нет задач`
+  /// `No tasks yet`
   String get noTasksYet {
     return Intl.message(
-      'Пока нет задач',
+      'No tasks yet',
       name: 'noTasksYet',
       desc: '',
       args: [],
     );
   }
 
-  /// `{title} удалена`
+  /// `{title} deleted`
   String taskDeleted(Object title) {
     return Intl.message(
-      '$title удалена',
+      '$title deleted',
       name: 'taskDeleted',
       desc: '',
       args: [title],
     );
   }
 
-  /// `задача`
+  /// `task`
   String get task {
     return Intl.message(
-      'задача',
+      'task',
       name: 'task',
       desc: '',
       args: [],
     );
   }
 
-  /// `задачи`
+  /// `tasks`
   String get tasks_plural {
     return Intl.message(
-      'задачи',
+      'tasks',
       name: 'tasks_plural',
       desc: '',
       args: [],
     );
   }
 
-  /// `задач`
+  /// `tasks`
   String get tasks_many {
     return Intl.message(
-      'задач',
+      'tasks',
       name: 'tasks_many',
       desc: '',
       args: [],
     );
   }
 
-  /// `Выберите дату`
+  /// `Select a date`
   String get selectDate {
     return Intl.message(
-      'Выберите дату',
+      'Select a date',
       name: 'selectDate',
       desc: '',
       args: [],
     );
   }
 
-  /// `Нет задач на эту дату`
+  /// `No tasks for this date`
   String get noTasksForDate {
     return Intl.message(
-      'Нет задач на эту дату',
+      'No tasks for this date',
       name: 'noTasksForDate',
       desc: '',
       args: [],
     );
   }
 
-  /// `Сегодня`
+  /// `Today`
   String get today {
     return Intl.message(
-      'Сегодня',
+      'Today',
       name: 'today',
       desc: '',
       args: [],
     );
   }
 
-  /// `Завтра`
+  /// `Tomorrow`
   String get tomorrow {
     return Intl.message(
-      'Завтра',
+      'Tomorrow',
       name: 'tomorrow',
       desc: '',
       args: [],
     );
   }
 
-  /// `Настройки`
+  /// `Settings`
   String get settings {
     return Intl.message(
-      'Настройки',
+      'Settings',
       name: 'settings',
       desc: '',
       args: [],
     );
   }
 
-  /// `Внешний вид`
+  /// `Appearance`
   String get appearance {
     return Intl.message(
-      'Внешний вид',
+      'Appearance',
       name: 'appearance',
       desc: '',
       args: [],
     );
   }
 
-  /// `Тема`
+  /// `Theme`
   String get theme {
     return Intl.message(
-      'Тема',
+      'Theme',
       name: 'theme',
       desc: '',
       args: [],
     );
   }
 
-  /// `Светлая`
+  /// `Light`
   String get light {
     return Intl.message(
-      'Светлая',
+      'Light',
       name: 'light',
       desc: '',
       args: [],
     );
   }
 
-  /// `Тёмная`
+  /// `Dark`
   String get dark {
     return Intl.message(
-      'Тёмная',
+      'Dark',
       name: 'dark',
       desc: '',
       args: [],
     );
   }
 
-  /// `Переключение темы скоро появится!`
+  /// `Theme switching coming soon!`
   String get themeSwitchingComingSoon {
     return Intl.message(
-      'Переключение темы скоро появится!',
+      'Theme switching coming soon!',
       name: 'themeSwitchingComingSoon',
       desc: '',
       args: [],
     );
   }
 
-  /// `Язык`
+  /// `Language`
   String get language {
     return Intl.message(
-      'Язык',
+      'Language',
       name: 'language',
       desc: '',
       args: [],
     );
   }
 
-  /// `Выберите язык`
+  /// `Select language`
   String get selectLanguage {
     return Intl.message(
-      'Выберите язык',
+      'Select language',
       name: 'selectLanguage',
       desc: '',
       args: [],
     );
   }
 
-  /// `О приложении`
+  /// `About`
   String get about {
     return Intl.message(
-      'О приложении',
+      'About',
       name: 'about',
       desc: '',
       args: [],
     );
   }
 
-  /// `Версия`
+  /// `Version`
   String get version {
     return Intl.message(
-      'Версия',
+      'Version',
       name: 'version',
       desc: '',
       args: [],
     );
   }
 
-  /// `Условия использования`
+  /// `Terms and Conditions`
   String get termsAndConditions {
     return Intl.message(
-      'Условия использования',
+      'Terms and Conditions',
       name: 'termsAndConditions',
       desc: '',
       args: [],
     );
   }
 
-  /// `Условия использования скоро появятся!`
+  /// `Terms and Conditions coming soon!`
   String get termsComingSoon {
     return Intl.message(
-      'Условия использования скоро появятся!',
+      'Terms and Conditions coming soon!',
       name: 'termsComingSoon',
       desc: '',
       args: [],
     );
   }
 
-  /// `Политика конфиденциальности`
+  /// `Privacy Policy`
   String get privacyPolicy {
     return Intl.message(
-      'Политика конфиденциальности',
+      'Privacy Policy',
       name: 'privacyPolicy',
       desc: '',
       args: [],
     );
   }
 
-  /// `Политика конфиденциальности скоро появится!`
+  /// `Privacy Policy coming soon!`
   String get privacyPolicyComingSoon {
     return Intl.message(
-      'Политика конфиденциальности скоро появится!',
+      'Privacy Policy coming soon!',
       name: 'privacyPolicyComingSoon',
       desc: '',
       args: [],
     );
   }
 
-  /// `Профиль`
+  /// `Profile`
   String get profile {
     return Intl.message(
-      'Профиль',
+      'Profile',
       name: 'profile',
       desc: '',
       args: [],
     );
   }
 
-  /// `День рождения`
+  /// `Birthday`
   String get birthday {
     return Intl.message(
-      'День рождения',
+      'Birthday',
       name: 'birthday',
       desc: '',
       args: [],
     );
   }
 
-  /// `Возраст`
+  /// `Age`
   String get age {
     return Intl.message(
-      'Возраст',
+      'Age',
       name: 'age',
       desc: '',
       args: [],
     );
   }
 
-  /// `{count, plural, one{{count} год} few{{count} года} other{{count} лет}}`
+  /// `{count, plural, one{{count} year old} other{{count} years old}}`
   String yearsOld(int count) {
     return Intl.plural(
       count,
-      one: '$count год',
-      few: '$count года',
-      other: '$count лет',
+      one: '$count year old',
+      other: '$count years old',
       name: 'yearsOld',
       desc: '',
       args: [count],
     );
   }
 
-  /// `Не удалось загрузить профиль`
+  /// `Failed to load profile`
   String get failedToLoadProfile {
     return Intl.message(
-      'Не удалось загрузить профиль',
+      'Failed to load profile',
       name: 'failedToLoadProfile',
       desc: '',
       args: [],
     );
   }
 
-  /// `Повторить`
+  /// `Retry`
   String get retry {
     return Intl.message(
-      'Повторить',
+      'Retry',
       name: 'retry',
       desc: '',
       args: [],
     );
   }
 
-  /// `Выход из системы...`
+  /// `Logging out...`
   String get loggingOut {
     return Intl.message(
-      'Выход из системы...',
+      'Logging out...',
       name: 'loggingOut',
       desc: '',
       args: [],
     );
   }
 
-  /// `Обновить`
+  /// `Refresh`
   String get refresh {
     return Intl.message(
-      'Обновить',
+      'Refresh',
       name: 'refresh',
       desc: '',
       args: [],
     );
   }
 
-  /// `Имя`
+  /// `Name`
   String get name {
     return Intl.message(
-      'Имя',
+      'Name',
       name: 'name',
       desc: '',
       args: [],
     );
   }
 
-  /// `Введите ваше имя`
+  /// `Enter your name`
   String get enterYourName {
     return Intl.message(
-      'Введите ваше имя',
+      'Enter your name',
       name: 'enterYourName',
       desc: '',
       args: [],
     );
   }
 
-  /// `Выберите дату рождения`
+  /// `Select your birthday`
   String get selectYourBirthday {
     return Intl.message(
-      'Выберите дату рождения',
+      'Select your birthday',
       name: 'selectYourBirthday',
       desc: '',
       args: [],
     );
   }
 
-  /// `Дата рождения обязательна`
+  /// `Birthday is required`
   String get birthdayIsRequired {
     return Intl.message(
-      'Дата рождения обязательна',
+      'Birthday is required',
       name: 'birthdayIsRequired',
       desc: '',
       args: [],
     );
   }
 
-  /// `Детали задачи`
+  /// `Task Details`
   String get taskDetails {
     return Intl.message(
-      'Детали задачи',
+      'Task Details',
       name: 'taskDetails',
       desc: '',
       args: [],
     );
   }
 
-  /// `Удалить`
+  /// `Delete`
   String get delete {
     return Intl.message(
-      'Удалить',
+      'Delete',
       name: 'delete',
       desc: '',
       args: [],
     );
   }
 
-  /// `Удалить задачу`
+  /// `Delete Task`
   String get deleteTask {
     return Intl.message(
-      'Удалить задачу',
+      'Delete Task',
       name: 'deleteTask',
       desc: '',
       args: [],
     );
   }
 
-  /// `Вы уверены, что хотите удалить эту задачу?`
+  /// `Are you sure you want to delete this task?`
   String get deleteTaskConfirmation {
     return Intl.message(
-      'Вы уверены, что хотите удалить эту задачу?',
+      'Are you sure you want to delete this task?',
       name: 'deleteTaskConfirmation',
       desc: '',
       args: [],
     );
   }
 
-  /// `Отмена`
+  /// `Cancel`
   String get cancel {
     return Intl.message(
-      'Отмена',
+      'Cancel',
       name: 'cancel',
       desc: '',
       args: [],
     );
   }
 
-  /// `Задача успешно удалена`
+  /// `Task deleted successfully`
   String get taskDeletedSuccessfully {
     return Intl.message(
-      'Задача успешно удалена',
+      'Task deleted successfully',
       name: 'taskDeletedSuccessfully',
       desc: '',
       args: [],
     );
   }
 
-  /// `Не удалось удалить задачу`
+  /// `Failed to delete task`
   String get failedToDeleteTask {
     return Intl.message(
-      'Не удалось удалить задачу',
+      'Failed to delete task',
       name: 'failedToDeleteTask',
       desc: '',
       args: [],
     );
   }
 
-  /// `Не удалось загрузить детали задачи`
+  /// `Failed to load task details`
   String get failedToLoadTaskDetails {
     return Intl.message(
-      'Не удалось загрузить детали задачи',
+      'Failed to load task details',
       name: 'failedToLoadTaskDetails',
       desc: '',
       args: [],
     );
   }
 
-  /// `Время начала`
+  /// `Start Time`
   String get startTime {
     return Intl.message(
-      'Время начала',
+      'Start Time',
       name: 'startTime',
       desc: '',
       args: [],
     );
   }
 
-  /// `Время окончания`
+  /// `End Time`
   String get endTime {
     return Intl.message(
-      'Время окончания',
+      'End Time',
       name: 'endTime',
       desc: '',
       args: [],
     );
   }
 
-  /// `Описание`
+  /// `Description`
   String get description {
     return Intl.message(
-      'Описание',
+      'Description',
       name: 'description',
       desc: '',
       args: [],
     );
   }
 
-  /// `Завершена`
+  /// `Completed`
   String get completed {
     return Intl.message(
-      'Завершена',
+      'Completed',
       name: 'completed',
       desc: '',
       args: [],
     );
   }
 
-  /// `Не завершена`
+  /// `Not Completed`
   String get notCompleted {
     return Intl.message(
-      'Не завершена',
+      'Not Completed',
       name: 'notCompleted',
       desc: '',
       args: [],
     );
   }
 
-  /// `Статус`
+  /// `Status`
   String get status {
     return Intl.message(
-      'Статус',
+      'Status',
       name: 'status',
       desc: '',
       args: [],
@@ -679,6 +678,7 @@ class AppLocalizationDelegate extends LocalizationsDelegate<Localizer> {
 
   List<Locale> get supportedLocales {
     return const <Locale>[
+      Locale.fromSubtags(languageCode: 'en'),
       Locale.fromSubtags(languageCode: 'ru'),
     ];
   }

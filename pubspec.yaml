@@ -60,6 +60,6 @@ flutter:
 
 flutter_intl:
   enabled: true
-  main_locale: ru
+  main_locale: en
   class_name: Localizer
   output_dir: lib/l10n/generated
