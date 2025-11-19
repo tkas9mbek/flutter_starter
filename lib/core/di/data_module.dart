@@ -7,6 +7,7 @@ import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/auth/data/auth_service.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
+import 'package:starter/features/profile/data/profile_service.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 class DataModule extends AppModule {
@@ -54,6 +55,12 @@ class DataModule extends AppModule {
       ..registerFactory<AuthService>(
         () => AuthService(
           getIt<Dio>(instanceName: 'unauthorized'),
+          baseUrl: env.baseApiUrl,
+        ),
+      )
+      ..registerFactory<ProfileService>(
+        () => ProfileService(
+          getIt<Dio>(),
           baseUrl: env.baseApiUrl,
         ),
       );

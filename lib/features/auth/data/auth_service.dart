@@ -3,16 +3,12 @@ import 'package:retrofit/retrofit.dart';
 import 'package:starter/features/auth/model/auth_login_request_body.dart';
 import 'package:starter/features/auth/model/auth_register_request_body.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
-import 'package:starter/features/profile/model/user.dart';
 
 part 'auth_service.g.dart';
 
 @RestApi()
 abstract class AuthService {
   factory AuthService(Dio dio, {required String baseUrl}) = _AuthService;
-
-  @GET('auth/profile')
-  Future<User> getUserProfile();
 
   @POST('auth/logout')
   Future<void> logout();
