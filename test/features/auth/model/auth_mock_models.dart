@@ -6,7 +6,7 @@ import 'package:starter/features/profile/model/user.dart';
 
 class AuthMockModels {
   static dynamic getJsonFromFile(String fileName) {
-    const basePath = 'test/auth/assets';
+    const basePath = 'test/features/auth/assets';
     final jsonString = File('$basePath/$fileName').readAsStringSync();
 
     return json.decode(jsonString);
