@@ -115,7 +115,7 @@ Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, 
 ### Exception Handling
 
 **Two-layer architecture:**
-- **Data Layer** (`starter_toolkit`): `AppException` - Freezed union types with `@ExceptionUiConfig` annotations
+- **Data Layer** (`starter_toolkit`): `AppException` - Sealed classes with `@ExceptionUiConfig` annotations
 - **UI Layer** (`starter_uikit`): `ExceptionUiModel` - Equatable with localized messages
 
 **Usage:**
@@ -158,10 +158,9 @@ getIt.registerFactory<ExceptionUiMapper>(
 ```
 
 **Adding new exceptions:**
-1. Add factory to `AppException` with `@ExceptionUiConfig` annotation
+1. Add new final class extending `AppException` with `@ExceptionUiConfig` annotation
 2. Run `dart run tool/generate_exception_mapper.dart`
-3. Run `fvm flutter pub run build_runner build --delete-conflicting-outputs`
-4. Code generator automatically updates mapper and decorator
+3. Code generator automatically updates mapper and decorator with switch expression
 
 ### Repository Executors
 
@@ -196,7 +195,7 @@ See [Structure Guide](./docs/structure.md) for complete details.
 lib/features/{feature}/
 ├── data/           # DataSource implementations (remote, local, mock)
 ├── domain/         # Repository (concrete) + abstract DataSource interface
-├── model/          # Domain models (Freezed)
+├── model/          # Domain models (Freezed for state/events, plain classes for data)
 ├── configs/        # DI module (extends AppModule)
 ├── custom/         # Utils, extensions
 └── ui/             # BLoC, screens, widgets
@@ -681,8 +680,6 @@ context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
 
 ---
 
----
-
 ## Common Issues & Solutions
 
 **AI Instruction**: Reference this section when encountering these issues:
@@ -715,7 +712,7 @@ context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
 - NotificationSnackBar: `import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart'`
 - ThemeProvider: `import 'package:starter_uikit/theme/theme_provider.dart'`
 - TitleAppBar: `import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart'`
-- ExceptionUiMapper: `import 'package:starter_uikit/mappers/exception_ui_mapper.dart'`
+- ExceptionUiMapper: `import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart'`
 - ExceptionUiModel: `import 'package:starter_uikit/models/exception_ui_model.dart'`
 - AppException: `import 'package:starter_toolkit/data/exceptions/app_exception.dart'`
 - RepositoryExecutor: `import 'package:starter_toolkit/data/repository_executor/repository_executor.dart'`
@@ -727,12 +724,17 @@ context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
    - ✓ Use ExceptionUiMapper to convert to UI model in widgets
 
 2. **Forgetting to run code generator**
-   - After adding new exception factory, run `dart run tool/generate_exception_mapper.dart`
-   - Generator updates both mapper and decorator automatically
+   - After adding new exception class, run `dart run tool/generate_exception_mapper.dart`
+   - Generator updates mapper with switch expression and decorator automatically
 
 3. **Using wrong exception model in UI**
    - ✗ Don't pass AppException directly to UI widgets
    - ✓ Map to ExceptionUiModel first using ExceptionUiMapper
+
+4. **Not using sealed class benefits**
+   - ✓ Leverage exhaustive pattern matching with switch expressions
+   - ✓ Use pattern matching with field extraction: `case ServerException(:final statusCode)`
+   - ✗ Don't use maybeWhen/when methods (those are for Freezed, not sealed classes)
 
 ### Repository Executor Issues
 
