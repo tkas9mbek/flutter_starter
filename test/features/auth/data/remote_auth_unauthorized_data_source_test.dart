@@ -23,7 +23,7 @@ void main() {
   group('login', () {
     test('calls ApiClient with correct parameters and returns AuthToken',
         () async {
-      final body = AuthLoginRequestBody(
+      const body = AuthLoginRequestBody(
         phone: '+79991234567',
         password: 'password123',
       );
@@ -96,7 +96,7 @@ void main() {
 
   group('AuthLoginRequestBody', () {
     test('toJson serializes correctly', () {
-      final body = AuthLoginRequestBody(
+      const body = AuthLoginRequestBody(
         phone: '+79991234567',
         password: 'password123',
       );

@@ -374,7 +374,7 @@ const factory LoginState.failure(AppException exception) = _FailureLoginState;
 
 - [Architecture](./architecture.md) - Layer structure
 - [Structure](./structure.md) - File organization
-- [BLoC & Freezed](./bloc_freezed.md) - BLoC patterns
+- [BLoC & Freezed](./bloc) - BLoC patterns
 
 ---
 

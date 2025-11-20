@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/app_colors.dart';
+import 'package:starter_uikit/theme/app_text_styles.dart';
+import 'package:starter_uikit/theme/theme_data_from_theme.dart';
 
 /// Application theme configuration with light and dark mode support.
 class AppTheme {
@@ -61,4 +63,12 @@ class AppTheme {
         textPrimary: AppColors.whiteText,
         textSecondary: AppColors.lightGreyText,
       );
+
+  /// Converts this AppTheme to Flutter's ThemeData.
+  ThemeData toThemeData() {
+    return themeDataFromTheme(
+      theme: this,
+      textStyles: AppTextStyles(this),
+    );
+  }
 }

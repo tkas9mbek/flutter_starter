@@ -26,7 +26,7 @@ void main() {
 
   setUpAll(() {
     registerFallbackValue(
-      AuthLoginRequestBody(phone: '', password: ''),
+      const AuthLoginRequestBody(phone: '', password: ''),
     );
     registerFallbackValue(
       AuthRegisterRequestBody(

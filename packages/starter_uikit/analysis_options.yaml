@@ -2,10 +2,12 @@ analyzer:
   exclude:
     - "**/*.g.dart"
     - "**/*.freezed.dart"
-    - "**/*.gr.dart"
     - "**/*.config.dart"
     - "lib/generated_plugin_registrant.dart"
     - "**/l10n/generated/**"
+    - "lib/gen/**"
+    - "tool/**"
+    - "**/example/**"
 
   errors:
     missing_required_param: error

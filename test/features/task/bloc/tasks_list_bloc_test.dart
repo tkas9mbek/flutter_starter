@@ -138,8 +138,8 @@ void main() {
         predicate<TasksListState>(
           (state) => state.whenOrNull(
                 failure: (exception) => exception is ServerException,
-              ) ==
-              true,
+              ) ??
+              false,
         ),
       ],
       verify: (_) {

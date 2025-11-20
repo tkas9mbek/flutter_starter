@@ -1,39 +1,134 @@
-<!--
-This README describes the package. If you publish this package to pub.dev,
-this README's contents appear on the landing page for your package.
+# Starter UIKit
 
-For information about how to write a good package README, see the guide for
-[writing package pages](https://dart.dev/tools/pub/writing-package-pages).
-
-For general information about developing packages, see the Dart guide for
-[creating packages](https://dart.dev/guides/libraries/create-packages)
-and the Flutter guide for
-[developing packages and plugins](https://flutter.dev/to/develop-packages).
--->
-
-TODO: Put a short description of the package here that helps potential users
-know whether this package might be useful for them.
+Reusable UI components and theme system for Flutter applications.
 
 ## Features
 
-TODO: List what your package can do. Maybe include images, gifs, or videos.
+This package provides:
 
-## Getting started
+- **Status Widgets**: Loading indicators, empty states, failure widgets
+- **App Bars**: Title app bar, base app bar, transparent app bar
+- **Buttons**: Elevated buttons, outlined buttons with loading states
+- **Form Components**: Text fields, dropdown fields, checkbox, date picker fields
+- **Notifications**: Snackbar notifications (success, error, info, warning)
+- **Theme System**: Light/dark theme support with `ThemeProvider` and `AppTextStyles`
+- **Exception UI Models**: Localized error messages with `ExceptionUiModel` and `ExceptionUiMapper`
 
-TODO: List prerequisites and provide or point to information on how to
-start using the package.
+## Installation
+
+Add to your `pubspec.yaml`:
+
+```yaml
+dependencies:
+  starter_uikit:
+    path: ../packages/starter_uikit
+```
 
 ## Usage
 
-TODO: Include short and useful examples for package users. Add longer examples
-to `/example` folder.
+### Theme Setup
+
+Wrap your app with `ThemeProvider`:
 
 ```dart
-const like = 'sample';
+ThemeProvider(
+  theme: AppTheme.light(),
+  textStyles: AppTextStyles(AppTheme.light()),
+  onThemeToggle: _toggleTheme,
+  child: MaterialApp(...),
+)
 ```
 
-## Additional information
+Access theme in widgets:
 
-TODO: Tell users more about the package: where to find more information, how to
-contribute to the package, how to file issues, what response they can expect
-from the package authors, and more.
+```dart
+final theme = ThemeProvider.of(context).theme;
+final textStyles = ThemeProvider.of(context).textStyles;
+
+Text('Hello', style: textStyles.mediumBody14)
+Container(color: theme.primary)
+```
+
+### Status Widgets
+
+```dart
+import 'package:starter_uikit/starter_uikit.dart';
+
+// Loading
+const CustomCircularProgressIndicator()
+
+// Empty state
+EmptyInformationBody(text: 'No data available')
+
+// Failure
+FailureWidgetLarge(
+  uiModel: exceptionUiModel,
+  onRetry: _retry,
+)
+```
+
+### Buttons
+
+```dart
+import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
+
+AppElevatedButton(
+  text: 'Submit',
+  onPressed: _handleSubmit,
+  isLoading: isLoading,
+)
+```
+
+### Forms
+
+```dart
+import 'package:starter_uikit/widgets/form/app_text_field.dart';
+
+AppTextField(
+  name: 'email',
+  label: 'Email',
+  validator: FormBuilderValidators.email(),
+)
+```
+
+### Notifications
+
+```dart
+import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
+
+NotificationSnackBar.show(
+  context,
+  message: 'Operation completed',
+  type: NotificationSnackBarType.success,
+)
+```
+
+### Exception Handling
+
+```dart
+import 'package:starter_uikit/mappers/exception_ui_mapper.dart';
+
+// Map domain exception to UI model
+final uiModel = ExceptionUiMapper(context).map(exception);
+
+// Display in widget
+FailureWidgetLarge(
+  uiModel: uiModel,
+  onRetry: () => _retry(),
+)
+```
+
+## Examples
+
+Example screens are available in `lib/example/`:
+- `application.dart` - Main app with theme toggle
+- `screens/` - Demo screens for each component category
+- `widgets/` - Reusable example widgets
+
+## Architecture
+
+This package follows the project's architecture guidelines:
+- Pure Flutter widgets (no business logic)
+- Theme-aware components using `ThemeProvider`
+- Localized error messages via `ExceptionUiMapper`
+- Composable and reusable components

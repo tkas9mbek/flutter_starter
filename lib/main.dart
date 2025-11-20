@@ -1,17 +1,25 @@
-import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:starter/core/di/app_configurator.dart';
-import 'package:starter/features/application/application.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+void main() {
+  runApp(const UIKitDemoApp());
+}
 
-  await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  await AppConfigurator.configure();
+class UIKitDemoApp extends StatelessWidget {
+  const UIKitDemoApp({super.key});
 
-  Bloc.transformer = sequential();
-
-  runApp(const Application());
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Starter UIKit',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        useMaterial3: true,
+      ),
+      home: const Scaffold(
+        body: Center(
+          child: Text('Starter UIKit Package'),
+        ),
+      ),
+    );
+  }
 }

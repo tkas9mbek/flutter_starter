@@ -539,7 +539,7 @@ blocTest<UserListBloc, UserListState>(
 ## Related Documentation
 
 - [Architecture](./architecture.md) - Layer structure
-- [BLoC & Freezed](./bloc_freezed.md) - BLoC patterns
+- [BLoC & Freezed](./bloc) - BLoC patterns
 - [Code Formatting](./code_formatting.md) - Style guide
 
 ---

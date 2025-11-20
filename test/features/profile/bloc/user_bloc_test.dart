@@ -80,8 +80,8 @@ void main() {
         predicate<UserState>(
           (state) => state.whenOrNull(
                 failure: (exception) => exception is ServerException,
-              ) ==
-              true,
+              ) ??
+              false,
         ),
       ],
       verify: (_) {

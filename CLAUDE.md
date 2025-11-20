@@ -333,7 +333,7 @@ See [Code Formatting Guide](./docs/code-formatting.md) for complete details.
 1. **Return emit pattern**: Always use `return emit(state)` for final emit
 2. **Whitespace separation**: Add blank line before every `emit()` call
 3. **Try-catch structure**: Separate try and catch blocks with whitespace
-4. **Variable naming**: Use descriptive names (`successState`, `failureState`) instead of `s` in listeners
+4. **Variable naming**: Use descriptive names (`state`) instead of `s` in listeners
 5. **Helper methods**: Add `isLoading` getters to states instead of using `maybeMap` checks
 
 **Correct Example:**
@@ -580,13 +580,12 @@ Container(color: Color(0xFF6200EE))
 For detailed information, see:
 
 - [Architecture Guide](./docs/architecture.md) - Layered architecture, dependency inversion, layer responsibilities
-- [Custom Exceptions Guide](./docs/exception_handling) - **NEW** - Adding custom exceptions with step-by-step instructions
-- [Repository Executors Guide](./docs/repository-executors.md) - **NEW** - Creating custom executors for cross-cutting concerns
+- [Exception Handling & Repository Executors](./docs/exception_handling.md) - **COMPREHENSIVE** - Custom exceptions, exception mappers, and repository executors with decorator pattern
 - [Structure Guide](./docs/structure.md) - File organization with AI Instructions
 - [Naming Conventions](./docs/naming.md) - Naming standards with AI Instructions
 - [Code Formatting](./docs/code_formatting.md) - **READ THIS FIRST** - Code style with AI Instructions
 - [Testing Guide](./docs/testing.md) - Testing strategies with AI Instructions
-- [BLoC & Freezed Guide](./docs/bloc_freezed.md) - BLoC patterns with AI Instructions
+- [BLoC & Freezed Guide](./docs/bloc) - BLoC patterns with AI Instructions
 
 ---
 

@@ -7,7 +7,6 @@ import 'package:starter/features/profile/domain/profile_repository.dart';
 import 'package:starter/features/profile/model/user.dart';
 import 'package:starter/features/profile/ui/bloc/user_bloc.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
-import 'package:starter_toolkit/data/client/http_method.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
@@ -30,7 +29,7 @@ void main() {
     profileRepository = ProfileRepository(
       const RawRepositoryExecutor()
           .withErrorHandling()
-          .withRetry(maxRetries: 3, retryDelay: Duration(seconds: 2)),
+          .withRetry(maxRetries: 3, retryDelay: const Duration(seconds: 2)),
       profileDataSource,
     );
     userBloc = UserBloc(profileRepository);
@@ -118,8 +117,8 @@ void main() {
         predicate<UserState>(
           (state) => state.whenOrNull(
                 failure: (exception) => exception is ServerException,
-              ) ==
-              true,
+              ) ??
+              false,
         ),
       ],
       verify: (_) {

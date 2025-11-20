@@ -507,7 +507,7 @@ state.when(
 - Extensible via decorator pattern
 - Code generation reduces boilerplate
 
-See [Custom Exceptions Guide](./exception_handling) for step-by-step instructions on adding new exceptions.
+See [Exception Handling & Repository Executors Guide](./exception_handling.md) for step-by-step instructions on adding new exceptions.
 
 ---
 
@@ -542,7 +542,7 @@ class UserRepository {
 }
 ```
 
-See [Repository Executors Guide](./repository-executors.md) for step-by-step instructions on creating custom executors.
+See [Exception Handling & Repository Executors Guide](./exception_handling.md) for step-by-step instructions on creating custom executors.
 
 ---
 
@@ -570,7 +570,7 @@ See [Testing Guide](./testing.md) for detailed examples.
 
 - [Project Structure](./structure.md) - File organization
 - [Testing Guide](./testing.md) - Testing strategies
-- [BLoC & Freezed](./bloc_freezed.md) - BLoC patterns
+- [BLoC & Freezed](./bloc) - BLoC patterns
 - [Code Formatting](./code_formatting.md) - Code style guide
 - [Naming Conventions](./naming.md) - Naming standards
 
