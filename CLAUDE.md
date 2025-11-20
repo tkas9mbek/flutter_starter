@@ -252,19 +252,59 @@ Access via `getIt` from `lib/core/di/injection.dart`.
 
 See [Testing Guide](./docs/testing.md) for complete details.
 
-### Minimum Requirement
+### Current Coverage (January 2025)
 
-**Every BLoC** must have integration test:
+- **Overall: 82.2%** (258/314 lines)
+- **90 tests passing**
+
+| Feature | Coverage | Status |
+|---------|----------|--------|
+| Profile | 100.0% | ⭐ Perfect |
+| Application | 98.1% | ⭐ Excellent |
+| Task | 89.9% | ✅ Very Good |
+| Auth | 75.5% | ✅ Good |
+| Settings | 100%* | ⭐ Perfect (repositories) |
+
+*Note: Overall settings 73.8% due to model edge cases
+
+### Test Structure
+
+**AI Instruction**: All tests organized under `test/features/{feature}/` directory
+
 ```
-BLoC (Real) → Repository (Real) → DataSource (Real) → Service (Mock)
+test/features/{feature}/
+├── assets/          # JSON test data files
+├── model/           # Mock model helpers (use fromJson)
+├── data/            # Repository and DataSource unit tests
+├── bloc/            # BLoC unit tests
+└── integration/     # Full-stack integration tests
 ```
+
+### Testing Strategy
+
+**Three types of tests:**
+
+1. **Data Layer Unit Tests** (Required for Repositories)
+   - Test Repository and DataSource classes with mocked dependencies
+   - Repository (Real) → DataSource (Mock)
+   - DataSource (Real) → ApiClient (Mock)
+
+2. **BLoC Unit Tests** (Required)
+   - BLoC (Real) → Repository (Mock)
+   - Test all events: success, empty, failure scenarios
+   - Test state helper methods
+
+3. **Integration Tests** (Recommended)
+   - BLoC (Real) → Repository (Real) → DataSource (Real) → ApiClient (Mock)
+   - Verify full feature flow works end-to-end
 
 ### Test Standards
 
-- **Fast**: < 1 second per class
-- **High Coverage**: Aim for 100% on BLoC, Repository, DataSource, Service
+- **Fast**: < 1 second per test class
+- **High Coverage**: Aim for 100% on BLoC, Repository, DataSource
 - **Independent**: No real backend/network
 - **Reliable**: No flaky tests
+- **JSON Assets**: ALWAYS use JSON files with fromJson instead of creating mocks in code
 
 ### Test Packages
 
