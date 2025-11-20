@@ -479,60 +479,30 @@ state.when(
 - Extensible via decorator pattern
 - Code generation reduces boilerplate
 
-See [Exception Refactoring Guide](./exception-refactoring.md) for complete details.
+See [Custom Exceptions Guide](./custom-exceptions.md) for step-by-step instructions on adding new exceptions.
 
 ---
 
 ## Repository Executors
 
-**AI Instruction**: Use decorator pattern for cross-cutting concerns:
-
-### Decorator Pattern
+**AI Instruction**: Use decorator pattern for cross-cutting concerns.
 
 Repository executors add functionality through composition:
 
 ```dart
-// Base executor - just executes function
 final executor = RawRepositoryExecutor()
   .withErrorHandling()   // Converts exceptions to AppException
   .withRetry()           // Adds retry logic with backoff
   .withCaching();        // Adds time-based caching
 ```
 
-### Available Decorators
+**Built-in executors:**
+- `RawRepositoryExecutor` - Base executor
+- `ErrorHandlingExecutor` - Normalizes errors to AppException
+- `RetryExecutor` - Automatic retry with exponential backoff
+- `CachingExecutor` - Time-based caching with cleanup
 
-**ErrorHandlingExecutor**: Normalizes all errors to AppException
-```dart
-ErrorHandlingExecutor(wrapped)
-  // Converts DioException → AppException
-  // Handles unknown errors in production
-```
-
-**RetryExecutor**: Automatic retry with exponential backoff
-```dart
-RetryExecutor(
-  wrapped,
-  maxRetries: 3,
-  retryDelay: Duration(seconds: 2),
-)
-```
-
-**CachingExecutor**: Time-based caching with cleanup
-```dart
-final executor = CachingExecutor(
-  wrapped,
-  defaultTtl: Duration(minutes: 5),
-);
-
-// Use with key for caching
-executor.cached(
-  () => _dataSource.getData(),
-  key: 'data_key',
-);
-```
-
-### Usage in Repository
-
+**Usage in Repository:**
 ```dart
 class UserRepository {
   final UserDataSource _dataSource;
@@ -542,23 +512,9 @@ class UserRepository {
     return _executor.execute(() => _dataSource.getUsers());
   }
 }
-
-// DI setup
-getIt.registerFactory<RepositoryExecutor>(() {
-  return RawRepositoryExecutor()
-    .withErrorHandling()
-    .withRetry()
-    .withCaching();
-});
 ```
 
-**Benefits:**
-- Composable decorators
-- No code duplication
-- Easy to add new executors
-- Memory leak prevention (cleanup timer)
-
-See [Repository Executor Refactoring](./repository-executor-refactoring.md) for complete details.
+See [Repository Executors Guide](./repository-executors.md) for step-by-step instructions on creating custom executors.
 
 ---
 
