@@ -28,7 +28,6 @@ dependencies:
   get_it: ^8.2.0
   intl: ^0.20.2
   intl_utils: ^2.8.8
-  retrofit: ^4.7.2
   rxdart: ^0.28.0
   shared_preferences: ^2.5.3
   starter_toolkit:
@@ -48,7 +47,6 @@ dev_dependencies:
   freezed: ^2.5.8
   json_serializable: ^6.9.5
   mocktail: ^1.0.4
-  retrofit_generator: ^9.7.0
 
 
 flutter:

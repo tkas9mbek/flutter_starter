@@ -49,6 +49,34 @@ abstract class ApiClient {
     Map<String, dynamic>? headers,
   });
 
+  /// Performs a request that returns a JSON-deserialized list of type [T].
+  ///
+  /// [method] - HTTP method (GET, POST, PUT, PATCH, DELETE)
+  /// [path] - The endpoint path (will be appended to baseUrl)
+  /// [fromJson] - Function to deserialize each JSON item to [T]
+  /// [body] - Optional request body (for POST, PUT, PATCH)
+  /// [queryParameters] - Optional query parameters
+  /// [headers] - Optional request headers
+  ///
+  /// Returns deserialized list of [T].
+  ///
+  /// Example:
+  /// ```dart
+  /// final tasks = await client.requestJsonList<Task>(
+  ///   HttpMethod.get,
+  ///   '/tasks',
+  ///   fromJson: Task.fromJson,
+  /// );
+  /// ```
+  Future<List<T>> requestJsonList<T>({
+    required HttpMethod method,
+    required String path,
+    required T Function(Map<String, dynamic>) fromJson,
+    dynamic body,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  });
+
   /// Performs a request that returns void (no response body expected).
   ///
   /// [method] - HTTP method (GET, POST, PUT, PATCH, DELETE)

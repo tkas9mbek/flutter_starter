@@ -2,10 +2,10 @@ import 'package:starter/core/di/app_module.dart';
 import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/profile/data/mock_profile_data_source.dart';
-import 'package:starter/features/profile/data/profile_service.dart';
 import 'package:starter/features/profile/data/remote_profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_repository.dart';
+import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 class ProfileModule extends AppModule {
@@ -23,7 +23,7 @@ class ProfileModule extends AppModule {
             return const MockProfileDataSource();
           }
 
-          return RemoteProfileDataSource(getIt<ProfileService>());
+          return RemoteProfileDataSource(getIt<ApiClient>());
         },
       )
       ..registerLazySingleton<ProfileRepository>(

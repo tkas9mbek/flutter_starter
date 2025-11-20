@@ -42,6 +42,31 @@ class DioApiClient implements ApiClient {
   }
 
   @override
+  Future<List<T>> requestJsonList<T>({
+    required HttpMethod method,
+    required String path,
+    required T Function(Map<String, dynamic>) fromJson,
+    dynamic body,
+    Map<String, dynamic>? queryParameters,
+    Map<String, dynamic>? headers,
+  }) async {
+    final response = await _request(
+      method: method,
+      path: path,
+      body: body,
+      queryParameters: queryParameters,
+      headers: headers,
+      responseType: ResponseType.json,
+    );
+
+    final jsonList = response.data as List<dynamic>;
+
+    return jsonList
+        .map((item) => fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  @override
   Future<void> requestVoid({
     required HttpMethod method,
     required String path,
