@@ -581,7 +581,7 @@ Container(color: Color(0xFF6200EE))
 For detailed information, see:
 
 - [Architecture Guide](./docs/architecture.md) - Layered architecture, dependency inversion, layer responsibilities
-- [Custom Exceptions Guide](./docs/custom-exceptions.md) - **NEW** - Adding custom exceptions with step-by-step instructions
+- [Custom Exceptions Guide](./docs/exception_handling) - **NEW** - Adding custom exceptions with step-by-step instructions
 - [Repository Executors Guide](./docs/repository-executors.md) - **NEW** - Creating custom executors for cross-cutting concerns
 - [Structure Guide](./docs/structure.md) - File organization with AI Instructions
 - [Naming Conventions](./docs/naming.md) - Naming standards with AI Instructions

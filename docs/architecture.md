@@ -391,22 +391,46 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 **Purpose:** Pure Dart exceptions without UI dependencies
 
 ```dart
-// Domain exceptions use Freezed union types
-@freezed
-class AppException with _$AppException {
-  @ExceptionUiConfig(
-    descriptionKey: 'noInternetConnection',
-    canRetry: true,
-  )
-  const factory AppException.noInternet() = _NoInternetAppException;
+// Domain exceptions use sealed class hierarchy
+sealed class AppException implements Exception {
+  const AppException();
 
-  @ExceptionUiConfig(
-    descriptionKey: 'serverError',
-    canRetry: true,
-  )
-  const factory AppException.server() = _ServerAppException;
+  String get name;
+  bool get canRetry;
+}
 
-  const AppException._();
+@ExceptionUiConfig(
+  descriptionKey: 'noInternetConnection',
+  canRetry: true,
+)
+final class NoInternetException extends AppException {
+  const NoInternetException();
+
+  @override
+  String get name => 'NoInternet';
+
+  @override
+  bool get canRetry => true;
+}
+
+@ExceptionUiConfig(
+  descriptionKey: 'serverError',
+  canRetry: true,
+)
+final class ServerException extends AppException {
+  const ServerException({
+    required this.statusCode,
+    this.message,
+  });
+
+  final int? statusCode;
+  final String? message;
+
+  @override
+  String get name => 'Server';
+
+  @override
+  bool get canRetry => true;
 }
 ```
 
@@ -426,18 +450,22 @@ class ExceptionUiModel extends Equatable {
   final bool canRetry;
 }
 
-// Mapper converts domain exceptions to UI models
+// Mapper converts domain exceptions to UI models using switch expressions
 class ExceptionUiMapper {
   final BuildContext context;
 
   ExceptionUiModel map(AppException exception) {
-    return exception.when(
-      noInternet: () => ExceptionUiModel(
+    return switch (exception) {
+      NoInternetException() => ExceptionUiModel(
         description: Localizer.of(context).noInternetConnection,
         canRetry: true,
       ),
+      ServerException(:final statusCode, :final message) => ExceptionUiModel(
+        description: message ?? Localizer.of(context).serverError,
+        canRetry: true,
+      ),
       // ... other cases
-    );
+    };
   }
 }
 ```
@@ -479,7 +507,7 @@ state.when(
 - Extensible via decorator pattern
 - Code generation reduces boilerplate
 
-See [Custom Exceptions Guide](./custom-exceptions.md) for step-by-step instructions on adding new exceptions.
+See [Custom Exceptions Guide](./exception_handling) for step-by-step instructions on adding new exceptions.
 
 ---
 

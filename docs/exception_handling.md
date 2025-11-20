@@ -1,11 +1,11 @@
-# Custom Exceptions Guide
+# Exception Handling Guide
 
 > **AI Context**: Comprehensive guide to creating and using custom exceptions with code generation and localization.
 
 ## Overview
 
 This project uses a two-layer exception architecture:
-1. **Data Layer** (`packages/starter_toolkit`): Pure Dart `AppException` - Freezed union types with `@ExceptionUiConfig` annotations
+1. **Data Layer** (`packages/starter_toolkit`): Pure Dart `AppException` - Sealed classes with `@ExceptionUiConfig` annotations
 2. **UI Layer** (`packages/starter_uikit`): `ExceptionUiModel` - Equatable models with localized messages
 
 **Benefits:**
@@ -13,7 +13,7 @@ This project uses a two-layer exception architecture:
 - UI layer handles localization
 - Extensible via decorator pattern
 - Code generation reduces boilerplate
-- Type-safe exception handling
+- Type-safe exception handling with exhaustive pattern matching
 
 ---
 
@@ -21,30 +21,60 @@ This project uses a two-layer exception architecture:
 
 ### Data Layer: AppException
 
-Pure Dart exceptions without UI dependencies.
+Pure Dart sealed class hierarchy without UI dependencies.
 
 ```dart
 // packages/starter_toolkit/lib/data/exceptions/app_exception.dart
-@freezed
-class AppException with _$AppException {
-  @ExceptionUiConfig(
-    descriptionKey: 'noInternetConnection',
-    canRetry: true,
-  )
-  const factory AppException.noInternet() = NoInternetException;
+sealed class AppException implements Exception {
+  const AppException();
 
-  @ExceptionUiConfig(
-    descriptionKey: 'serverError',
-    canRetry: true,
-  )
-  const factory AppException.server({
-    int? statusCode,
-    String? message,
-  }) = ServerException;
+  String get name;
+  bool get canRetry;
+}
 
-  const AppException._();
+/// No internet connection
+@ExceptionUiConfig(
+  titleKey: 'errorMessageNoConnection',
+  descriptionKey: 'errorMessageCouldNotConnectServer',
+  snackbarKey: 'errorMessageNoConnection',
+)
+final class NoInternetException extends AppException {
+  const NoInternetException();
+
+  @override
+  String get name => 'NoInternet';
+
+  @override
+  bool get canRetry => true;
+}
+
+/// Server error with status code and optional message
+@ExceptionUiConfig(
+  titleKey: 'errorMessageErrorWhileRequesting',
+  descriptionKey: 'errorMessageDefaultRequestError',
+)
+final class ServerException extends AppException {
+  const ServerException({
+    required this.statusCode,
+    this.message,
+  });
+
+  final int? statusCode;
+  final String? message;
+
+  @override
+  String get name => 'Server';
+
+  @override
+  bool get canRetry => true;
 }
 ```
+
+**Key points:**
+- `sealed class` enables exhaustive pattern matching
+- `final class` for concrete exception types
+- Parameters as final fields
+- Required getters: `name` and `canRetry`
 
 ### UI Layer: ExceptionUiModel
 
@@ -82,30 +112,55 @@ class ExceptionUiModel extends Equatable {
 
 ### Mapper: ExceptionUiMapper
 
-Converts domain exceptions to UI models with localization.
+Converts domain exceptions to UI models with localization using switch expressions.
 
 ```dart
-// packages/starter_uikit/lib/mappers/exception_ui_mapper.dart
+// packages/starter_uikit/lib/utils/mappers/exception_ui_mapper.dart
 class ExceptionUiMapper {
   final BuildContext context;
+  late final UiLocalizer _localizer;
 
-  ExceptionUiMapper(this.context);
+  ExceptionUiMapper(this.context) {
+    _localizer = UiLocalizer.of(context);
+  }
 
+  // Auto-generated method using switch expression
   ExceptionUiModel map(AppException exception) {
-    return exception.when(
-      noInternet: () => ExceptionUiModel(
-        description: Localizer.of(context).noInternetConnection,
-        canRetry: true,
-      ),
-      server: (statusCode, message) => ExceptionUiModel(
-        description: message ?? Localizer.of(context).serverError,
-        canRetry: true,
-      ),
+    return switch (exception) {
+      NoInternetException() => mapNoInternet(),
+      ServerException(statusCode: final statusCode, message: final message) =>
+        mapServer(statusCode, message),
+      UnauthorizedException(message: final message) => mapUnauthorized(message),
       // ... other cases
+    };
+  }
+
+  @protected
+  ExceptionUiModel mapNoInternet() {
+    return ExceptionUiModel(
+      description: _localizer.errorMessageCouldNotConnectServer,
+      snackbarDescription: _localizer.errorMessageNoConnection,
+      title: _localizer.errorMessageNoConnection,
+      canRetry: true,
+    );
+  }
+
+  @protected
+  ExceptionUiModel mapServer(int? statusCode, String? message) {
+    return ExceptionUiModel(
+      description: message ?? _localizer.errorMessageDefaultRequestError,
+      title: _localizer.errorMessageErrorWhileRequesting,
+      canRetry: true,
     );
   }
 }
 ```
+
+**Key points:**
+- Uses switch expressions for exhaustive pattern matching
+- Compiler ensures all exception types are handled
+- Pattern matching extracts fields from exceptions
+- Protected methods allow decorator overrides
 
 ---
 
@@ -134,18 +189,20 @@ class ExceptionUiMapper {
 - **Minor variations** of existing exceptions → use parameters instead
   ```dart
   // ✗ Don't create separate exceptions for each HTTP code
-  AppException.server400()
-  AppException.server401()
-  AppException.server404()
+  final class Server400Exception extends AppException { }
+  final class Server401Exception extends AppException { }
+  final class Server404Exception extends AppException { }
 
   // ✓ Use parameters
-  AppException.server(statusCode: 400, message: '...')
+  ServerException(statusCode: 400, message: '...')
+  ServerException(statusCode: 401, message: '...')
+  ServerException(statusCode: 404, message: '...')
   ```
 
 - **Temporary debugging** → use logging
   ```dart
   // ✗ Don't create exceptions for debugging
-  AppException.debug(String message)
+  final class DebugException extends AppException { }
 
   // ✓ Use logger
   logger.d('Debug info: $message');
@@ -154,8 +211,8 @@ class ExceptionUiMapper {
 - **Non-error states** → use regular state management
   ```dart
   // ✗ Don't use exceptions for state
-  AppException.loading()
-  AppException.empty()
+  final class LoadingException extends AppException { }
+  final class EmptyException extends AppException { }
 
   // ✓ Use BLoC states
   State.loading()
@@ -168,32 +225,45 @@ class ExceptionUiMapper {
 
 ### Step-by-Step Example: PaymentFailedException
 
-**Step 1: Add exception factory to AppException**
+**Step 1: Add exception class to AppException**
 
 ```dart
 // packages/starter_toolkit/lib/data/exceptions/app_exception.dart
-@freezed
-class AppException with _$AppException {
-  // ... existing exceptions
+sealed class AppException implements Exception {
+  const AppException();
 
-  /// Payment processing failed
-  @ExceptionUiConfig(
-    descriptionKey: 'paymentFailed',
-    canRetry: true,
-  )
-  const factory AppException.paymentFailed({
-    String? paymentMethod,
-    String? errorCode,
-  }) = PaymentFailedException;
+  String get name;
+  bool get canRetry;
+}
 
-  const AppException._();
+// ... existing exceptions
+
+/// Payment processing failed
+@ExceptionUiConfig(
+  descriptionKey: 'paymentFailed',
+  canRetry: true,
+)
+final class PaymentFailedException extends AppException {
+  const PaymentFailedException({
+    this.paymentMethod,
+    this.errorCode,
+  });
+
+  final String? paymentMethod;
+  final String? errorCode;
+
+  @override
+  String get name => 'PaymentFailed';
+
+  @override
+  bool get canRetry => true;
 }
 ```
 
 **Parameters guide:**
-- Add parameters for context (payment method, error code, etc.)
-- Make parameters optional if not always available
+- Add parameters as final fields with optional types if not always available
 - Use descriptive parameter names
+- Implement required `name` and `canRetry` getters
 
 **Step 2: Add localization keys**
 
@@ -222,45 +292,67 @@ class AppException with _$AppException {
 **Step 3: Run code generators**
 
 ```bash
-# 1. Generate Freezed code (creates exception class)
-fvm flutter pub run build_runner build --delete-conflicting-outputs
-
-# 2. Generate exception mapper code (creates mapper methods)
+# 1. Generate exception mapper code (creates mapper methods with switch expression)
 dart run tool/generate_exception_mapper.dart
 
-# 3. Generate localization code (if you added ARB keys)
+# 2. Generate localization code (if you added ARB keys)
 fvm flutter --no-color pub global run intl_utils:generate
 ```
 
 **What gets generated:**
-- `app_exception.freezed.dart`: `PaymentFailedException` class
-- `exception_ui_mapper.dart`: `mapPaymentFailed()` method
+- `exception_ui_mapper.dart`: Updated switch expression with new case
+- `exception_ui_mapper.dart`: New `mapPaymentFailed()` method
 - `exception_ui_mapper_decorator.dart`: Override method
 - `l10n/generated/`: Localization classes
 
+**Generated mapper code:**
+```dart
+ExceptionUiModel map(AppException exception) {
+  return switch (exception) {
+    NoInternetException() => mapNoInternet(),
+    ServerException(statusCode: final statusCode, message: final message) =>
+      mapServer(statusCode, message),
+    // ... other cases
+    PaymentFailedException(paymentMethod: final method, errorCode: final code) =>
+      mapPaymentFailed(method, code),  // NEW
+  };
+}
+
+@protected
+ExceptionUiModel mapPaymentFailed(String? paymentMethod, String? errorCode) {
+  return ExceptionUiModel(
+    description: _localizer.paymentFailed,
+    canRetry: true,
+  );
+}
+```
+
 **Step 4: (Optional) Customize UI mapping**
 
-If default annotation isn't enough, customize in mapper:
+If default annotation isn't enough, customize in generated method:
 
 ```dart
-// packages/starter_uikit/lib/mappers/exception_ui_mapper.dart
+// packages/starter_uikit/lib/utils/mappers/exception_ui_mapper.dart
 class ExceptionUiMapper {
-  ExceptionUiModel map(AppException exception) {
-    return exception.when(
-      // ... other cases
+  // ... map() method with switch expression
 
-      paymentFailed: (paymentMethod, errorCode) {
-        // Custom logic based on error code
-        return ExceptionUiModel(
-          title: Localizer.of(context).error,
-          description: errorCode != null
-              ? Localizer.of(context).paymentFailedWithCode(errorCode)
-              : Localizer.of(context).paymentFailed,
-          snackbarDescription: Localizer.of(context).tryAnotherPaymentMethod,
-          canRetry: true,
-          canRefresh: false,
-        );
-      },
+  @protected
+  ExceptionUiModel mapPaymentFailed(String? paymentMethod, String? errorCode) {
+    // Custom logic based on error code
+    if (errorCode != null) {
+      return ExceptionUiModel(
+        title: _localizer.error,
+        description: _localizer.paymentFailedWithCode(errorCode),
+        snackbarDescription: _localizer.tryAnotherPaymentMethod,
+        canRetry: true,
+        canRefresh: false,
+      );
+    }
+
+    return ExceptionUiModel(
+      description: _localizer.paymentFailed,
+      snackbarDescription: _localizer.tryAnotherPaymentMethod,
+      canRetry: true,
     );
   }
 }
@@ -286,7 +378,7 @@ class RemotePaymentDataSource implements PaymentDataSource {
       // Map HTTP errors to domain exceptions
       if (e.response?.statusCode == 402) {
         final errorCode = e.response?.data['error_code'] as String?;
-        throw AppException.paymentFailed(
+        throw PaymentFailedException(
           paymentMethod: request.method,
           errorCode: errorCode,
         );
@@ -319,19 +411,22 @@ Future<void> _onPaymentSubmitted(event, emit) async {
 ```dart
 // lib/features/payment/ui/screen/payment_screen.dart
 BlocBuilder<PaymentBloc, PaymentState>(
-  builder: (context, state) => state.maybeWhen(
-    failure: (exception) {
-      final uiModel = ExceptionUiMapper(context).map(exception);
-
-      return FailureWidgetLarge(
-        uiModel: uiModel,
-        onRetry: () => context.read<PaymentBloc>().add(
-          const PaymentEvent.retry(),
-        ),
-      );
-    },
-    orElse: () => const SizedBox.shrink(),
-  ),
+  builder: (context, state) => switch (state) {
+    PaymentProcessingState() => const CircularProgressIndicator(),
+    PaymentFailureState(:final exception) => Builder(
+      builder: (context) {
+        final uiModel = ExceptionUiMapper(context).map(exception);
+        return FailureWidgetLarge(
+          uiModel: uiModel,
+          onRetry: () => context.read<PaymentBloc>().add(
+            const PaymentEvent.retry(),
+          ),
+        );
+      },
+    ),
+    PaymentSuccessState(:final payment) => PaymentSuccessView(payment),
+    _ => const SizedBox.shrink(),
+  },
 )
 ```
 
@@ -345,58 +440,58 @@ For exceptions that need extra information:
 
 ```dart
 @ExceptionUiConfig(descriptionKey: 'fileUploadFailed', canRetry: true)
-const factory AppException.fileUploadFailed({
-  required String fileName,
-  required int fileSize,
-  String? reason,
-}) = FileUploadFailedException;
+final class FileUploadFailedException extends AppException {
+  const FileUploadFailedException({
+    required this.fileName,
+    required this.fileSize,
+    this.reason,
+  });
+
+  final String fileName;
+  final int fileSize;
+  final String? reason;
+
+  @override
+  String get name => 'FileUploadFailed';
+
+  @override
+  bool get canRetry => true;
+}
 ```
 
 **Usage:**
 ```dart
-throw AppException.fileUploadFailed(
+throw FileUploadFailedException(
   fileName: file.name,
   fileSize: file.size,
   reason: 'File too large',
 );
 ```
 
-### 2. Exception with Status Code
-
-For API errors with HTTP status codes:
-
-```dart
-@ExceptionUiConfig(descriptionKey: 'apiError', canRetry: false)
-const factory AppException.apiError({
-  required int statusCode,
-  String? message,
-}) = ApiErrorException;
-```
-
-**Usage:**
-```dart
-if (response.statusCode >= 400) {
-  throw AppException.apiError(
-    statusCode: response.statusCode,
-    message: response.data['message'],
-  );
-}
-```
-
-### 3. Exception with Validation Errors
+### 2. Exception with Validation Errors
 
 For form validation failures:
 
 ```dart
 @ExceptionUiConfig(descriptionKey: 'validationFailed', canRetry: false)
-const factory AppException.validationFailed({
-  required Map<String, String> fieldErrors,
-}) = ValidationFailedException;
+final class ValidationFailedException extends AppException {
+  const ValidationFailedException({
+    required this.fieldErrors,
+  });
+
+  final Map<String, String> fieldErrors;
+
+  @override
+  String get name => 'ValidationFailed';
+
+  @override
+  bool get canRetry => false;
+}
 ```
 
 **Usage:**
 ```dart
-throw AppException.validationFailed(
+throw ValidationFailedException(
   fieldErrors: {
     'email': 'Invalid email format',
     'password': 'Password too short',
@@ -404,47 +499,53 @@ throw AppException.validationFailed(
 );
 ```
 
-**In UI:**
+**In UI with pattern matching:**
 ```dart
-failure: (exception) {
-  exception.maybeWhen(
-    validationFailed: (fieldErrors) {
-      // Show field-specific errors
-      fieldErrors.forEach((field, error) {
-        showFieldError(field, error);
-      });
-    },
-    orElse: () {
-      // Show generic error
-      final uiModel = ExceptionUiMapper(context).map(exception);
-      showErrorDialog(uiModel);
-    },
-  );
+switch (exception) {
+  case ValidationFailedException(:final fieldErrors):
+    // Show field-specific errors
+    fieldErrors.forEach((field, error) {
+      showFieldError(field, error);
+    });
+  default:
+    // Show generic error
+    final uiModel = ExceptionUiMapper(context).map(exception);
+    showErrorDialog(uiModel);
 }
 ```
 
-### 4. Exception with Retry Strategy
+### 3. Exception with Retry Strategy
 
 For rate limiting or temporary failures:
 
 ```dart
 @ExceptionUiConfig(descriptionKey: 'rateLimitExceeded', canRetry: true)
-const factory AppException.rateLimitExceeded({
-  required Duration retryAfter,
-}) = RateLimitExceededException;
+final class RateLimitExceededException extends AppException {
+  const RateLimitExceededException({
+    required this.retryAfter,
+  });
+
+  final Duration retryAfter;
+
+  @override
+  String get name => 'RateLimitExceeded';
+
+  @override
+  bool get canRetry => true;
+}
 ```
 
 **Usage:**
 ```dart
 if (response.statusCode == 429) {
   final retryAfter = response.headers['Retry-After'];
-  throw AppException.rateLimitExceeded(
+  throw RateLimitExceededException(
     retryAfter: Duration(seconds: int.parse(retryAfter ?? '60')),
   );
 }
 ```
 
-### 5. Exception with Multiple Actions
+### 4. Exception with Multiple Actions
 
 For exceptions with different recovery options:
 
@@ -454,22 +555,26 @@ For exceptions with different recovery options:
   canRetry: false,
   canRefresh: true,
 )
-const factory AppException.sessionExpired() = SessionExpiredException;
+final class SessionExpiredException extends AppException {
+  const SessionExpiredException();
+
+  @override
+  String get name => 'SessionExpired';
+
+  @override
+  bool get canRetry => false;
+}
 ```
 
-**In UI:**
+**In UI with pattern matching:**
 ```dart
-failure: (exception) {
-  exception.maybeWhen(
-    sessionExpired: () {
-      // Navigate to login
-      context.router.replace(LoginRoute());
-    },
-    orElse: () {
-      final uiModel = ExceptionUiMapper(context).map(exception);
-      showErrorDialog(uiModel);
-    },
-  );
+switch (exception) {
+  case SessionExpiredException():
+    // Navigate to login
+    context.router.replace(const LoginRoute());
+  default:
+    final uiModel = ExceptionUiMapper(context).map(exception);
+    showErrorDialog(uiModel);
 }
 ```
 
@@ -483,7 +588,8 @@ For feature-specific error messages, extend `ExceptionUiMapperDecorator`:
 
 ```dart
 // lib/features/payment/mappers/payment_exception_mapper.dart
-import 'package:starter_uikit/mappers/exception_ui_mapper.dart';
+import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
+import 'package:starter_uikit/utils/mappers/exception_ui_mapper_decorator.dart';
 import 'package:starter_uikit/models/exception_ui_model.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:flutter/widgets.dart';
@@ -496,22 +602,22 @@ class PaymentExceptionMapper extends ExceptionUiMapperDecorator {
     // Custom messages based on error code
     if (errorCode == 'insufficient_funds') {
       return ExceptionUiModel.simple(
-        description: Localizer.of(context).insufficientFunds,
+        description: UiLocalizer.of(context).insufficientFunds,
         canRetry: false,
       );
     }
 
     if (errorCode == 'card_declined') {
       return ExceptionUiModel.simple(
-        description: Localizer.of(context).cardDeclined,
+        description: UiLocalizer.of(context).cardDeclined,
         canRetry: true,
       );
     }
 
     if (errorCode == 'expired_card') {
       return ExceptionUiModel(
-        title: Localizer.of(context).cardExpired,
-        description: Localizer.of(context).pleaseUpdatePaymentMethod,
+        title: UiLocalizer.of(context).cardExpired,
+        description: UiLocalizer.of(context).pleaseUpdatePaymentMethod,
         canRetry: false,
       );
     }
@@ -525,7 +631,7 @@ class PaymentExceptionMapper extends ExceptionUiMapperDecorator {
     // Custom message for payment feature
     if (statusCode == 402) {
       return ExceptionUiModel.simple(
-        description: Localizer.of(context).paymentRequired,
+        description: UiLocalizer.of(context).paymentRequired,
         canRetry: false,
       );
     }
@@ -556,35 +662,6 @@ class PaymentModule extends AppModule {
 }
 ```
 
-### Using in Widget
-
-```dart
-// lib/features/payment/ui/screen/payment_screen.dart
-class PaymentScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return BlocListener<PaymentBloc, PaymentState>(
-      listener: (context, state) {
-        state.maybeWhen(
-          failure: (exception) {
-            // Uses PaymentExceptionMapper from DI
-            final mapper = getIt<ExceptionUiMapper>();
-            final uiModel = mapper.map(exception);
-
-            NotificationSnackBar.showError(
-              context,
-              message: uiModel.snackbarDescription ?? uiModel.description,
-            );
-          },
-          orElse: () {},
-        );
-      },
-      child: /* ... */,
-    );
-  }
-}
-```
-
 ---
 
 ## ExceptionUiConfig Reference
@@ -600,7 +677,7 @@ class PaymentScreen extends StatelessWidget {
   titleKey: 'customErrorTitle',
 
   // Optional: Localization key for snackbar message
-  snackbarDescriptionKey: 'shortErrorMessage',
+  snackbarKey: 'shortErrorMessage',
 
   // Optional: Show retry button (default: false)
   canRetry: true,
@@ -608,7 +685,7 @@ class PaymentScreen extends StatelessWidget {
   // Optional: Show refresh button (default: false)
   canRefresh: false,
 )
-const factory AppException.myError() = MyException;
+final class MyException extends AppException { ... }
 ```
 
 ### Parameter Guidelines
@@ -623,7 +700,7 @@ const factory AppException.myError() = MyException;
 - Default is "error" from localization
 - Useful for categorizing errors
 
-**snackbarDescriptionKey** (optional):
+**snackbarKey** (optional):
 - Shorter message for snackbars
 - Should be concise (1 sentence)
 - Use when full description is too long
@@ -650,44 +727,35 @@ import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 void main() {
   group('PaymentFailedException', () {
     test('creates exception with all parameters', () {
-      const exception = AppException.paymentFailed(
+      const exception = PaymentFailedException(
         paymentMethod: 'credit_card',
         errorCode: 'insufficient_funds',
       );
 
       expect(exception, isA<PaymentFailedException>());
-
-      exception.when(
-        paymentFailed: (method, code) {
-          expect(method, equals('credit_card'));
-          expect(code, equals('insufficient_funds'));
-        },
-        orElse: () => fail('Wrong exception type'),
-      );
+      expect(exception.paymentMethod, equals('credit_card'));
+      expect(exception.errorCode, equals('insufficient_funds'));
+      expect(exception.name, equals('PaymentFailed'));
+      expect(exception.canRetry, isTrue);
     });
 
     test('creates exception with optional parameters', () {
-      const exception = AppException.paymentFailed();
+      const exception = PaymentFailedException();
 
-      exception.when(
-        paymentFailed: (method, code) {
-          expect(method, isNull);
-          expect(code, isNull);
-        },
-        orElse: () => fail('Wrong exception type'),
-      );
+      expect(exception.paymentMethod, isNull);
+      expect(exception.errorCode, isNull);
     });
   });
 }
 ```
 
-### Test Exception Mapper
+### Test Exception Mapper with Switch Expression
 
 ```dart
 // test/mappers/exception_ui_mapper_test.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:starter_uikit/mappers/exception_ui_mapper.dart';
+import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 void main() {
@@ -700,9 +768,9 @@ void main() {
     );
   });
 
-  group('mapPaymentFailed', () {
+  group('map with PaymentFailedException', () {
     test('maps exception with error code', () {
-      const exception = AppException.paymentFailed(
+      const exception = PaymentFailedException(
         errorCode: 'card_declined',
       );
 
@@ -713,7 +781,7 @@ void main() {
     });
 
     test('maps exception without error code', () {
-      const exception = AppException.paymentFailed();
+      const exception = PaymentFailedException();
 
       final uiModel = mapper.map(exception);
 
@@ -746,7 +814,7 @@ void main() {
       'emits failure with PaymentFailedException when payment fails',
       build: () {
         when(() => mockRepository.processPayment(any()))
-            .thenThrow(const AppException.paymentFailed(
+            .thenThrow(const PaymentFailedException(
               errorCode: 'card_declined',
             ));
         return bloc;
@@ -754,10 +822,13 @@ void main() {
       act: (bloc) => bloc.add(PaymentEvent.submitted(mockRequest)),
       expect: () => [
         const PaymentState.processing(),
-        predicate<PaymentState>((state) => state.maybeWhen(
-          failure: (exception) => exception is PaymentFailedException,
-          orElse: () => false,
-        )),
+        predicate<PaymentState>((state) {
+          return switch (state) {
+            PaymentFailureState(:final exception) =>
+              exception is PaymentFailedException,
+            _ => false,
+          };
+        }),
       ],
     );
 
@@ -765,7 +836,7 @@ void main() {
       'failure state contains correct error code',
       build: () {
         when(() => mockRepository.processPayment(any()))
-            .thenThrow(const AppException.paymentFailed(
+            .thenThrow(const PaymentFailedException(
               errorCode: 'insufficient_funds',
             ));
         return bloc;
@@ -773,55 +844,17 @@ void main() {
       act: (bloc) => bloc.add(PaymentEvent.submitted(mockRequest)),
       verify: (bloc) {
         final state = bloc.state;
-        state.maybeWhen(
-          failure: (exception) {
-            exception.maybeWhen(
-              paymentFailed: (method, code) {
-                expect(code, equals('insufficient_funds'));
-              },
-              orElse: () => fail('Wrong exception type'),
-            );
-          },
-          orElse: () => fail('Expected failure state'),
-        );
+        if (state case PaymentFailureState(:final exception)) {
+          if (exception case PaymentFailedException(:final errorCode)) {
+            expect(errorCode, equals('insufficient_funds'));
+          } else {
+            fail('Wrong exception type');
+          }
+        } else {
+          fail('Expected failure state');
+        }
       },
     );
-  });
-}
-```
-
-### Test Custom Mapper
-
-```dart
-// test/features/payment/mappers/payment_exception_mapper_test.dart
-void main() {
-  late PaymentExceptionMapper mapper;
-  late MockExceptionUiMapper mockWrapped;
-
-  setUp(() {
-    mockWrapped = MockExceptionUiMapper();
-    mapper = PaymentExceptionMapper(mockContext, mockWrapped);
-  });
-
-  test('returns custom message for insufficient funds', () {
-    const exception = AppException.paymentFailed(
-      errorCode: 'insufficient_funds',
-    );
-
-    final result = mapper.mapPaymentFailed('credit_card', 'insufficient_funds');
-
-    expect(result.description, contains('недостаточно средств'));
-    expect(result.canRetry, isFalse);
-  });
-
-  test('falls back to wrapped mapper for unknown error codes', () {
-    when(() => mockWrapped.mapPaymentFailed(any(), any()))
-        .thenReturn(ExceptionUiModel.simple(description: 'default'));
-
-    final result = mapper.mapPaymentFailed('credit_card', 'unknown_error');
-
-    verify(() => mockWrapped.mapPaymentFailed('credit_card', 'unknown_error')).called(1);
-    expect(result.description, equals('default'));
   });
 }
 ```
@@ -834,28 +867,28 @@ void main() {
 
 ```dart
 // ✓ Good - Clear purpose
-AppException.paymentFailed()
-AppException.sessionExpired()
-AppException.biometricUnavailable()
+PaymentFailedException()
+SessionExpiredException()
+BiometricUnavailableException()
 
 // ✗ Bad - Too generic
-AppException.error()
-AppException.failed()
-AppException.problem()
+ErrorException()
+FailedException()
+ProblemException()
 ```
 
 ### 2. Add Context with Parameters
 
 ```dart
 // ✓ Good - Includes useful context
-AppException.fileUploadFailed(
+FileUploadFailedException(
   fileName: 'document.pdf',
   fileSize: 1024000,
   reason: 'File too large',
 )
 
 // ✗ Bad - No context
-AppException.fileUploadFailed()
+FileUploadFailedException()
 ```
 
 ### 3. Use Appropriate Retry Flags
@@ -863,11 +896,11 @@ AppException.fileUploadFailed()
 ```dart
 // ✓ Good - Transient error, can retry
 @ExceptionUiConfig(descriptionKey: 'networkTimeout', canRetry: true)
-AppException.timeout()
+final class TimeoutException extends AppException { ... }
 
 // ✓ Good - Permanent error, cannot retry
 @ExceptionUiConfig(descriptionKey: 'accountDeleted', canRetry: false)
-AppException.accountDeleted()
+final class AccountDeletedException extends AppException { ... }
 ```
 
 ### 4. Write Clear Localization Messages
@@ -886,20 +919,23 @@ AppException.accountDeleted()
 }
 ```
 
-### 5. Group Related Exceptions
+### 5. Leverage Pattern Matching
 
 ```dart
-// ✓ Good - Related authentication exceptions
-AppException.sessionExpired()
-AppException.invalidCredentials()
-AppException.accountLocked()
-AppException.biometricFailed()
+// ✓ Good - Exhaustive pattern matching
+final message = switch (exception) {
+  NoInternetException() => 'Check your connection',
+  ServerException(:final statusCode) => 'Server error: $statusCode',
+  PaymentFailedException(:final errorCode) => 'Payment failed: $errorCode',
+};
 
-// ✗ Bad - Scattered, inconsistent
-AppException.sessionExpired()
-AppException.wrongPassword()
-AppException.lockedAccount()
-AppException.touchIdError()
+// ✓ Good - Pattern matching with extraction
+if (exception case ValidationFailedException(:final fieldErrors)) {
+  // Use fieldErrors directly
+  for (final (field, error) in fieldErrors.entries) {
+    print('$field: $error');
+  }
+}
 ```
 
 ---

@@ -706,7 +706,7 @@ class OfflineQueueExecutor extends RepositoryExecutor {
 ## Related Documentation
 
 - [Architecture Guide](./architecture.md) - Overall architecture patterns
-- [Exception Handling](./custom-exceptions.md) - Custom exception guide
+- [Exception Handling](./exception_handling) - Custom exception guide
 - [Testing Guide](./testing.md) - Testing strategies
 
 ---
