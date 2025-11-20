@@ -72,7 +72,6 @@ Run `build_runner` after modifying:
 - Router configurations (`@RoutePage`)
 - JSON serializable models
 - Freezed classes
-- Retrofit service interfaces
 
 Run `generate_exception_mapper.dart` after modifying:
 - AppException factories (adding/removing/changing `@ExceptionUiConfig` annotations)
@@ -89,7 +88,7 @@ See [Architecture Guide](./docs/architecture.md) for complete details.
 ### Layer Structure
 
 ```
-Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, Services)
+Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, ApiClient)
 ```
 
 ### Key Principles
