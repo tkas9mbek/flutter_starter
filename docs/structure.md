@@ -60,7 +60,7 @@ lib/features/{feature}/
 
 | Layer | Flutter? | Contains | Rules |
 |-------|----------|----------|-------|
-| **data/** | ❌ | Abstract DS, Remote/Local DS, Services | Pure Dart, implements Domain |
+| **data/** | ❌ | DataSource implementations (Remote/Local/Mock) | Pure Dart, implements Domain |
 | **domain/** | ❌ | Repository (concrete) | Pure Dart, delegates to DS |
 | **model/** | ❌ | Freezed classes, JSON | Use `freezed` + `json_serializable` |
 | **ui/** | ✅ | BLoC, Screens, Widgets | Horizontal deps OK, no business logic |
@@ -155,9 +155,9 @@ authentication_module.dart               → AuthenticationModule
 **AI Instruction**: Follow this order
 
 1. Create `lib/features/{feature}/`
-2. Add data layer (abstract DS, implementation, service)
-3. Add domain layer (repository)
-4. Add models (freezed)
+2. Add models (freezed classes with JSON serialization)
+3. Add domain layer (abstract DataSource + concrete Repository)
+4. Add data layer (DataSource implementations: Remote/Local/Mock)
 5. Add DI module
 6. Add UI (BLoC, screens, widgets)
 7. Register module in `main.dart`

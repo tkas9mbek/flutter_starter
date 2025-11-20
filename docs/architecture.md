@@ -29,7 +29,7 @@
              ↑ implements
 ┌────────────┴────────────────────┐
 │        Data Layer               │
-│  (DS Impl, Services, API)      │
+│    (DS Impl, ApiClient)         │
 └─────────────────────────────────┘
 ```
 
@@ -108,38 +108,28 @@ class UserRepository {
 
 **Contains:**
 - **DataSource Implementations**: Remote, Local, Mock
-- **Services**: API clients (Retrofit)
 
 **Note:** We use the same domain models for API responses (no separate DTOs).
 
 ```dart
-// Service (Retrofit) - Uses domain models directly
-@RestApi()
-abstract class UserService {
-  factory UserService(Dio dio) = _UserService;
-
-  @GET('/users')
-  Future<List<User>> getUsers();
-
-  @GET('/users/{id}')
-  Future<User> getUser(@Path('id') String id);
-}
-
 // DataSource Implementation (implements Domain contract)
 class RemoteUserDataSource implements UserDataSource {
-  final UserService _service;
-  const RemoteUserDataSource(this._service);
+  final ApiClient _client;
+  const RemoteUserDataSource(this._client);
 
   @override
-  Future<List<User>> getUsers() async {
-    // Service returns domain models directly
-    return await _service.getUsers();
-  }
+  Future<List<User>> getUsers() => _client.requestJsonList<User>(
+        method: HttpMethod.get,
+        path: '/users',
+        fromJson: User.fromJson,
+      );
 
   @override
-  Future<User> getUserById(String id) async {
-    return await _service.getUser(id);
-  }
+  Future<User> getUserById(String id) => _client.requestJson<User>(
+        method: HttpMethod.get,
+        path: '/users/$id',
+        fromJson: User.fromJson,
+      );
 }
 ```
 
@@ -215,7 +205,7 @@ class MockTaskDataSource implements TaskDataSource { ... }
 // Easy switching via DI
 getIt.registerFactory<TaskDataSource>(() {
   if (env == AppEnvironment.dev) return MockTaskDataSource();
-  return RemoteTaskDataSource(getIt<TaskApi>());
+  return RemoteTaskDataSource(getIt<ApiClient>());
 });
 ```
 
@@ -291,7 +281,7 @@ BLoC → repository.getData()
     ↓
 Repository → dataSource.fetch()  ← Abstract interface
     ↓
-DataSource (Impl) → service.api()  ← Concrete implementation
+DataSource (Impl) → apiClient.request()  ← HTTP client
     ↓
 API Response → Domain Model (via Freezed @JsonSerializable)
     ↓
@@ -317,7 +307,7 @@ Future<void> _onRequested(event, emit) async {
   emit(UserListState.success(users));          // 6. Emit state
 }
 
-// 3-5. Repository → DataSource → Service → API
+// 3-5. Repository → DataSource → ApiClient → API
 // (Behind the scenes using dependency inversion)
 
 // 6. Widget rebuilds
@@ -536,7 +526,7 @@ final executor = CachingExecutor(
 
 // Use with key for caching
 executor.cached(
-  () => _service.getData(),
+  () => _dataSource.getData(),
   key: 'data_key',
 );
 ```
@@ -574,18 +564,19 @@ See [Repository Executor Refactoring](./repository-executor-refactoring.md) for 
 
 ## Testing Strategy
 
-### Minimum: BLoC Integration Tests
+### Three Testing Layers
 
-```
-BLoC (Real) → Repository (Real) → DataSource (Real) → Service (Mock)
-```
+1. **Data Layer Unit Tests** (Required for Repositories)
+   - Repository (Real) → DataSource (Mock)
+   - DataSource (Real) → ApiClient (Mock)
 
-### Recommended: Unit Tests for Logic
+2. **BLoC Unit Tests** (Required)
+   - BLoC (Real) → Repository (Mock)
+   - Test all events: success, empty, failure scenarios
 
-- **DataSource**: Test data operations and error handling
-- **Service**: Test API calls with mocked HTTP (Retrofit + Freezed JSON)
-- **Repository**: Test if it has complex coordination logic
-- **BLoC**: Integration tests for all event handlers
+3. **Integration Tests** (Recommended)
+   - BLoC (Real) → Repository (Real) → DataSource (Real) → ApiClient (Mock)
+   - Verify full feature flow works end-to-end
 
 See [Testing Guide](./testing.md) for detailed examples.
 
