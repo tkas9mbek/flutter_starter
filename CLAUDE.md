@@ -142,8 +142,9 @@ lib/features/{feature}/
 
 ### Current Status (January 2025)
 
-- **102 tests passing** (100% pass rate)
-- **Overall: 82.2%** coverage
+- **145 tests passing** (100% pass rate)
+- **Unit Tests**: 111 tests (BLoC, repositories, data sources)
+- **Integration Tests**: 34 tests (full-stack flows for all features)
 
 ### Test Structure
 

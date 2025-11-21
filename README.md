@@ -10,11 +10,10 @@ Working in outsource companies and developing apps for various clients, I needed
 
 ### Why Separate UIKit and Toolkit?
 
-In client projects, it's common to have **multiple apps sharing the same backend or design system** (e.g., customer app + admin app, iOS + Android versions with different UIs). By separating the UIKit and Toolkit into independent packages:
+In client projects, it's common to have **multiple apps sharing the same backend or design system** (e.g., customer app + admin app). By separating the UIKit and Toolkit into independent packages:
 
 - **Toolkit** (pure Dart): Share business logic, API clients, and utilities across all apps
 - **UIKit** (Flutter widgets): Reuse UI components while allowing customization per app
-- **Flexibility**: Mix and match - use toolkit without UIKit, or create custom UI packages
 
 This modular approach has proven invaluable when building app families for clients, dramatically reducing development time and improving code consistency.
 
@@ -33,87 +32,28 @@ This template provides a complete, production-ready foundation with:
 - **Two-layer exception handling** (domain exceptions + UI models)
 
 ### Features
-- ✅ **Authentication flow** (login, registration, token management)
-- ✅ **User profile** management
-- ✅ **Settings** (theme toggle, language selection)
-- ✅ **Task management** with calendar (example feature)
-- ✅ **Theme system** (light/dark mode)
-- ✅ **Localization** (English & Russian)
-- ✅ **Environment configuration** (dev, staging, production)
+- **Authentication flow** (login, registration, token management)
+- **User profile** management
+- **Settings** (theme toggle, language selection)
+- **Task management** with calendar (example feature)
+- **Theme system** (light/dark mode)
+- **Localization** (English & Russian)
+- **Environment configuration** (dev, staging, production)
 
 ### Code Quality
-- 📊 **82.2% test coverage** (108 tests passing)
-- 🎯 **Comprehensive BLoC tests**
-- 🔄 **Integration tests** for critical flows
-- ✅ **Zero analyzer warnings**
-- 📝 **Extensive documentation** (CLAUDE.md + /docs)
+- **145 tests passing** (100% pass rate)
+- **Comprehensive BLoC and integration tests**
+- **Full-stack integration testing** for all features
+- **Zero analyzer warnings**
+- **Extensive documentation** (CLAUDE.md + /docs)
 
 ### Developer Experience
-- 🚀 **Type-safe API client** with response-based methods
-- 🔧 **Code generation** for routes, models, exceptions
-- 📱 **UIKit example app** showcasing all components
-- 🎨 **Theme-aware widgets** with consistent styling
-- 🌍 **Complete localization setup**
-- 📚 **AI-friendly documentation** (optimized for Claude Code)
-
----
-
-## Quick Start
-
-### Prerequisites
-
-- [Flutter 3.32.0](https://docs.flutter.dev/get-started/install) (managed via [FVM](https://fvm.app))
-- [FVM](https://fvm.app) installed globally
-- Dart SDK 3.0.0+
-
-### Installation
-
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/your-org/flutter_starter.git
-   cd flutter_starter
-   ```
-
-2. **Install FVM and Flutter:**
-   ```bash
-   fvm install 3.32.0
-   fvm use 3.32.0
-   ```
-
-3. **Install dependencies:**
-   ```bash
-   fvm flutter pub get
-   ```
-
-4. **Generate code:**
-   ```bash
-   fvm flutter pub run build_runner build --delete-conflicting-outputs
-   ```
-
-5. **Run the app:**
-   ```bash
-   fvm flutter run
-   ```
-
-### First Steps
-
-1. **Update package names:**
-   - Android: `android/app/build.gradle` → Change `applicationId`
-   - iOS: Open Xcode → Update bundle identifier
-   - Or use: `flutter pub run change_app_package_name:main com.yourcompany.appname`
-
-2. **Configure API URLs:**
-   - Edit `lib/core/consts/core_consts.dart`
-   - Replace `https://example.com` with your backend URLs
-
-3. **Customize branding:**
-   - App name: `pubspec.yaml` → `name:`
-   - App icons: `fvm flutter pub run flutter_launcher_icons`
-   - Splash screen: `fvm flutter pub run flutter_native_splash:create`
-
-4. **Update localization:**
-   - Edit `lib/l10n/intl_en.arb` (main locale)
-   - Run: `fvm flutter --no-color pub global run intl_utils:generate`
+- **Type-safe API client** with response-based methods
+- **Code generation** for routes, models, exceptions
+- **UIKit example app** showcasing all components
+- **Theme-aware widgets** with consistent styling
+- **Complete localization setup**
+- **AI-friendly documentation** (optimized for Claude Code)
 
 ---
 
@@ -150,7 +90,7 @@ flutter_starter/
 │       ├── example/       # Demo app
 │       └── README.md
 │
-├── test/                  # Tests (108 tests, 82.2% coverage)
+├── test/                  # Tests (145 tests, 100% pass rate)
 ├── docs/                  # Documentation
 ├── CLAUDE.md              # AI assistant guide (14.5KB)
 └── README.md              # This file
@@ -193,15 +133,15 @@ Type-safe HTTP client with response-based methods:
 ```dart
 // Clear intent - returns User object
 final user = await client.requestJson<User>(
-  method: HttpMethod.get,
-  path: '/users/123',
-  fromJson: User.fromJson,
+method: HttpMethod.get,
+path: '/users/123',
+fromJson: User.fromJson,
 );
 
 // Clear intent - returns void
 await client.requestVoid(
-  method: HttpMethod.delete,
-  path: '/users/123',
+method: HttpMethod.delete,
+path: '/users/123',
 );
 ```
 
@@ -212,10 +152,10 @@ Two-layer architecture with sealed classes:
 ```dart
 // In BLoC - store domain exception
 try {
-  final data = await _repository.getData();
-  return emit(State.success(data));
+final data = await _repository.getData();
+return emit(State.success(data));
 } on AppException catch (e) {
-  return emit(State.failure(e));
+return emit(State.failure(e));
 }
 
 // In UI - map to localized model
@@ -229,12 +169,12 @@ Decorator pattern for cross-cutting concerns:
 
 ```dart
 final executor = RawRepositoryExecutor()
-  .withErrorHandling()  // Convert exceptions
-  .withRetry()          // Exponential backoff
-  .withCaching();       // Time-based cache
+        .withErrorHandling()  // Convert exceptions
+        .withRetry()          // Exponential backoff
+        .withCaching();       // Time-based cache
 
 Future<List<User>> getUsers() {
-  return _executor.execute(() => _dataSource.getUsers());
+   return _executor.execute(() => _dataSource.getUsers());
 }
 ```
 
@@ -283,17 +223,17 @@ genhtml coverage/lcov.info -o coverage/html
 open coverage/html/index.html
 ```
 
-**Test Coverage:**
-- Overall: 82.2% (258/314 lines)
-- Profile: 100%
-- Application: 98.1%
-- Task: 89.9%
-- Auth: 75.5%
+**Test Summary:**
+- **145 tests passing** (100% pass rate)
+- **Unit Tests**: 111 tests (BLoC, repositories, data sources)
+- **Integration Tests**: 34 tests (full-stack flows)
 
-**Test Types:**
-- ✅ Unit tests (repositories, data sources)
-- ✅ BLoC tests (all states and events)
-- ✅ Integration tests (full stack flows)
+**Integration Test Coverage:**
+- ✅ Auth (LoginBloc, RegistrationBloc)
+- ✅ Task (CalendarBloc, TasksListBloc, TaskDeleteBloc)
+- ✅ Profile (UserBloc)
+- ✅ Settings (LanguageCubit, ThemeCubit)
+- ✅ Application (EnvironmentCubit)
 
 ---
 
@@ -334,7 +274,6 @@ fvm flutter pub run flutter_native_splash:create
 - Date/time helpers and extensions
 - Form validators and formatters
 - BLoC utilities
-- Localization for error messages
 
 **Use it for:** Shared business logic across multiple apps
 
@@ -375,15 +314,6 @@ The template includes extensive documentation:
 
 ## Customization Guide
 
-### Remove Example Features
-
-If you don't need the task management example:
-
-1. Delete `lib/features/task/`
-2. Remove `TaskModule()` from `lib/core/di/app_configurator.dart`
-3. Remove task routes from `lib/core/router/app_router.dart`
-4. Delete `test/features/task/`
-
 ### Add New Features
 
 1. Create feature directory: `lib/features/my_feature/`
@@ -409,50 +339,7 @@ Edit theme files in `packages/starter_uikit/lib/theme/`:
 
 ---
 
-## Production Readiness Checklist
-
-Before deploying to production:
-
-### Critical
-- [ ] Configure real API URLs in `core_consts.dart`
-- [ ] Setup Android release signing (`android/app/build.gradle`)
-- [ ] Update package names (Android + iOS)
-- [ ] Add crash reporting (Firebase Crashlytics, Sentry)
-- [ ] Test on physical devices (iOS + Android)
-
-### Recommended
-- [ ] Add analytics (Firebase Analytics, Mixpanel)
-- [ ] Create privacy policy and terms
-- [ ] Enable code obfuscation for release builds
-- [ ] Setup CI/CD pipeline
-- [ ] Configure app icons and splash screens
-- [ ] Update app metadata (name, version, description)
-
-### Optional
-- [ ] Add performance monitoring
-- [ ] Setup feature flags
-- [ ] Configure deep linking
-- [ ] Add push notifications
-- [ ] Setup A/B testing
-
-**Note:** The template is production-ready architecturally (82.2% test coverage, zero analyzer warnings) but requires environment-specific configuration.
-
----
-
 ## Common Tasks
-
-### Update Dependencies
-
-```bash
-# Check for outdated packages
-fvm flutter pub outdated
-
-# Update dependencies
-fvm flutter pub upgrade
-
-# Regenerate code after updates
-fvm flutter pub run build_runner build --delete-conflicting-outputs
-```
 
 ### Add New Exception Type
 
@@ -520,17 +407,6 @@ fvm flutter pub run build_runner build --delete-conflicting-outputs
 
 ---
 
-## Contributing
-
-This is a personal template, but if you have suggestions or improvements:
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Submit a pull request
-
----
-
 ## License
 
 Private template for internal use. Feel free to fork and adapt for your projects.
@@ -542,16 +418,3 @@ Private template for internal use. Feel free to fork and adapt for your projects
 - **Original Architecture:** Andrey Kaschenko - The foundation and engineering principles
 - **Template Evolution:** Refined through multiple client projects
 - **Inspiration:** Real-world production requirements and challenges
-
----
-
-## Support
-
-For questions or issues:
-- Check [CLAUDE.md](CLAUDE.md) for detailed architecture documentation
-- Review `/docs` folder for specific topics
-- Check package READMEs for toolkit/uikit usage
-
----
-
-**Built with ❤️ for efficient Flutter development**
