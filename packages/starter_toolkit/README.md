@@ -6,7 +6,7 @@ Pure Dart utilities and common functionality for Flutter applications. This pack
 
 ### Data Layer
 - **API Client**: Abstract HTTP client interface with response type-based methods
-- **Exception Handling**: Hierarchical exception system with UI configuration annotations
+- **Exception Handling**: Sealed class exception system with UI configuration annotations
 - **Repository Executors**: Decorator pattern for cross-cutting concerns (caching, retry, error handling)
 - **Interceptors**: Authentication refresh and error handling for Dio
 
@@ -22,7 +22,7 @@ Pure Dart utilities and common functionality for Flutter applications. This pack
 - **PaginatedData**: Helper for paginated list management
 
 ### Platform Helpers
-- **File Upload**: Image picker and gallery saver integration
+- **File Upload**: Image picker integration
 - **Screenshot**: App screenshot capture utilities
 - **Permission Dialogs**: Permission request helpers
 - **URL Launcher**: Safe URL launching with error handling
@@ -62,6 +62,15 @@ final exception = AppException.fromDioResponse(
 );
 ```
 
+**Available exceptions:**
+- `NoInternetException` - Network connectivity issues
+- `ServerException` - Server errors (5xx)
+- `UnauthorizedException` - Authentication required (401)
+- `ForbiddenException` - Insufficient permissions (403)
+- `NotFoundException` - Resource not found (404)
+- `ValidationException` - Request validation errors (400)
+- `UnexpectedErrorException` - Generic unexpected errors
+
 ### Repository Executors
 
 Chain decorators for cross-cutting concerns:
@@ -71,9 +80,9 @@ import 'package:starter_toolkit/data/repository_executor/repository_executor.dar
 
 class UserRepository {
   UserRepository(this._dataSource) {
-    _executor = RawRepositoryExecutor()
+    _executor = const RawRepositoryExecutor()
       .withErrorHandling()  // Converts exceptions to AppException
-      .withRetry()          // Automatic retry with exponential backoff
+      .withRetry(maxRetries: 3, retryDelay: Duration(seconds: 2))
       .withCaching();       // Time-based caching
   }
 
@@ -92,6 +101,17 @@ class UserRepository {
   }
 }
 ```
+
+**Available executors:**
+- `RawRepositoryExecutor` - Base executor, no additional behavior
+- `ErrorHandlingExecutor` - Converts all exceptions to AppException
+- `RetryExecutor` - Automatic retry with exponential backoff
+- `CachingExecutor` - Time-based in-memory caching
+
+**Retry configuration:**
+- Default: 3 attempts with 2-second exponential backoff
+- Delay formula: `retryDelay * (attempt + 1)`
+- Example: 0s, 2s, 4s, 6s (total ~12s for 3 retries)
 
 ### API Client
 
@@ -138,6 +158,13 @@ class UserRemoteDataSource {
 }
 ```
 
+**HTTP Methods:**
+- `HttpMethod.get`
+- `HttpMethod.post`
+- `HttpMethod.put`
+- `HttpMethod.patch`
+- `HttpMethod.delete`
+
 ### Date/Time Extensions
 
 ```dart
@@ -151,11 +178,11 @@ if (date.isTomorrow) { ... }
 if (date.isSameDay(otherDate)) { ... }
 
 // Get date boundaries
-final startOfDay = date.startOfDay;      // DateTime(2025, 11, 20, 0, 0, 0)
-final endOfDay = date.endOfDay;          // DateTime(2025, 11, 20, 23, 59, 59)
+final startOfDay = date.startOfDay;      // DateTime(2025, 11, 21, 0, 0, 0)
+final endOfDay = date.endOfDay;          // DateTime(2025, 11, 21, 23, 59, 59)
 final startOfMonth = date.startOfMonth;  // DateTime(2025, 11, 1)
-final startOfWeek = date.startOfWeek;
-final onlyDay = date.onlyDay;            // DateTime(2025, 11, 20)
+final startOfWeek = date.startOfWeek;    // Monday of current week
+final onlyDay = date.onlyDay;            // DateTime(2025, 11, 21)
 ```
 
 ### Date Formatting Functions
@@ -170,8 +197,8 @@ final label = getLocalizedDateLabel(context, DateTime.now());
 // Format time range
 final timeRange = getFormattedTimeRange(
   context,
-  startTime: DateTime(2025, 11, 20, 9, 0),
-  endTime: DateTime(2025, 11, 20, 17, 30),
+  startTime: DateTime(2025, 11, 21, 9, 0),
+  endTime: DateTime(2025, 11, 21, 17, 30),
 );
 // Returns: "09:00 - 17:30"
 ```
@@ -241,9 +268,20 @@ final file = await FileUploadHelper.pickImageFromGallery(context);
 
 // Pick image from camera
 final file = await FileUploadHelper.pickImageFromCamera(context);
+```
 
-// Save image to gallery
-await FileUploadHelper.saveImageToGallery(context, imageBytes);
+### Screenshot Helper
+
+```dart
+import 'package:starter_toolkit/utils/helpers/app_screenshot_helper.dart';
+
+final helper = AppScreenshotHelper();
+
+// Capture widget screenshot
+final bytes = await helper.captureScreenshot(
+  globalKey,
+  context: context,
+);
 ```
 
 ### URL Launcher Helper
@@ -301,7 +339,7 @@ final noConnection = ToolkitLocalizer.of(context).errorMessageNoConnection;
 ```
 
 **Supported locales:**
-- English (`en`)
+- English (`en`) - Main locale
 - Russian (`ru`)
 
 ## Architecture
@@ -309,7 +347,7 @@ final noConnection = ToolkitLocalizer.of(context).errorMessageNoConnection;
 ### Exception System
 
 Two-layer exception architecture:
-- **Data Layer** (`starter_toolkit`): `AppException` - Pure domain exceptions
+- **Data Layer** (`starter_toolkit`): `AppException` - Pure domain exceptions (sealed classes)
 - **UI Layer** (`starter_uikit`): `ExceptionUiModel` - Localized UI models
 
 Use `@ExceptionUiConfig` annotation to configure UI presentation:
@@ -331,6 +369,11 @@ final class NoInternetException extends AppException {
 }
 ```
 
+**Adding new exceptions:**
+1. Create sealed class extending `AppException` with `@ExceptionUiConfig`
+2. Run: `dart run tool/generate_exception_mapper.dart`
+3. Code generator automatically updates mapper and decorator
+
 ### Repository Executor Pattern
 
 Decorator pattern for composable cross-cutting concerns:
@@ -344,8 +387,8 @@ final withErrors = executor.withErrorHandling();
 
 // Add retry logic
 final withRetry = withErrors.withRetry(
-  maxAttempts: 3,
-  delayFactor: Duration(seconds: 1),
+  maxRetries: 3,
+  retryDelay: Duration(seconds: 2),
 );
 
 // Add caching
@@ -353,12 +396,6 @@ final withCaching = withRetry.withCaching(
   duration: Duration(minutes: 5),
 );
 ```
-
-**Available executors:**
-- `RawRepositoryExecutor` - Base executor, no additional behavior
-- `ErrorHandlingExecutor` - Converts all exceptions to AppException
-- `RetryExecutor` - Automatic retry with exponential backoff
-- `CachingExecutor` - Time-based in-memory caching
 
 ### API Client Pattern
 
@@ -388,6 +425,12 @@ Generate Freezed models and JSON serialization:
 fvm flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
+Generate exception mapper:
+
+```bash
+dart run tool/generate_exception_mapper.dart
+```
+
 Generate localization files:
 
 ```bash
@@ -414,6 +457,7 @@ fvm flutter test --coverage
 - `dio` - HTTP client
 - `freezed_annotation` - Immutable models
 - `equatable` - Value equality
+- `collection` - Extended collections
 
 **BLoC:**
 - `flutter_bloc` - State management
@@ -424,7 +468,6 @@ fvm flutter test --coverage
 
 **Platform:**
 - `image_picker` - Image selection
-- `image_gallery_saver` - Save to gallery
 - `permission_handler` - Permission requests
 - `url_launcher` - Open URLs
 
