@@ -1,25 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:starter/core/di/app_configurator.dart';
+import 'package:starter/features/application/application.dart';
 
-void main() {
-  runApp(const UIKitDemoApp());
-}
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
 
-class UIKitDemoApp extends StatelessWidget {
-  const UIKitDemoApp({super.key});
+  await AppConfigurator.configure();
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Starter UIKit',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
-      home: const Scaffold(
-        body: Center(
-          child: Text('Starter UIKit Package'),
-        ),
-      ),
-    );
-  }
+  runApp(const Application());
 }

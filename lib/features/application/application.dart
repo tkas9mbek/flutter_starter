@@ -89,7 +89,7 @@ class Application extends StatelessWidget {
                 routeInformationParser: _router.defaultRouteParser(),
                 localizationsDelegates: [
                   Localizer.delegate..load(language.locale),
-                  UiLocalizer.delegate..load(language.locale),
+                  UikitLocalizer.delegate..load(language.locale),
                   ToolkitLocalizer.delegate..load(language.locale),
                   GlobalMaterialLocalizations.delegate,
                   GlobalWidgetsLocalizations.delegate,

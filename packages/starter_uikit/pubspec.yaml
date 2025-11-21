@@ -6,9 +6,6 @@ publish_to: 'none'
 
 version: 1.0.0+1
 
-dependency_overrides:
-  test_api: 0.7.4
-  analyzer: 6.4.1
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -45,6 +42,8 @@ dependencies:
   top_snackbar_flutter: ^3.3.0
 
 dev_dependencies:
+  auto_route_generator: ^9.0.0
+  build_runner: ^2.4.13
   flutter_test:
     sdk: flutter
 
@@ -93,5 +92,5 @@ flutter:
 flutter_intl:
   enabled: true
   main_locale: en
-  class_name: UiLocalizer
+  class_name: UikitLocalizer
   output_dir: lib/l10n/generated

@@ -97,7 +97,7 @@ class BottomSheetScreen extends StatelessWidget {
                                     () => Navigator.pop(context),
                                 child: Text(
                                   closeButtonText ??
-                                      UiLocalizer.of(context).back,
+                                      UikitLocalizer.of(context).back,
                                   style: textStyles.regularBody13.copyWith(
                                     color: theme.primary,
                                   ),

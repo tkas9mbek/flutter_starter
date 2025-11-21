@@ -39,7 +39,7 @@ class FailureWidgetLarge extends StatelessWidget {
             if (uiModel.canRetry && onRetry != null) ...[
               const SizedBox(height: 8),
               Text(
-                UiLocalizer.of(context).tryRefreshPage,
+                UikitLocalizer.of(context).tryRefreshPage,
                 style: textStyles.regularBody14,
                 textAlign: TextAlign.center,
               ),
@@ -60,7 +60,7 @@ class FailureWidgetLarge extends StatelessWidget {
                     ),
                     const SizedBox(width: 8),
                     Text(
-                      UiLocalizer.of(context).retry,
+                      UikitLocalizer.of(context).retry,
                       style: textStyles.regularBody14.copyWith(
                         color: theme.primary,
                       ),

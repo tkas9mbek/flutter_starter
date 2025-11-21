@@ -693,15 +693,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "4.5.4"
-  image_gallery_saver:
-    dependency: transitive
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: "9bf04e432cfea3a83a035adfeb8b01c3843b532a"
-      url: "https://github.com/benlrichards/image_gallery_saver"
-    source: git
-    version: "2.0.3"
   image_picker:
     dependency: transitive
     description:

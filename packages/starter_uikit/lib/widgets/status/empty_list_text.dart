@@ -37,7 +37,7 @@ class EmptyListText extends StatelessWidget {
               ),
               AppOutlinedButton.medium(
                 context: context,
-                text: UiLocalizer.of(context).retry,
+                text: UikitLocalizer.of(context).retry,
                 onPressed: refresh,
               ),
             ],

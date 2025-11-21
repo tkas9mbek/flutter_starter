@@ -33,57 +33,34 @@ fvm flutter analyze                                              # Run analyzer
 ```bash
 fvm flutter test                                                 # Run all tests
 fvm flutter test --coverage                                      # Run with coverage
-genhtml coverage/lcov.info -o coverage/html                      # Generate coverage report
-open coverage/html/index.html                                    # View coverage
 ```
 
 **Code Generation:**
 ```bash
 fvm flutter pub run build_runner build --delete-conflicting-outputs  # Routes, JSON, Freezed
 dart run tool/generate_exception_mapper.dart                     # Exception mapper methods
-fvm flutter pub run spider build                                 # Asset references
-fvm flutter pub run flutter_launcher_icons                       # Launcher icons
-fvm flutter pub run flutter_native_splash:create                 # Splash screen
-```
-
-**Localization:**
-```bash
-fvm flutter --no-color pub global run intl_utils:generate        # Generate localization files
+fvm flutter --no-color pub global run intl_utils:generate        # Localization
 ```
 
 ### Localization
 
 - **Tool**: `intl_utils` (flutter_intl)
-- **Main locale**: Russian (`ru`)
-- **Generated**: `lib/l10n/generated/`
-- **Class name**: `Localizer`
-- **Generate**: Run `fvm flutter --no-color pub global run intl_utils:generate` after modifying ARB files
-- **ARB location**: `lib/l10n/intl_ru.arb` (main), `lib/l10n/intl_en.arb` (optional)
+- **Main locale**: English (`en`)
+- **Class name**: `Localizer` (main app), `ToolkitLocalizer` (toolkit), `UikitLocalizer` (uikit)
+- **ARB location**: `lib/l10n/intl_en.arb` (main), `intl_ru.arb` (optional)
+- **Generate**: `fvm flutter --no-color pub global run intl_utils:generate` after modifying ARB files
 
-**Pluralization Support:**
-```json
-"yearsOld": "{count, plural, one{{count} год} few{{count} года} other{{count} лет}}"
-```
-Use `Localizer.of(context).yearsOld(age)` - flutter_intl handles Russian plural forms automatically.
+**AI Instruction**: ALL user-facing strings must use `Localizer.of(context)` - no hardcoded strings.
 
 ### Code Generation Triggers
 
-Run `build_runner` after modifying:
-- Router configurations (`@RoutePage`)
-- JSON serializable models
-- Freezed classes
-
-Run `generate_exception_mapper.dart` after modifying:
-- AppException factories (adding/removing/changing `@ExceptionUiConfig` annotations)
-
-Run `intl_utils:generate` after modifying:
-- ARB files (`lib/l10n/intl_*.arb`)
+- **build_runner**: After modifying router configs, JSON models, Freezed classes
+- **generate_exception_mapper.dart**: After adding/modifying AppException classes
+- **intl_utils**: After modifying ARB files
 
 ---
 
 ## Architecture Summary
-
-See [Architecture Guide](./docs/architecture.md) for complete details.
 
 ### Layer Structure
 
@@ -94,29 +71,17 @@ Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, 
 ### Key Principles
 
 1. **Dependency Inversion**: Abstract DataSources enable flexible implementations
-2. **Concrete Repositories**: Repositories are concrete (not abstract) as they contain no logic
-3. **No Flutter in Data/Domain**: Only Presentation layer can import Flutter
-4. **Horizontal Dependencies**: Only widgets can depend on other widgets
-5. **Dependency Injection**: All dependencies via GetIt modules
-6. **Two-Layer Exceptions**: Domain exceptions (pure Dart) + UI models (with localization)
-7. **Decorator Pattern**: Repository executors and exception mappers use decorators for extensibility
-
-### Repository Pattern
-
-**Repositories are private (concrete) because:**
-- No business logic, just facade pattern
-- Rarely need multiple implementations
-- Reduces unnecessary abstraction
-
-**Make abstract only when:**
-- Multiple implementations actually needed
-- Clear development time savings
+2. **Concrete Repositories**: Repositories are concrete (not abstract) - just facades
+3. **No Flutter in Data/Domain**: Only Presentation layer imports Flutter
+4. **Dependency Injection**: All dependencies via GetIt modules
+5. **Two-Layer Exceptions**: Domain exceptions + UI models (with localization)
+6. **Decorator Pattern**: Repository executors and exception mappers use decorators
 
 ### Exception Handling
 
 **Two-layer architecture:**
-- **Data Layer** (`starter_toolkit`): `AppException` - Sealed classes with `@ExceptionUiConfig` annotations
-- **UI Layer** (`starter_uikit`): `ExceptionUiModel` - Equatable with localized messages
+- **Data Layer**: `AppException` - Sealed classes with `@ExceptionUiConfig`
+- **UI Layer**: `ExceptionUiModel` - Equatable with localized messages
 
 **Usage:**
 ```dart
@@ -135,32 +100,10 @@ failure: (failureState) {
 }
 ```
 
-**Extending exception mappers (feature-specific customization):**
-```dart
-// Feature-specific mapper with custom messages
-class TaskExceptionMapper extends ExceptionUiMapperDecorator {
-  TaskExceptionMapper(super.context, super.wrapped);
-
-  @override
-  ExceptionUiModel mapServer(int? statusCode, String? message) {
-    // Custom message for task feature
-    return ExceptionUiModel.simple(
-      description: Localizer.of(context).taskLoadError,
-      canRetry: true,
-    );
-  }
-}
-
-// Usage in DI
-getIt.registerFactory<ExceptionUiMapper>(
-  () => TaskExceptionMapper(context, ExceptionUiMapper(context)),
-);
-```
-
 **Adding new exceptions:**
-1. Add new final class extending `AppException` with `@ExceptionUiConfig` annotation
+1. Add sealed class extending `AppException` with `@ExceptionUiConfig`
 2. Run `dart run tool/generate_exception_mapper.dart`
-3. Code generator automatically updates mapper and decorator with switch expression
+3. Generator updates mapper and decorator automatically
 
 ### Repository Executors
 
@@ -170,24 +113,11 @@ final executor = RawRepositoryExecutor()
   .withErrorHandling()  // Converts exceptions to AppException
   .withRetry()          // Automatic retry with exponential backoff
   .withCaching();       // Time-based caching with cleanup
-
-// In repository
-Future<List<User>> getUsers() {
-  return _executor.execute(() => _dataSource.getUsers());
-}
 ```
-
-**Available executors:**
-- `RawRepositoryExecutor` - Base executor, just executes function
-- `ErrorHandlingExecutor` - Normalizes all errors to AppException
-- `RetryExecutor` - Retry logic with exponential backoff (configurable)
-- `CachingExecutor` - Time-based caching with automatic cleanup
 
 ---
 
 ## Project Structure
-
-See [Structure Guide](./docs/structure.md) for complete details.
 
 ### Feature Layout
 
@@ -195,79 +125,29 @@ See [Structure Guide](./docs/structure.md) for complete details.
 lib/features/{feature}/
 ├── data/           # DataSource implementations (remote, local, mock)
 ├── domain/         # Repository (concrete) + abstract DataSource interface
-├── model/          # Domain models (Freezed for state/events, plain classes for data)
+├── model/          # Domain models
 ├── configs/        # DI module (extends AppModule)
-├── custom/         # Utils, extensions
 └── ui/             # BLoC, screens, widgets
 ```
-
-**Key Pattern:**
-- `domain/` contains both Repository (concrete class) and DataSource (abstract interface)
-- `data/` contains DataSource implementations (RemoteXDataSource, LocalXDataSource, MockXDataSource)
-- Repository depends on abstract DataSource interface, not concrete implementations
 
 ### UI Organization
 
 **Simple features**: Flat `bloc/`, `screen/`, `widget/`
 
-**Complex features**: Subdivided by flow
-```
-ui/
-├── list/      # bloc/, screen/, widget/
-├── details/   # bloc/, screen/, widget/
-└── operation/ # bloc/, screen/, widget/
-```
-
-### Core Structure
-
-```
-lib/core/
-├── consts/     # Constants
-├── data/       # Core data layer
-├── di/         # DI modules
-└── router/     # auto_route configuration
-```
-
----
-
-## Dependency Injection
-
-Modular DI using `AppModule`. Register in `main.dart`:
-
-```dart
-final modules = <AppModule>[
-  CoreModule(),
-  DataModule(),
-  FeatureModule(),
-];
-```
-
-Access via `getIt` from `lib/core/di/injection.dart`.
+**Complex features**: Subdivided by flow (list/, details/, operation/)
 
 ---
 
 ## Testing Requirements
 
-See [Testing Guide](./docs/testing.md) for complete details.
+### Current Status (January 2025)
 
-### Current Coverage (January 2025)
-
-- **Overall: 82.2%** (258/314 lines)
-- **90 tests passing**
-
-| Feature | Coverage | Status |
-|---------|----------|--------|
-| Profile | 100.0% | ⭐ Perfect |
-| Application | 98.1% | ⭐ Excellent |
-| Task | 89.9% | ✅ Very Good |
-| Auth | 75.5% | ✅ Good |
-| Settings | 100%* | ⭐ Perfect (repositories) |
-
-*Note: Overall settings 73.8% due to model edge cases
+- **102 tests passing** (100% pass rate)
+- **Overall: 82.2%** coverage
 
 ### Test Structure
 
-**AI Instruction**: All tests organized under `test/features/{feature}/` directory
+**AI Instruction**: All tests organized under `test/features/{feature}/`
 
 ```
 test/features/{feature}/
@@ -280,41 +160,43 @@ test/features/{feature}/
 
 ### Testing Strategy
 
-**Three types of tests:**
+1. **Data Layer Unit Tests** - Repository + DataSource with mocked dependencies
+2. **BLoC Unit Tests** - Test all events (success, empty, failure)
+3. **Integration Tests** - Full flow with only ApiClient mocked
 
-1. **Data Layer Unit Tests** (Required for Repositories)
-   - Test Repository and DataSource classes with mocked dependencies
-   - Repository (Real) → DataSource (Mock)
-   - DataSource (Real) → ApiClient (Mock)
+**AI Instruction**: ALWAYS use JSON files with fromJson instead of creating mocks in code.
 
-2. **BLoC Unit Tests** (Required)
-   - BLoC (Real) → Repository (Mock)
-   - Test all events: success, empty, failure scenarios
-   - Test state helper methods
+### Mocktail Fallback Values
 
-3. **Integration Tests** (Recommended)
-   - BLoC (Real) → Repository (Real) → DataSource (Real) → ApiClient (Mock)
-   - Verify full feature flow works end-to-end
+**AI Instruction**: Integration tests require fallback value registration for types used in `any(named:)` matchers:
 
-### Test Standards
+```dart
+// Required for ApiClient mocking
+setUpAll(() {
+  registerFallbackValue(HttpMethod.get);
+  registerFallbackValue(_fakeFromJson);  // Function matching signature
+});
 
-- **Fast**: < 1 second per test class
-- **High Coverage**: Aim for 100% on BLoC, Repository, DataSource
-- **Independent**: No real backend/network
-- **Reliable**: No flaky tests
-- **JSON Assets**: ALWAYS use JSON files with fromJson instead of creating mocks in code
+User _fakeFromJson(Map<String, dynamic> json) => User.fromJson(json);
+```
 
-### Test Packages
+**Common issue**: `MissingStubError` when using `any(named: 'method')` or `any(named: 'fromJson')` without registering fallbacks.
 
-- `bloc_test`: BLoC testing
-- `mocktail`: Mocking framework
-- `http_mock_adapter`: Mock Dio requests
+### Tests with Retry Logic
+
+**AI Instruction**: Tests using `withRetry()` need longer wait times:
+
+```dart
+blocTest<UserBloc, UserState>(
+  'handles network error through full stack',
+  wait: const Duration(seconds: 8),  // Allow time for retries (3 × 2s delay)
+  // ...
+);
+```
 
 ---
 
 ## Code Style
-
-See [Code Formatting Guide](./docs/code-formatting.md) for complete details.
 
 ### Key Rules
 
@@ -322,26 +204,20 @@ See [Code Formatting Guide](./docs/code-formatting.md) for complete details.
 - **Quotes**: Single quotes preferred
 - **Imports**: Package imports only (no relative imports in lib/)
 - **Widgets**: Never use functions that return widgets - extract to widget classes
-- **Theme**: Declare in `build()`, not as state
-- **File Organization**: One public class per file (exceptions: BLoC states/events, private helpers)
-- **Class Size**: Keep classes < 100 lines; split if > 200 lines (SRP violation)
+- **Class Size**: Keep < 100 lines; split if > 200 lines
 
 ### BLoC Formatting Rules
 
-**AI Instruction**: ALL BLoC event handlers must follow these formatting rules:
+**AI Instruction**: ALL BLoC event handlers must follow these rules:
 
-1. **Return emit pattern**: Always use `return emit(state)` for final emit
+1. **Return emit pattern**: Always `return emit(state)` for final emit
 2. **Whitespace separation**: Add blank line before every `emit()` call
-3. **Try-catch structure**: Separate try and catch blocks with whitespace
-4. **Variable naming**: Use descriptive names (`state`) instead of `s` in listeners
-5. **Helper methods**: Add `isLoading` getters to states instead of using `maybeMap` checks
+3. **Variable naming**: Use descriptive names (`successState`) not `s`
+4. **Helper methods**: Add `isLoading` getters instead of `maybeMap` checks
 
 **Correct Example:**
 ```dart
-Future<void> _onRequested(
-  _Requested event,
-  Emitter<State> emit,
-) async {
+Future<void> _onRequested(_Requested event, Emitter<State> emit) async {
   emit(const State.loading());
 
   try {
@@ -352,148 +228,63 @@ Future<void> _onRequested(
     return emit(State.failure(e));
   }
 }
-```
 
-**State Helper Example:**
-```dart
-@freezed
-class MyState with _$MyState {
-  const factory MyState.initial() = _InitialMyState;
-  const factory MyState.loading() = _LoadingMyState;
-
-  const MyState._();
-
-  // ✓ Add helper instead of maybeMap
-  bool get isLoading => this is _LoadingMyState;
-}
-
-// ✓ Usage
-if (state.isLoading) { ... }
-
-// ✗ Wrong - verbose
-final isLoading = state.maybeMap(loading: (_) => true, orElse: () => false);
+// State helper
+bool get isLoading => this is _LoadingMyState;
 ```
 
 ### Comments and Documentation
 
 **IMPORTANT**: Write self-documenting code. Minimize inline comments.
 
-**Documentation style (Flutter `///` format):**
-- ✅ **Public classes** in shared modules (toolkit, uikit): 1-3 line summary
-- ✅ **Public methods** if needed: Brief description of purpose
-- ❌ **Do NOT** comment obvious code
-- ❌ **Do NOT** over-explain simple logic
-
-**Example:**
-```dart
-/// A repository for managing user tasks with caching support.
-class TaskRepository {
-  /// Fetches tasks for a specific date, using cache if available.
-  Future<List<Task>> getTasksByDate(DateTime date) { ... }
-}
-```
-
-### Linter
-
-See `analysis_options.yaml` for full configuration.
-
-**Excluded files**: `*.g.dart`, `*.freezed.dart`, `*.config.dart`, `**/l10n/generated/**`, `lib/gen/**`
-
-**AI Instruction**: Use glob pattern `**/` to exclude directories across all packages, not just `lib/`
-
----
-
-## Naming Conventions
-
-See [Naming Conventions](./docs/naming.md) for complete details.
-
-### Pattern
-
-**Classes**: `Feature + Description + Type`
-- Example: `UserListBloc`, `TaxPaymentScreen`, `RemoteAuthDataSource`
-
-**Files**: `snake_case`
-- Example: `user_list_bloc.dart`, `tax_payment_screen.dart`
-
----
-
-## Resources
-
-### Assets
-
-- **Icons**: `assets/icons/` → Generated as `SvgIcons`
-- **Images**: `assets/images/` → Generated as `Images`
-- **Generation**: `spider.json` configuration
-
-### Localization
-
-- **Main locale**: Russian (`ru`)
-- **Files**: `lib/l10n/generated/`
-- **Usage**: `Localizer` class
+- ✅ Public classes in shared modules: 1-3 line `///` summary
+- ✅ Public methods if needed: Brief description
+- ❌ Do NOT comment obvious code
 
 ---
 
 ## Reusing Toolkit and UIKit
 
-**AI Instruction**: ALWAYS check toolkit and uikit before implementing new functionality.
+**AI Instruction**: ALWAYS check toolkit/uikit before implementing new functionality.
 
 ### starter_toolkit
 
-**Purpose**: Pure Dart utilities and helpers
-
 **Available:**
-- `DateTimeHelpers` extension: `isToday`, `isTomorrow`, `isSameDay`, `onlyDay`
-- Date formatting functions: `getLocalizedDateLabel()`, `getFormattedTimeRange()`
-- Validators: Phone, email, password, URL validation
+- `DateTimeHelpers` extension: `isToday`, `isTomorrow`, `isSameDay`
+- Date formatting: `getLocalizedDateLabel()`, `getFormattedTimeRange()`
+- Validators: Phone, email, password, URL
 - Exception handling: `AppException` hierarchy
-- Localization: Error messages, common strings
-
-**Usage:**
-```dart
-import 'package:starter_toolkit/utils/date/date_time_extension.dart';
-
-// ✓ Correct - Use extension
-if (date.isToday) { ... }
-if (date.isTomorrow) { ... }
-
-// ✗ Wrong - Manual comparison
-if (DateTime.now().year == date.year && ...) { ... }
-```
 
 ### starter_uikit
 
-**Purpose**: Reusable UI components and theme
-
 **Available:**
-- **Status Widgets** (exported from `starter_uikit.dart`):
-  - `EmptyInformationBody`, `FailureWidgetLarge`, `FailureWidgetSmall`, `CustomCircularProgressIndicator`
+- **Status Widgets**: `EmptyInformationBody`, `FailureWidgetLarge`, `FailureWidgetSmall`, `CustomCircularProgressIndicator`
 - **Notifications**: `NotificationSnackBar`
-- **Theme**: `AppTheme` (light/dark), `AppTextStyles`, `ThemeProvider`
+- **Theme**: `AppTheme`, `AppTextStyles`, `ThemeProvider`
 - **AppBars**: `TitleAppBar`, `BaseAppBar`, `TransparentAppBar`
 - **Forms**: `AppTextField`, `AppDropdownField`, `AppCheckbox`, `AppDatePickerField`
 - **Buttons**: `AppElevatedButton`, `AppOutlinedButton`
 
 **AI Instruction - Import Strategy:**
-- Status widgets are exported from `starter_uikit.dart` - import once
-- Other widgets require explicit imports by path
-- Always import `NotificationSnackBar` explicitly when using it
+- **Recommended**: Import specific files (e.g., `widgets/app_bar/title_app_bar.dart`)
+- **Barrel export** (`starter_uikit.dart`): Only for status widgets used together
+- Specific imports reduce compilation time and make dependencies explicit
 
 **Import Examples:**
 ```dart
-// Status widgets
+// Status widgets (barrel export)
 import 'package:starter_uikit/starter_uikit.dart';
 
-// Other widgets - explicit imports
+// Other widgets - explicit imports (recommended)
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
-import 'package:starter_uikit/widgets/form/app_text_field.dart';
 import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 ```
 
 **Usage:**
 ```dart
-// ✓ Correct - Use uikit widgets with descriptive names
+// ✓ Correct - Use uikit widgets
 BlocBuilder<Bloc, State>(
   builder: (context, state) => state.maybeMap(
     loading: (_) => const CustomCircularProgressIndicator(),
@@ -508,25 +299,6 @@ BlocBuilder<Bloc, State>(
 
 // ✗ Wrong - Manual implementation
 loading: (_) => const Center(child: CircularProgressIndicator()),
-empty: (_) => const Center(child: Text('No data')),
-
-// ✗ Wrong - Using 's' for state variable
-failure: (s) => FailureWidgetLarge(exception: s.exception, onRetry: _retry),
-```
-
-**Form Widgets:**
-```dart
-// ✓ Correct - Use AppDatePickerField
-AppDatePickerField(
-  name: 'birthday',
-  label: 'Birthday',
-  minDate: DateTime(1900),
-  maxDate: DateTime.now(),
-  required: true,
-)
-
-// ✗ Wrong - Use FormBuilderDateTimePicker directly
-FormBuilderDateTimePicker(...)  // Never use directly
 ```
 
 **Theme Usage:**
@@ -536,11 +308,9 @@ final theme = ThemeProvider.of(context).theme;
 final textStyles = ThemeProvider.of(context).textStyles;
 
 Text('Hello', style: textStyles.mediumBody14)
-Container(color: theme.primary)
 
-// ✗ Wrong - Hard-coded colors or styles
+// ✗ Wrong - Hard-coded styles
 Text('Hello', style: TextStyle(fontSize: 14))
-Container(color: Color(0xFF6200EE))
 ```
 
 ---
@@ -549,56 +319,34 @@ Container(color: Color(0xFF6200EE))
 
 **AI Instruction**: Follow these rules strictly:
 
-1. **Read Documentation First**: Before coding, check relevant docs for AI Instructions
-2. **Reuse Before Creating**: Check toolkit/uikit before implementing new widgets/helpers
-3. **Localization Required**: ALL user-facing strings must use `Localizer.of(context)` - no hardcoded strings
-4. **Pluralization**: Use flutter_intl plural syntax in ARB files, never manual pluralization logic
-5. **Theme Awareness**: ALL colors/text styles must use `ThemeProvider`
-6. **Form Widgets**: Always use uikit form widgets (AppTextField, AppDatePickerField), never FormBuilder widgets directly
-7. **Follow AI Instructions**: Documentation contains `**AI Instruction**` markers - follow them exactly
-8. **Single Responsibility**: Extract widgets when class > 100 lines
-9. **No Useless Comments**: Remove obvious comments that add no value - only use `///` doc comments
-10. **Arrow Functions**: Use arrow syntax for single-line callbacks and builders
-11. **whenOrNull Over maybeWhen**: For single-case listeners, use `whenOrNull`
-12. **Descriptive Variable Names**: Never use `s` for state - use `successState`, `failureState`, etc.
-13. **State Helpers**: Add getter methods to states instead of verbose `maybeMap` checks
-14. **Async Context**: Use `if (!mounted) return` or capture Navigator before async gaps
-15. **Dependency Sorting**: SDK dependencies first, then alphabetical in pubspec.yaml files
+1. **Read Documentation First**: Check docs for AI Instructions before coding
+2. **Reuse Before Creating**: Check toolkit/uikit before implementing new widgets
+3. **Localization Required**: ALL user-facing strings use `Localizer.of(context)`
+4. **Theme Awareness**: ALL colors/styles use `ThemeProvider`
+5. **Form Widgets**: Use uikit widgets, never FormBuilder directly
+6. **Single Responsibility**: Extract widgets when class > 100 lines
+7. **No Useless Comments**: Only `///` doc comments for public APIs
+8. **Descriptive Names**: Never use `s` for state - use `successState`, `failureState`
+9. **State Helpers**: Add getters instead of verbose `maybeMap` checks
+10. **Async Context**: Use `if (!mounted) return` after async operations
+11. **Dependency Sorting**: SDK dependencies first, then alphabetical
 
 **File Creation:**
-- Do what has been asked; nothing more, nothing less
 - **NEVER** create files unless absolutely necessary
-- **ALWAYS** prefer editing existing files to creating new ones
-- **NEVER** proactively create documentation files (*.md) or README files unless explicitly requested
-
----
-
-## Documentation
-
-**AI Instruction**: ALL documentation files contain `**AI Instruction**` markers for important rules. Read and follow them.
-
-For detailed information, see:
-
-- [Architecture Guide](./docs/architecture.md) - Layered architecture, dependency inversion, layer responsibilities
-- [Exception Handling & Repository Executors](./docs/exception_handling.md) - **COMPREHENSIVE** - Custom exceptions, exception mappers, and repository executors with decorator pattern
-- [Structure Guide](./docs/structure.md) - File organization with AI Instructions
-- [Naming Conventions](./docs/naming.md) - Naming standards with AI Instructions
-- [Code Formatting](./docs/code_formatting.md) - **READ THIS FIRST** - Code style with AI Instructions
-- [Testing Guide](./docs/testing.md) - Testing strategies with AI Instructions
-- [BLoC & Freezed Guide](./docs/bloc) - BLoC patterns with AI Instructions
+- **ALWAYS** prefer editing existing files
+- **NEVER** proactively create documentation files unless requested
 
 ---
 
 ## BLoC State Patterns
 
-**AI Instruction**: Follow these patterns for better state management:
+**AI Instruction**: Follow these patterns for better state management.
 
 ### Nested Status Pattern
 
-For states that need persistent data (like selectedDate) across status changes:
+For states with persistent data across status changes:
 
 ```dart
-// ✓ Correct - Nested status
 @freezed
 class CalendarStatus with _$CalendarStatus {
   const factory CalendarStatus.initial() = _InitialCalendarStatus;
@@ -638,7 +386,7 @@ CalendarPicker(selectedDate: state.selectedDate)
 
 ### Refreshed Event Pattern
 
-Add a `refreshed()` event to avoid extracting state data for reload:
+Add `refreshed()` event to avoid extracting state data for reload:
 
 ```dart
 @freezed
@@ -657,105 +405,59 @@ context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
 
 ---
 
-## Feature-Specific Guidelines
-
-### Authentication (auth/)
-- **Responsibilities**: Login, registration, token management, logout
-- **Note**: User profile data moved to `profile/` feature
-
-### Profile (profile/)
-- **Responsibilities**: User profile data, user information display
-- **Models**: `User` model (id, name, phone, birthday)
-- **Repository**: ProfileRepository for getUserProfile()
-
-### Settings (settings/)
-- **Responsibilities**: App preferences (language, theme)
-- **Note**: Merged from old `preferences/` feature
-- **Repository**: SettingsRepository for language preferences
-
-### Task (task/)
-- **Responsibilities**: Task management, calendar views
-- **Mock Data**: Uses MockTaskDataSource in dev environment
-
----
-
 ## Common Issues & Solutions
 
-**AI Instruction**: Reference this section when encountering these issues:
+**AI Instruction**: Reference this section when encountering these issues.
 
 ### Analyzer Errors
 
-1. **"Target of URI doesn't exist: 'package:starter_uikit/starter_uikit.dart'"**
-   - Create/update `packages/starter_uikit/lib/starter_uikit.dart` export file
-   - Export commonly used widgets (status widgets)
-
-2. **"Dependencies not sorted alphabetically"**
+1. **"Dependencies not sorted alphabetically"**
    - Sort pubspec.yaml: SDK dependencies first, then alphabetical
-   - Pattern: `flutter:`, `flutter_localizations:`, then `a-z` packages
 
-3. **"use_build_context_synchronously"**
+2. **"use_build_context_synchronously"**
    - Add `if (!mounted) return` after async operations
-   - Or capture Navigator/context before async: `final nav = Navigator.of(context)`
 
-4. **"omit_local_variable_types"**
-   - Use `var` instead of explicit types for local variables
-   - Example: `var attempt = 0` not `int attempt = 0`
+3. **"omit_local_variable_types"**
+   - Use `var` instead of explicit types for locals
 
-5. **Deprecated API warnings**
-   - `Color.value` → `Color.toARGB32()`
-   - Check Flutter migration guides for replacements
+### Testing Issues
+
+1. **MissingStubError in integration tests**
+   - Register fallback values for custom types in `setUpAll()`
+   - Required for `HttpMethod` and function types used in `any(named:)`
+
+2. **Tests timeout with retry logic**
+   - Add `wait: const Duration(seconds: 8)` to blocTest
+   - Account for retry attempts × retry delay
 
 ### Import Issues
 
 - Status widgets: `import 'package:starter_uikit/starter_uikit.dart'`
-- NotificationSnackBar: `import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart'`
-- ThemeProvider: `import 'package:starter_uikit/theme/theme_provider.dart'`
-- TitleAppBar: `import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart'`
-- ExceptionUiMapper: `import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart'`
-- ExceptionUiModel: `import 'package:starter_uikit/models/exception_ui_model.dart'`
-- AppException: `import 'package:starter_toolkit/data/exceptions/app_exception.dart'`
-- RepositoryExecutor: `import 'package:starter_toolkit/data/repository_executor/repository_executor.dart'`
-
-### Exception Handling Issues
-
-1. **BuildContext on data models**
-   - ✗ Never add context extensions on AppException
-   - ✓ Use ExceptionUiMapper to convert to UI model in widgets
-
-2. **Forgetting to run code generator**
-   - After adding new exception class, run `dart run tool/generate_exception_mapper.dart`
-   - Generator updates mapper with switch expression and decorator automatically
-
-3. **Using wrong exception model in UI**
-   - ✗ Don't pass AppException directly to UI widgets
-   - ✓ Map to ExceptionUiModel first using ExceptionUiMapper
-
-4. **Not using sealed class benefits**
-   - ✓ Leverage exhaustive pattern matching with switch expressions
-   - ✓ Use pattern matching with field extraction: `case ServerException(:final statusCode)`
-   - ✗ Don't use maybeWhen/when methods (those are for Freezed, not sealed classes)
+- Other widgets: Import specific files directly
+- Always import `NotificationSnackBar` explicitly
 
 ### Repository Executor Issues
 
 1. **Old executor imports**
-   - ✗ `DefaultRepositoryExecutor`, `RetriableRepositoryExecutor`, `CachingRepositoryExecutor` are deprecated
-   - ✓ Use new decorator pattern: `RawRepositoryExecutor().withErrorHandling().withRetry()`
+   - ✗ `DefaultRepositoryExecutor`, `RetriableRepositoryExecutor` deprecated
+   - ✓ Use: `RawRepositoryExecutor().withErrorHandling().withRetry()`
 
 2. **Missing error handling**
    - Always include `.withErrorHandling()` as first decorator
-   - Converts all exceptions to AppException for consistent handling
-
-3. **CachingExecutor usage**
-   - Use `cached()` method with key, not `execute()`
-   - Regular `execute()` passes through without caching
-
-### Empty Directories in Git
-
-Add `.gitkeep` files to track empty but necessary directories:
-- `assets/icons/.gitkeep`
-- `assets/images/.gitkeep`
-- `packages/starter_uikit/assets/images/.gitkeep`
 
 ---
 
-**Last Updated**: November 18, 2025
+## Documentation
+
+For detailed information, see:
+
+- [Architecture Guide](./docs/architecture.md) - Layered architecture, dependency inversion
+- [Exception Handling](./docs/exception_handling.md) - Custom exceptions, mappers, executors
+- [Structure Guide](./docs/structure.md) - File organization
+- [Code Formatting](./docs/code-formatting.md) - Code style rules
+- [Testing Guide](./docs/testing.md) - Testing strategies
+- [BLoC & Freezed Guide](./docs/bloc) - BLoC patterns
+
+---
+
+**Last Updated**: January 2025

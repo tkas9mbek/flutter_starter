@@ -96,8 +96,8 @@ class _AppDatePickerFieldState extends State<AppDatePickerField> {
             enableDrag: false,
             builder: (context) => DateTimePickerBottomSheet(
               title: widget.label ?? '',
-              backText: UiLocalizer.of(context).back,
-              confirmText: UiLocalizer.of(context).toSelect,
+              backText: UikitLocalizer.of(context).back,
+              confirmText: UikitLocalizer.of(context).toSelect,
               initialDate: form.value,
               minDate: widget.minDate,
               maxDate: widget.maxDate,

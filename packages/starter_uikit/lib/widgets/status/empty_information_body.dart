@@ -48,7 +48,7 @@ class EmptyInformationBody extends StatelessWidget {
               ),
             const SizedBox(height: 16),
             Text(
-              text ?? UiLocalizer.of(context).noDataAvailable,
+              text ?? UikitLocalizer.of(context).noDataAvailable,
               style: textStyles.regularBody14.copyWith(
                 color: theme.textSecondary,
               ),
@@ -58,7 +58,7 @@ class EmptyInformationBody extends StatelessWidget {
               const SizedBox(height: 16),
               AppOutlinedButton.medium(
                 context: context,
-                text: UiLocalizer.of(context).retry,
+                text: UikitLocalizer.of(context).retry,
                 onPressed: onRetry,
               ),
             ],

@@ -7,12 +7,15 @@ import 'package:starter/features/profile/domain/profile_repository.dart';
 import 'package:starter/features/profile/model/user.dart';
 import 'package:starter/features/profile/ui/bloc/user_bloc.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
+import 'package:starter_toolkit/data/client/http_method.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 import '../model/profile_mock_models.dart';
 
 class MockApiClient extends Mock implements ApiClient {}
+
+User _fakeFromJson(Map<String, dynamic> json) => User.fromJson(json);
 
 /// Integration test: UserBloc → ProfileRepository → RemoteProfileDataSource → ApiClient (mocked)
 ///
@@ -22,6 +25,11 @@ void main() {
   late ProfileRepository profileRepository;
   late ProfileDataSource profileDataSource;
   late MockApiClient mockApiClient;
+
+  setUpAll(() {
+    registerFallbackValue(HttpMethod.get);
+    registerFallbackValue(_fakeFromJson);
+  });
 
   setUp(() {
     mockApiClient = MockApiClient();
@@ -83,6 +91,7 @@ void main() {
         return userBloc;
       },
       act: (bloc) => bloc.add(const UserEvent.requested()),
+      wait: const Duration(seconds: 8),
       expect: () => [
         const UserState.loading(),
         const UserState.failure(NoInternetException()),
@@ -112,6 +121,7 @@ void main() {
         return userBloc;
       },
       act: (bloc) => bloc.add(const UserEvent.requested()),
+      wait: const Duration(seconds: 8),
       expect: () => [
         const UserState.loading(),
         predicate<UserState>(

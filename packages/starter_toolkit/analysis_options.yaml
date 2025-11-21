@@ -7,7 +7,6 @@ analyzer:
     - "**/l10n/generated/**"
     - "lib/gen/**"
     - "tool/**"
-    - "**/example/**"
 
   errors:
     missing_required_param: error

@@ -6,10 +6,6 @@ publish_to: 'none'
 
 version: 1.0.0+1
 
-dependency_overrides:
-  analyzer: 7.7.1
-  test_api: 0.7.4
-
 environment:
   sdk: '>=3.0.0 <4.0.0'
 
@@ -24,9 +20,6 @@ dependencies:
   flutter_form_builder: ^10.1.0
   freezed_annotation: ^2.4.4
   http_parser: ^4.1.2
-  image_gallery_saver:
-    git:
-      url: https://github.com/benlrichards/image_gallery_saver
   image_picker: ^1.2.0
   intl: ^0.20.2
   intl_utils: ^2.8.8

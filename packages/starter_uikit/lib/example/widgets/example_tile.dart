@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-/// A reusable tile widget for UIKit examples.
+/// **INTERNAL USE ONLY**: A reusable tile widget for UIKit examples.
 ///
 /// Displays a list tile with an icon, title, subtitle, and trailing arrow.
 /// Used throughout the UIKit example screens for consistent navigation.
+@visibleForTesting
 class ExampleTile extends StatelessWidget {
   const ExampleTile({
     required this.title,

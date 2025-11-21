@@ -57,7 +57,7 @@ class InputAccessoryViewWrapper extends StatelessWidget {
                       onPressed: () =>
                           FocusManager.instance.primaryFocus?.unfocus(),
                       child: Text(
-                        UiLocalizer.of(context).done,
+                        UikitLocalizer.of(context).done,
                         style: textStyles.regularBody16.copyWith(
                           color: theme.primary,
                         ),

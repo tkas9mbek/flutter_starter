@@ -9,10 +9,10 @@ import 'package:starter_uikit/models/exception_ui_model.dart';
 /// Run: dart run tool/generate_exception_mapper.dart
 class ExceptionUiMapper {
   final BuildContext context;
-  late final UiLocalizer _localizer;
+  late final UikitLocalizer _localizer;
 
   ExceptionUiMapper(this.context) {
-    _localizer = UiLocalizer.of(context);
+    _localizer = UikitLocalizer.of(context);
   }
 
   // START GENERATED METHODS

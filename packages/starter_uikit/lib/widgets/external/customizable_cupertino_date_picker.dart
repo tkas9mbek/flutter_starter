@@ -294,18 +294,18 @@ class _CustomizableCupertinoDatePickerState
 
   Widget _monthSelector() {
     final months = [
-      UiLocalizer.of(context).monthJanuary,
-      UiLocalizer.of(context).monthFebruary,
-      UiLocalizer.of(context).monthMarch,
-      UiLocalizer.of(context).monthApril,
-      UiLocalizer.of(context).monthMay,
-      UiLocalizer.of(context).montJune,
-      UiLocalizer.of(context).monthJuly,
-      UiLocalizer.of(context).monthAugust,
-      UiLocalizer.of(context).monthSeptember,
-      UiLocalizer.of(context).monthOctober,
-      UiLocalizer.of(context).monthNovember,
-      UiLocalizer.of(context).monthDecember,
+      UikitLocalizer.of(context).monthJanuary,
+      UikitLocalizer.of(context).monthFebruary,
+      UikitLocalizer.of(context).monthMarch,
+      UikitLocalizer.of(context).monthApril,
+      UikitLocalizer.of(context).monthMay,
+      UikitLocalizer.of(context).monthJune,
+      UikitLocalizer.of(context).monthJuly,
+      UikitLocalizer.of(context).monthAugust,
+      UikitLocalizer.of(context).monthSeptember,
+      UikitLocalizer.of(context).monthOctober,
+      UikitLocalizer.of(context).monthNovember,
+      UikitLocalizer.of(context).monthDecember,
     ];
 
     return _selector(

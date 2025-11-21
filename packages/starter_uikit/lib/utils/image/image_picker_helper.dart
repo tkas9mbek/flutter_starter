@@ -17,7 +17,7 @@ class ImagePickerHelper {
         cancelButton: CupertinoActionSheetAction(
           onPressed: () => Navigator.pop(context),
           child: Text(
-            UiLocalizer.of(context).cancellation,
+            UikitLocalizer.of(context).cancellation,
             style: TextStyle(
               color: theme.textPrimary,
               fontWeight: FontWeight.w500,
@@ -34,7 +34,7 @@ class ImagePickerHelper {
               navigator.pop(image);
             },
             child: Text(
-              UiLocalizer.of(context).camera,
+              UikitLocalizer.of(context).camera,
               style: TextStyle(
                 color: theme.textPrimary,
               ),
@@ -49,7 +49,7 @@ class ImagePickerHelper {
               navigator.pop(image);
             },
             child: Text(
-              UiLocalizer.of(context).gallery,
+              UikitLocalizer.of(context).gallery,
               style: TextStyle(
                 color: theme.textPrimary,
               ),

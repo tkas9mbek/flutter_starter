@@ -11,9 +11,16 @@ import '../model/auth_mock_models.dart';
 
 class MockApiClient extends Mock implements ApiClient {}
 
+AuthToken _fakeFromJson(Map<String, dynamic> json) => AuthToken.fromJson(json);
+
 void main() {
   late RemoteAuthUnauthorizedDataSource dataSource;
   late MockApiClient mockApiClient;
+
+  setUpAll(() {
+    registerFallbackValue(HttpMethod.get);
+    registerFallbackValue(_fakeFromJson);
+  });
 
   setUp(() {
     mockApiClient = MockApiClient();

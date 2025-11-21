@@ -22,10 +22,53 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
+        "aboutUIKit": MessageLookupByLibrary.simpleMessage("О UI Kit"),
+        "agreeToTerms":
+            MessageLookupByLibrary.simpleMessage("Согласен с условиями"),
+        "appBars": MessageLookupByLibrary.simpleMessage("Панели навигации"),
+        "appBarsDescription": MessageLookupByLibrary.simpleMessage(
+            "Title и base панели навигации"),
+        "areYouSure": MessageLookupByLibrary.simpleMessage("Вы уверены?"),
+        "autoFormattedText":
+            MessageLookupByLibrary.simpleMessage("Автоформатированный текст"),
         "back": MessageLookupByLibrary.simpleMessage("Назад"),
+        "baseAppBar": MessageLookupByLibrary.simpleMessage("Base App Bar"),
+        "bulletedList":
+            MessageLookupByLibrary.simpleMessage("Список с буллетами"),
+        "buttonPressed": MessageLookupByLibrary.simpleMessage("Кнопка нажата!"),
+        "buttons": MessageLookupByLibrary.simpleMessage("Кнопки"),
+        "buttonsDescription": MessageLookupByLibrary.simpleMessage(
+            "Elevated и outlined кнопки с состояниями загрузки"),
         "camera": MessageLookupByLibrary.simpleMessage("Камера"),
+        "cancel": MessageLookupByLibrary.simpleMessage("Отмена"),
         "cancellation": MessageLookupByLibrary.simpleMessage("Отмена"),
+        "checkboxField": MessageLookupByLibrary.simpleMessage("Чекбокс"),
+        "confirm": MessageLookupByLibrary.simpleMessage("Подтвердить"),
+        "confirmAction":
+            MessageLookupByLibrary.simpleMessage("Подтвердить действие"),
+        "confirmationDialog":
+            MessageLookupByLibrary.simpleMessage("Диалог подтверждения"),
+        "customTitle":
+            MessageLookupByLibrary.simpleMessage("Пользовательский заголовок"),
+        "datePickerField": MessageLookupByLibrary.simpleMessage("Выбор даты"),
+        "dateRangePicker":
+            MessageLookupByLibrary.simpleMessage("Выбор диапазона дат"),
+        "dateTimePicker":
+            MessageLookupByLibrary.simpleMessage("Выбор даты и времени"),
+        "dialogs": MessageLookupByLibrary.simpleMessage("Диалоги"),
+        "dialogsDescription": MessageLookupByLibrary.simpleMessage(
+            "Bottom sheets, date pickers, подтверждения"),
+        "disabledButton":
+            MessageLookupByLibrary.simpleMessage("Отключенная кнопка"),
         "done": MessageLookupByLibrary.simpleMessage("Готово"),
+        "dropdownBottomSheet":
+            MessageLookupByLibrary.simpleMessage("Bottom sheet с выбором"),
+        "dropdownField":
+            MessageLookupByLibrary.simpleMessage("Выпадающий список"),
+        "elevatedButton":
+            MessageLookupByLibrary.simpleMessage("Elevated кнопка"),
+        "emptyState": MessageLookupByLibrary.simpleMessage("Пустое состояние"),
+        "enterText": MessageLookupByLibrary.simpleMessage("Введите текст"),
         "errorMessageAuthRequired": MessageLookupByLibrary.simpleMessage(
             "Пожалуйста, войдите в систему, чтобы продолжить"),
         "errorMessageCheckAndTryLater": MessageLookupByLibrary.simpleMessage(
@@ -53,8 +96,19 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Что-то пошло не так."),
         "errorMessageUrlLaunchError":
             MessageLookupByLibrary.simpleMessage("Ошибка при открытии ссылки"),
+        "failureState":
+            MessageLookupByLibrary.simpleMessage("Состояние ошибки"),
+        "formFields": MessageLookupByLibrary.simpleMessage("Поля форм"),
+        "formFieldsDescription": MessageLookupByLibrary.simpleMessage(
+            "Текстовые поля, выпадающие списки, выбор даты"),
         "gallery": MessageLookupByLibrary.simpleMessage("Галерея"),
-        "montJune": MessageLookupByLibrary.simpleMessage("Июнь"),
+        "loadingButton":
+            MessageLookupByLibrary.simpleMessage("Кнопка с загрузкой"),
+        "loadingState":
+            MessageLookupByLibrary.simpleMessage("Состояние загрузки"),
+        "miscWidgets": MessageLookupByLibrary.simpleMessage("Разное"),
+        "miscWidgetsDescription": MessageLookupByLibrary.simpleMessage(
+            "Аватары, разделители, прогресс индикаторы"),
         "monthApril": MessageLookupByLibrary.simpleMessage("Апрель"),
         "monthAugust": MessageLookupByLibrary.simpleMessage("Август"),
         "monthDecember": MessageLookupByLibrary.simpleMessage("Декабрь"),
@@ -67,11 +121,40 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthNovember": MessageLookupByLibrary.simpleMessage("Ноябрь"),
         "monthOctober": MessageLookupByLibrary.simpleMessage("Октябрь"),
         "monthSeptember": MessageLookupByLibrary.simpleMessage("Сентябрь"),
+        "networkAvatar": MessageLookupByLibrary.simpleMessage("Сетевой аватар"),
         "next": MessageLookupByLibrary.simpleMessage("Далее"),
         "noDataAvailable": MessageLookupByLibrary.simpleMessage("Нет данных"),
+        "option1": MessageLookupByLibrary.simpleMessage("Вариант 1"),
+        "option2": MessageLookupByLibrary.simpleMessage("Вариант 2"),
+        "option3": MessageLookupByLibrary.simpleMessage("Вариант 3"),
+        "outlinedButton":
+            MessageLookupByLibrary.simpleMessage("Outlined кнопка"),
+        "progressIndicator":
+            MessageLookupByLibrary.simpleMessage("Индикатор прогресса"),
         "retry": MessageLookupByLibrary.simpleMessage("Повторить"),
+        "selectOption": MessageLookupByLibrary.simpleMessage("Выберите опцию"),
+        "showDialog": MessageLookupByLibrary.simpleMessage("Показать диалог"),
+        "statusWidgets":
+            MessageLookupByLibrary.simpleMessage("Виджеты состояний"),
+        "statusWidgetsDescription": MessageLookupByLibrary.simpleMessage(
+            "Состояния загрузки, пустых данных и ошибок"),
+        "textField": MessageLookupByLibrary.simpleMessage("Текстовое поле"),
+        "textWidgets":
+            MessageLookupByLibrary.simpleMessage("Текстовые виджеты"),
+        "textWidgetsDescription": MessageLookupByLibrary.simpleMessage(
+            "Автоформатирование и списки с буллетами"),
+        "thinDivider":
+            MessageLookupByLibrary.simpleMessage("Тонкий разделитель"),
+        "titleAppBar": MessageLookupByLibrary.simpleMessage("Title App Bar"),
         "toSelect": MessageLookupByLibrary.simpleMessage("Выбрать"),
-        "tryRefreshPage":
-            MessageLookupByLibrary.simpleMessage("Попробуйте обновить страницу")
+        "transparentAppBar":
+            MessageLookupByLibrary.simpleMessage("Transparent App Bar"),
+        "tryRefreshPage": MessageLookupByLibrary.simpleMessage(
+            "Попробуйте обновить страницу"),
+        "uiKit": MessageLookupByLibrary.simpleMessage("UI Kit"),
+        "uiKitDescription": MessageLookupByLibrary.simpleMessage(
+            "Этот UIKit пакет содержит переиспользуемые виджеты и компоненты:\n\n• Кастомные панели навигации\n• Стилизованные кнопки с состояниями загрузки\n• Поля форм с валидацией\n• Виджеты состояний для разных сценариев\n• Уведомления через snackbar\n• Поддержка системы тем\n\nИспользуйте эти примеры как справочник при создании production фич."),
+        "uiKitExamples":
+            MessageLookupByLibrary.simpleMessage("Примеры компонентов UI Kit")
       };
 }

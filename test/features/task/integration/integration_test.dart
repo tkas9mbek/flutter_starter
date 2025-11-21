@@ -8,12 +8,15 @@ import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
 import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
+import 'package:starter_toolkit/data/client/http_method.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 import '../model/task_mock_models.dart';
 
 class MockApiClient extends Mock implements ApiClient {}
+
+Task _fakeFromJson(Map<String, dynamic> json) => Task.fromJson(json);
 
 /// Integration tests: BLoC → TaskRepository → RemoteTaskDataSource → ApiClient (mocked)
 ///
@@ -22,6 +25,11 @@ void main() {
   late MockApiClient mockApiClient;
   late TaskDataSource taskDataSource;
   late TaskRepository taskRepository;
+
+  setUpAll(() {
+    registerFallbackValue(HttpMethod.get);
+    registerFallbackValue(_fakeFromJson);
+  });
 
   setUp(() {
     mockApiClient = MockApiClient();
