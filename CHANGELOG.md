@@ -77,4 +77,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   
 ---
 
-[1.0.0]: https://github.com/yourusername/flutter_starter/releases/tag/v1.0.0
+[1.0.0]: https://github.com/tkas9mbek/flutter_starter/releases/tag/v1.0.0
