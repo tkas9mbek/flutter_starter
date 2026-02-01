@@ -9,10 +9,6 @@ import 'package:starter_toolkit/data/repository_executor/repository_executor_dec
 ///
 /// Automatically cleans up expired cache entries every 5 minutes.
 class CachingExecutor extends RepositoryExecutorDecorator {
-  final Duration defaultTtl;
-  final Map<String, _CacheEntry> _cache = {};
-  Timer? _cleanupTimer;
-
   CachingExecutor(
     super.wrapped, {
     this.defaultTtl = const Duration(minutes: 5),
@@ -22,6 +18,10 @@ class CachingExecutor extends RepositoryExecutorDecorator {
       (_) => _removeExpiredEntries(),
     );
   }
+
+  final Duration defaultTtl;
+  final Map<String, _CacheEntry> _cache = {};
+  Timer? _cleanupTimer;
 
   void _removeExpiredEntries() {
     _cache.removeWhere((key, value) => value.isExpired);
@@ -82,15 +82,15 @@ class CachingExecutor extends RepositoryExecutorDecorator {
 }
 
 class _CacheEntry {
-  final Object data;
-  final DateTime timestamp;
-  final Duration duration;
-
   const _CacheEntry({
     required this.data,
     required this.timestamp,
     required this.duration,
   });
+
+  final Object data;
+  final DateTime timestamp;
+  final Duration duration;
 
   bool get isExpired => DateTime.now().difference(timestamp) > duration;
 }

@@ -28,77 +28,95 @@ void main() {
   });
 
   group('login', () {
-    test('calls ApiClient with correct parameters and returns AuthToken',
-        () async {
-      const body = AuthLoginRequestBody(
-        phone: '+79991234567',
-        password: 'password123',
-      );
+    test(
+      'calls ApiClient with correct parameters and returns AuthToken',
+      () async {
+        const body = AuthLoginRequestBody(
+          phone: '+79991234567',
+          password: 'password123',
+        );
 
-      when(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: any(named: 'method'),
-          path: any(named: 'path'),
-          body: any(named: 'body'),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).thenAnswer((invocation) async {
-        final fromJson =
-            invocation.namedArguments[#fromJson] as AuthToken Function(Map<String, dynamic>);
-        return fromJson(AuthMockModels.rawToken);
-      });
+        when(
+          () => mockApiClient.requestJson<AuthToken>(
+            method: any(named: 'method'),
+            path: any(named: 'path'),
+            body: any(named: 'body'),
+            fromJson: any(named: 'fromJson'),
+          ),
+        ).thenAnswer((invocation) async {
+          final fromJson =
+              invocation.namedArguments[#fromJson]
+                  as AuthToken Function(Map<String, dynamic>);
+          return fromJson(AuthMockModels.rawToken);
+        });
 
-      final result = await dataSource.login(body);
+        final result = await dataSource.login(body);
 
-      expect(result.accessToken, equals(AuthMockModels.authToken.accessToken));
-      expect(result.refreshToken, equals(AuthMockModels.authToken.refreshToken));
-      verify(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: HttpMethod.post,
-          path: '/auth/login',
-          body: body.toJson(),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(1);
-    });
+        expect(
+          result.accessToken,
+          equals(AuthMockModels.authToken.accessToken),
+        );
+        expect(
+          result.refreshToken,
+          equals(AuthMockModels.authToken.refreshToken),
+        );
+        verify(
+          () => mockApiClient.requestJson<AuthToken>(
+            method: HttpMethod.post,
+            path: '/auth/login',
+            body: body.toJson(),
+            fromJson: any(named: 'fromJson'),
+          ),
+        ).called(1);
+      },
+    );
   });
 
   group('register', () {
-    test('calls ApiClient with correct parameters and returns AuthToken',
-        () async {
-      final body = AuthRegisterRequestBody(
-        name: 'Test User',
-        phone: '+79991234567',
-        password: 'password123',
-        birthday: DateTime(1990, 1, 1),
-      );
+    test(
+      'calls ApiClient with correct parameters and returns AuthToken',
+      () async {
+        final body = AuthRegisterRequestBody(
+          name: 'Test User',
+          phone: '+79991234567',
+          password: 'password123',
+          birthday: DateTime(1990, 1, 1),
+        );
 
-      when(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: any(named: 'method'),
-          path: any(named: 'path'),
-          body: any(named: 'body'),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).thenAnswer((invocation) async {
-        final fromJson =
-            invocation.namedArguments[#fromJson] as AuthToken Function(Map<String, dynamic>);
-        return fromJson(AuthMockModels.rawToken);
-      });
+        when(
+          () => mockApiClient.requestJson<AuthToken>(
+            method: any(named: 'method'),
+            path: any(named: 'path'),
+            body: any(named: 'body'),
+            fromJson: any(named: 'fromJson'),
+          ),
+        ).thenAnswer((invocation) async {
+          final fromJson =
+              invocation.namedArguments[#fromJson]
+                  as AuthToken Function(Map<String, dynamic>);
+          return fromJson(AuthMockModels.rawToken);
+        });
 
-      final result = await dataSource.register(body);
+        final result = await dataSource.register(body);
 
-      expect(result.accessToken, equals(AuthMockModels.authToken.accessToken));
-      expect(result.refreshToken, equals(AuthMockModels.authToken.refreshToken));
-      verify(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: HttpMethod.post,
-          path: '/auth/register',
-          body: body.toJson(),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(1);
-    });
+        expect(
+          result.accessToken,
+          equals(AuthMockModels.authToken.accessToken),
+        );
+        expect(
+          result.refreshToken,
+          equals(AuthMockModels.authToken.refreshToken),
+        );
+        verify(
+          () => mockApiClient.requestJson<AuthToken>(
+            method: HttpMethod.post,
+            path: '/auth/register',
+            body: body.toJson(),
+            fromJson: any(named: 'fromJson'),
+          ),
+        ).called(1);
+      },
+    );
   });
 
   group('AuthLoginRequestBody', () {

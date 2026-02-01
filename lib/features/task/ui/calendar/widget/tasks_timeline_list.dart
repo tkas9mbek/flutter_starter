@@ -3,10 +3,7 @@ import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/calendar/widget/task_timeline_item_card.dart';
 
 class TasksTimelineList extends StatelessWidget {
-  const TasksTimelineList({
-    required this.tasks,
-    super.key,
-  });
+  const TasksTimelineList({required this.tasks, super.key});
 
   final List<Task> tasks;
 

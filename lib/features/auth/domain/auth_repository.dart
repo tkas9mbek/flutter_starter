@@ -8,6 +8,13 @@ import 'package:starter/features/auth/model/auth_status.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 class AuthRepository {
+  AuthRepository(
+    this._repositoryExecutor,
+    this._authorizedDataSource,
+    this._unauthorizedDataSource,
+    this._localDataSource,
+  );
+
   final RepositoryExecutor _repositoryExecutor;
   final AuthAuthorizedDataSource _authorizedDataSource;
   final AuthUnauthorizedDataSource _unauthorizedDataSource;
@@ -16,13 +23,6 @@ class AuthRepository {
   final _controller = BehaviorSubject<AuthStatus>();
 
   ValueStream<AuthStatus> get status => _controller.stream;
-
-  AuthRepository(
-    this._repositoryExecutor,
-    this._authorizedDataSource,
-    this._unauthorizedDataSource,
-    this._localDataSource,
-  );
 
   Future<void> clearIfNotLaunchedBefore() async =>
       _localDataSource.clearIfNotLaunchedBefore();
@@ -36,20 +36,14 @@ class AuthRepository {
   Future<void> logout() async {
     _controller.add(AuthStatus.unauthenticated);
 
-    _repositoryExecutor.execute(() async {
+    await _repositoryExecutor.execute(() async {
       await _authorizedDataSource.logout();
       await _localDataSource.clearStorage();
     });
   }
 
-  Future<void> login({
-    required String phone,
-    required String password,
-  }) async {
-    final body = AuthLoginRequestBody(
-      phone: phone,
-      password: password,
-    );
+  Future<void> login({required String phone, required String password}) async {
+    final body = AuthLoginRequestBody(phone: phone, password: password);
 
     final response = await _repositoryExecutor.execute(
       () => _unauthorizedDataSource.login(body),

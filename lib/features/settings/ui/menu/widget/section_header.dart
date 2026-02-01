@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class SectionHeader extends StatelessWidget {
-  const SectionHeader({
-    required this.title,
-    super.key,
-  });
+  const SectionHeader({required this.title, super.key});
 
   final String title;
 
@@ -18,9 +15,7 @@ class SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 4),
       child: Text(
         title,
-        style: textStyles.boldBody14.copyWith(
-          color: theme.textSecondary,
-        ),
+        style: textStyles.boldBody14.copyWith(color: theme.textSecondary),
       ),
     );
   }

@@ -35,10 +35,7 @@ class SettingsTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    title,
-                    style: textStyles.mediumBody14,
-                  ),
+                  Text(title, style: textStyles.mediumBody14),
                   if (subtitle != null) ...[
                     const SizedBox(height: 4),
                     Text(

@@ -29,10 +29,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
         children: [
           if (text != null) ...[
             const SizedBox(height: 8),
-            Text(
-              text!,
-              style: textStyles.regularBody13,
-            ),
+            Text(text!, style: textStyles.regularBody13),
           ],
           const SizedBox(height: 16),
           AppElevatedButton.big(

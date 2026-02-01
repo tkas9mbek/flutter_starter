@@ -46,9 +46,7 @@ class AppBarContent extends StatelessWidget {
           alignment: Alignment.centerRight,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              ...?actions,
-            ],
+            children: [...?actions],
           ),
         ),
         if (subtitle == null) ...[
@@ -57,10 +55,7 @@ class AppBarContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const SizedBox(height: 12),
-                Text(
-                  title,
-                  style: textStyles.mediumTitle20,
-                ),
+                Text(title, style: textStyles.mediumTitle20),
               ],
             ),
           ),
@@ -71,10 +66,7 @@ class AppBarContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 const Spacer(flex: 1),
-                Text(
-                  title,
-                  style: textStyles.mediumTitle20,
-                ),
+                Text(title, style: textStyles.mediumTitle20),
                 const SizedBox(height: 2),
                 subtitle!,
                 const Spacer(flex: 3),

@@ -3,10 +3,7 @@ import 'package:starter/features/application/environment/ui/widget/environment_b
 import 'package:starter_uikit/widgets/misc/input_accessory_view_wrapper.dart';
 
 class ApplicationWrapper extends StatelessWidget {
-  const ApplicationWrapper({
-    required this.child,
-    super.key,
-  });
+  const ApplicationWrapper({required this.child, super.key});
 
   final Widget child;
 
@@ -21,9 +18,7 @@ class ApplicationWrapper extends StatelessWidget {
         }
       },
       child: EnvironmentBannerStack(
-        child: InputAccessoryViewWrapper(
-          child: child,
-        ),
+        child: InputAccessoryViewWrapper(child: child),
       ),
     );
   }

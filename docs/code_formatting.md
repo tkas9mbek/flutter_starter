@@ -106,6 +106,51 @@ class TasksListScreen extends StatelessWidget {
 }
 ```
 
+### BLoC Separation
+
+**AI Instruction**: BLoCs must NOT depend on other BLoCs. Use UI layer for coordination.
+
+```dart
+// ✗ Wrong - Direct BLoC dependency
+@injectable
+class ItemsListBloc extends Bloc<ItemsListEvent, ItemsListState> {
+  final ItemDeletionBloc _deletionBloc;  // ✗ Creates tight coupling!
+
+  ItemsListBloc(this._repository, this._deletionBloc) : super(...) {
+    _deletionBloc.stream.listen((state) {
+      if (state is SuccessItemDeletionState) {
+        add(const ItemsListEvent.refreshed());
+      }
+    });
+  }
+}
+
+// ✓ Correct - UI layer coordinates BLoCs
+class ItemsScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<ItemDeletionBloc, ItemDeletionState>(
+          listener: (context, state) => state.whenOrNull(
+            success: () => context.read<ItemsListBloc>().add(
+              const ItemsListEvent.refreshed(),
+            ),
+          ),
+        ),
+      ],
+      child: BlocBuilder<ItemsListBloc, ItemsListState>(...),
+    );
+  }
+}
+```
+
+**Why?**
+- ✅ BLoCs remain testable independently
+- ✅ No circular dependencies
+- ✅ Clear separation of concerns
+- ✅ UI controls orchestration
+
 ---
 
 ## Whitespace & Brackets
@@ -141,9 +186,12 @@ if (condition) {
 if (condition) doSomething();
 ```
 
-**Exception - Collections**: Use spread operator for multiple widgets:
+### Spread in Collections
+
+**AI Instruction**: Always use spread operator `...[` after `if`/`for` in collections, even for single widget:
 
 ```dart
+// ✓ Correct - Spread for multiple widgets
 Column(
   children: [
     Text('Title'),
@@ -152,9 +200,27 @@ Column(
       Item1(),
       Item2(),
     ],
+  ],
+)
+
+// ✓ Correct - Spread even for single widget (consistency)
+Column(
+  children: [
+    Text('Title'),
+
+    if (showSingle) ...[
+      SingleItem(),
+    ],
+  ],
+)
+
+// ✗ Wrong - No spread operator
+Column(
+  children: [
+    Text('Title'),
 
     if (showSingle)
-      SingleItem(),
+      SingleItem(),  // Hard to see where condition ends
   ],
 )
 ```
@@ -236,15 +302,18 @@ class _CounterWidgetState extends State<CounterWidget> {
 
 ### 3. Arrow Expressions
 
-**AI Instruction**: Use arrow syntax for single-line callbacks:
+**AI Instruction**: Always use arrow `=>` for callbacks, with two exceptions:
+1. `build()` method - always uses block body `{}`
+2. Nested callbacks - avoid `() => setState(() {})` pattern
 
 ```dart
-// ✓ Correct
+// ✓ Correct - Arrow for callbacks
 ElevatedButton(
   onPressed: () => _submit(),
   child: const Text('Submit'),
 )
 
+// ✓ Correct - Arrow for builders
 BlocBuilder<Bloc, State>(
   builder: (context, state) => AnimatedSwitcher(...),
 )
@@ -256,7 +325,27 @@ BlocListener<Bloc, State>(
   ),
 )
 
-// ✗ Wrong - Unnecessary braces
+// ✓ Correct - build() ALWAYS uses block body
+@override
+Widget build(BuildContext context) {
+  return Container();
+}
+
+// ✓ Correct - Nested callback uses block body (avoid arrow-in-arrow)
+onPressed: () {
+  setState(() {
+    _counter++;
+  });
+},
+
+// ✗ Wrong - Arrow in build method
+@override
+Widget build(BuildContext context) => Container();
+
+// ✗ Wrong - Nested arrow callbacks (hard to read)
+onPressed: () => setState(() => _counter++),
+
+// ✗ Wrong - Unnecessary braces in simple callback
 BlocListener<Bloc, State>(
   listener: (context, state) {
     state.whenOrNull(
@@ -265,6 +354,8 @@ BlocListener<Bloc, State>(
   },
 )
 ```
+
+**Summary**: Always use `=>` except for `build()` method and nested callbacks like `setState`.
 
 ### 4. Use whenOrNull Instead of maybeWhen
 
@@ -410,45 +501,16 @@ class RetriableRepositoryExecutor extends RepositoryExecutor { ... }
 
 ## Validation Checklist
 
-**AI Instruction**: Use this checklist before committing code:
-
-### File Organization
-- [ ] One public class per file (exceptions: BLoC states/events, private helpers)
-- [ ] File name matches class name
-
-### Class Size & SRP
-- [ ] Classes < 100 lines (or have good reason)
-- [ ] Can describe class without "and"
-- [ ] Single reason to change
-- [ ] Screens split into smaller widgets
-
-### Whitespace & Brackets
-- [ ] Blank line before `return`, `if`, `for`, function declarations
-- [ ] All control structures have brackets
-- [ ] Spread operator `...[]` for multiple widgets in collections
-
-### Class Members
-- [ ] Constructors first
-- [ ] Final fields before mutable properties
-- [ ] `build` method before special methods
-- [ ] `operator ==`, `hashCode`, `toString` at end
-
-### Constructor Parameters
-- [ ] Required parameters first
-- [ ] Parameters with defaults second
-- [ ] Optional parameters third
-- [ ] Super parameters last
-
-### Widgets
-- [ ] No functions returning widgets
-- [ ] StatefulWidget state class is private
-- [ ] Arrow expressions for single-line callbacks
-- [ ] `super.initState()` at start, `super.dispose()` at end
-
-### Comments
-- [ ] Code is self-documenting
-- [ ] Public APIs have `///` documentation (1-3 lines)
-- [ ] No obvious/redundant comments
+| Category | Rules |
+|----------|-------|
+| **Files** | One public class per file • File name = class name |
+| **Size** | Classes < 100 lines • Screens split into widgets • BLoCs independent |
+| **Brackets** | Always brackets for control structures • Always `if (cond) ...[Widget()]` in collections |
+| **Ordering** | Constructors → final fields → methods → `build()` → `==`/`hashCode`/`toString` |
+| **Params** | required → defaults → optional → `super.key` |
+| **Arrows** | Always `=>` except: `build()` method, nested callbacks `setState` |
+| **Widgets** | No widget functions • Private state class • `super.init` first, `super.dispose` last |
+| **Comments** | Self-documenting code • `///` for public APIs only • No obvious comments |
 
 ---
 
@@ -460,4 +522,4 @@ class RetriableRepositoryExecutor extends RepositoryExecutor { ... }
 
 ---
 
-**Last Updated**: January 18, 2025
+**Last Updated**: February 1, 2026

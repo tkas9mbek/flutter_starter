@@ -3,10 +3,7 @@ import 'package:starter/features/profile/model/user.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class ProfileHeader extends StatelessWidget {
-  const ProfileHeader({
-    required this.user,
-    super.key,
-  });
+  const ProfileHeader({required this.user, super.key});
 
   final User user;
 
@@ -37,9 +34,7 @@ class ProfileHeader extends StatelessWidget {
         const SizedBox(height: 8),
         Text(
           user.phone,
-          style: textStyles.regularBody14.copyWith(
-            color: theme.textSecondary,
-          ),
+          style: textStyles.regularBody14.copyWith(color: theme.textSecondary),
         ),
       ],
     );

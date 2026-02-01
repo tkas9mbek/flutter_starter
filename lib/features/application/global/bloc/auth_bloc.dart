@@ -30,10 +30,6 @@ class AuthState with _$AuthState {
 }
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final AuthRepository _authRepository;
-
-  StreamSubscription<AuthStatus>? _authStatusSubscription;
-
   AuthBloc(this._authRepository) : super(const AuthState.unknown()) {
     _authStatusSubscription = _authRepository.status.listen((status) {
       if (status == AuthStatus.unauthenticated) {
@@ -69,9 +65,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  final AuthRepository _authRepository;
+  StreamSubscription<AuthStatus>? _authStatusSubscription;
+
   @override
-  Future<void> close() {
-    _authStatusSubscription?.cancel();
+  Future<void> close() async {
+    await _authStatusSubscription?.cancel();
     return super.close();
   }
 }

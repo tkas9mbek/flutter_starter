@@ -8,14 +8,10 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 
 class FailureWidgetLarge extends StatelessWidget {
+  const FailureWidgetLarge({required this.exception, this.onRetry, super.key});
+
   final AppException exception;
   final VoidCallback? onRetry;
-
-  const FailureWidgetLarge({
-    required this.exception,
-    this.onRetry,
-    Key? key,
-  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -79,16 +75,16 @@ class FailureWidgetLarge extends StatelessWidget {
 }
 
 class FailureWidgetSmall extends StatelessWidget {
-  final AppException exception;
-  final VoidCallback? onRetry;
-  final Color? textColor;
-
   const FailureWidgetSmall({
     required this.exception,
     this.onRetry,
     this.textColor,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
+
+  final AppException exception;
+  final VoidCallback? onRetry;
+  final Color? textColor;
 
   @override
   Widget build(BuildContext context) {
@@ -98,10 +94,7 @@ class FailureWidgetSmall extends StatelessWidget {
 
     return Center(
       child: Padding(
-        padding: const EdgeInsets.symmetric(
-          vertical: 8,
-          horizontal: 16,
-        ),
+        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

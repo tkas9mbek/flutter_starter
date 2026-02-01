@@ -3,9 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 class LanguageOption {
-  final String code;
-  final String name;
-
   const LanguageOption(this.code, this.name);
 
   factory LanguageOption.fromCode(String? code) =>
@@ -13,6 +10,9 @@ class LanguageOption {
         (element) => element.code == code,
         orElse: () => defaultLanguageOption,
       );
+
+  final String code;
+  final String name;
 
   Locale get locale => Locale(code);
 }

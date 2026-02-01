@@ -54,10 +54,10 @@ void main() {
     test('saves environment name and clears secure storage', () async {
       final env = AppEnvironment.dev();
 
-      when(() => mockDataSource.saveEnvName(any()))
-          .thenAnswer((_) async => {});
-      when(() => mockDataSource.clearSecureStorage())
-          .thenAnswer((_) async => {});
+      when(() => mockDataSource.saveEnvName(any())).thenAnswer((_) async => {});
+      when(
+        () => mockDataSource.clearSecureStorage(),
+      ).thenAnswer((_) async => {});
 
       await repository.changeEnvironment(env);
 
@@ -81,10 +81,10 @@ void main() {
 
       final env = AppEnvironment.prod();
 
-      when(() => mockDataSource.saveEnvName(any()))
-          .thenAnswer((_) async => {});
-      when(() => mockDataSource.clearSecureStorage())
-          .thenAnswer((_) async => {});
+      when(() => mockDataSource.saveEnvName(any())).thenAnswer((_) async => {});
+      when(
+        () => mockDataSource.clearSecureStorage(),
+      ).thenAnswer((_) async => {});
 
       await repositoryWithCallback.changeEnvironment(env);
 
@@ -95,15 +95,12 @@ void main() {
     test('does not fail when onEnvironmentChanged is null', () async {
       final env = AppEnvironment.mock();
 
-      when(() => mockDataSource.saveEnvName(any()))
-          .thenAnswer((_) async => {});
-      when(() => mockDataSource.clearSecureStorage())
-          .thenAnswer((_) async => {});
+      when(() => mockDataSource.saveEnvName(any())).thenAnswer((_) async => {});
+      when(
+        () => mockDataSource.clearSecureStorage(),
+      ).thenAnswer((_) async => {});
 
-      await expectLater(
-        repository.changeEnvironment(env),
-        completes,
-      );
+      await expectLater(repository.changeEnvironment(env), completes);
     });
   });
 }

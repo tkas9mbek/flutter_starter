@@ -4,20 +4,20 @@ import 'package:starter/features/application/environment/model/app_environment.d
 typedef OnEnvironmentChanged = Future<void> Function(AppEnvironment);
 
 class EnvironmentRepository {
-  final EnvironmentDataSource _environmentDataSource;
-  final OnEnvironmentChanged? _onEnvironmentChanged;
-
   const EnvironmentRepository(
     this._environmentDataSource,
     this._onEnvironmentChanged,
   );
+
+  final EnvironmentDataSource _environmentDataSource;
+  final OnEnvironmentChanged? _onEnvironmentChanged;
 
   Future<void> changeEnvironment(AppEnvironment env) async {
     await _environmentDataSource.saveEnvName(env.name);
     await _environmentDataSource.clearSecureStorage();
 
     if (_onEnvironmentChanged != null) {
-      await _onEnvironmentChanged!(env);
+      await _onEnvironmentChanged(env);
     }
   }
 

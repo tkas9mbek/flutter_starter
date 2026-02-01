@@ -31,10 +31,7 @@ class AppCupertinoDatePicker extends StatelessWidget {
       selectionOverlay: DecoratedBox(
         decoration: BoxDecoration(
           border: Border.symmetric(
-            horizontal: BorderSide(
-              color: theme.border,
-              width: 1,
-            ),
+            horizontal: BorderSide(color: theme.border, width: 1),
           ),
         ),
       ),

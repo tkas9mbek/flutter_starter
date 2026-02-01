@@ -29,10 +29,8 @@ class RegistrationState with _$RegistrationState {
 }
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
-  final AuthRepository authRepository;
-
   RegistrationBloc(this.authRepository)
-      : super(const RegistrationState.initial()) {
+    : super(const RegistrationState.initial()) {
     on<RegistrationEvent>(
       (event, emit) => event.when(
         submitted: (form) async {
@@ -54,4 +52,6 @@ class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
       ),
     );
   }
+
+  final AuthRepository authRepository;
 }

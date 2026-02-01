@@ -33,8 +33,9 @@ void main() {
     blocTest<UserBloc, UserState>(
       'emits [loading, success] when getUserProfile is successful',
       build: () {
-        when(() => mockDataSource.getUserProfile())
-            .thenAnswer((_) async => ProfileMockModels.user);
+        when(
+          () => mockDataSource.getUserProfile(),
+        ).thenAnswer((_) async => ProfileMockModels.user);
 
         return userBloc;
       },
@@ -51,8 +52,9 @@ void main() {
     blocTest<UserBloc, UserState>(
       'emits [loading, failure] when getUserProfile fails',
       build: () {
-        when(() => mockDataSource.getUserProfile())
-            .thenThrow(const NoInternetException());
+        when(
+          () => mockDataSource.getUserProfile(),
+        ).thenThrow(const NoInternetException());
 
         return userBloc;
       },
@@ -69,8 +71,9 @@ void main() {
     blocTest<UserBloc, UserState>(
       'emits [loading, failure] with server error',
       build: () {
-        when(() => mockDataSource.getUserProfile())
-            .thenThrow(const ServerException(statusCode: 500));
+        when(
+          () => mockDataSource.getUserProfile(),
+        ).thenThrow(const ServerException(statusCode: 500));
 
         return userBloc;
       },
@@ -78,7 +81,8 @@ void main() {
       expect: () => [
         const UserState.loading(),
         predicate<UserState>(
-          (state) => state.whenOrNull(
+          (state) =>
+              state.whenOrNull(
                 failure: (exception) => exception is ServerException,
               ) ??
               false,
@@ -95,9 +99,7 @@ void main() {
       'emits success state with updated user',
       build: () => userBloc,
       act: (bloc) => bloc.add(UserEvent.updated(ProfileMockModels.updatedUser)),
-      expect: () => [
-        UserState.success(ProfileMockModels.updatedUser),
-      ],
+      expect: () => [UserState.success(ProfileMockModels.updatedUser)],
     );
 
     blocTest<UserBloc, UserState>(
@@ -105,9 +107,7 @@ void main() {
       build: () => userBloc,
       seed: () => UserState.success(ProfileMockModels.user),
       act: (bloc) => bloc.add(UserEvent.updated(ProfileMockModels.updatedUser)),
-      expect: () => [
-        UserState.success(ProfileMockModels.updatedUser),
-      ],
+      expect: () => [UserState.success(ProfileMockModels.updatedUser)],
     );
   });
 

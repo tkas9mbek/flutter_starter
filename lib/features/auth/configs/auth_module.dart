@@ -24,26 +24,22 @@ class AuthModule extends AppModule {
     final env = getIt<AppEnvironment>();
 
     getIt
-      ..registerLazySingleton<AuthAuthorizedDataSource>(
-        () {
-          if (env.useMock) {
-            return const MockAuthAuthorizedDataSource();
-          }
+      ..registerLazySingleton<AuthAuthorizedDataSource>(() {
+        if (env.useMock) {
+          return const MockAuthAuthorizedDataSource();
+        }
 
-          return RemoteAuthAuthorizedDataSource(getIt<ApiClient>());
-        },
-      )
-      ..registerLazySingleton<AuthUnauthorizedDataSource>(
-        () {
-          if (env.useMock) {
-            return const MockAuthUnauthorizedDataSource();
-          }
+        return RemoteAuthAuthorizedDataSource(getIt<ApiClient>());
+      })
+      ..registerLazySingleton<AuthUnauthorizedDataSource>(() {
+        if (env.useMock) {
+          return const MockAuthUnauthorizedDataSource();
+        }
 
-          return RemoteAuthUnauthorizedDataSource(
-            getIt<ApiClient>(instanceName: 'unauthorized'),
-          );
-        },
-      )
+        return RemoteAuthUnauthorizedDataSource(
+          getIt<ApiClient>(instanceName: 'unauthorized'),
+        );
+      })
       ..registerLazySingleton<AuthLocalDataSource>(
         () => SecureAuthLocalDataSource(
           getIt<FlutterSecureStorage>(),

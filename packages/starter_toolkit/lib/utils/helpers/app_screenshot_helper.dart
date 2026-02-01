@@ -20,7 +20,8 @@ class AppScreenshotHelper {
     double? pixelRatio,
     BuildContext? context,
   }) async {
-    final actualPixelRatio = pixelRatio ??
+    final actualPixelRatio =
+        pixelRatio ??
         (context != null
             ? MediaQuery.of(context).devicePixelRatio
             : ui.PlatformDispatcher.instance.views.first.devicePixelRatio);

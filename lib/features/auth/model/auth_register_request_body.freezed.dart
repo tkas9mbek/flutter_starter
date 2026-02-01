@@ -12,10 +12,12 @@ part of 'auth_register_request_body.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 AuthRegisterRequestBody _$AuthRegisterRequestBodyFromJson(
-    Map<String, dynamic> json) {
+  Map<String, dynamic> json,
+) {
   return _AuthRegisterRequestBody.fromJson(json);
 }
 
@@ -38,16 +40,19 @@ mixin _$AuthRegisterRequestBody {
 
 /// @nodoc
 abstract class $AuthRegisterRequestBodyCopyWith<$Res> {
-  factory $AuthRegisterRequestBodyCopyWith(AuthRegisterRequestBody value,
-          $Res Function(AuthRegisterRequestBody) then) =
-      _$AuthRegisterRequestBodyCopyWithImpl<$Res, AuthRegisterRequestBody>;
+  factory $AuthRegisterRequestBodyCopyWith(
+    AuthRegisterRequestBody value,
+    $Res Function(AuthRegisterRequestBody) then,
+  ) = _$AuthRegisterRequestBodyCopyWithImpl<$Res, AuthRegisterRequestBody>;
   @useResult
   $Res call({String name, String phone, String password, DateTime birthday});
 }
 
 /// @nodoc
-class _$AuthRegisterRequestBodyCopyWithImpl<$Res,
-        $Val extends AuthRegisterRequestBody>
+class _$AuthRegisterRequestBodyCopyWithImpl<
+  $Res,
+  $Val extends AuthRegisterRequestBody
+>
     implements $AuthRegisterRequestBodyCopyWith<$Res> {
   _$AuthRegisterRequestBodyCopyWithImpl(this._value, this._then);
 
@@ -66,24 +71,27 @@ class _$AuthRegisterRequestBodyCopyWithImpl<$Res,
     Object? password = null,
     Object? birthday = null,
   }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      phone: null == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String,
-      password: null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as String,
-      birthday: null == birthday
-          ? _value.birthday
-          : birthday // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            name: null == name
+                ? _value.name
+                : name // ignore: cast_nullable_to_non_nullable
+                      as String,
+            phone: null == phone
+                ? _value.phone
+                : phone // ignore: cast_nullable_to_non_nullable
+                      as String,
+            password: null == password
+                ? _value.password
+                : password // ignore: cast_nullable_to_non_nullable
+                      as String,
+            birthday: null == birthday
+                ? _value.birthday
+                : birthday // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -91,9 +99,9 @@ class _$AuthRegisterRequestBodyCopyWithImpl<$Res,
 abstract class _$$AuthRegisterRequestBodyImplCopyWith<$Res>
     implements $AuthRegisterRequestBodyCopyWith<$Res> {
   factory _$$AuthRegisterRequestBodyImplCopyWith(
-          _$AuthRegisterRequestBodyImpl value,
-          $Res Function(_$AuthRegisterRequestBodyImpl) then) =
-      __$$AuthRegisterRequestBodyImplCopyWithImpl<$Res>;
+    _$AuthRegisterRequestBodyImpl value,
+    $Res Function(_$AuthRegisterRequestBodyImpl) then,
+  ) = __$$AuthRegisterRequestBodyImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String name, String phone, String password, DateTime birthday});
@@ -101,13 +109,16 @@ abstract class _$$AuthRegisterRequestBodyImplCopyWith<$Res>
 
 /// @nodoc
 class __$$AuthRegisterRequestBodyImplCopyWithImpl<$Res>
-    extends _$AuthRegisterRequestBodyCopyWithImpl<$Res,
-        _$AuthRegisterRequestBodyImpl>
+    extends
+        _$AuthRegisterRequestBodyCopyWithImpl<
+          $Res,
+          _$AuthRegisterRequestBodyImpl
+        >
     implements _$$AuthRegisterRequestBodyImplCopyWith<$Res> {
   __$$AuthRegisterRequestBodyImplCopyWithImpl(
-      _$AuthRegisterRequestBodyImpl _value,
-      $Res Function(_$AuthRegisterRequestBodyImpl) _then)
-      : super(_value, _then);
+    _$AuthRegisterRequestBodyImpl _value,
+    $Res Function(_$AuthRegisterRequestBodyImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthRegisterRequestBody
   /// with the given fields replaced by the non-null parameter values.
@@ -119,35 +130,38 @@ class __$$AuthRegisterRequestBodyImplCopyWithImpl<$Res>
     Object? password = null,
     Object? birthday = null,
   }) {
-    return _then(_$AuthRegisterRequestBodyImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      phone: null == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String,
-      password: null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as String,
-      birthday: null == birthday
-          ? _value.birthday
-          : birthday // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ));
+    return _then(
+      _$AuthRegisterRequestBodyImpl(
+        name: null == name
+            ? _value.name
+            : name // ignore: cast_nullable_to_non_nullable
+                  as String,
+        phone: null == phone
+            ? _value.phone
+            : phone // ignore: cast_nullable_to_non_nullable
+                  as String,
+        password: null == password
+            ? _value.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as String,
+        birthday: null == birthday
+            ? _value.birthday
+            : birthday // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$AuthRegisterRequestBodyImpl implements _AuthRegisterRequestBody {
-  const _$AuthRegisterRequestBodyImpl(
-      {required this.name,
-      required this.phone,
-      required this.password,
-      required this.birthday});
+  const _$AuthRegisterRequestBodyImpl({
+    required this.name,
+    required this.phone,
+    required this.password,
+    required this.birthday,
+  });
 
   factory _$AuthRegisterRequestBodyImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthRegisterRequestBodyImplFromJson(json);
@@ -189,23 +203,24 @@ class _$AuthRegisterRequestBodyImpl implements _AuthRegisterRequestBody {
   @override
   @pragma('vm:prefer-inline')
   _$$AuthRegisterRequestBodyImplCopyWith<_$AuthRegisterRequestBodyImpl>
-      get copyWith => __$$AuthRegisterRequestBodyImplCopyWithImpl<
-          _$AuthRegisterRequestBodyImpl>(this, _$identity);
+  get copyWith =>
+      __$$AuthRegisterRequestBodyImplCopyWithImpl<
+        _$AuthRegisterRequestBodyImpl
+      >(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$AuthRegisterRequestBodyImplToJson(
-      this,
-    );
+    return _$$AuthRegisterRequestBodyImplToJson(this);
   }
 }
 
 abstract class _AuthRegisterRequestBody implements AuthRegisterRequestBody {
-  const factory _AuthRegisterRequestBody(
-      {required final String name,
-      required final String phone,
-      required final String password,
-      required final DateTime birthday}) = _$AuthRegisterRequestBodyImpl;
+  const factory _AuthRegisterRequestBody({
+    required final String name,
+    required final String phone,
+    required final String password,
+    required final DateTime birthday,
+  }) = _$AuthRegisterRequestBodyImpl;
 
   factory _AuthRegisterRequestBody.fromJson(Map<String, dynamic> json) =
       _$AuthRegisterRequestBodyImpl.fromJson;
@@ -224,5 +239,5 @@ abstract class _AuthRegisterRequestBody implements AuthRegisterRequestBody {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AuthRegisterRequestBodyImplCopyWith<_$AuthRegisterRequestBodyImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

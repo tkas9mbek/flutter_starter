@@ -53,10 +53,7 @@ class ThemeSettingsTile extends StatelessWidget {
           icon: Icons.palette_outlined,
           title: localizer.theme,
           subtitle: themeLabel,
-          trailing: Icon(
-            Icons.chevron_right,
-            color: theme.textSecondary,
-          ),
+          trailing: Icon(Icons.chevron_right, color: theme.textSecondary),
           onTap: () => _showThemeSelector(context),
         );
       },

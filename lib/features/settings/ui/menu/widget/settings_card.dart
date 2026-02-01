@@ -2,10 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class SettingsCard extends StatelessWidget {
-  const SettingsCard({
-    required this.children,
-    super.key,
-  });
+  const SettingsCard({required this.children, super.key});
 
   final List<Widget> children;
 
@@ -25,9 +22,7 @@ class SettingsCard extends StatelessWidget {
           ),
         ],
       ),
-      child: Column(
-        children: children,
-      ),
+      child: Column(children: children),
     );
   }
 }

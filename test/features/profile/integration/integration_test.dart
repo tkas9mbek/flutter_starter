@@ -35,9 +35,10 @@ void main() {
     mockApiClient = MockApiClient();
     profileDataSource = RemoteProfileDataSource(mockApiClient);
     profileRepository = ProfileRepository(
-      const RawRepositoryExecutor()
-          .withErrorHandling()
-          .withRetry(maxRetries: 3, retryDelay: const Duration(seconds: 2)),
+      const RawRepositoryExecutor().withErrorHandling().withRetry(
+        maxRetries: 3,
+        retryDelay: const Duration(seconds: 2),
+      ),
       profileDataSource,
     );
     userBloc = UserBloc(profileRepository);
@@ -125,7 +126,8 @@ void main() {
       expect: () => [
         const UserState.loading(),
         predicate<UserState>(
-          (state) => state.whenOrNull(
+          (state) =>
+              state.whenOrNull(
                 failure: (exception) => exception is ServerException,
               ) ??
               false,
@@ -148,9 +150,7 @@ void main() {
       'updates user state directly without API call',
       build: () => userBloc,
       act: (bloc) => bloc.add(UserEvent.updated(ProfileMockModels.updatedUser)),
-      expect: () => [
-        UserState.success(ProfileMockModels.updatedUser),
-      ],
+      expect: () => [UserState.success(ProfileMockModels.updatedUser)],
       verify: (_) {
         verifyNever(
           () => mockApiClient.requestJson<User>(

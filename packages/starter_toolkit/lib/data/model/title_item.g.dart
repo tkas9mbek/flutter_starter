@@ -7,13 +7,7 @@ part of 'title_item.dart';
 // **************************************************************************
 
 _$TitleItemImpl _$$TitleItemImplFromJson(Map<String, dynamic> json) =>
-    _$TitleItemImpl(
-      title: json['title'] as String,
-      id: json['id'] as String?,
-    );
+    _$TitleItemImpl(title: json['title'] as String, id: json['id'] as String?);
 
 Map<String, dynamic> _$$TitleItemImplToJson(_$TitleItemImpl instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'id': instance.id,
-    };
+    <String, dynamic>{'title': instance.title, 'id': instance.id};

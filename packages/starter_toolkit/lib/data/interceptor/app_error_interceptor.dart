@@ -5,12 +5,10 @@ import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 /// Dio interceptor that converts network errors to AppException types.
 class AppErrorInterceptor extends Interceptor {
+  const AppErrorInterceptor({this.customDioErrorHandler});
+
   /// Provide custom dioErrorHandler to override default behavior.
   final Function(DioException err)? customDioErrorHandler;
-
-  const AppErrorInterceptor({
-    this.customDioErrorHandler,
-  });
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {

@@ -27,8 +27,9 @@ void main() {
     'emits new language when setLanguageOption is called',
     build: () {
       final englishOption = LanguageOption.fromCode('en');
-      when(() => mockRepository.setLanguageOption(englishOption))
-          .thenAnswer((_) async => {});
+      when(
+        () => mockRepository.setLanguageOption(englishOption),
+      ).thenAnswer((_) async => {});
       return languageCubit;
     },
     act: (cubit) {

@@ -6,14 +6,14 @@ import 'package:starter_toolkit/data/repository_executor/repository_executor_dec
 /// Automatically retries failed operations up to [maxRetries] times,
 /// but only if the exception's canRetry is true.
 class RetryExecutor extends RepositoryExecutorDecorator {
-  final int maxRetries;
-  final Duration retryDelay;
-
   const RetryExecutor(
     super.wrapped, {
     this.maxRetries = 3,
     this.retryDelay = const Duration(seconds: 2),
   });
+
+  final int maxRetries;
+  final Duration retryDelay;
 
   @override
   Future<T> execute<T>(Future<T> Function() function) async {

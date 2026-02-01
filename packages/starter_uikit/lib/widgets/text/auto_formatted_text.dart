@@ -47,10 +47,7 @@ class AutoFormattedText extends StatelessWidget {
 
     return RichText(
       textAlign: textAlign,
-      text: TextSpan(
-        style: style,
-        children: textSpans,
-      ),
+      text: TextSpan(style: style, children: textSpans),
     );
   }
 }

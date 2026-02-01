@@ -12,10 +12,13 @@ part of 'paginated_list_items.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 PaginatedListItems<T> _$PaginatedListItemsFromJson<T>(
-    Map<String, dynamic> json, T Function(Object?) fromJsonT) {
+  Map<String, dynamic> json,
+  T Function(Object?) fromJsonT,
+) {
   return _PaginatedListItems<T>.fromJson(json, fromJsonT);
 }
 
@@ -35,16 +38,20 @@ mixin _$PaginatedListItems<T> {
 
 /// @nodoc
 abstract class $PaginatedListItemsCopyWith<T, $Res> {
-  factory $PaginatedListItemsCopyWith(PaginatedListItems<T> value,
-          $Res Function(PaginatedListItems<T>) then) =
-      _$PaginatedListItemsCopyWithImpl<T, $Res, PaginatedListItems<T>>;
+  factory $PaginatedListItemsCopyWith(
+    PaginatedListItems<T> value,
+    $Res Function(PaginatedListItems<T>) then,
+  ) = _$PaginatedListItemsCopyWithImpl<T, $Res, PaginatedListItems<T>>;
   @useResult
   $Res call({int pageLimit, int countItems, int countPages, List<T> elements});
 }
 
 /// @nodoc
-class _$PaginatedListItemsCopyWithImpl<T, $Res,
-        $Val extends PaginatedListItems<T>>
+class _$PaginatedListItemsCopyWithImpl<
+  T,
+  $Res,
+  $Val extends PaginatedListItems<T>
+>
     implements $PaginatedListItemsCopyWith<T, $Res> {
   _$PaginatedListItemsCopyWithImpl(this._value, this._then);
 
@@ -61,33 +68,37 @@ class _$PaginatedListItemsCopyWithImpl<T, $Res,
     Object? countPages = null,
     Object? elements = null,
   }) {
-    return _then(_value.copyWith(
-      pageLimit: null == pageLimit
-          ? _value.pageLimit
-          : pageLimit // ignore: cast_nullable_to_non_nullable
-              as int,
-      countItems: null == countItems
-          ? _value.countItems
-          : countItems // ignore: cast_nullable_to_non_nullable
-              as int,
-      countPages: null == countPages
-          ? _value.countPages
-          : countPages // ignore: cast_nullable_to_non_nullable
-              as int,
-      elements: null == elements
-          ? _value.elements
-          : elements // ignore: cast_nullable_to_non_nullable
-              as List<T>,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            pageLimit: null == pageLimit
+                ? _value.pageLimit
+                : pageLimit // ignore: cast_nullable_to_non_nullable
+                      as int,
+            countItems: null == countItems
+                ? _value.countItems
+                : countItems // ignore: cast_nullable_to_non_nullable
+                      as int,
+            countPages: null == countPages
+                ? _value.countPages
+                : countPages // ignore: cast_nullable_to_non_nullable
+                      as int,
+            elements: null == elements
+                ? _value.elements
+                : elements // ignore: cast_nullable_to_non_nullable
+                      as List<T>,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$PaginatedListItemsImplCopyWith<T, $Res>
     implements $PaginatedListItemsCopyWith<T, $Res> {
-  factory _$$PaginatedListItemsImplCopyWith(_$PaginatedListItemsImpl<T> value,
-          $Res Function(_$PaginatedListItemsImpl<T>) then) =
-      __$$PaginatedListItemsImplCopyWithImpl<T, $Res>;
+  factory _$$PaginatedListItemsImplCopyWith(
+    _$PaginatedListItemsImpl<T> value,
+    $Res Function(_$PaginatedListItemsImpl<T>) then,
+  ) = __$$PaginatedListItemsImplCopyWithImpl<T, $Res>;
   @override
   @useResult
   $Res call({int pageLimit, int countItems, int countPages, List<T> elements});
@@ -95,12 +106,13 @@ abstract class _$$PaginatedListItemsImplCopyWith<T, $Res>
 
 /// @nodoc
 class __$$PaginatedListItemsImplCopyWithImpl<T, $Res>
-    extends _$PaginatedListItemsCopyWithImpl<T, $Res,
-        _$PaginatedListItemsImpl<T>>
+    extends
+        _$PaginatedListItemsCopyWithImpl<T, $Res, _$PaginatedListItemsImpl<T>>
     implements _$$PaginatedListItemsImplCopyWith<T, $Res> {
-  __$$PaginatedListItemsImplCopyWithImpl(_$PaginatedListItemsImpl<T> _value,
-      $Res Function(_$PaginatedListItemsImpl<T>) _then)
-      : super(_value, _then);
+  __$$PaginatedListItemsImplCopyWithImpl(
+    _$PaginatedListItemsImpl<T> _value,
+    $Res Function(_$PaginatedListItemsImpl<T>) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
@@ -110,40 +122,43 @@ class __$$PaginatedListItemsImplCopyWithImpl<T, $Res>
     Object? countPages = null,
     Object? elements = null,
   }) {
-    return _then(_$PaginatedListItemsImpl<T>(
-      pageLimit: null == pageLimit
-          ? _value.pageLimit
-          : pageLimit // ignore: cast_nullable_to_non_nullable
-              as int,
-      countItems: null == countItems
-          ? _value.countItems
-          : countItems // ignore: cast_nullable_to_non_nullable
-              as int,
-      countPages: null == countPages
-          ? _value.countPages
-          : countPages // ignore: cast_nullable_to_non_nullable
-              as int,
-      elements: null == elements
-          ? _value._elements
-          : elements // ignore: cast_nullable_to_non_nullable
-              as List<T>,
-    ));
+    return _then(
+      _$PaginatedListItemsImpl<T>(
+        pageLimit: null == pageLimit
+            ? _value.pageLimit
+            : pageLimit // ignore: cast_nullable_to_non_nullable
+                  as int,
+        countItems: null == countItems
+            ? _value.countItems
+            : countItems // ignore: cast_nullable_to_non_nullable
+                  as int,
+        countPages: null == countPages
+            ? _value.countPages
+            : countPages // ignore: cast_nullable_to_non_nullable
+                  as int,
+        elements: null == elements
+            ? _value._elements
+            : elements // ignore: cast_nullable_to_non_nullable
+                  as List<T>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable(genericArgumentFactories: true)
 class _$PaginatedListItemsImpl<T> implements _PaginatedListItems<T> {
-  _$PaginatedListItemsImpl(
-      {required this.pageLimit,
-      required this.countItems,
-      required this.countPages,
-      required final List<T> elements})
-      : _elements = elements;
+  _$PaginatedListItemsImpl({
+    required this.pageLimit,
+    required this.countItems,
+    required this.countPages,
+    required final List<T> elements,
+  }) : _elements = elements;
 
   factory _$PaginatedListItemsImpl.fromJson(
-          Map<String, dynamic> json, T Function(Object?) fromJsonT) =>
-      _$$PaginatedListItemsImplFromJson(json, fromJsonT);
+    Map<String, dynamic> json,
+    T Function(Object?) fromJsonT,
+  ) => _$$PaginatedListItemsImplFromJson(json, fromJsonT);
 
   @override
   final int pageLimit;
@@ -180,15 +195,23 @@ class _$PaginatedListItemsImpl<T> implements _PaginatedListItems<T> {
 
   @JsonKey(ignore: true)
   @override
-  int get hashCode => Object.hash(runtimeType, pageLimit, countItems,
-      countPages, const DeepCollectionEquality().hash(_elements));
+  int get hashCode => Object.hash(
+    runtimeType,
+    pageLimit,
+    countItems,
+    countPages,
+    const DeepCollectionEquality().hash(_elements),
+  );
 
   @JsonKey(ignore: true)
   @override
   @pragma('vm:prefer-inline')
   _$$PaginatedListItemsImplCopyWith<T, _$PaginatedListItemsImpl<T>>
-      get copyWith => __$$PaginatedListItemsImplCopyWithImpl<T,
-          _$PaginatedListItemsImpl<T>>(this, _$identity);
+  get copyWith =>
+      __$$PaginatedListItemsImplCopyWithImpl<T, _$PaginatedListItemsImpl<T>>(
+        this,
+        _$identity,
+      );
 
   @override
   Map<String, dynamic> toJson(Object? Function(T) toJsonT) {
@@ -197,15 +220,17 @@ class _$PaginatedListItemsImpl<T> implements _PaginatedListItems<T> {
 }
 
 abstract class _PaginatedListItems<T> implements PaginatedListItems<T> {
-  factory _PaginatedListItems(
-      {required final int pageLimit,
-      required final int countItems,
-      required final int countPages,
-      required final List<T> elements}) = _$PaginatedListItemsImpl<T>;
+  factory _PaginatedListItems({
+    required final int pageLimit,
+    required final int countItems,
+    required final int countPages,
+    required final List<T> elements,
+  }) = _$PaginatedListItemsImpl<T>;
 
   factory _PaginatedListItems.fromJson(
-          Map<String, dynamic> json, T Function(Object?) fromJsonT) =
-      _$PaginatedListItemsImpl<T>.fromJson;
+    Map<String, dynamic> json,
+    T Function(Object?) fromJsonT,
+  ) = _$PaginatedListItemsImpl<T>.fromJson;
 
   @override
   int get pageLimit;
@@ -218,5 +243,5 @@ abstract class _PaginatedListItems<T> implements PaginatedListItems<T> {
   @override
   @JsonKey(ignore: true)
   _$$PaginatedListItemsImplCopyWith<T, _$PaginatedListItemsImpl<T>>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

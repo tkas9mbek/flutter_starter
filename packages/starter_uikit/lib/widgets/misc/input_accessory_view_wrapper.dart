@@ -6,10 +6,7 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 class InputAccessoryViewWrapper extends StatelessWidget {
   /// Wraps the [child] with an input accessory view that contains a "Done" button.
   /// The "Done" button will hide the keyboard when pressed.
-  const InputAccessoryViewWrapper({
-    required this.child,
-    super.key,
-  });
+  const InputAccessoryViewWrapper({required this.child, super.key});
 
   final Widget child;
 
@@ -24,9 +21,7 @@ class InputAccessoryViewWrapper extends StatelessWidget {
       builder: (context, visibility) => Stack(
         children: [
           Padding(
-            padding: EdgeInsets.only(
-              bottom: visibility ? buttonsHeight : 0,
-            ),
+            padding: EdgeInsets.only(bottom: visibility ? buttonsHeight : 0),
             child: child,
           ),
           if (visibility) ...[
@@ -40,15 +35,10 @@ class InputAccessoryViewWrapper extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: theme.surface,
                   border: Border(
-                    top: BorderSide(
-                      color: theme.border,
-                      width: 0.5,
-                    ),
+                    top: BorderSide(color: theme.border, width: 0.5),
                   ),
                 ),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
+                padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Row(
                   children: [
                     const Spacer(),

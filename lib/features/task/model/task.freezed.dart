@@ -12,7 +12,8 @@ part of 'task.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 Task _$TaskFromJson(Map<String, dynamic> json) {
   return _Task.fromJson(json);
@@ -42,14 +43,15 @@ abstract class $TaskCopyWith<$Res> {
   factory $TaskCopyWith(Task value, $Res Function(Task) then) =
       _$TaskCopyWithImpl<$Res, Task>;
   @useResult
-  $Res call(
-      {String id,
-      String title,
-      String description,
-      DateTime date,
-      DateTime startTime,
-      DateTime endTime,
-      bool isCompleted});
+  $Res call({
+    String id,
+    String title,
+    String description,
+    DateTime date,
+    DateTime startTime,
+    DateTime endTime,
+    bool isCompleted,
+  });
 }
 
 /// @nodoc
@@ -75,54 +77,59 @@ class _$TaskCopyWithImpl<$Res, $Val extends Task>
     Object? endTime = null,
     Object? isCompleted = null,
   }) {
-    return _then(_value.copyWith(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      startTime: null == startTime
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      endTime: null == endTime
-          ? _value.endTime
-          : endTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      isCompleted: null == isCompleted
-          ? _value.isCompleted
-          : isCompleted // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            id: null == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String,
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            description: null == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                      as String,
+            date: null == date
+                ? _value.date
+                : date // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            startTime: null == startTime
+                ? _value.startTime
+                : startTime // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            endTime: null == endTime
+                ? _value.endTime
+                : endTime // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            isCompleted: null == isCompleted
+                ? _value.isCompleted
+                : isCompleted // ignore: cast_nullable_to_non_nullable
+                      as bool,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$TaskImplCopyWith<$Res> implements $TaskCopyWith<$Res> {
   factory _$$TaskImplCopyWith(
-          _$TaskImpl value, $Res Function(_$TaskImpl) then) =
-      __$$TaskImplCopyWithImpl<$Res>;
+    _$TaskImpl value,
+    $Res Function(_$TaskImpl) then,
+  ) = __$$TaskImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String id,
-      String title,
-      String description,
-      DateTime date,
-      DateTime startTime,
-      DateTime endTime,
-      bool isCompleted});
+  $Res call({
+    String id,
+    String title,
+    String description,
+    DateTime date,
+    DateTime startTime,
+    DateTime endTime,
+    bool isCompleted,
+  });
 }
 
 /// @nodoc
@@ -130,7 +137,7 @@ class __$$TaskImplCopyWithImpl<$Res>
     extends _$TaskCopyWithImpl<$Res, _$TaskImpl>
     implements _$$TaskImplCopyWith<$Res> {
   __$$TaskImplCopyWithImpl(_$TaskImpl _value, $Res Function(_$TaskImpl) _then)
-      : super(_value, _then);
+    : super(_value, _then);
 
   /// Create a copy of Task
   /// with the given fields replaced by the non-null parameter values.
@@ -145,50 +152,53 @@ class __$$TaskImplCopyWithImpl<$Res>
     Object? endTime = null,
     Object? isCompleted = null,
   }) {
-    return _then(_$TaskImpl(
-      id: null == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String,
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      startTime: null == startTime
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      endTime: null == endTime
-          ? _value.endTime
-          : endTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      isCompleted: null == isCompleted
-          ? _value.isCompleted
-          : isCompleted // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ));
+    return _then(
+      _$TaskImpl(
+        id: null == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String,
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        description: null == description
+            ? _value.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String,
+        date: null == date
+            ? _value.date
+            : date // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        startTime: null == startTime
+            ? _value.startTime
+            : startTime // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        endTime: null == endTime
+            ? _value.endTime
+            : endTime // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        isCompleted: null == isCompleted
+            ? _value.isCompleted
+            : isCompleted // ignore: cast_nullable_to_non_nullable
+                  as bool,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$TaskImpl implements _Task {
-  const _$TaskImpl(
-      {required this.id,
-      required this.title,
-      required this.description,
-      required this.date,
-      required this.startTime,
-      required this.endTime,
-      required this.isCompleted});
+  const _$TaskImpl({
+    required this.id,
+    required this.title,
+    required this.description,
+    required this.date,
+    required this.startTime,
+    required this.endTime,
+    required this.isCompleted,
+  });
 
   factory _$TaskImpl.fromJson(Map<String, dynamic> json) =>
       _$$TaskImplFromJson(json);
@@ -232,8 +242,16 @@ class _$TaskImpl implements _Task {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, title, description, date,
-      startTime, endTime, isCompleted);
+  int get hashCode => Object.hash(
+    runtimeType,
+    id,
+    title,
+    description,
+    date,
+    startTime,
+    endTime,
+    isCompleted,
+  );
 
   /// Create a copy of Task
   /// with the given fields replaced by the non-null parameter values.
@@ -245,21 +263,20 @@ class _$TaskImpl implements _Task {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$TaskImplToJson(
-      this,
-    );
+    return _$$TaskImplToJson(this);
   }
 }
 
 abstract class _Task implements Task {
-  const factory _Task(
-      {required final String id,
-      required final String title,
-      required final String description,
-      required final DateTime date,
-      required final DateTime startTime,
-      required final DateTime endTime,
-      required final bool isCompleted}) = _$TaskImpl;
+  const factory _Task({
+    required final String id,
+    required final String title,
+    required final String description,
+    required final DateTime date,
+    required final DateTime startTime,
+    required final DateTime endTime,
+    required final bool isCompleted,
+  }) = _$TaskImpl;
 
   factory _Task.fromJson(Map<String, dynamic> json) = _$TaskImpl.fromJson;
 

@@ -43,16 +43,8 @@ class BottomNavItem extends StatelessWidget {
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
             const SizedBox(height: 4),
-            Text(
-              title,
-              style: textStyles.regularBody13.copyWith(
-                color: color,
-              ),
-            ),
-            const SafeVerticalBox(
-              height: 10,
-              bottom: true,
-            ),
+            Text(title, style: textStyles.regularBody13.copyWith(color: color)),
+            const SafeVerticalBox(height: 10, bottom: true),
           ],
         ),
       ),

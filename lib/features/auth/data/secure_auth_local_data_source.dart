@@ -5,13 +5,10 @@ import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
 
 class SecureAuthLocalDataSource implements AuthLocalDataSource {
+  const SecureAuthLocalDataSource(this._secureStorage, this._sharedPreferences);
+
   final FlutterSecureStorage _secureStorage;
   final SharedPreferences _sharedPreferences;
-
-  const SecureAuthLocalDataSource(
-    this._secureStorage,
-    this._sharedPreferences,
-  );
 
   @override
   Future<void> clearStorage() => _secureStorage.deleteAll();
@@ -32,7 +29,7 @@ class SecureAuthLocalDataSource implements AuthLocalDataSource {
   Future<void> clearIfNotLaunchedBefore() async {
     final launchedBefore =
         _sharedPreferences.getBool(SharedPreferencesKeys.launchedBefore) ??
-            false;
+        false;
 
     if (!launchedBefore) {
       await _sharedPreferences.setBool(
@@ -45,18 +42,17 @@ class SecureAuthLocalDataSource implements AuthLocalDataSource {
 
   @override
   Future<AuthToken?> getToken() async {
-    final accessToken =
-        await _secureStorage.read(key: SecureStorageKeys.jwtTokenKey);
-    final refreshToken =
-        await _secureStorage.read(key: SecureStorageKeys.refreshToken);
+    final accessToken = await _secureStorage.read(
+      key: SecureStorageKeys.jwtTokenKey,
+    );
+    final refreshToken = await _secureStorage.read(
+      key: SecureStorageKeys.refreshToken,
+    );
 
     if (accessToken == null || refreshToken == null) {
       return null;
     }
 
-    return AuthToken(
-      accessToken: accessToken,
-      refreshToken: refreshToken,
-    );
+    return AuthToken(accessToken: accessToken, refreshToken: refreshToken);
   }
 }

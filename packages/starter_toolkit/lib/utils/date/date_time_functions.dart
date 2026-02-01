@@ -97,7 +97,9 @@ String getLocalizedDateLabel(BuildContext context, DateTime date) {
   return switch (dateWithoutTime) {
     final d when d == today => ToolkitLocalizer.of(context).today,
     final d when d == yesterday => ToolkitLocalizer.of(context).yesterday,
-    _ => DateFormat('d MMMM', Localizations.localeOf(context).languageCode)
-        .format(dateWithoutTime),
+    _ => DateFormat(
+      'd MMMM',
+      Localizations.localeOf(context).languageCode,
+    ).format(dateWithoutTime),
   };
 }

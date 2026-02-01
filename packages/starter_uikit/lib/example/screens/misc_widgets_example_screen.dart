@@ -26,10 +26,7 @@ class MiscWidgetsExampleScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(
-              localizer.networkAvatar,
-              style: textStyles.mediumBody16,
-            ),
+            Text(localizer.networkAvatar, style: textStyles.mediumBody16),
             const SizedBox(height: 12),
             const Row(
               children: [
@@ -50,10 +47,7 @@ class MiscWidgetsExampleScreen extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 24),
-            Text(
-              localizer.thinDivider,
-              style: textStyles.mediumBody16,
-            ),
+            Text(localizer.thinDivider, style: textStyles.mediumBody16),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(16),
@@ -72,16 +66,11 @@ class MiscWidgetsExampleScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            Text(
-              localizer.progressIndicator,
-              style: textStyles.mediumBody16,
-            ),
+            Text(localizer.progressIndicator, style: textStyles.mediumBody16),
             const SizedBox(height: 12),
             const SizedBox(
               height: 100,
-              child: Center(
-                child: CustomCircularProgressIndicator(),
-              ),
+              child: Center(child: CustomCircularProgressIndicator()),
             ),
           ],
         ),

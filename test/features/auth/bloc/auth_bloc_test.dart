@@ -30,7 +30,9 @@ void main() {
     unauthorizedDataSource = MockUnauthorizedDataSource();
     localDataSource = MockLocalDataSource();
     authRepository = AuthRepository(
-      const RawRepositoryExecutor().withErrorHandling().withRetry(maxRetries: 3),
+      const RawRepositoryExecutor().withErrorHandling().withRetry(
+        maxRetries: 3,
+      ),
       authorizedDataSource,
       unauthorizedDataSource,
       localDataSource,
@@ -42,67 +44,62 @@ void main() {
     expect(authBloc.state, const AuthState.unknown());
   });
 
-  group(
-    'on initialized() event',
-    () {
-      const event = AuthEvent.initialized();
+  group('on initialized() event', () {
+    const event = AuthEvent.initialized();
 
-      blocTest<AuthBloc, AuthState>(
-        'emits [loading, authenticated] when hasToken is true.',
-        build: () {
-          when(() => localDataSource.clearIfNotLaunchedBefore())
-              .thenAnswer((_) async {});
-          when(() => localDataSource.getToken())
-              .thenAnswer((_) async => AuthMockModels.authToken);
-          return authBloc;
-        },
-        act: (bloc) => bloc.add(event),
-        expect: () => [
-          const AuthState.authenticated(),
-        ],
-        verify: (_) {
-          verify(() => localDataSource.clearIfNotLaunchedBefore()).called(1);
-          verify(() => localDataSource.getToken()).called(1);
-        },
-      );
+    blocTest<AuthBloc, AuthState>(
+      'emits [loading, authenticated] when hasToken is true.',
+      build: () {
+        when(
+          () => localDataSource.clearIfNotLaunchedBefore(),
+        ).thenAnswer((_) async {});
+        when(
+          () => localDataSource.getToken(),
+        ).thenAnswer((_) async => AuthMockModels.authToken);
+        return authBloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [const AuthState.authenticated()],
+      verify: (_) {
+        verify(() => localDataSource.clearIfNotLaunchedBefore()).called(1);
+        verify(() => localDataSource.getToken()).called(1);
+      },
+    );
 
-      blocTest<AuthBloc, AuthState>(
-        'emits [loading, unauthenticated] when hasToken is false.',
-        build: () {
-          when(() => localDataSource.clearIfNotLaunchedBefore())
-              .thenAnswer((_) async {});
-          when(() => localDataSource.getToken()).thenAnswer((_) async => null);
-          return authBloc;
-        },
-        act: (bloc) => bloc.add(event),
-        expect: () => [
-          const AuthState.unauthenticated(),
-        ],
-        verify: (_) {
-          verify(() => localDataSource.clearIfNotLaunchedBefore()).called(1);
-          verify(() => localDataSource.getToken()).called(1);
-        },
-      );
+    blocTest<AuthBloc, AuthState>(
+      'emits [loading, unauthenticated] when hasToken is false.',
+      build: () {
+        when(
+          () => localDataSource.clearIfNotLaunchedBefore(),
+        ).thenAnswer((_) async {});
+        when(() => localDataSource.getToken()).thenAnswer((_) async => null);
+        return authBloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [const AuthState.unauthenticated()],
+      verify: (_) {
+        verify(() => localDataSource.clearIfNotLaunchedBefore()).called(1);
+        verify(() => localDataSource.getToken()).called(1);
+      },
+    );
 
-      blocTest<AuthBloc, AuthState>(
-        'emits [loading, unauthenticated] when hasToken throws an exception.',
-        build: () {
-          when(() => localDataSource.clearIfNotLaunchedBefore())
-              .thenAnswer((_) async {});
-          when(() => localDataSource.getToken()).thenThrow(Exception('Error'));
-          return authBloc;
-        },
-        act: (bloc) => bloc.add(event),
-        expect: () => [
-          const AuthState.unauthenticated(),
-        ],
-        verify: (_) {
-          verify(() => localDataSource.clearIfNotLaunchedBefore()).called(1);
-          verify(() => localDataSource.getToken()).called(1);
-        },
-      );
-    },
-  );
+    blocTest<AuthBloc, AuthState>(
+      'emits [loading, unauthenticated] when hasToken throws an exception.',
+      build: () {
+        when(
+          () => localDataSource.clearIfNotLaunchedBefore(),
+        ).thenAnswer((_) async {});
+        when(() => localDataSource.getToken()).thenThrow(Exception('Error'));
+        return authBloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [const AuthState.unauthenticated()],
+      verify: (_) {
+        verify(() => localDataSource.clearIfNotLaunchedBefore()).called(1);
+        verify(() => localDataSource.getToken()).called(1);
+      },
+    );
+  });
 
   group('on logoutRequested() event', () {
     const event = AuthEvent.logoutRequested();
@@ -115,9 +112,7 @@ void main() {
         return authBloc;
       },
       act: (bloc) => bloc.add(event),
-      expect: () => [
-        const AuthState.unauthenticated(),
-      ],
+      expect: () => [const AuthState.unauthenticated()],
       verify: (_) {
         verify(() => localDataSource.clearStorage()).called(1);
         verify(() => authorizedDataSource.logout()).called(1);
@@ -132,9 +127,7 @@ void main() {
       'emits [unauthenticated] state.',
       build: () => authBloc,
       act: (bloc) => bloc.add(event),
-      expect: () => [
-        const AuthState.unauthenticated(),
-      ],
+      expect: () => [const AuthState.unauthenticated()],
     );
   });
 
@@ -145,9 +138,7 @@ void main() {
       'emits [authenticated] state.',
       build: () => authBloc,
       act: (bloc) => bloc.add(event),
-      expect: () => [
-        const AuthState.authenticated(),
-      ],
+      expect: () => [const AuthState.authenticated()],
     );
   });
 }

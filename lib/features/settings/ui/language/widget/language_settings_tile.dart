@@ -40,10 +40,7 @@ class LanguageSettingsTile extends StatelessWidget {
         icon: Icons.language_outlined,
         title: localizer.language,
         subtitle: currentLanguage.name,
-        trailing: Icon(
-          Icons.chevron_right,
-          color: theme.textSecondary,
-        ),
+        trailing: Icon(Icons.chevron_right, color: theme.textSecondary),
         onTap: () => _showLanguageSelector(context),
       ),
     );

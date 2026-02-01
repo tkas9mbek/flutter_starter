@@ -5,6 +5,7 @@ extension RepositoryExecutorExtensions on RepositoryExecutor {
   /// Wraps executor with error handling.
   ///
   /// Converts all exceptions to AppException types.
+  // ignore: use_to_and_as_if_applicable
   RepositoryExecutor withErrorHandling() {
     return ErrorHandlingExecutor(this);
   }
@@ -16,11 +17,7 @@ extension RepositoryExecutorExtensions on RepositoryExecutor {
     int maxRetries = 3,
     Duration retryDelay = const Duration(seconds: 2),
   }) {
-    return RetryExecutor(
-      this,
-      maxRetries: maxRetries,
-      retryDelay: retryDelay,
-    );
+    return RetryExecutor(this, maxRetries: maxRetries, retryDelay: retryDelay);
   }
 
   /// Wraps executor with caching capability.
@@ -29,9 +26,6 @@ extension RepositoryExecutorExtensions on RepositoryExecutor {
   CachingExecutor withCaching({
     Duration defaultTtl = const Duration(minutes: 5),
   }) {
-    return CachingExecutor(
-      this,
-      defaultTtl: defaultTtl,
-    );
+    return CachingExecutor(this, defaultTtl: defaultTtl);
   }
 }

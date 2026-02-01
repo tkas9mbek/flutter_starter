@@ -1,15 +1,15 @@
 import 'package:dio/dio.dart';
 
 class AuthRefreshInterceptor extends QueuedInterceptor {
-  final Dio dio;
-  final Future<void> Function()? tryRefreshToken;
-  final Future<void> Function()? logout;
-
   AuthRefreshInterceptor({
     required this.dio,
     this.tryRefreshToken,
     this.logout,
   });
+
+  final Dio dio;
+  final Future<void> Function()? tryRefreshToken;
+  final Future<void> Function()? logout;
 
   @override
   Future<void> onError(

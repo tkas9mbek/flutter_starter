@@ -40,7 +40,8 @@ Future<void> main() async {
   print('Don\'t forget to run:');
   print('  dart format .');
   print(
-      '  fvm flutter pub run build_runner build --delete-conflicting-outputs');
+    '  fvm flutter pub run build_runner build --delete-conflicting-outputs',
+  );
 }
 
 /// Parsed exception class information
@@ -136,11 +137,13 @@ class ExceptionAnalyzer extends SimpleAstVisitor<void> {
           // Determine if required based on nullability
           final isRequired = !fieldType.endsWith('?');
 
-          parameters.add(FactoryParameter(
-            name: fieldName,
-            type: fieldType,
-            isRequired: isRequired,
-          ));
+          parameters.add(
+            FactoryParameter(
+              name: fieldName,
+              type: fieldType,
+              isRequired: isRequired,
+            ),
+          );
         }
       }
     }
@@ -162,12 +165,14 @@ class ExceptionAnalyzer extends SimpleAstVisitor<void> {
       }
     }
 
-    factories.add(ExceptionFactory(
-      className: className,
-      parameters: parameters,
-      config: config,
-      canRetry: canRetry,
-    ));
+    factories.add(
+      ExceptionFactory(
+        className: className,
+        parameters: parameters,
+        config: config,
+        canRetry: canRetry,
+      ),
+    );
   }
 
   ExceptionUiConfigData? _parseAnnotation(ClassDeclaration classNode) {
@@ -237,14 +242,16 @@ class ExceptionUiMapperGenerator {
     for (final factory in factories) {
       if (factory.parameters.isEmpty) {
         buffer.writeln(
-            '      ${factory.className}() => ${factory.mapperMethodName}(),');
+          '      ${factory.className}() => ${factory.mapperMethodName}(),',
+        );
       } else {
         final destructuredParams = factory.parameters
             .map((p) => '${p.name}: final ${p.name}')
             .join(', ');
         final paramNames = factory.parameters.map((p) => p.name).join(', ');
         buffer.writeln(
-            '      ${factory.className}($destructuredParams) => ${factory.mapperMethodName}($paramNames),');
+          '      ${factory.className}($destructuredParams) => ${factory.mapperMethodName}($paramNames),',
+        );
       }
     }
 
@@ -267,8 +274,9 @@ class ExceptionUiMapperGenerator {
     buffer.writeln('  @protected');
     buffer.write('  ExceptionUiModel ${factory.mapperMethodName}(');
 
-    final params =
-        factory.parameters.map((p) => '${p.type} ${p.name}').join(', ');
+    final params = factory.parameters
+        .map((p) => '${p.type} ${p.name}')
+        .join(', ');
     buffer.write(params);
     buffer.writeln(') {');
 
@@ -315,8 +323,9 @@ class ExceptionUiMapperGenerator {
       buffer.writeln('  @override');
       buffer.write('  ExceptionUiModel ${factory.mapperMethodName}(');
 
-      final params =
-          factory.parameters.map((p) => '${p.type} ${p.name}').join(', ');
+      final params = factory.parameters
+          .map((p) => '${p.type} ${p.name}')
+          .join(', ');
       buffer.write(params);
 
       buffer.write(') => wrapped.${factory.mapperMethodName}(');

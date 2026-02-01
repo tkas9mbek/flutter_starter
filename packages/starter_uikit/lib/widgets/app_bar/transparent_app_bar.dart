@@ -101,10 +101,7 @@ class _TransparentAppBarState extends State<TransparentAppBar> {
               ),
               bottom: PreferredSize(
                 preferredSize: widget.bottom?.preferredSize ?? Size.zero,
-                child: Opacity(
-                  opacity: 0,
-                  child: widget.bottom,
-                ),
+                child: Opacity(opacity: 0, child: widget.bottom),
               ),
               title: SizedBox(
                 height: widget.height,

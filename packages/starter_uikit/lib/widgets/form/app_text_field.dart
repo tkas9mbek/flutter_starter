@@ -149,7 +149,8 @@ class _AppTextFieldState extends State<AppTextField> {
                     autofocus: widget.autofocus,
                     obscureText: obscureText,
                     textCapitalization: widget.textCapitalization,
-                    style: widget.textStyle ??
+                    style:
+                        widget.textStyle ??
                         textStyles.regularBody14.copyWith(color: widget.color),
                     keyboardType: widget.keyboardType,
                     inputFormatters: widget.inputFormatters,
@@ -170,7 +171,8 @@ class _AppTextFieldState extends State<AppTextField> {
                       floatingLabelStyle: textStyles.regularBody13.copyWith(
                         fontSize: 12 * 1.4,
                         height: 1,
-                        color: (widget.colorLabelOnError &&
+                        color:
+                            (widget.colorLabelOnError &&
                                 !(controller?.isValid ?? true))
                             ? theme.error
                             : (widget.color ?? theme.textPrimary),
@@ -214,8 +216,9 @@ class _AppTextFieldState extends State<AppTextField> {
                     (value?.isEmpty ?? true)
                         ? widget.maxLength.toString()
                         : '${value?.length ?? 0}/${widget.maxLength}',
-                    style: textStyles.regularBody13
-                        .copyWith(color: theme.textPrimary),
+                    style: textStyles.regularBody13.copyWith(
+                      color: theme.textPrimary,
+                    ),
                   ),
                 ],
               ],

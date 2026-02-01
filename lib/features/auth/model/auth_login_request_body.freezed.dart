@@ -12,7 +12,8 @@ part of 'auth_login_request_body.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 AuthLoginRequestBody _$AuthLoginRequestBodyFromJson(Map<String, dynamic> json) {
   return _AuthLoginRequestBody.fromJson(json);
@@ -35,16 +36,19 @@ mixin _$AuthLoginRequestBody {
 
 /// @nodoc
 abstract class $AuthLoginRequestBodyCopyWith<$Res> {
-  factory $AuthLoginRequestBodyCopyWith(AuthLoginRequestBody value,
-          $Res Function(AuthLoginRequestBody) then) =
-      _$AuthLoginRequestBodyCopyWithImpl<$Res, AuthLoginRequestBody>;
+  factory $AuthLoginRequestBodyCopyWith(
+    AuthLoginRequestBody value,
+    $Res Function(AuthLoginRequestBody) then,
+  ) = _$AuthLoginRequestBodyCopyWithImpl<$Res, AuthLoginRequestBody>;
   @useResult
   $Res call({String phone, String password});
 }
 
 /// @nodoc
-class _$AuthLoginRequestBodyCopyWithImpl<$Res,
-        $Val extends AuthLoginRequestBody>
+class _$AuthLoginRequestBodyCopyWithImpl<
+  $Res,
+  $Val extends AuthLoginRequestBody
+>
     implements $AuthLoginRequestBodyCopyWith<$Res> {
   _$AuthLoginRequestBodyCopyWithImpl(this._value, this._then);
 
@@ -57,29 +61,30 @@ class _$AuthLoginRequestBodyCopyWithImpl<$Res,
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? phone = null,
-    Object? password = null,
-  }) {
-    return _then(_value.copyWith(
-      phone: null == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String,
-      password: null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  $Res call({Object? phone = null, Object? password = null}) {
+    return _then(
+      _value.copyWith(
+            phone: null == phone
+                ? _value.phone
+                : phone // ignore: cast_nullable_to_non_nullable
+                      as String,
+            password: null == password
+                ? _value.password
+                : password // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$AuthLoginRequestBodyImplCopyWith<$Res>
     implements $AuthLoginRequestBodyCopyWith<$Res> {
-  factory _$$AuthLoginRequestBodyImplCopyWith(_$AuthLoginRequestBodyImpl value,
-          $Res Function(_$AuthLoginRequestBodyImpl) then) =
-      __$$AuthLoginRequestBodyImplCopyWithImpl<$Res>;
+  factory _$$AuthLoginRequestBodyImplCopyWith(
+    _$AuthLoginRequestBodyImpl value,
+    $Res Function(_$AuthLoginRequestBodyImpl) then,
+  ) = __$$AuthLoginRequestBodyImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String phone, String password});
@@ -89,36 +94,38 @@ abstract class _$$AuthLoginRequestBodyImplCopyWith<$Res>
 class __$$AuthLoginRequestBodyImplCopyWithImpl<$Res>
     extends _$AuthLoginRequestBodyCopyWithImpl<$Res, _$AuthLoginRequestBodyImpl>
     implements _$$AuthLoginRequestBodyImplCopyWith<$Res> {
-  __$$AuthLoginRequestBodyImplCopyWithImpl(_$AuthLoginRequestBodyImpl _value,
-      $Res Function(_$AuthLoginRequestBodyImpl) _then)
-      : super(_value, _then);
+  __$$AuthLoginRequestBodyImplCopyWithImpl(
+    _$AuthLoginRequestBodyImpl _value,
+    $Res Function(_$AuthLoginRequestBodyImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthLoginRequestBody
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? phone = null,
-    Object? password = null,
-  }) {
-    return _then(_$AuthLoginRequestBodyImpl(
-      phone: null == phone
-          ? _value.phone
-          : phone // ignore: cast_nullable_to_non_nullable
-              as String,
-      password: null == password
-          ? _value.password
-          : password // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? phone = null, Object? password = null}) {
+    return _then(
+      _$AuthLoginRequestBodyImpl(
+        phone: null == phone
+            ? _value.phone
+            : phone // ignore: cast_nullable_to_non_nullable
+                  as String,
+        password: null == password
+            ? _value.password
+            : password // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$AuthLoginRequestBodyImpl implements _AuthLoginRequestBody {
-  const _$AuthLoginRequestBodyImpl(
-      {required this.phone, required this.password});
+  const _$AuthLoginRequestBodyImpl({
+    required this.phone,
+    required this.password,
+  });
 
   factory _$AuthLoginRequestBodyImpl.fromJson(Map<String, dynamic> json) =>
       _$$AuthLoginRequestBodyImplFromJson(json);
@@ -153,22 +160,23 @@ class _$AuthLoginRequestBodyImpl implements _AuthLoginRequestBody {
   @override
   @pragma('vm:prefer-inline')
   _$$AuthLoginRequestBodyImplCopyWith<_$AuthLoginRequestBodyImpl>
-      get copyWith =>
-          __$$AuthLoginRequestBodyImplCopyWithImpl<_$AuthLoginRequestBodyImpl>(
-              this, _$identity);
+  get copyWith =>
+      __$$AuthLoginRequestBodyImplCopyWithImpl<_$AuthLoginRequestBodyImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$AuthLoginRequestBodyImplToJson(
-      this,
-    );
+    return _$$AuthLoginRequestBodyImplToJson(this);
   }
 }
 
 abstract class _AuthLoginRequestBody implements AuthLoginRequestBody {
-  const factory _AuthLoginRequestBody(
-      {required final String phone,
-      required final String password}) = _$AuthLoginRequestBodyImpl;
+  const factory _AuthLoginRequestBody({
+    required final String phone,
+    required final String password,
+  }) = _$AuthLoginRequestBodyImpl;
 
   factory _AuthLoginRequestBody.fromJson(Map<String, dynamic> json) =
       _$AuthLoginRequestBodyImpl.fromJson;
@@ -183,5 +191,5 @@ abstract class _AuthLoginRequestBody implements AuthLoginRequestBody {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$AuthLoginRequestBodyImplCopyWith<_$AuthLoginRequestBodyImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

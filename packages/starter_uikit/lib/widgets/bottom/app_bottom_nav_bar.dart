@@ -6,10 +6,7 @@ class AppBottomNavBar extends StatelessWidget {
   /// and shadow.
   /// The children are evenly distributed across the width of the screen.
   /// * [children] is a list of [BottomNavItem] widgets.
-  const AppBottomNavBar({
-    required this.children,
-    super.key,
-  });
+  const AppBottomNavBar({required this.children, super.key});
 
   final List<Widget> children;
 
@@ -18,14 +15,10 @@ class AppBottomNavBar extends StatelessWidget {
     final theme = ThemeProvider.of(context).theme;
 
     return DecoratedBox(
-      decoration: BoxDecoration(
-        color: theme.surface,
-      ),
+      decoration: BoxDecoration(color: theme.surface),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 10),
-        child: Row(
-          children: children.map((e) => Expanded(child: e)).toList(),
-        ),
+        child: Row(children: children.map((e) => Expanded(child: e)).toList()),
       ),
     );
   }

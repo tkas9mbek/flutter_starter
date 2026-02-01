@@ -16,6 +16,5 @@ class PaginatedListItems<T> with _$PaginatedListItems<T> {
   factory PaginatedListItems.fromJson(
     Map<String, dynamic> json,
     T Function(Object?) fromJsonT,
-  ) =>
-      _$PaginatedListItemsFromJson<T>(json, fromJsonT);
+  ) => _$PaginatedListItemsFromJson<T>(json, fromJsonT);
 }

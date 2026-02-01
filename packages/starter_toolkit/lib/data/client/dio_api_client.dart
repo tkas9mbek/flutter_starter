@@ -6,11 +6,9 @@ import 'package:starter_toolkit/data/client/http_method.dart';
 ///
 /// Handles HTTP requests using Dio with methods organized by response type.
 class DioApiClient implements ApiClient {
-  DioApiClient({
-    required Dio dio,
-    required String baseUrl,
-  })  : _dio = dio,
-        _baseUrl = baseUrl;
+  DioApiClient({required Dio dio, required String baseUrl})
+    : _dio = dio,
+      _baseUrl = baseUrl;
 
   final Dio _dio;
   final String _baseUrl;
@@ -153,10 +151,7 @@ class DioApiClient implements ApiClient {
     Map<String, dynamic>? headers,
   }) {
     final url = _buildUrl(path);
-    final options = Options(
-      headers: headers,
-      responseType: responseType,
-    );
+    final options = Options(headers: headers, responseType: responseType);
 
     switch (method) {
       case HttpMethod.get:

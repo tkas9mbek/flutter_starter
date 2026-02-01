@@ -28,12 +28,12 @@ class TaskDeleteState with _$TaskDeleteState {
 }
 
 class TaskDeleteBloc extends Bloc<TaskDeleteEvent, TaskDeleteState> {
-  final TaskRepository _taskRepository;
-
   TaskDeleteBloc(this._taskRepository)
-      : super(const TaskDeleteState.initial()) {
+    : super(const TaskDeleteState.initial()) {
     on<_DeletedTaskDeleteEvent>(_onDeleted);
   }
+
+  final TaskRepository _taskRepository;
 
   Future<void> _onDeleted(
     _DeletedTaskDeleteEvent event,

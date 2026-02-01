@@ -33,8 +33,9 @@ void main() {
     blocTest<TasksListBloc, TasksListState>(
       'emits [loading, success] when getTasks is successful',
       build: () {
-        when(() => mockDataSource.getTasks())
-            .thenAnswer((_) async => TaskMockModels.allTasks);
+        when(
+          () => mockDataSource.getTasks(),
+        ).thenAnswer((_) async => TaskMockModels.allTasks);
 
         return tasksListBloc;
       },
@@ -71,10 +72,7 @@ void main() {
       act: (bloc) => bloc.add(const TasksListEvent.requested()),
       expect: () => [
         const TasksListState.loading(),
-        const TasksListState.success(
-          tasks: [],
-          groupedTasks: {},
-        ),
+        const TasksListState.success(tasks: [], groupedTasks: {}),
       ],
       verify: (_) {
         verify(() => mockDataSource.getTasks()).called(1);
@@ -86,8 +84,9 @@ void main() {
       build: () {
         final unsortedTasks = [TaskMockModels.task2, TaskMockModels.task1];
 
-        when(() => mockDataSource.getTasks())
-            .thenAnswer((_) async => unsortedTasks);
+        when(
+          () => mockDataSource.getTasks(),
+        ).thenAnswer((_) async => unsortedTasks);
 
         return tasksListBloc;
       },
@@ -109,8 +108,9 @@ void main() {
     blocTest<TasksListBloc, TasksListState>(
       'emits [loading, failure] when getTasks fails with no internet',
       build: () {
-        when(() => mockDataSource.getTasks())
-            .thenThrow(const NoInternetException());
+        when(
+          () => mockDataSource.getTasks(),
+        ).thenThrow(const NoInternetException());
 
         return tasksListBloc;
       },
@@ -127,8 +127,9 @@ void main() {
     blocTest<TasksListBloc, TasksListState>(
       'emits [loading, failure] when getTasks fails with server error',
       build: () {
-        when(() => mockDataSource.getTasks())
-            .thenThrow(const ServerException(statusCode: 500));
+        when(
+          () => mockDataSource.getTasks(),
+        ).thenThrow(const ServerException(statusCode: 500));
 
         return tasksListBloc;
       },
@@ -136,7 +137,8 @@ void main() {
       expect: () => [
         const TasksListState.loading(),
         predicate<TasksListState>(
-          (state) => state.whenOrNull(
+          (state) =>
+              state.whenOrNull(
                 failure: (exception) => exception is ServerException,
               ) ??
               false,
@@ -151,10 +153,7 @@ void main() {
   group('state helper methods', () {
     const initialState = TasksListState.initial();
     const loadingState = TasksListState.loading();
-    const successState = TasksListState.success(
-      tasks: [],
-      groupedTasks: {},
-    );
+    const successState = TasksListState.success(tasks: [], groupedTasks: {});
     const failureState = TasksListState.failure(NoInternetException());
 
     test('isLoading returns true for loading state', () {

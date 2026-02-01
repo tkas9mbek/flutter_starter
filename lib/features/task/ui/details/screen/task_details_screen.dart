@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,10 +16,7 @@ import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
 
 @RoutePage()
 class TaskDetailsScreen extends StatefulWidget {
-  const TaskDetailsScreen({
-    required this.task,
-    super.key,
-  });
+  const TaskDetailsScreen({required this.task, super.key});
 
   final Task task;
 
@@ -41,7 +40,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 isSuccess: true,
                 message: localizer.taskDeletedSuccessfully,
               );
-              context.router.maybePop();
+              unawaited(context.router.maybePop());
             },
             failure: (failureState) => NotificationSnackBar.showMessage(
               context,
@@ -54,9 +53,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
           appBar: TitleAppBar(title: localizer.taskDetails),
           body: Column(
             children: [
-              Expanded(
-                child: TaskDetailsContent(task: widget.task),
-              ),
+              Expanded(child: TaskDetailsContent(task: widget.task)),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TaskDetailsDeleteButton(taskId: widget.task.id),

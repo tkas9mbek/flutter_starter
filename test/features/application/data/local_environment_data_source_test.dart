@@ -24,13 +24,15 @@ void main() {
 
   group('saveEnvName', () {
     test('saves environment name to SharedPreferences', () async {
-      when(() => mockSharedPreferences.setString(any(), any()))
-          .thenAnswer((_) async => true);
+      when(
+        () => mockSharedPreferences.setString(any(), any()),
+      ).thenAnswer((_) async => true);
 
       await dataSource.saveEnvName('dev');
 
-      verify(() => mockSharedPreferences.setString('env_url_key', 'dev'))
-          .called(1);
+      verify(
+        () => mockSharedPreferences.setString('env_url_key', 'dev'),
+      ).called(1);
     });
   });
 

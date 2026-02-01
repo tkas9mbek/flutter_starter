@@ -56,8 +56,9 @@ class _DateRangePickerBottomSheetState
       initialDate: widget.initialDate,
       minDate: fromNeedsSelect ? widget.minDate : _fromDate,
       maxDate: widget.maxDate,
-      confirmText:
-          fromNeedsSelect ? UikitLocalizer.of(context).next : widget.confirmText,
+      confirmText: fromNeedsSelect
+          ? UikitLocalizer.of(context).next
+          : widget.confirmText,
     );
   }
 }

@@ -20,8 +20,9 @@ class TasksListScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => TasksListBloc(getIt<TaskRepository>())
-            ..add(const TasksListEvent.requested()),
+          create: (context) =>
+              TasksListBloc(getIt<TaskRepository>())
+                ..add(const TasksListEvent.requested()),
         ),
         BlocProvider(
           create: (context) => TaskDeleteBloc(getIt<TaskRepository>()),
@@ -48,9 +49,7 @@ class _TasksListView extends StatelessWidget {
               isSuccess: true,
               message: localizer.taskDeletedSuccessfully,
             );
-            context.read<TasksListBloc>().add(
-                  const TasksListEvent.requested(),
-                );
+            context.read<TasksListBloc>().add(const TasksListEvent.requested());
           },
           failure: (failureState) {
             NotificationSnackBar.showMessage(
@@ -83,18 +82,15 @@ class _TasksListView extends StatelessWidget {
                   final date = sortedDates[index];
                   final tasksForDate = groupedTasks[date]!;
 
-                  return TaskDateGroupCard(
-                    date: date,
-                    tasks: tasksForDate,
-                  );
+                  return TaskDateGroupCard(date: date, tasks: tasksForDate);
                 },
               );
             },
             failure: (failureState) => FailureWidgetLarge(
               exception: failureState.exception,
               onRetry: () => context.read<TasksListBloc>().add(
-                    const TasksListEvent.requested(),
-                  ),
+                const TasksListEvent.requested(),
+              ),
             ),
             orElse: () => const CustomCircularProgressIndicator(),
           ),

@@ -35,9 +35,7 @@ class ImagePickerHelper {
             },
             child: Text(
               UikitLocalizer.of(context).camera,
-              style: TextStyle(
-                color: theme.textPrimary,
-              ),
+              style: TextStyle(color: theme.textPrimary),
             ),
           ),
           CupertinoActionSheetAction(
@@ -50,9 +48,7 @@ class ImagePickerHelper {
             },
             child: Text(
               UikitLocalizer.of(context).gallery,
-              style: TextStyle(
-                color: theme.textPrimary,
-              ),
+              style: TextStyle(color: theme.textPrimary),
             ),
           ),
         ],

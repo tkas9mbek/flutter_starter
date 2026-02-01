@@ -3,11 +3,9 @@ import 'package:starter/features/application/environment/domain/environment_repo
 import 'package:starter/features/application/environment/model/app_environment.dart';
 
 class EnvironmentCubit extends Cubit<AppEnvironment> {
-  final EnvironmentRepository _repository;
+  EnvironmentCubit(this._repository) : super(_repository.getEnvironment());
 
-  EnvironmentCubit(
-    this._repository,
-  ) : super(_repository.getEnvironment());
+  final EnvironmentRepository _repository;
 
   Future<void> setEnvironment(AppEnvironment environment) async {
     await _repository.changeEnvironment(environment);

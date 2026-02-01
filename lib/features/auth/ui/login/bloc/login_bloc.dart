@@ -27,8 +27,6 @@ class LoginState with _$LoginState {
 }
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final AuthRepository authRepository;
-
   LoginBloc(this.authRepository) : super(const LoginState.initial()) {
     on<LoginEvent>(
       (event, emit) => event.when(
@@ -49,4 +47,6 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       ),
     );
   }
+
+  final AuthRepository authRepository;
 }

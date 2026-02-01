@@ -40,9 +40,7 @@ class CustomFormBuilderField<T> extends StatelessWidget {
               ),
               child: Text(
                 field.errorText!,
-                style: textStyles.regularBody13.copyWith(
-                  color: theme.error,
-                ),
+                style: textStyles.regularBody13.copyWith(color: theme.error),
               ),
             ),
             const SizedBox(height: 16),

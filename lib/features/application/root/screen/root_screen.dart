@@ -54,9 +54,7 @@ class _RootScreenState extends State<RootScreen> {
               offset: const Offset(0, -3),
             ),
           ],
-          borderRadius: const BorderRadius.vertical(
-            top: Radius.circular(24),
-          ),
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),

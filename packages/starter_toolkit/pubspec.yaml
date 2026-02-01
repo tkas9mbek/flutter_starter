@@ -4,10 +4,12 @@ description: "Mobile application for starter"
 
 publish_to: 'none'
 
-version: 1.0.0+1
+version: 2.0.0+1
+
+resolution: workspace
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
+  sdk: ^3.8.0
 
 dependencies:
   flutter:
@@ -18,7 +20,7 @@ dependencies:
   equatable: ^2.0.7
   flutter_bloc: ^9.1.1
   flutter_form_builder: ^10.1.0
-  freezed_annotation: ^2.4.4
+  freezed_annotation:
   http_parser: ^4.1.2
   image_picker: ^1.2.0
   intl: ^0.20.2
@@ -31,7 +33,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   build_runner: ^2.4.0
-  freezed: ^2.5.8
+  freezed:
   json_serializable: ^6.9.5
 
 flutter:

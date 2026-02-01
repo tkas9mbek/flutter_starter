@@ -29,9 +29,7 @@ class StatusWidgetsExampleScreen extends StatelessWidget {
             const SizedBox(height: 12),
             const SizedBox(
               height: 100,
-              child: Center(
-                child: CustomCircularProgressIndicator(),
-              ),
+              child: Center(child: CustomCircularProgressIndicator()),
             ),
             const SizedBox(height: 24),
             Text(
@@ -42,9 +40,7 @@ class StatusWidgetsExampleScreen extends StatelessWidget {
             SizedBox(
               height: 150,
               child: Center(
-                child: EmptyInformationBody(
-                  text: localizer.noDataAvailable,
-                ),
+                child: EmptyInformationBody(text: localizer.noDataAvailable),
               ),
             ),
             const SizedBox(height: 24),

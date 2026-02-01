@@ -5,10 +5,7 @@ import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
 
 class TaskDetailsDeleteButton extends StatelessWidget {
-  const TaskDetailsDeleteButton({
-    required this.taskId,
-    super.key,
-  });
+  const TaskDetailsDeleteButton({required this.taskId, super.key});
 
   final String taskId;
 

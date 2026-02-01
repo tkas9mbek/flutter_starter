@@ -29,71 +29,100 @@ class MessageLookup extends MessageLookupByLibrary {
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
-        "durationInHoursMinutes": m0,
-        "durationInMinutes": m1,
-        "errorInvalidEmailFormat":
-            MessageLookupByLibrary.simpleMessage("Invalid email format"),
-        "errorInvalidLatinAlphanumeric": MessageLookupByLibrary.simpleMessage(
-            "Enter only Latin letters and numbers"),
-        "errorInvalidPhoneFormat": MessageLookupByLibrary.simpleMessage(
-            "For example, +7 (123) 456-78-90"),
-        "errorInvalidUrlFormat":
-            MessageLookupByLibrary.simpleMessage("Invalid URL format"),
-        "errorMessageAuthRequired":
-            MessageLookupByLibrary.simpleMessage("Please log in to continue"),
-        "errorMessageCheckAndTryLater": MessageLookupByLibrary.simpleMessage(
-            "Please check your network connection and try again."),
-        "errorMessageCouldNotConnectServer": MessageLookupByLibrary.simpleMessage(
-            "Could not connect to server. This may be due to server issues or your internet connection."),
-        "errorMessageDefaultRequestError": MessageLookupByLibrary.simpleMessage(
-            "Request failed, please try again later"),
-        "errorMessageEmptySchedule":
-            MessageLookupByLibrary.simpleMessage("Schedule is empty"),
-        "errorMessageEmptyScheduleFillInProfile":
-            MessageLookupByLibrary.simpleMessage(
-                "Go to profile and fill in the schedule"),
-        "errorMessageErrorWhileRequesting":
-            MessageLookupByLibrary.simpleMessage("Error while making request"),
-        "errorMessageMobileBug": MessageLookupByLibrary.simpleMessage(
-            "Application error! Please report to developers."),
-        "errorMessageNoConnection":
-            MessageLookupByLibrary.simpleMessage("No connection to server"),
-        "errorMessageNoInternetConnection":
-            MessageLookupByLibrary.simpleMessage("No internet connection"),
-        "errorMessageNoRightsToPerform": MessageLookupByLibrary.simpleMessage(
-            "You don\'t have permission to perform this action."),
-        "errorMessageNoRightsToView": MessageLookupByLibrary.simpleMessage(
-            "You don\'t have permission to view this page."),
-        "errorMessagePermissionDenied":
-            MessageLookupByLibrary.simpleMessage("Access denied"),
-        "errorMessagePermissionDeniedSnackbar":
-            MessageLookupByLibrary.simpleMessage(
-                "Please grant the necessary permissions to continue"),
-        "errorMessagePermissionRequired":
-            MessageLookupByLibrary.simpleMessage("Permission required"),
-        "errorMessageServerError": MessageLookupByLibrary.simpleMessage(
-            "Server maintenance in progress"),
-        "errorMessageServerInternalError": MessageLookupByLibrary.simpleMessage(
-            "Sorry for the inconvenience, the server is temporarily unavailable. Please try again later."),
-        "errorMessageUnexpectedError":
-            MessageLookupByLibrary.simpleMessage("Something went wrong."),
-        "errorMessageUrlLaunchError":
-            MessageLookupByLibrary.simpleMessage("Error opening link"),
-        "errorPasswordDigit": MessageLookupByLibrary.simpleMessage(
-            "Password must contain at least one digit"),
-        "errorPasswordLowercase": MessageLookupByLibrary.simpleMessage(
-            "Password must contain at least one lowercase letter"),
-        "errorPasswordMinLength": m2,
-        "errorPasswordSpecialChar": MessageLookupByLibrary.simpleMessage(
-            "Password must contain at least one special character"),
-        "errorPasswordUppercase": MessageLookupByLibrary.simpleMessage(
-            "Password must contain at least one uppercase letter"),
-        "errorPhoneRequired": MessageLookupByLibrary.simpleMessage(
-            "Please enter your phone number"),
-        "errorRequiredField":
-            MessageLookupByLibrary.simpleMessage("Required field"),
-        "today": MessageLookupByLibrary.simpleMessage("Today"),
-        "tomorrow": MessageLookupByLibrary.simpleMessage("Tomorrow"),
-        "yesterday": MessageLookupByLibrary.simpleMessage("Yesterday")
-      };
+    "durationInHoursMinutes": m0,
+    "durationInMinutes": m1,
+    "errorInvalidEmailFormat": MessageLookupByLibrary.simpleMessage(
+      "Invalid email format",
+    ),
+    "errorInvalidLatinAlphanumeric": MessageLookupByLibrary.simpleMessage(
+      "Enter only Latin letters and numbers",
+    ),
+    "errorInvalidPhoneFormat": MessageLookupByLibrary.simpleMessage(
+      "For example, +7 (123) 456-78-90",
+    ),
+    "errorInvalidUrlFormat": MessageLookupByLibrary.simpleMessage(
+      "Invalid URL format",
+    ),
+    "errorMessageAuthRequired": MessageLookupByLibrary.simpleMessage(
+      "Please log in to continue",
+    ),
+    "errorMessageCheckAndTryLater": MessageLookupByLibrary.simpleMessage(
+      "Please check your network connection and try again.",
+    ),
+    "errorMessageCouldNotConnectServer": MessageLookupByLibrary.simpleMessage(
+      "Could not connect to server. This may be due to server issues or your internet connection.",
+    ),
+    "errorMessageDefaultRequestError": MessageLookupByLibrary.simpleMessage(
+      "Request failed, please try again later",
+    ),
+    "errorMessageEmptySchedule": MessageLookupByLibrary.simpleMessage(
+      "Schedule is empty",
+    ),
+    "errorMessageEmptyScheduleFillInProfile":
+        MessageLookupByLibrary.simpleMessage(
+          "Go to profile and fill in the schedule",
+        ),
+    "errorMessageErrorWhileRequesting": MessageLookupByLibrary.simpleMessage(
+      "Error while making request",
+    ),
+    "errorMessageMobileBug": MessageLookupByLibrary.simpleMessage(
+      "Application error! Please report to developers.",
+    ),
+    "errorMessageNoConnection": MessageLookupByLibrary.simpleMessage(
+      "No connection to server",
+    ),
+    "errorMessageNoInternetConnection": MessageLookupByLibrary.simpleMessage(
+      "No internet connection",
+    ),
+    "errorMessageNoRightsToPerform": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission to perform this action.",
+    ),
+    "errorMessageNoRightsToView": MessageLookupByLibrary.simpleMessage(
+      "You don\'t have permission to view this page.",
+    ),
+    "errorMessagePermissionDenied": MessageLookupByLibrary.simpleMessage(
+      "Access denied",
+    ),
+    "errorMessagePermissionDeniedSnackbar":
+        MessageLookupByLibrary.simpleMessage(
+          "Please grant the necessary permissions to continue",
+        ),
+    "errorMessagePermissionRequired": MessageLookupByLibrary.simpleMessage(
+      "Permission required",
+    ),
+    "errorMessageServerError": MessageLookupByLibrary.simpleMessage(
+      "Server maintenance in progress",
+    ),
+    "errorMessageServerInternalError": MessageLookupByLibrary.simpleMessage(
+      "Sorry for the inconvenience, the server is temporarily unavailable. Please try again later.",
+    ),
+    "errorMessageUnexpectedError": MessageLookupByLibrary.simpleMessage(
+      "Something went wrong.",
+    ),
+    "errorMessageUrlLaunchError": MessageLookupByLibrary.simpleMessage(
+      "Error opening link",
+    ),
+    "errorPasswordDigit": MessageLookupByLibrary.simpleMessage(
+      "Password must contain at least one digit",
+    ),
+    "errorPasswordLowercase": MessageLookupByLibrary.simpleMessage(
+      "Password must contain at least one lowercase letter",
+    ),
+    "errorPasswordMinLength": m2,
+    "errorPasswordSpecialChar": MessageLookupByLibrary.simpleMessage(
+      "Password must contain at least one special character",
+    ),
+    "errorPasswordUppercase": MessageLookupByLibrary.simpleMessage(
+      "Password must contain at least one uppercase letter",
+    ),
+    "errorPhoneRequired": MessageLookupByLibrary.simpleMessage(
+      "Please enter your phone number",
+    ),
+    "errorRequiredField": MessageLookupByLibrary.simpleMessage(
+      "Required field",
+    ),
+    "today": MessageLookupByLibrary.simpleMessage("Today"),
+    "tomorrow": MessageLookupByLibrary.simpleMessage("Tomorrow"),
+    "yesterday": MessageLookupByLibrary.simpleMessage("Yesterday"),
+  };
 }

@@ -6,10 +6,7 @@ import 'package:starter_toolkit/utils/date/date_time_extension.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class CalendarHorizontalDatePicker extends StatelessWidget {
-  const CalendarHorizontalDatePicker({
-    required this.selectedDate,
-    super.key,
-  });
+  const CalendarHorizontalDatePicker({required this.selectedDate, super.key});
 
   final DateTime selectedDate;
 
@@ -45,9 +42,9 @@ class CalendarHorizontalDatePicker extends StatelessWidget {
           return CalendarDatePickerItem(
             date: date,
             isSelected: isSelected,
-            onTap: () => context
-                .read<CalendarBloc>()
-                .add(CalendarEvent.dateSelected(date)),
+            onTap: () => context.read<CalendarBloc>().add(
+              CalendarEvent.dateSelected(date),
+            ),
           );
         },
       ),

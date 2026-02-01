@@ -17,20 +17,19 @@ class ProfileModule extends AppModule {
     final env = getIt<AppEnvironment>();
 
     getIt
-      ..registerLazySingleton<ProfileDataSource>(
-        () {
-          if (env.useMock) {
-            return const MockProfileDataSource();
-          }
+      ..registerLazySingleton<ProfileDataSource>(() {
+        if (env.useMock) {
+          return const MockProfileDataSource();
+        }
 
-          return RemoteProfileDataSource(getIt<ApiClient>());
-        },
-      )
+        return RemoteProfileDataSource(getIt<ApiClient>());
+      })
       ..registerLazySingleton<ProfileRepository>(
         () => ProfileRepository(
-          const RawRepositoryExecutor()
-              .withErrorHandling()
-              .withRetry(maxRetries: 3, retryDelay: const Duration(seconds: 2)),
+          const RawRepositoryExecutor().withErrorHandling().withRetry(
+            maxRetries: 3,
+            retryDelay: const Duration(seconds: 2),
+          ),
           getIt<ProfileDataSource>(),
         ),
       );

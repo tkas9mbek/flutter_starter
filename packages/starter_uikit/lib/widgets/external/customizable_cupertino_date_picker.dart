@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 
@@ -69,10 +71,7 @@ class _CustomizableCupertinoDatePickerState
 
   void _validateDates() {
     if (widget.minDate != null && widget.maxDate != null) {
-      assert(
-        !widget.minDate!.isAfter(widget.maxDate!),
-        'minDate > maxDate',
-      );
+      assert(!widget.minDate!.isAfter(widget.maxDate!), 'minDate > maxDate');
     }
     if (widget.minDate != null && widget.selectedDate != null) {
       assert(
@@ -103,20 +102,20 @@ class _CustomizableCupertinoDatePickerState
     _selectedDayIndex = _selectedDate.day - 1;
     _selectedMonthIndex = _selectedDate.month - 1;
     _selectedYearIndex = _selectedDate.year - _minDate.year;
-    WidgetsBinding.instance.addPostFrameCallback(
-      (_) {
-        _scrollList(_dayScrollController, _selectedDayIndex);
-        _scrollList(_monthScrollController, _selectedMonthIndex);
-        _scrollList(_yearScrollController, _selectedYearIndex);
-      },
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollList(_dayScrollController, _selectedDayIndex);
+      _scrollList(_monthScrollController, _selectedMonthIndex);
+      _scrollList(_yearScrollController, _selectedYearIndex);
+    });
   }
 
   void _scrollList(FixedExtentScrollController controller, int index) {
-    controller.animateToItem(
-      index,
-      curve: Curves.easeIn,
-      duration: const Duration(milliseconds: 300),
+    unawaited(
+      controller.animateToItem(
+        index,
+        curve: Curves.easeIn,
+        duration: const Duration(milliseconds: 300),
+      ),
     );
   }
 
@@ -136,30 +135,23 @@ class _CustomizableCupertinoDatePickerState
   }
 
   void _onSelectedItemChanged(int index, _SelectorType type) {
-    DateTime temp;
-    switch (type) {
-      case _SelectorType.day:
-        temp = DateTime(
-          _minDate.year + _selectedYearIndex,
-          _selectedMonthIndex + 1,
-          index + 1,
-        );
-        break;
-      case _SelectorType.month:
-        temp = DateTime(
-          _minDate.year + _selectedYearIndex,
-          index + 1,
-          _selectedDayIndex + 1,
-        );
-        break;
-      case _SelectorType.year:
-        temp = DateTime(
-          _minDate.year + index,
-          _selectedMonthIndex + 1,
-          _selectedDayIndex + 1,
-        );
-        break;
-    }
+    final temp = switch (type) {
+      _SelectorType.day => DateTime(
+        _minDate.year + _selectedYearIndex,
+        _selectedMonthIndex + 1,
+        index + 1,
+      ),
+      _SelectorType.month => DateTime(
+        _minDate.year + _selectedYearIndex,
+        index + 1,
+        _selectedDayIndex + 1,
+      ),
+      _SelectorType.year => DateTime(
+        _minDate.year + index,
+        _selectedMonthIndex + 1,
+        _selectedDayIndex + 1,
+      ),
+    };
 
     // return if selected date is not the min - max date range
     // scroll selector back to the valid point
@@ -167,14 +159,12 @@ class _CustomizableCupertinoDatePickerState
       switch (type) {
         case _SelectorType.day:
           _dayScrollController.jumpToItem(_selectedDayIndex);
-          break;
         case _SelectorType.month:
           _monthScrollController.jumpToItem(_selectedMonthIndex);
-          break;
         case _SelectorType.year:
           _yearScrollController.jumpToItem(_selectedYearIndex);
-          break;
       }
+
       return;
     }
 
@@ -183,7 +173,6 @@ class _CustomizableCupertinoDatePickerState
     switch (type) {
       case _SelectorType.day:
         _selectedDayIndex = index;
-        break;
       case _SelectorType.month:
         _selectedMonthIndex = index;
         // if month is changed to monthFebruary &
@@ -198,7 +187,6 @@ class _CustomizableCupertinoDatePickerState
         if (_selectedDayIndex == 30 && _days[_selectedMonthIndex] == 30) {
           _selectedDayIndex = 29;
         }
-        break;
       case _SelectorType.year:
         _selectedYearIndex = index;
         // if selected month is monthFebruary & selected day is 29
@@ -209,7 +197,6 @@ class _CustomizableCupertinoDatePickerState
             _selectedDayIndex == 28) {
           _selectedDayIndex = 27;
         }
-        break;
     }
 
     setState(() {});
@@ -218,30 +205,24 @@ class _CustomizableCupertinoDatePickerState
 
   /// check if the given day, month or year index is disabled
   bool _isDisabled(int index, _SelectorType type) {
-    DateTime temp;
-    switch (type) {
-      case _SelectorType.day:
-        temp = DateTime(
-          _minDate.year + _selectedYearIndex,
-          _selectedMonthIndex + 1,
-          index + 1,
-        );
-        break;
-      case _SelectorType.month:
-        temp = DateTime(
-          _minDate.year + _selectedYearIndex,
-          index + 1,
-          _selectedDayIndex + 1,
-        );
-        break;
-      case _SelectorType.year:
-        temp = DateTime(
-          _minDate.year + index,
-          _selectedMonthIndex + 1,
-          _selectedDayIndex + 1,
-        );
-        break;
-    }
+    final temp = switch (type) {
+      _SelectorType.day => DateTime(
+        _minDate.year + _selectedYearIndex,
+        _selectedMonthIndex + 1,
+        index + 1,
+      ),
+      _SelectorType.month => DateTime(
+        _minDate.year + _selectedYearIndex,
+        index + 1,
+        _selectedDayIndex + 1,
+      ),
+      _SelectorType.year => DateTime(
+        _minDate.year + index,
+        _selectedMonthIndex + 1,
+        _selectedDayIndex + 1,
+      ),
+    };
+
     return temp.isAfter(_maxDate) || temp.isBefore(_minDate);
   }
 
@@ -272,8 +253,8 @@ class _CustomizableCupertinoDatePickerState
           style: index == selectedValueIndex
               ? widget.selectedStyle
               : isDisabled(index)
-                  ? widget.disabledStyle
-                  : widget.unselectedStyle,
+              ? widget.disabledStyle
+              : widget.unselectedStyle,
         ),
       ),
     );
@@ -285,10 +266,8 @@ class _CustomizableCupertinoDatePickerState
       selectedValueIndex: _selectedDayIndex,
       scrollController: _dayScrollController,
       isDisabled: (index) => _isDisabled(index, _SelectorType.day),
-      onSelectedItemChanged: (v) => _onSelectedItemChanged(
-        v,
-        _SelectorType.day,
-      ),
+      onSelectedItemChanged: (v) =>
+          _onSelectedItemChanged(v, _SelectorType.day),
     );
   }
 
@@ -313,10 +292,8 @@ class _CustomizableCupertinoDatePickerState
       selectedValueIndex: _selectedMonthIndex,
       scrollController: _monthScrollController,
       isDisabled: (index) => _isDisabled(index, _SelectorType.month),
-      onSelectedItemChanged: (v) => _onSelectedItemChanged(
-        v,
-        _SelectorType.month,
-      ),
+      onSelectedItemChanged: (v) =>
+          _onSelectedItemChanged(v, _SelectorType.month),
     );
   }
 
@@ -329,10 +306,8 @@ class _CustomizableCupertinoDatePickerState
       selectedValueIndex: _selectedYearIndex,
       scrollController: _yearScrollController,
       isDisabled: (index) => _isDisabled(index, _SelectorType.year),
-      onSelectedItemChanged: (v) => _onSelectedItemChanged(
-        v,
-        _SelectorType.year,
-      ),
+      onSelectedItemChanged: (v) =>
+          _onSelectedItemChanged(v, _SelectorType.year),
     );
   }
 

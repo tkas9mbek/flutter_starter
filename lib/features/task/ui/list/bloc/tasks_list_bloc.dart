@@ -29,11 +29,11 @@ class TasksListState with _$TasksListState {
 }
 
 class TasksListBloc extends Bloc<TasksListEvent, TasksListState> {
-  final TaskRepository _repository;
-
   TasksListBloc(this._repository) : super(const TasksListState.initial()) {
     on<_RequestedTasksListEvent>(_onRequested);
   }
+
+  final TaskRepository _repository;
 
   Future<void> _onRequested(
     _RequestedTasksListEvent event,
@@ -46,10 +46,7 @@ class TasksListBloc extends Bloc<TasksListEvent, TasksListState> {
       final groupedTasks = _groupTasksByDate(tasks);
 
       return emit(
-        TasksListState.success(
-          tasks: tasks,
-          groupedTasks: groupedTasks,
-        ),
+        TasksListState.success(tasks: tasks, groupedTasks: groupedTasks),
       );
     } on AppException catch (e) {
       return emit(TasksListState.failure(e));

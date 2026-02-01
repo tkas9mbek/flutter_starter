@@ -9,6 +9,7 @@ import '../model/task_mock_models.dart';
 
 class MockTaskDataSource extends Mock implements TaskDataSource {}
 
+// ignore: avoid_implementing_value_types
 class FakeTaskCreateRequest extends Fake implements TaskCreateRequest {}
 
 void main() {
@@ -29,8 +30,9 @@ void main() {
 
   group('getTasks', () {
     test('returns list of tasks from data source', () async {
-      when(() => mockDataSource.getTasks())
-          .thenAnswer((_) async => TaskMockModels.allTasks);
+      when(
+        () => mockDataSource.getTasks(),
+      ).thenAnswer((_) async => TaskMockModels.allTasks);
 
       final result = await repository.getTasks();
 
@@ -42,8 +44,9 @@ void main() {
   group('getTasksByDate', () {
     test('returns list of tasks for specific date from data source', () async {
       final testDate = DateTime(2025, 1, 15);
-      when(() => mockDataSource.getTasksByDate(testDate))
-          .thenAnswer((_) async => [TaskMockModels.task1]);
+      when(
+        () => mockDataSource.getTasksByDate(testDate),
+      ).thenAnswer((_) async => [TaskMockModels.task1]);
 
       final result = await repository.getTasksByDate(testDate);
 
@@ -63,8 +66,9 @@ void main() {
         endTime: DateTime(2025, 1, 20, 10, 0),
       );
 
-      when(() => mockDataSource.createTask(any()))
-          .thenAnswer((_) async => TaskMockModels.task3);
+      when(
+        () => mockDataSource.createTask(any()),
+      ).thenAnswer((_) async => TaskMockModels.task3);
 
       final result = await repository.createTask(request);
 
@@ -84,8 +88,9 @@ void main() {
         endTime: DateTime(2025, 1, 20, 10, 0),
       );
 
-      when(() => mockDataSource.updateTask(taskId, any()))
-          .thenAnswer((_) async => TaskMockModels.task1);
+      when(
+        () => mockDataSource.updateTask(taskId, any()),
+      ).thenAnswer((_) async => TaskMockModels.task1);
 
       final result = await repository.updateTask(taskId, request);
 
@@ -98,8 +103,7 @@ void main() {
     test('delegates to data source', () async {
       const taskId = '1';
 
-      when(() => mockDataSource.deleteTask(taskId))
-          .thenAnswer((_) async => {});
+      when(() => mockDataSource.deleteTask(taskId)).thenAnswer((_) async => {});
 
       await repository.deleteTask(taskId);
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -29,7 +31,7 @@ void main() {
   });
 
   tearDown(() {
-    environmentCubit.close();
+    unawaited(environmentCubit.close());
   });
 
   group('EnvironmentCubit', () {
@@ -42,8 +44,9 @@ void main() {
       'emits the new environment when setEnvironment is called successfully',
       setUp: () {
         // We need to stub the methods that the repository will call on the data source
-        when(() => mockDataSource.clearSecureStorage())
-            .thenAnswer((_) async {});
+        when(
+          () => mockDataSource.clearSecureStorage(),
+        ).thenAnswer((_) async {});
         when(() => mockDataSource.saveEnvName(any())).thenAnswer((_) async {});
       },
       build: () => environmentCubit,

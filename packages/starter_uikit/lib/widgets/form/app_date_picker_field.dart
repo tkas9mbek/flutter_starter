@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
@@ -91,25 +93,25 @@ class _AppDatePickerFieldState extends State<AppDatePickerField> {
             return;
           }
 
-          BottomSheetScreen.show(
-            context: context,
-            enableDrag: false,
-            builder: (context) => DateTimePickerBottomSheet(
-              title: widget.label ?? '',
-              backText: UikitLocalizer.of(context).back,
-              confirmText: UikitLocalizer.of(context).toSelect,
-              initialDate: form.value,
-              minDate: widget.minDate,
-              maxDate: widget.maxDate,
-            ),
-          ).then(
-            (value) {
+          unawaited(
+            BottomSheetScreen.show(
+              context: context,
+              enableDrag: false,
+              builder: (context) => DateTimePickerBottomSheet(
+                title: widget.label ?? '',
+                backText: UikitLocalizer.of(context).back,
+                confirmText: UikitLocalizer.of(context).toSelect,
+                initialDate: form.value,
+                minDate: widget.minDate,
+                maxDate: widget.maxDate,
+              ),
+            ).then((value) {
               if (value is DateTime) {
                 form.didChange(value);
                 updateChildValue(value);
                 widget.onChanged?.call(value);
               }
-            },
+            }),
           );
         },
         color: widget.color,

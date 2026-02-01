@@ -4,15 +4,11 @@ import 'package:starter_toolkit/data/interceptor/app_error_interceptor.dart';
 import 'package:starter_toolkit/data/interceptor/auth_refresh_interceptor.dart';
 
 class ApiProvider {
+  ApiProvider({this.authInterceptor, this.tryRefreshToken, this.logout});
+
   final Interceptor? authInterceptor;
   final Future<void> Function()? tryRefreshToken;
   final Future<void> Function()? logout;
-
-  ApiProvider({
-    this.authInterceptor,
-    this.tryRefreshToken,
-    this.logout,
-  });
 
   Dio getDio({
     bool useToken = true,

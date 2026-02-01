@@ -12,7 +12,8 @@ part of 'task_create_request.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 TaskCreateRequest _$TaskCreateRequestFromJson(Map<String, dynamic> json) {
   return _TaskCreateRequest.fromJson(json);
@@ -39,15 +40,17 @@ mixin _$TaskCreateRequest {
 /// @nodoc
 abstract class $TaskCreateRequestCopyWith<$Res> {
   factory $TaskCreateRequestCopyWith(
-          TaskCreateRequest value, $Res Function(TaskCreateRequest) then) =
-      _$TaskCreateRequestCopyWithImpl<$Res, TaskCreateRequest>;
+    TaskCreateRequest value,
+    $Res Function(TaskCreateRequest) then,
+  ) = _$TaskCreateRequestCopyWithImpl<$Res, TaskCreateRequest>;
   @useResult
-  $Res call(
-      {String title,
-      String description,
-      DateTime date,
-      DateTime startTime,
-      DateTime endTime});
+  $Res call({
+    String title,
+    String description,
+    DateTime date,
+    DateTime startTime,
+    DateTime endTime,
+  });
 }
 
 /// @nodoc
@@ -71,54 +74,60 @@ class _$TaskCreateRequestCopyWithImpl<$Res, $Val extends TaskCreateRequest>
     Object? startTime = null,
     Object? endTime = null,
   }) {
-    return _then(_value.copyWith(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      startTime: null == startTime
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      endTime: null == endTime
-          ? _value.endTime
-          : endTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ) as $Val);
+    return _then(
+      _value.copyWith(
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            description: null == description
+                ? _value.description
+                : description // ignore: cast_nullable_to_non_nullable
+                      as String,
+            date: null == date
+                ? _value.date
+                : date // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            startTime: null == startTime
+                ? _value.startTime
+                : startTime // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            endTime: null == endTime
+                ? _value.endTime
+                : endTime // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+          )
+          as $Val,
+    );
   }
 }
 
 /// @nodoc
 abstract class _$$TaskCreateRequestImplCopyWith<$Res>
     implements $TaskCreateRequestCopyWith<$Res> {
-  factory _$$TaskCreateRequestImplCopyWith(_$TaskCreateRequestImpl value,
-          $Res Function(_$TaskCreateRequestImpl) then) =
-      __$$TaskCreateRequestImplCopyWithImpl<$Res>;
+  factory _$$TaskCreateRequestImplCopyWith(
+    _$TaskCreateRequestImpl value,
+    $Res Function(_$TaskCreateRequestImpl) then,
+  ) = __$$TaskCreateRequestImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call(
-      {String title,
-      String description,
-      DateTime date,
-      DateTime startTime,
-      DateTime endTime});
+  $Res call({
+    String title,
+    String description,
+    DateTime date,
+    DateTime startTime,
+    DateTime endTime,
+  });
 }
 
 /// @nodoc
 class __$$TaskCreateRequestImplCopyWithImpl<$Res>
     extends _$TaskCreateRequestCopyWithImpl<$Res, _$TaskCreateRequestImpl>
     implements _$$TaskCreateRequestImplCopyWith<$Res> {
-  __$$TaskCreateRequestImplCopyWithImpl(_$TaskCreateRequestImpl _value,
-      $Res Function(_$TaskCreateRequestImpl) _then)
-      : super(_value, _then);
+  __$$TaskCreateRequestImplCopyWithImpl(
+    _$TaskCreateRequestImpl _value,
+    $Res Function(_$TaskCreateRequestImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TaskCreateRequest
   /// with the given fields replaced by the non-null parameter values.
@@ -131,40 +140,43 @@ class __$$TaskCreateRequestImplCopyWithImpl<$Res>
     Object? startTime = null,
     Object? endTime = null,
   }) {
-    return _then(_$TaskCreateRequestImpl(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      description: null == description
-          ? _value.description
-          : description // ignore: cast_nullable_to_non_nullable
-              as String,
-      date: null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      startTime: null == startTime
-          ? _value.startTime
-          : startTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      endTime: null == endTime
-          ? _value.endTime
-          : endTime // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ));
+    return _then(
+      _$TaskCreateRequestImpl(
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        description: null == description
+            ? _value.description
+            : description // ignore: cast_nullable_to_non_nullable
+                  as String,
+        date: null == date
+            ? _value.date
+            : date // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        startTime: null == startTime
+            ? _value.startTime
+            : startTime // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        endTime: null == endTime
+            ? _value.endTime
+            : endTime // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+      ),
+    );
   }
 }
 
 /// @nodoc
 @JsonSerializable()
 class _$TaskCreateRequestImpl implements _TaskCreateRequest {
-  const _$TaskCreateRequestImpl(
-      {required this.title,
-      required this.description,
-      required this.date,
-      required this.startTime,
-      required this.endTime});
+  const _$TaskCreateRequestImpl({
+    required this.title,
+    required this.description,
+    required this.date,
+    required this.startTime,
+    required this.endTime,
+  });
 
   factory _$TaskCreateRequestImpl.fromJson(Map<String, dynamic> json) =>
       _$$TaskCreateRequestImplFromJson(json);
@@ -211,23 +223,24 @@ class _$TaskCreateRequestImpl implements _TaskCreateRequest {
   @pragma('vm:prefer-inline')
   _$$TaskCreateRequestImplCopyWith<_$TaskCreateRequestImpl> get copyWith =>
       __$$TaskCreateRequestImplCopyWithImpl<_$TaskCreateRequestImpl>(
-          this, _$identity);
+        this,
+        _$identity,
+      );
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$TaskCreateRequestImplToJson(
-      this,
-    );
+    return _$$TaskCreateRequestImplToJson(this);
   }
 }
 
 abstract class _TaskCreateRequest implements TaskCreateRequest {
-  const factory _TaskCreateRequest(
-      {required final String title,
-      required final String description,
-      required final DateTime date,
-      required final DateTime startTime,
-      required final DateTime endTime}) = _$TaskCreateRequestImpl;
+  const factory _TaskCreateRequest({
+    required final String title,
+    required final String description,
+    required final DateTime date,
+    required final DateTime startTime,
+    required final DateTime endTime,
+  }) = _$TaskCreateRequestImpl;
 
   factory _TaskCreateRequest.fromJson(Map<String, dynamic> json) =
       _$TaskCreateRequestImpl.fromJson;

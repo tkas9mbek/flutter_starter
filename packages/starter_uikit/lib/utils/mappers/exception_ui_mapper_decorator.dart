@@ -9,9 +9,9 @@ import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 /// Delegations are auto-generated from @ExceptionUiConfig annotations.
 /// Run: dart run tool/generate_exception_mapper.dart
 abstract class ExceptionUiMapperDecorator extends ExceptionUiMapper {
-  final ExceptionUiMapper wrapped;
-
   ExceptionUiMapperDecorator(super.context, this.wrapped);
+
+  final ExceptionUiMapper wrapped;
 
   // START GENERATED DELEGATIONS
   @override

@@ -23,19 +23,11 @@ class SettingsScreen extends StatelessWidget {
         children: [
           SectionHeader(title: localizer.appearance),
           const SizedBox(height: 12),
-          const SettingsCard(
-            children: [
-              ThemeSettingsTile(),
-            ],
-          ),
+          const SettingsCard(children: [ThemeSettingsTile()]),
           const SizedBox(height: 24),
           SectionHeader(title: localizer.language),
           const SizedBox(height: 12),
-          const SettingsCard(
-            children: [
-              LanguageSettingsTile(),
-            ],
-          ),
+          const SettingsCard(children: [LanguageSettingsTile()]),
           const SizedBox(height: 24),
           SectionHeader(title: localizer.about),
           const SizedBox(height: 12),

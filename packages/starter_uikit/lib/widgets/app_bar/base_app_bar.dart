@@ -33,14 +33,9 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
           ? Colors.black.withValues(alpha: 0.5)
           : theme.background.withValues(alpha: 0.5),
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          bottom: Radius.circular(24),
-        ),
+        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
       ),
-      title: SizedBox(
-        height: height,
-        child: child,
-      ),
+      title: SizedBox(height: height, child: child),
       bottom: bottom,
     );
   }

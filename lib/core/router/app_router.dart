@@ -20,14 +20,8 @@ class AppRouter extends RootStackRouter {
 
   @override
   final List<AutoRoute> routes = [
-    AutoRoute(
-      page: LoginRoute.page,
-      initial: true,
-    ),
-    AutoRoute(
-      page: RegistrationRoute.page,
-      path: '/register',
-    ),
+    AutoRoute(page: LoginRoute.page, initial: true),
+    AutoRoute(page: RegistrationRoute.page, path: '/register'),
     AutoRoute(
       page: AuthenticatedRouter.page,
       path: '/authenticated',
@@ -36,28 +30,13 @@ class AppRouter extends RootStackRouter {
           page: RootRoute.page,
           initial: true,
           children: [
-            AutoRoute(
-              page: CalendarRoute.page,
-              initial: true,
-            ),
-            AutoRoute(
-              page: TasksListRoute.page,
-              path: 'tasks',
-            ),
-            AutoRoute(
-              page: SettingsRoute.page,
-              path: 'settings',
-            ),
-            AutoRoute(
-              page: ProfileRoute.page,
-              path: 'profile',
-            ),
+            AutoRoute(page: CalendarRoute.page, initial: true),
+            AutoRoute(page: TasksListRoute.page, path: 'tasks'),
+            AutoRoute(page: SettingsRoute.page, path: 'settings'),
+            AutoRoute(page: ProfileRoute.page, path: 'profile'),
           ],
         ),
-        AutoRoute(
-          page: TaskDetailsRoute.page,
-          path: 'task/:taskId',
-        ),
+        AutoRoute(page: TaskDetailsRoute.page, path: 'task/:taskId'),
       ],
     ),
   ];

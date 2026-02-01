@@ -31,7 +31,10 @@ class FormFieldsExampleScreen extends StatelessWidget {
             children: [
               Text(
                 localizer.textField,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 12),
               AppTextField(
@@ -42,7 +45,10 @@ class FormFieldsExampleScreen extends StatelessWidget {
               const SizedBox(height: 24),
               Text(
                 localizer.dropdownField,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 12),
               AppDropdownField<String>(
@@ -66,7 +72,10 @@ class FormFieldsExampleScreen extends StatelessWidget {
               const SizedBox(height: 24),
               Text(
                 localizer.datePickerField,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 12),
               AppDatePickerField(
@@ -78,7 +87,10 @@ class FormFieldsExampleScreen extends StatelessWidget {
               const SizedBox(height: 24),
               Text(
                 localizer.checkboxField,
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
               const SizedBox(height: 12),
               AppCheckboxField(

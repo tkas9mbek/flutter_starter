@@ -18,28 +18,22 @@ class TaskModule extends AppModule {
   Future<void> registerDependencies() async {
     final getIt = GetIt.instance;
     getIt
-      ..registerFactory<TaskDataSource>(
-        () {
-          final env = getIt<AppEnvironment>();
+      ..registerFactory<TaskDataSource>(() {
+        final env = getIt<AppEnvironment>();
 
-          if (env.useMock) {
-            return MockTaskDataSource();
-          }
+        if (env.useMock) {
+          return MockTaskDataSource();
+        }
 
-          return RemoteTaskDataSource(getIt<ApiClient>());
-        },
-      )
+        return RemoteTaskDataSource(getIt<ApiClient>());
+      })
       ..registerFactory(
         () => TaskRepository(
           const RawRepositoryExecutor().withErrorHandling(),
           getIt<TaskDataSource>(),
         ),
       )
-      ..registerFactory(
-        () => CalendarBloc(getIt<TaskRepository>()),
-      )
-      ..registerFactory(
-        () => TasksListBloc(getIt<TaskRepository>()),
-      );
+      ..registerFactory(() => CalendarBloc(getIt<TaskRepository>()))
+      ..registerFactory(() => TasksListBloc(getIt<TaskRepository>()));
   }
 }

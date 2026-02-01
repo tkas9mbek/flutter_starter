@@ -49,8 +49,9 @@ class AppBaseButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final active = enabled && !loading;
     final effectiveTextStyle = textStyle.copyWith(
-      color:
-          enabled || disabledTextColor == null ? textColor : disabledTextColor,
+      color: enabled || disabledTextColor == null
+          ? textColor
+          : disabledTextColor,
     );
     final childSize = effectiveTextStyle.fontSize! * effectiveTextStyle.height!;
 
@@ -78,20 +79,14 @@ class AppBaseButton extends StatelessWidget {
             ),
           ),
           side: WidgetStateProperty.all<BorderSide>(
-            BorderSide(
-              color: borderColor ?? Colors.transparent,
-              width: 1,
-            ),
+            BorderSide(color: borderColor ?? Colors.transparent, width: 1),
           ),
           padding: WidgetStateProperty.all<EdgeInsets>(
             padding ?? EdgeInsets.zero,
           ),
         ),
         child: loading
-            ? CustomCircularProgressIndicator(
-                color: textColor,
-                size: childSize,
-              )
+            ? CustomCircularProgressIndicator(color: textColor, size: childSize)
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -100,10 +95,7 @@ class AppBaseButton extends StatelessWidget {
                     icon!,
                     const SizedBox(width: 8),
                   ],
-                  Text(
-                    text,
-                    style: effectiveTextStyle,
-                  ),
+                  Text(text, style: effectiveTextStyle),
                   if (icon != null && iconDirection == TextDirection.rtl) ...[
                     const SizedBox(width: 8),
                     icon!,

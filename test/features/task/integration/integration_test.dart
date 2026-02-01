@@ -249,10 +249,7 @@ void main() {
       act: (bloc) => bloc.add(const TasksListEvent.requested()),
       expect: () => [
         const TasksListState.loading(),
-        const TasksListState.success(
-          tasks: [],
-          groupedTasks: {},
-        ),
+        const TasksListState.success(tasks: [], groupedTasks: {}),
       ],
     );
   });

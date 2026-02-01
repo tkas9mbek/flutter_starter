@@ -44,47 +44,46 @@ class AppCheckboxGroup<T extends Object> extends StatelessWidget {
       enabled: enabled,
       builder: (field) => Column(
         children: [
-          ...options.mapIndexed(
-            (index, option) {
-              final selected = field.value?.contains(option) ?? false;
+          ...options.mapIndexed((index, option) {
+            final selected = field.value?.contains(option) ?? false;
 
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () {
-                  if (!enabled) {
-                    return;
-                  }
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () {
+                if (!enabled) {
+                  return;
+                }
 
-                  final value =
-                      field.value is Set<Never> ? <T>{} : <T>{...?field.value};
+                final value = field.value is Set<Never>
+                    ? <T>{}
+                    : <T>{...?field.value};
 
-                  if (selected) {
-                    value.remove(option);
-                  } else {
-                    value.add(option);
-                  }
+                if (selected) {
+                  value.remove(option);
+                } else {
+                  value.add(option);
+                }
 
-                  field.didChange(value);
-                },
-                child: Column(
-                  children: [
-                    if (index != 0) ...[
-                      const ThinHorizontalDivider(),
-                      const SizedBox(height: 12),
-                    ],
-                    AppCheckBox(
-                      selected: selected,
-                      enabled: enabled,
-                      label: optionLabelBuilder(option),
-                    ),
-                    if (index != options.length - 1) ...[
-                      const SizedBox(height: 12),
-                    ],
+                field.didChange(value);
+              },
+              child: Column(
+                children: [
+                  if (index != 0) ...[
+                    const ThinHorizontalDivider(),
+                    const SizedBox(height: 12),
                   ],
-                ),
-              );
-            },
-          ).toSet(),
+                  AppCheckBox(
+                    selected: selected,
+                    enabled: enabled,
+                    label: optionLabelBuilder(option),
+                  ),
+                  if (index != options.length - 1) ...[
+                    const SizedBox(height: 12),
+                  ],
+                ],
+              ),
+            );
+          }).toSet(),
           if (showLastDivider) ...[
             const SizedBox(height: 12),
             const ThinHorizontalDivider(),

@@ -7,11 +7,7 @@ class EmptyListText extends StatelessWidget {
   /// A widget that displays a text and a button to refresh the list.
   ///
   /// * If [refresh] is not null, a button will be displayed with the text "Retry".
-  const EmptyListText({
-    required this.text,
-    this.refresh,
-    Key? key,
-  }) : super(key: key);
+  const EmptyListText({required this.text, this.refresh, super.key});
 
   final String text;
   final VoidCallback? refresh;
@@ -32,9 +28,7 @@ class EmptyListText extends StatelessWidget {
               textAlign: TextAlign.center,
             ),
             if (refresh != null) ...[
-              const SizedBox(
-                height: 16,
-              ),
+              const SizedBox(height: 16),
               AppOutlinedButton.medium(
                 context: context,
                 text: UikitLocalizer.of(context).retry,

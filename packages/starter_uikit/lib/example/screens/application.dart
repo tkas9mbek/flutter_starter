@@ -27,8 +27,9 @@ class _TestingApplicationState extends State<TestingApplication> {
         builder: (context, themeMode) {
           final lightTheme = AppTheme.light();
           final darkTheme = AppTheme.dark();
-          final currentTheme =
-              themeMode == ThemeMode.dark ? darkTheme : lightTheme;
+          final currentTheme = themeMode == ThemeMode.dark
+              ? darkTheme
+              : lightTheme;
 
           return ThemeProvider(
             theme: currentTheme,

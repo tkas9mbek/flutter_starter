@@ -6,10 +6,7 @@ import 'package:starter/features/task/model/task.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class TaskTimelineItemCard extends StatelessWidget {
-  const TaskTimelineItemCard({
-    required this.task,
-    super.key,
-  });
+  const TaskTimelineItemCard({required this.task, super.key});
 
   final Task task;
 
@@ -55,19 +52,13 @@ class TaskTimelineItemCard extends StatelessWidget {
                   shape: BoxShape.circle,
                 ),
               ),
-              Container(
-                width: 2,
-                height: 60,
-                color: theme.border,
-              ),
+              Container(width: 2, height: 60, color: theme.border),
             ],
           ),
           const SizedBox(width: 16),
           Expanded(
             child: GestureDetector(
-              onTap: () => context.router.push(
-                TaskDetailsRoute(task: task),
-              ),
+              onTap: () => context.router.push(TaskDetailsRoute(task: task)),
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(

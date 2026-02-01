@@ -9,7 +9,7 @@ class FileUploadHelper {
     return switch (extension) {
       'png' => MediaType('image', 'png'),
       'jpg' || 'jpeg' => MediaType('image', 'jpeg'),
-      _ => MediaType('image', 'jpeg')
+      _ => MediaType('image', 'jpeg'),
     };
   }
 
@@ -40,8 +40,6 @@ class FileUploadHelper {
       }),
     );
 
-    return FormData.fromMap({
-      'file': multipartFiles,
-    });
+    return FormData.fromMap({'file': multipartFiles});
   }
 }

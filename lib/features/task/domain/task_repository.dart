@@ -4,13 +4,10 @@ import 'package:starter/features/task/model/task_create_request.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
 class TaskRepository {
+  const TaskRepository(this._executor, this._dataSource);
+
   final RepositoryExecutor _executor;
   final TaskDataSource _dataSource;
-
-  const TaskRepository(
-    this._executor,
-    this._dataSource,
-  );
 
   Future<List<Task>> getTasks() => _executor.execute(_dataSource.getTasks);
 

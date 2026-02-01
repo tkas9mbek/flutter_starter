@@ -12,7 +12,8 @@ part of 'auth_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$AuthEvent {
@@ -22,16 +23,14 @@ mixin _$AuthEvent {
     required TResult Function() logoutRequested,
     required TResult Function() loggedOut,
     required TResult Function() signedIn,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initialized,
     TResult? Function()? logoutRequested,
     TResult? Function()? loggedOut,
     TResult? Function()? signedIn,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initialized,
@@ -39,24 +38,21 @@ mixin _$AuthEvent {
     TResult Function()? loggedOut,
     TResult Function()? signedIn,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_InitializedAuthEvent value) initialized,
     required TResult Function(_LogoutRequestedAuthEvent value) logoutRequested,
     required TResult Function(_LoggedOutAuthEvent value) loggedOut,
     required TResult Function(_StatusChangedAuthEvent value) signedIn,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_InitializedAuthEvent value)? initialized,
     TResult? Function(_LogoutRequestedAuthEvent value)? logoutRequested,
     TResult? Function(_LoggedOutAuthEvent value)? loggedOut,
     TResult? Function(_StatusChangedAuthEvent value)? signedIn,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_InitializedAuthEvent value)? initialized,
@@ -64,8 +60,7 @@ mixin _$AuthEvent {
     TResult Function(_LoggedOutAuthEvent value)? loggedOut,
     TResult Function(_StatusChangedAuthEvent value)? signedIn,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -90,18 +85,20 @@ class _$AuthEventCopyWithImpl<$Res, $Val extends AuthEvent>
 
 /// @nodoc
 abstract class _$$InitializedAuthEventImplCopyWith<$Res> {
-  factory _$$InitializedAuthEventImplCopyWith(_$InitializedAuthEventImpl value,
-          $Res Function(_$InitializedAuthEventImpl) then) =
-      __$$InitializedAuthEventImplCopyWithImpl<$Res>;
+  factory _$$InitializedAuthEventImplCopyWith(
+    _$InitializedAuthEventImpl value,
+    $Res Function(_$InitializedAuthEventImpl) then,
+  ) = __$$InitializedAuthEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$InitializedAuthEventImplCopyWithImpl<$Res>
     extends _$AuthEventCopyWithImpl<$Res, _$InitializedAuthEventImpl>
     implements _$$InitializedAuthEventImplCopyWith<$Res> {
-  __$$InitializedAuthEventImplCopyWithImpl(_$InitializedAuthEventImpl _value,
-      $Res Function(_$InitializedAuthEventImpl) _then)
-      : super(_value, _then);
+  __$$InitializedAuthEventImplCopyWithImpl(
+    _$InitializedAuthEventImpl _value,
+    $Res Function(_$InitializedAuthEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -209,9 +206,9 @@ abstract class _InitializedAuthEvent implements AuthEvent {
 /// @nodoc
 abstract class _$$LogoutRequestedAuthEventImplCopyWith<$Res> {
   factory _$$LogoutRequestedAuthEventImplCopyWith(
-          _$LogoutRequestedAuthEventImpl value,
-          $Res Function(_$LogoutRequestedAuthEventImpl) then) =
-      __$$LogoutRequestedAuthEventImplCopyWithImpl<$Res>;
+    _$LogoutRequestedAuthEventImpl value,
+    $Res Function(_$LogoutRequestedAuthEventImpl) then,
+  ) = __$$LogoutRequestedAuthEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -219,9 +216,9 @@ class __$$LogoutRequestedAuthEventImplCopyWithImpl<$Res>
     extends _$AuthEventCopyWithImpl<$Res, _$LogoutRequestedAuthEventImpl>
     implements _$$LogoutRequestedAuthEventImplCopyWith<$Res> {
   __$$LogoutRequestedAuthEventImplCopyWithImpl(
-      _$LogoutRequestedAuthEventImpl _value,
-      $Res Function(_$LogoutRequestedAuthEventImpl) _then)
-      : super(_value, _then);
+    _$LogoutRequestedAuthEventImpl _value,
+    $Res Function(_$LogoutRequestedAuthEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -328,18 +325,20 @@ abstract class _LogoutRequestedAuthEvent implements AuthEvent {
 
 /// @nodoc
 abstract class _$$LoggedOutAuthEventImplCopyWith<$Res> {
-  factory _$$LoggedOutAuthEventImplCopyWith(_$LoggedOutAuthEventImpl value,
-          $Res Function(_$LoggedOutAuthEventImpl) then) =
-      __$$LoggedOutAuthEventImplCopyWithImpl<$Res>;
+  factory _$$LoggedOutAuthEventImplCopyWith(
+    _$LoggedOutAuthEventImpl value,
+    $Res Function(_$LoggedOutAuthEventImpl) then,
+  ) = __$$LoggedOutAuthEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$LoggedOutAuthEventImplCopyWithImpl<$Res>
     extends _$AuthEventCopyWithImpl<$Res, _$LoggedOutAuthEventImpl>
     implements _$$LoggedOutAuthEventImplCopyWith<$Res> {
-  __$$LoggedOutAuthEventImplCopyWithImpl(_$LoggedOutAuthEventImpl _value,
-      $Res Function(_$LoggedOutAuthEventImpl) _then)
-      : super(_value, _then);
+  __$$LoggedOutAuthEventImplCopyWithImpl(
+    _$LoggedOutAuthEventImpl _value,
+    $Res Function(_$LoggedOutAuthEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -446,9 +445,9 @@ abstract class _LoggedOutAuthEvent implements AuthEvent {
 /// @nodoc
 abstract class _$$StatusChangedAuthEventImplCopyWith<$Res> {
   factory _$$StatusChangedAuthEventImplCopyWith(
-          _$StatusChangedAuthEventImpl value,
-          $Res Function(_$StatusChangedAuthEventImpl) then) =
-      __$$StatusChangedAuthEventImplCopyWithImpl<$Res>;
+    _$StatusChangedAuthEventImpl value,
+    $Res Function(_$StatusChangedAuthEventImpl) then,
+  ) = __$$StatusChangedAuthEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -456,9 +455,9 @@ class __$$StatusChangedAuthEventImplCopyWithImpl<$Res>
     extends _$AuthEventCopyWithImpl<$Res, _$StatusChangedAuthEventImpl>
     implements _$$StatusChangedAuthEventImplCopyWith<$Res> {
   __$$StatusChangedAuthEventImplCopyWithImpl(
-      _$StatusChangedAuthEventImpl _value,
-      $Res Function(_$StatusChangedAuthEventImpl) _then)
-      : super(_value, _then);
+    _$StatusChangedAuthEventImpl _value,
+    $Res Function(_$StatusChangedAuthEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -570,45 +569,39 @@ mixin _$AuthState {
     required TResult Function() unknown,
     required TResult Function() unauthenticated,
     required TResult Function() authenticated,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? unknown,
     TResult? Function()? unauthenticated,
     TResult? Function()? authenticated,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? unknown,
     TResult Function()? unauthenticated,
     TResult Function()? authenticated,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_UnknownAuthState value) unknown,
     required TResult Function(_UnauthenticatedAuthState value) unauthenticated,
     required TResult Function(_AuthenticatedAuthState value) authenticated,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_UnknownAuthState value)? unknown,
     TResult? Function(_UnauthenticatedAuthState value)? unauthenticated,
     TResult? Function(_AuthenticatedAuthState value)? authenticated,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_UnknownAuthState value)? unknown,
     TResult Function(_UnauthenticatedAuthState value)? unauthenticated,
     TResult Function(_AuthenticatedAuthState value)? authenticated,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -633,18 +626,20 @@ class _$AuthStateCopyWithImpl<$Res, $Val extends AuthState>
 
 /// @nodoc
 abstract class _$$UnknownAuthStateImplCopyWith<$Res> {
-  factory _$$UnknownAuthStateImplCopyWith(_$UnknownAuthStateImpl value,
-          $Res Function(_$UnknownAuthStateImpl) then) =
-      __$$UnknownAuthStateImplCopyWithImpl<$Res>;
+  factory _$$UnknownAuthStateImplCopyWith(
+    _$UnknownAuthStateImpl value,
+    $Res Function(_$UnknownAuthStateImpl) then,
+  ) = __$$UnknownAuthStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$UnknownAuthStateImplCopyWithImpl<$Res>
     extends _$AuthStateCopyWithImpl<$Res, _$UnknownAuthStateImpl>
     implements _$$UnknownAuthStateImplCopyWith<$Res> {
-  __$$UnknownAuthStateImplCopyWithImpl(_$UnknownAuthStateImpl _value,
-      $Res Function(_$UnknownAuthStateImpl) _then)
-      : super(_value, _then);
+  __$$UnknownAuthStateImplCopyWithImpl(
+    _$UnknownAuthStateImpl _value,
+    $Res Function(_$UnknownAuthStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -746,9 +741,9 @@ abstract class _UnknownAuthState extends AuthState {
 /// @nodoc
 abstract class _$$UnauthenticatedAuthStateImplCopyWith<$Res> {
   factory _$$UnauthenticatedAuthStateImplCopyWith(
-          _$UnauthenticatedAuthStateImpl value,
-          $Res Function(_$UnauthenticatedAuthStateImpl) then) =
-      __$$UnauthenticatedAuthStateImplCopyWithImpl<$Res>;
+    _$UnauthenticatedAuthStateImpl value,
+    $Res Function(_$UnauthenticatedAuthStateImpl) then,
+  ) = __$$UnauthenticatedAuthStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -756,9 +751,9 @@ class __$$UnauthenticatedAuthStateImplCopyWithImpl<$Res>
     extends _$AuthStateCopyWithImpl<$Res, _$UnauthenticatedAuthStateImpl>
     implements _$$UnauthenticatedAuthStateImplCopyWith<$Res> {
   __$$UnauthenticatedAuthStateImplCopyWithImpl(
-      _$UnauthenticatedAuthStateImpl _value,
-      $Res Function(_$UnauthenticatedAuthStateImpl) _then)
-      : super(_value, _then);
+    _$UnauthenticatedAuthStateImpl _value,
+    $Res Function(_$UnauthenticatedAuthStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.
@@ -861,9 +856,9 @@ abstract class _UnauthenticatedAuthState extends AuthState {
 /// @nodoc
 abstract class _$$AuthenticatedAuthStateImplCopyWith<$Res> {
   factory _$$AuthenticatedAuthStateImplCopyWith(
-          _$AuthenticatedAuthStateImpl value,
-          $Res Function(_$AuthenticatedAuthStateImpl) then) =
-      __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>;
+    _$AuthenticatedAuthStateImpl value,
+    $Res Function(_$AuthenticatedAuthStateImpl) then,
+  ) = __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -871,9 +866,9 @@ class __$$AuthenticatedAuthStateImplCopyWithImpl<$Res>
     extends _$AuthStateCopyWithImpl<$Res, _$AuthenticatedAuthStateImpl>
     implements _$$AuthenticatedAuthStateImplCopyWith<$Res> {
   __$$AuthenticatedAuthStateImplCopyWithImpl(
-      _$AuthenticatedAuthStateImpl _value,
-      $Res Function(_$AuthenticatedAuthStateImpl) _then)
-      : super(_value, _then);
+    _$AuthenticatedAuthStateImpl _value,
+    $Res Function(_$AuthenticatedAuthStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of AuthState
   /// with the given fields replaced by the non-null parameter values.

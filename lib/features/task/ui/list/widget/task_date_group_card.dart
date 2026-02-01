@@ -7,11 +7,7 @@ import 'package:starter_toolkit/utils/date/date_time_extension.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class TaskDateGroupCard extends StatelessWidget {
-  const TaskDateGroupCard({
-    required this.date,
-    required this.tasks,
-    super.key,
-  });
+  const TaskDateGroupCard({required this.date, required this.tasks, super.key});
 
   final DateTime date;
   final List<Task> tasks;
@@ -34,10 +30,7 @@ class TaskDateGroupCard extends StatelessWidget {
             padding: const EdgeInsets.only(left: 4, bottom: 12),
             child: Row(
               children: [
-                Text(
-                  dateLabel,
-                  style: textStyles.boldBody16,
-                ),
+                Text(dateLabel, style: textStyles.boldBody16),
                 const SizedBox(width: 8),
                 Text(
                   '$tasksCount $tasksWord',
@@ -64,10 +57,8 @@ class TaskDateGroupCard extends StatelessWidget {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemCount: tasks.length,
-              separatorBuilder: (context, index) => Divider(
-                height: 1,
-                color: theme.border,
-              ),
+              separatorBuilder: (context, index) =>
+                  Divider(height: 1, color: theme.border),
               itemBuilder: (context, index) =>
                   TaskListItemTile(task: tasks[index]),
             ),

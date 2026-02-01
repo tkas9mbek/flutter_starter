@@ -5,16 +5,16 @@ import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
 
 class RemoteTaskDataSource implements TaskDataSource {
-  final ApiClient _client;
-
   const RemoteTaskDataSource(this._client);
+
+  final ApiClient _client;
 
   @override
   Future<List<Task>> getTasks() => _client.requestJsonList<Task>(
-        method: HttpMethod.get,
-        path: '/tasks',
-        fromJson: Task.fromJson,
-      );
+    method: HttpMethod.get,
+    path: '/tasks',
+    fromJson: Task.fromJson,
+  );
 
   @override
   Future<List<Task>> getTasksByDate(DateTime date) =>
@@ -43,8 +43,6 @@ class RemoteTaskDataSource implements TaskDataSource {
       );
 
   @override
-  Future<void> deleteTask(String id) => _client.requestVoid(
-        method: HttpMethod.delete,
-        path: '/tasks/$id',
-      );
+  Future<void> deleteTask(String id) =>
+      _client.requestVoid(method: HttpMethod.delete, path: '/tasks/$id');
 }

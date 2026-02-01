@@ -28,8 +28,9 @@ void main() {
     blocTest<TaskDeleteBloc, TaskDeleteState>(
       'emits [loading, success] when delete is successful',
       build: () {
-        when(() => mockTaskRepository.deleteTask(taskId))
-            .thenAnswer((_) async {});
+        when(
+          () => mockTaskRepository.deleteTask(taskId),
+        ).thenAnswer((_) async {});
 
         return taskDeleteBloc;
       },
@@ -63,8 +64,9 @@ void main() {
     blocTest<TaskDeleteBloc, TaskDeleteState>(
       'emits [loading, failure] with NoInternetException',
       build: () {
-        when(() => mockTaskRepository.deleteTask(taskId))
-            .thenThrow(const NoInternetException());
+        when(
+          () => mockTaskRepository.deleteTask(taskId),
+        ).thenThrow(const NoInternetException());
 
         return taskDeleteBloc;
       },
@@ -78,8 +80,9 @@ void main() {
     blocTest<TaskDeleteBloc, TaskDeleteState>(
       'emits [loading, failure] with ForbiddenException',
       build: () {
-        when(() => mockTaskRepository.deleteTask(taskId))
-            .thenThrow(const ForbiddenException());
+        when(
+          () => mockTaskRepository.deleteTask(taskId),
+        ).thenThrow(const ForbiddenException());
 
         return taskDeleteBloc;
       },
@@ -95,8 +98,9 @@ void main() {
     const initialState = TaskDeleteState.initial();
     const successState = TaskDeleteState.success();
     const loadingState = TaskDeleteState.loading();
-    const failureState =
-        TaskDeleteState.failure(ServerException(statusCode: 500));
+    const failureState = TaskDeleteState.failure(
+      ServerException(statusCode: 500),
+    );
 
     test('isLoading returns true for loading state', () {
       taskDeleteBloc.emit(loadingState);

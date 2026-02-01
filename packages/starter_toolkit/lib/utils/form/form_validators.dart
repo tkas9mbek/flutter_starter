@@ -5,52 +5,48 @@ class FormValidators {
   static FormFieldValidator<T> required<T>(
     BuildContext context, {
     String? message,
-  }) =>
-      (value) {
-        if (value == null ||
-            value.toString().trim().isEmpty ||
-            (value is List && value.isEmpty)) {
-          return message ?? ToolkitLocalizer.of(context).errorRequiredField;
-        }
+  }) => (value) {
+    if (value == null ||
+        value.toString().trim().isEmpty ||
+        (value is List && value.isEmpty)) {
+      return message ?? ToolkitLocalizer.of(context).errorRequiredField;
+    }
 
-        return null;
-      };
+    return null;
+  };
 
   static FormFieldValidator<T> url<T>(
     BuildContext context, {
     String? message,
-  }) =>
-      (value) {
-        if (value == null || value.toString().trim().isEmpty) {
-          return null;
-        }
+  }) => (value) {
+    if (value == null || value.toString().trim().isEmpty) {
+      return null;
+    }
 
-        final urlPattern = RegExp(
-          r'^(http|https):\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+([/?].*)?$',
-          caseSensitive: false,
-        );
+    final urlPattern = RegExp(
+      r'^(http|https):\/\/[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)+([/?].*)?$',
+      caseSensitive: false,
+    );
 
-        if (!urlPattern.hasMatch(value.toString())) {
-          return message ?? ToolkitLocalizer.of(context).errorInvalidUrlFormat;
-        }
+    if (!urlPattern.hasMatch(value.toString())) {
+      return message ?? ToolkitLocalizer.of(context).errorInvalidUrlFormat;
+    }
 
-        return null;
-      };
+    return null;
+  };
 
   static FormFieldValidator<String> phone(
     BuildContext context, {
     String? message,
-  }) =>
-      (value) {
-        if (value == null || value.trim().isEmpty) {
-          return null;
-        }
+  }) => (value) {
+    if (value == null || value.trim().isEmpty) {
+      return null;
+    }
 
-        if (value.length < 10 || value.length > 16) {
-          return message ??
-              ToolkitLocalizer.of(context).errorInvalidPhoneFormat;
-        }
+    if (value.length < 10 || value.length > 16) {
+      return message ?? ToolkitLocalizer.of(context).errorInvalidPhoneFormat;
+    }
 
-        return null;
-      };
+    return null;
+  };
 }

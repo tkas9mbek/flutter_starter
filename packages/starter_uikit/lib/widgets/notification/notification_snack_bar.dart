@@ -52,9 +52,7 @@ class NotificationSnackBar extends StatelessWidget {
                     ],
                     TextSpan(
                       text: text,
-                      style: textStyles.regularBody13.copyWith(
-                        color: color,
-                      ),
+                      style: textStyles.regularBody13.copyWith(color: color),
                     ),
                   ],
                 ),
@@ -103,11 +101,7 @@ class NotificationSnackBar extends StatelessWidget {
     final message = uiModel.snackbarDescription;
 
     if (message.isNotEmpty) {
-      showMessage(
-        context,
-        isSuccess: false,
-        message: message,
-      );
+      showMessage(context, isSuccess: false, message: message);
     }
   }
 }

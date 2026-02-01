@@ -39,10 +39,7 @@ class ProfileInfoTile extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: textStyles.mediumBody14,
-                ),
+                Text(value, style: textStyles.mediumBody14),
               ],
             ),
           ),

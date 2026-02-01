@@ -10,14 +10,10 @@ class SettingsModule extends AppModule {
   void registerDependencies() {
     getIt
       ..registerLazySingleton<SettingsDataSource>(
-        () => LocalSettingsDataSource(
-          getIt<SharedPreferences>(),
-        ),
+        () => LocalSettingsDataSource(getIt<SharedPreferences>()),
       )
       ..registerLazySingleton(
-        () => SettingsRepository(
-          getIt<SettingsDataSource>(),
-        ),
+        () => SettingsRepository(getIt<SettingsDataSource>()),
       );
   }
 }

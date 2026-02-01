@@ -25,9 +25,7 @@ class DataModule extends AppModule {
           return getIt.get<AuthRepository>().logout();
         }
 
-        final headers = <String, dynamic>{
-          'Authorization': 'Bearer $token',
-        };
+        final headers = <String, dynamic>{'Authorization': 'Bearer $token'};
 
         options.headers.addAll(headers);
         handler.next(options);
@@ -46,9 +44,7 @@ class DataModule extends AppModule {
         apiProvider.getDio(useToken: false),
         instanceName: 'unauthorized',
       )
-      ..registerSingleton<Dio>(
-        apiProvider.getDio(useToken: true),
-      )
+      ..registerSingleton<Dio>(apiProvider.getDio(useToken: true))
       ..registerFactory<ApiClient>(
         () => DioApiClient(
           dio: getIt<Dio>(instanceName: 'unauthorized'),
@@ -57,10 +53,7 @@ class DataModule extends AppModule {
         instanceName: 'unauthorized',
       )
       ..registerFactory<ApiClient>(
-        () => DioApiClient(
-          dio: getIt<Dio>(),
-          baseUrl: env.baseApiUrl,
-        ),
+        () => DioApiClient(dio: getIt<Dio>(), baseUrl: env.baseApiUrl),
       );
   }
 }

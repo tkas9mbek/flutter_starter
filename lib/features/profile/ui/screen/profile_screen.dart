@@ -65,9 +65,9 @@ class ProfileScreen extends StatelessWidget {
             AppElevatedButton.big(
               context: context,
               text: localizer.toLogout,
-              onPressed: () => context
-                  .read<AuthBloc>()
-                  .add(const AuthEvent.logoutRequested()),
+              onPressed: () => context.read<AuthBloc>().add(
+                const AuthEvent.logoutRequested(),
+              ),
             ),
           ],
         ),

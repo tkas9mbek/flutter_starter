@@ -9,9 +9,6 @@ class RemoteAuthAuthorizedDataSource implements AuthAuthorizedDataSource {
 
   @override
   Future<void> logout() {
-    return _client.requestVoid(
-      method: HttpMethod.post,
-      path: '/auth/logout',
-    );
+    return _client.requestVoid(method: HttpMethod.post, path: '/auth/logout');
   }
 }

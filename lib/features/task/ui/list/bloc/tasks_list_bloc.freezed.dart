@@ -12,49 +12,45 @@ part of 'tasks_list_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$TasksListEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() requested,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? requested,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? requested,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_RequestedTasksListEvent value) requested,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_RequestedTasksListEvent value)? requested,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_RequestedTasksListEvent value)? requested,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TasksListEventCopyWith<$Res> {
   factory $TasksListEventCopyWith(
-          TasksListEvent value, $Res Function(TasksListEvent) then) =
-      _$TasksListEventCopyWithImpl<$Res, TasksListEvent>;
+    TasksListEvent value,
+    $Res Function(TasksListEvent) then,
+  ) = _$TasksListEventCopyWithImpl<$Res, TasksListEvent>;
 }
 
 /// @nodoc
@@ -74,9 +70,9 @@ class _$TasksListEventCopyWithImpl<$Res, $Val extends TasksListEvent>
 /// @nodoc
 abstract class _$$RequestedTasksListEventImplCopyWith<$Res> {
   factory _$$RequestedTasksListEventImplCopyWith(
-          _$RequestedTasksListEventImpl value,
-          $Res Function(_$RequestedTasksListEventImpl) then) =
-      __$$RequestedTasksListEventImplCopyWithImpl<$Res>;
+    _$RequestedTasksListEventImpl value,
+    $Res Function(_$RequestedTasksListEventImpl) then,
+  ) = __$$RequestedTasksListEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -84,9 +80,9 @@ class __$$RequestedTasksListEventImplCopyWithImpl<$Res>
     extends _$TasksListEventCopyWithImpl<$Res, _$RequestedTasksListEventImpl>
     implements _$$RequestedTasksListEventImplCopyWith<$Res> {
   __$$RequestedTasksListEventImplCopyWithImpl(
-      _$RequestedTasksListEventImpl _value,
-      $Res Function(_$RequestedTasksListEventImpl) _then)
-      : super(_value, _then);
+    _$RequestedTasksListEventImpl _value,
+    $Res Function(_$RequestedTasksListEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TasksListEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -180,46 +176,43 @@ mixin _$TasksListState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)
-        success,
+      List<Task> tasks,
+      Map<DateTime, List<Task>> groupedTasks,
+    )
+    success,
     required TResult Function(AppException exception) failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult? Function(AppException exception)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult Function(AppException exception)? failure,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_InitialTasksListState value) initial,
     required TResult Function(_LoadingTasksListState value) loading,
     required TResult Function(_SuccessTasksListState value) success,
     required TResult Function(_FailureTasksListState value) failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_InitialTasksListState value)? initial,
     TResult? Function(_LoadingTasksListState value)? loading,
     TResult? Function(_SuccessTasksListState value)? success,
     TResult? Function(_FailureTasksListState value)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_InitialTasksListState value)? initial,
@@ -227,15 +220,15 @@ mixin _$TasksListState {
     TResult Function(_SuccessTasksListState value)? success,
     TResult Function(_FailureTasksListState value)? failure,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TasksListStateCopyWith<$Res> {
   factory $TasksListStateCopyWith(
-          TasksListState value, $Res Function(TasksListState) then) =
-      _$TasksListStateCopyWithImpl<$Res, TasksListState>;
+    TasksListState value,
+    $Res Function(TasksListState) then,
+  ) = _$TasksListStateCopyWithImpl<$Res, TasksListState>;
 }
 
 /// @nodoc
@@ -255,18 +248,19 @@ class _$TasksListStateCopyWithImpl<$Res, $Val extends TasksListState>
 /// @nodoc
 abstract class _$$InitialTasksListStateImplCopyWith<$Res> {
   factory _$$InitialTasksListStateImplCopyWith(
-          _$InitialTasksListStateImpl value,
-          $Res Function(_$InitialTasksListStateImpl) then) =
-      __$$InitialTasksListStateImplCopyWithImpl<$Res>;
+    _$InitialTasksListStateImpl value,
+    $Res Function(_$InitialTasksListStateImpl) then,
+  ) = __$$InitialTasksListStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$InitialTasksListStateImplCopyWithImpl<$Res>
     extends _$TasksListStateCopyWithImpl<$Res, _$InitialTasksListStateImpl>
     implements _$$InitialTasksListStateImplCopyWith<$Res> {
-  __$$InitialTasksListStateImplCopyWithImpl(_$InitialTasksListStateImpl _value,
-      $Res Function(_$InitialTasksListStateImpl) _then)
-      : super(_value, _then);
+  __$$InitialTasksListStateImplCopyWithImpl(
+    _$InitialTasksListStateImpl _value,
+    $Res Function(_$InitialTasksListStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TasksListState
   /// with the given fields replaced by the non-null parameter values.
@@ -298,8 +292,10 @@ class _$InitialTasksListStateImpl extends _InitialTasksListState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)
-        success,
+      List<Task> tasks,
+      Map<DateTime, List<Task>> groupedTasks,
+    )
+    success,
     required TResult Function(AppException exception) failure,
   }) {
     return initial();
@@ -311,7 +307,7 @@ class _$InitialTasksListStateImpl extends _InitialTasksListState {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult? Function(AppException exception)? failure,
   }) {
     return initial?.call();
@@ -323,7 +319,7 @@ class _$InitialTasksListStateImpl extends _InitialTasksListState {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult Function(AppException exception)? failure,
     required TResult orElse(),
   }) {
@@ -379,18 +375,19 @@ abstract class _InitialTasksListState extends TasksListState {
 /// @nodoc
 abstract class _$$LoadingTasksListStateImplCopyWith<$Res> {
   factory _$$LoadingTasksListStateImplCopyWith(
-          _$LoadingTasksListStateImpl value,
-          $Res Function(_$LoadingTasksListStateImpl) then) =
-      __$$LoadingTasksListStateImplCopyWithImpl<$Res>;
+    _$LoadingTasksListStateImpl value,
+    $Res Function(_$LoadingTasksListStateImpl) then,
+  ) = __$$LoadingTasksListStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$LoadingTasksListStateImplCopyWithImpl<$Res>
     extends _$TasksListStateCopyWithImpl<$Res, _$LoadingTasksListStateImpl>
     implements _$$LoadingTasksListStateImplCopyWith<$Res> {
-  __$$LoadingTasksListStateImplCopyWithImpl(_$LoadingTasksListStateImpl _value,
-      $Res Function(_$LoadingTasksListStateImpl) _then)
-      : super(_value, _then);
+  __$$LoadingTasksListStateImplCopyWithImpl(
+    _$LoadingTasksListStateImpl _value,
+    $Res Function(_$LoadingTasksListStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TasksListState
   /// with the given fields replaced by the non-null parameter values.
@@ -422,8 +419,10 @@ class _$LoadingTasksListStateImpl extends _LoadingTasksListState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)
-        success,
+      List<Task> tasks,
+      Map<DateTime, List<Task>> groupedTasks,
+    )
+    success,
     required TResult Function(AppException exception) failure,
   }) {
     return loading();
@@ -435,7 +434,7 @@ class _$LoadingTasksListStateImpl extends _LoadingTasksListState {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult? Function(AppException exception)? failure,
   }) {
     return loading?.call();
@@ -447,7 +446,7 @@ class _$LoadingTasksListStateImpl extends _LoadingTasksListState {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult Function(AppException exception)? failure,
     required TResult orElse(),
   }) {
@@ -503,9 +502,9 @@ abstract class _LoadingTasksListState extends TasksListState {
 /// @nodoc
 abstract class _$$SuccessTasksListStateImplCopyWith<$Res> {
   factory _$$SuccessTasksListStateImplCopyWith(
-          _$SuccessTasksListStateImpl value,
-          $Res Function(_$SuccessTasksListStateImpl) then) =
-      __$$SuccessTasksListStateImplCopyWithImpl<$Res>;
+    _$SuccessTasksListStateImpl value,
+    $Res Function(_$SuccessTasksListStateImpl) then,
+  ) = __$$SuccessTasksListStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<Task> tasks, Map<DateTime, List<Task>> groupedTasks});
 }
@@ -514,56 +513,43 @@ abstract class _$$SuccessTasksListStateImplCopyWith<$Res> {
 class __$$SuccessTasksListStateImplCopyWithImpl<$Res>
     extends _$TasksListStateCopyWithImpl<$Res, _$SuccessTasksListStateImpl>
     implements _$$SuccessTasksListStateImplCopyWith<$Res> {
-  __$$SuccessTasksListStateImplCopyWithImpl(_$SuccessTasksListStateImpl _value,
-      $Res Function(_$SuccessTasksListStateImpl) _then)
-      : super(_value, _then);
+  __$$SuccessTasksListStateImplCopyWithImpl(
+    _$SuccessTasksListStateImpl _value,
+    $Res Function(_$SuccessTasksListStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TasksListState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? tasks = null,
-    Object? groupedTasks = null,
-  }) {
-    return _then(_$SuccessTasksListStateImpl(
-      tasks: null == tasks
-          ? _value._tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<Task>,
-      groupedTasks: null == groupedTasks
-          ? _value._groupedTasks
-          : groupedTasks // ignore: cast_nullable_to_non_nullable
-              as Map<DateTime, List<Task>>,
-    ));
+  $Res call({Object? tasks = null, Object? groupedTasks = null}) {
+    return _then(
+      _$SuccessTasksListStateImpl(
+        tasks: null == tasks
+            ? _value.tasks
+            : tasks // ignore: cast_nullable_to_non_nullable
+                  as List<Task>,
+        groupedTasks: null == groupedTasks
+            ? _value.groupedTasks
+            : groupedTasks // ignore: cast_nullable_to_non_nullable
+                  as Map<DateTime, List<Task>>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$SuccessTasksListStateImpl extends _SuccessTasksListState {
-  const _$SuccessTasksListStateImpl(
-      {required final List<Task> tasks,
-      required final Map<DateTime, List<Task>> groupedTasks})
-      : _tasks = tasks,
-        _groupedTasks = groupedTasks,
-        super._();
+  const _$SuccessTasksListStateImpl({
+    required this.tasks,
+    required this.groupedTasks,
+  }) : super._();
 
-  final List<Task> _tasks;
   @override
-  List<Task> get tasks {
-    if (_tasks is EqualUnmodifiableListView) return _tasks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tasks);
-  }
-
-  final Map<DateTime, List<Task>> _groupedTasks;
+  final List<Task> tasks;
   @override
-  Map<DateTime, List<Task>> get groupedTasks {
-    if (_groupedTasks is EqualUnmodifiableMapView) return _groupedTasks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableMapView(_groupedTasks);
-  }
+  final Map<DateTime, List<Task>> groupedTasks;
 
   @override
   String toString() {
@@ -575,16 +561,19 @@ class _$SuccessTasksListStateImpl extends _SuccessTasksListState {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SuccessTasksListStateImpl &&
-            const DeepCollectionEquality().equals(other._tasks, _tasks) &&
-            const DeepCollectionEquality()
-                .equals(other._groupedTasks, _groupedTasks));
+            const DeepCollectionEquality().equals(other.tasks, tasks) &&
+            const DeepCollectionEquality().equals(
+              other.groupedTasks,
+              groupedTasks,
+            ));
   }
 
   @override
   int get hashCode => Object.hash(
-      runtimeType,
-      const DeepCollectionEquality().hash(_tasks),
-      const DeepCollectionEquality().hash(_groupedTasks));
+    runtimeType,
+    const DeepCollectionEquality().hash(tasks),
+    const DeepCollectionEquality().hash(groupedTasks),
+  );
 
   /// Create a copy of TasksListState
   /// with the given fields replaced by the non-null parameter values.
@@ -592,8 +581,11 @@ class _$SuccessTasksListStateImpl extends _SuccessTasksListState {
   @override
   @pragma('vm:prefer-inline')
   _$$SuccessTasksListStateImplCopyWith<_$SuccessTasksListStateImpl>
-      get copyWith => __$$SuccessTasksListStateImplCopyWithImpl<
-          _$SuccessTasksListStateImpl>(this, _$identity);
+  get copyWith =>
+      __$$SuccessTasksListStateImplCopyWithImpl<_$SuccessTasksListStateImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -601,8 +593,10 @@ class _$SuccessTasksListStateImpl extends _SuccessTasksListState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)
-        success,
+      List<Task> tasks,
+      Map<DateTime, List<Task>> groupedTasks,
+    )
+    success,
     required TResult Function(AppException exception) failure,
   }) {
     return success(tasks, groupedTasks);
@@ -614,7 +608,7 @@ class _$SuccessTasksListStateImpl extends _SuccessTasksListState {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult? Function(AppException exception)? failure,
   }) {
     return success?.call(tasks, groupedTasks);
@@ -626,7 +620,7 @@ class _$SuccessTasksListStateImpl extends _SuccessTasksListState {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult Function(AppException exception)? failure,
     required TResult orElse(),
   }) {
@@ -675,10 +669,10 @@ class _$SuccessTasksListStateImpl extends _SuccessTasksListState {
 }
 
 abstract class _SuccessTasksListState extends TasksListState {
-  const factory _SuccessTasksListState(
-          {required final List<Task> tasks,
-          required final Map<DateTime, List<Task>> groupedTasks}) =
-      _$SuccessTasksListStateImpl;
+  const factory _SuccessTasksListState({
+    required final List<Task> tasks,
+    required final Map<DateTime, List<Task>> groupedTasks,
+  }) = _$SuccessTasksListStateImpl;
   const _SuccessTasksListState._() : super._();
 
   List<Task> get tasks;
@@ -688,15 +682,15 @@ abstract class _SuccessTasksListState extends TasksListState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SuccessTasksListStateImplCopyWith<_$SuccessTasksListStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$FailureTasksListStateImplCopyWith<$Res> {
   factory _$$FailureTasksListStateImplCopyWith(
-          _$FailureTasksListStateImpl value,
-          $Res Function(_$FailureTasksListStateImpl) then) =
-      __$$FailureTasksListStateImplCopyWithImpl<$Res>;
+    _$FailureTasksListStateImpl value,
+    $Res Function(_$FailureTasksListStateImpl) then,
+  ) = __$$FailureTasksListStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AppException exception});
 }
@@ -705,23 +699,24 @@ abstract class _$$FailureTasksListStateImplCopyWith<$Res> {
 class __$$FailureTasksListStateImplCopyWithImpl<$Res>
     extends _$TasksListStateCopyWithImpl<$Res, _$FailureTasksListStateImpl>
     implements _$$FailureTasksListStateImplCopyWith<$Res> {
-  __$$FailureTasksListStateImplCopyWithImpl(_$FailureTasksListStateImpl _value,
-      $Res Function(_$FailureTasksListStateImpl) _then)
-      : super(_value, _then);
+  __$$FailureTasksListStateImplCopyWithImpl(
+    _$FailureTasksListStateImpl _value,
+    $Res Function(_$FailureTasksListStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TasksListState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? exception = null,
-  }) {
-    return _then(_$FailureTasksListStateImpl(
-      null == exception
-          ? _value.exception
-          : exception // ignore: cast_nullable_to_non_nullable
-              as AppException,
-    ));
+  $Res call({Object? exception = null}) {
+    return _then(
+      _$FailureTasksListStateImpl(
+        null == exception
+            ? _value.exception
+            : exception // ignore: cast_nullable_to_non_nullable
+                  as AppException,
+      ),
+    );
   }
 }
 
@@ -756,8 +751,11 @@ class _$FailureTasksListStateImpl extends _FailureTasksListState {
   @override
   @pragma('vm:prefer-inline')
   _$$FailureTasksListStateImplCopyWith<_$FailureTasksListStateImpl>
-      get copyWith => __$$FailureTasksListStateImplCopyWithImpl<
-          _$FailureTasksListStateImpl>(this, _$identity);
+  get copyWith =>
+      __$$FailureTasksListStateImplCopyWithImpl<_$FailureTasksListStateImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -765,8 +763,10 @@ class _$FailureTasksListStateImpl extends _FailureTasksListState {
     required TResult Function() initial,
     required TResult Function() loading,
     required TResult Function(
-            List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)
-        success,
+      List<Task> tasks,
+      Map<DateTime, List<Task>> groupedTasks,
+    )
+    success,
     required TResult Function(AppException exception) failure,
   }) {
     return failure(exception);
@@ -778,7 +778,7 @@ class _$FailureTasksListStateImpl extends _FailureTasksListState {
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult? Function(AppException exception)? failure,
   }) {
     return failure?.call(exception);
@@ -790,7 +790,7 @@ class _$FailureTasksListStateImpl extends _FailureTasksListState {
     TResult Function()? initial,
     TResult Function()? loading,
     TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-        success,
+    success,
     TResult Function(AppException exception)? failure,
     required TResult orElse(),
   }) {
@@ -849,5 +849,5 @@ abstract class _FailureTasksListState extends TasksListState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FailureTasksListStateImplCopyWith<_$FailureTasksListStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

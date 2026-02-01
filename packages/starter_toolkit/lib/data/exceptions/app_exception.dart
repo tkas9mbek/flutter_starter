@@ -15,10 +15,7 @@ sealed class AppException implements Exception {
   bool get canRetry;
 
   /// Creates exception from Dio response.
-  static AppException fromDioResponse({
-    int? statusCode,
-    Response? response,
-  }) {
+  static AppException fromDioResponse({int? statusCode, Response? response}) {
     final responseData = response?.data;
 
     String? message;
@@ -34,10 +31,7 @@ sealed class AppException implements Exception {
       case 500:
         return InternalServerErrorException(message: message);
       default:
-        return ServerException(
-          statusCode: statusCode,
-          message: message,
-        );
+        return ServerException(statusCode: statusCode, message: message);
     }
   }
 }
@@ -64,10 +58,7 @@ final class NoInternetException extends AppException {
   descriptionKey: 'errorMessageDefaultRequestError',
 )
 final class ServerException extends AppException {
-  const ServerException({
-    required this.statusCode,
-    this.message,
-  });
+  const ServerException({required this.statusCode, this.message});
 
   final int? statusCode;
   final String? message;
@@ -80,9 +71,7 @@ final class ServerException extends AppException {
 }
 
 /// Authentication error (401)
-@ExceptionUiConfig(
-  descriptionKey: 'errorMessageAuthRequired',
-)
+@ExceptionUiConfig(descriptionKey: 'errorMessageAuthRequired')
 final class UnauthorizedException extends AppException {
   const UnauthorizedException({this.message});
 
@@ -130,14 +119,9 @@ final class InternalServerErrorException extends AppException {
 }
 
 /// Unknown/unexpected error with details
-@ExceptionUiConfig(
-  descriptionKey: 'errorMessageUnexpectedError',
-)
+@ExceptionUiConfig(descriptionKey: 'errorMessageUnexpectedError')
 final class UnknownException extends AppException {
-  const UnknownException({
-    required this.error,
-    required this.stackTrace,
-  });
+  const UnknownException({required this.error, required this.stackTrace});
 
   final Object error;
   final StackTrace stackTrace;
@@ -150,9 +134,7 @@ final class UnknownException extends AppException {
 }
 
 /// Development/programming error
-@ExceptionUiConfig(
-  descriptionKey: 'errorMessageMobileBug',
-)
+@ExceptionUiConfig(descriptionKey: 'errorMessageMobileBug')
 final class DevelopmentException extends AppException {
   const DevelopmentException();
 
@@ -164,9 +146,7 @@ final class DevelopmentException extends AppException {
 }
 
 /// URL launch failure
-@ExceptionUiConfig(
-  descriptionKey: 'errorMessageUrlLaunchError',
-)
+@ExceptionUiConfig(descriptionKey: 'errorMessageUrlLaunchError')
 final class UrlLaunchFailedException extends AppException {
   const UrlLaunchFailedException();
 

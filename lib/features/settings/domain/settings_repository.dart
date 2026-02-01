@@ -3,9 +3,9 @@ import 'package:starter/features/settings/model/language_option.dart';
 import 'package:starter/features/settings/model/theme_mode_option.dart';
 
 class SettingsRepository {
-  final SettingsDataSource _settingsDataSource;
-
   SettingsRepository(this._settingsDataSource);
+
+  final SettingsDataSource _settingsDataSource;
 
   LanguageOption getLanguageOption() {
     final languageCode = _settingsDataSource.getLanguageCode();

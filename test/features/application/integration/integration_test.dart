@@ -120,13 +120,12 @@ void main() {
       callbackInvoked = false;
       callbackEnvironment = null;
 
-      environmentRepository = EnvironmentRepository(
-        environmentDataSource,
-        (env) async {
-          callbackInvoked = true;
-          callbackEnvironment = env;
-        },
-      );
+      environmentRepository = EnvironmentRepository(environmentDataSource, (
+        env,
+      ) async {
+        callbackInvoked = true;
+        callbackEnvironment = env;
+      });
       environmentCubit = EnvironmentCubit(environmentRepository);
     });
 
@@ -148,10 +147,7 @@ void main() {
         await cubit.setEnvironment(AppEnvironment.prod());
         await cubit.setEnvironment(AppEnvironment.mock());
       },
-      expect: () => [
-        AppEnvironment.prod(),
-        AppEnvironment.mock(),
-      ],
+      expect: () => [AppEnvironment.prod(), AppEnvironment.mock()],
       verify: (_) {
         expect(callbackInvoked, isTrue);
         expect(callbackEnvironment, AppEnvironment.mock()); // Last value

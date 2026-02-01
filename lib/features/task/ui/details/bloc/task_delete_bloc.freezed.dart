@@ -12,7 +12,8 @@ part of 'task_delete_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$TaskDeleteEvent {
@@ -20,35 +21,29 @@ mixin _$TaskDeleteEvent {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function(String taskId) deleted,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(String taskId)? deleted,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(String taskId)? deleted,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_DeletedTaskDeleteEvent value) deleted,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_DeletedTaskDeleteEvent value)? deleted,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_DeletedTaskDeleteEvent value)? deleted,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 
   /// Create a copy of TaskDeleteEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -60,8 +55,9 @@ mixin _$TaskDeleteEvent {
 /// @nodoc
 abstract class $TaskDeleteEventCopyWith<$Res> {
   factory $TaskDeleteEventCopyWith(
-          TaskDeleteEvent value, $Res Function(TaskDeleteEvent) then) =
-      _$TaskDeleteEventCopyWithImpl<$Res, TaskDeleteEvent>;
+    TaskDeleteEvent value,
+    $Res Function(TaskDeleteEvent) then,
+  ) = _$TaskDeleteEventCopyWithImpl<$Res, TaskDeleteEvent>;
   @useResult
   $Res call({String taskId});
 }
@@ -80,15 +76,16 @@ class _$TaskDeleteEventCopyWithImpl<$Res, $Val extends TaskDeleteEvent>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? taskId = null,
-  }) {
-    return _then(_value.copyWith(
-      taskId: null == taskId
-          ? _value.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  $Res call({Object? taskId = null}) {
+    return _then(
+      _value.copyWith(
+            taskId: null == taskId
+                ? _value.taskId
+                : taskId // ignore: cast_nullable_to_non_nullable
+                      as String,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -96,9 +93,9 @@ class _$TaskDeleteEventCopyWithImpl<$Res, $Val extends TaskDeleteEvent>
 abstract class _$$DeletedTaskDeleteEventImplCopyWith<$Res>
     implements $TaskDeleteEventCopyWith<$Res> {
   factory _$$DeletedTaskDeleteEventImplCopyWith(
-          _$DeletedTaskDeleteEventImpl value,
-          $Res Function(_$DeletedTaskDeleteEventImpl) then) =
-      __$$DeletedTaskDeleteEventImplCopyWithImpl<$Res>;
+    _$DeletedTaskDeleteEventImpl value,
+    $Res Function(_$DeletedTaskDeleteEventImpl) then,
+  ) = __$$DeletedTaskDeleteEventImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String taskId});
@@ -109,23 +106,23 @@ class __$$DeletedTaskDeleteEventImplCopyWithImpl<$Res>
     extends _$TaskDeleteEventCopyWithImpl<$Res, _$DeletedTaskDeleteEventImpl>
     implements _$$DeletedTaskDeleteEventImplCopyWith<$Res> {
   __$$DeletedTaskDeleteEventImplCopyWithImpl(
-      _$DeletedTaskDeleteEventImpl _value,
-      $Res Function(_$DeletedTaskDeleteEventImpl) _then)
-      : super(_value, _then);
+    _$DeletedTaskDeleteEventImpl _value,
+    $Res Function(_$DeletedTaskDeleteEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TaskDeleteEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? taskId = null,
-  }) {
-    return _then(_$DeletedTaskDeleteEventImpl(
-      null == taskId
-          ? _value.taskId
-          : taskId // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
+  $Res call({Object? taskId = null}) {
+    return _then(
+      _$DeletedTaskDeleteEventImpl(
+        null == taskId
+            ? _value.taskId
+            : taskId // ignore: cast_nullable_to_non_nullable
+                  as String,
+      ),
+    );
   }
 }
 
@@ -159,8 +156,11 @@ class _$DeletedTaskDeleteEventImpl implements _DeletedTaskDeleteEvent {
   @override
   @pragma('vm:prefer-inline')
   _$$DeletedTaskDeleteEventImplCopyWith<_$DeletedTaskDeleteEventImpl>
-      get copyWith => __$$DeletedTaskDeleteEventImplCopyWithImpl<
-          _$DeletedTaskDeleteEventImpl>(this, _$identity);
+  get copyWith =>
+      __$$DeletedTaskDeleteEventImplCopyWithImpl<_$DeletedTaskDeleteEventImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -231,7 +231,7 @@ abstract class _DeletedTaskDeleteEvent implements TaskDeleteEvent {
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DeletedTaskDeleteEventImplCopyWith<_$DeletedTaskDeleteEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -242,16 +242,14 @@ mixin _$TaskDeleteState {
     required TResult Function() loading,
     required TResult Function() success,
     required TResult Function(AppException exception) failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function()? success,
     TResult? Function(AppException exception)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -259,24 +257,21 @@ mixin _$TaskDeleteState {
     TResult Function()? success,
     TResult Function(AppException exception)? failure,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_InitialTaskDeleteState value) initial,
     required TResult Function(_LoadingTaskDeleteState value) loading,
     required TResult Function(_SuccessTaskDeleteState value) success,
     required TResult Function(_FailureTaskDeleteState value) failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_InitialTaskDeleteState value)? initial,
     TResult? Function(_LoadingTaskDeleteState value)? loading,
     TResult? Function(_SuccessTaskDeleteState value)? success,
     TResult? Function(_FailureTaskDeleteState value)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_InitialTaskDeleteState value)? initial,
@@ -284,15 +279,15 @@ mixin _$TaskDeleteState {
     TResult Function(_SuccessTaskDeleteState value)? success,
     TResult Function(_FailureTaskDeleteState value)? failure,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $TaskDeleteStateCopyWith<$Res> {
   factory $TaskDeleteStateCopyWith(
-          TaskDeleteState value, $Res Function(TaskDeleteState) then) =
-      _$TaskDeleteStateCopyWithImpl<$Res, TaskDeleteState>;
+    TaskDeleteState value,
+    $Res Function(TaskDeleteState) then,
+  ) = _$TaskDeleteStateCopyWithImpl<$Res, TaskDeleteState>;
 }
 
 /// @nodoc
@@ -312,9 +307,9 @@ class _$TaskDeleteStateCopyWithImpl<$Res, $Val extends TaskDeleteState>
 /// @nodoc
 abstract class _$$InitialTaskDeleteStateImplCopyWith<$Res> {
   factory _$$InitialTaskDeleteStateImplCopyWith(
-          _$InitialTaskDeleteStateImpl value,
-          $Res Function(_$InitialTaskDeleteStateImpl) then) =
-      __$$InitialTaskDeleteStateImplCopyWithImpl<$Res>;
+    _$InitialTaskDeleteStateImpl value,
+    $Res Function(_$InitialTaskDeleteStateImpl) then,
+  ) = __$$InitialTaskDeleteStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -322,9 +317,9 @@ class __$$InitialTaskDeleteStateImplCopyWithImpl<$Res>
     extends _$TaskDeleteStateCopyWithImpl<$Res, _$InitialTaskDeleteStateImpl>
     implements _$$InitialTaskDeleteStateImplCopyWith<$Res> {
   __$$InitialTaskDeleteStateImplCopyWithImpl(
-      _$InitialTaskDeleteStateImpl _value,
-      $Res Function(_$InitialTaskDeleteStateImpl) _then)
-      : super(_value, _then);
+    _$InitialTaskDeleteStateImpl _value,
+    $Res Function(_$InitialTaskDeleteStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TaskDeleteState
   /// with the given fields replaced by the non-null parameter values.
@@ -433,9 +428,9 @@ abstract class _InitialTaskDeleteState extends TaskDeleteState {
 /// @nodoc
 abstract class _$$LoadingTaskDeleteStateImplCopyWith<$Res> {
   factory _$$LoadingTaskDeleteStateImplCopyWith(
-          _$LoadingTaskDeleteStateImpl value,
-          $Res Function(_$LoadingTaskDeleteStateImpl) then) =
-      __$$LoadingTaskDeleteStateImplCopyWithImpl<$Res>;
+    _$LoadingTaskDeleteStateImpl value,
+    $Res Function(_$LoadingTaskDeleteStateImpl) then,
+  ) = __$$LoadingTaskDeleteStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -443,9 +438,9 @@ class __$$LoadingTaskDeleteStateImplCopyWithImpl<$Res>
     extends _$TaskDeleteStateCopyWithImpl<$Res, _$LoadingTaskDeleteStateImpl>
     implements _$$LoadingTaskDeleteStateImplCopyWith<$Res> {
   __$$LoadingTaskDeleteStateImplCopyWithImpl(
-      _$LoadingTaskDeleteStateImpl _value,
-      $Res Function(_$LoadingTaskDeleteStateImpl) _then)
-      : super(_value, _then);
+    _$LoadingTaskDeleteStateImpl _value,
+    $Res Function(_$LoadingTaskDeleteStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TaskDeleteState
   /// with the given fields replaced by the non-null parameter values.
@@ -554,9 +549,9 @@ abstract class _LoadingTaskDeleteState extends TaskDeleteState {
 /// @nodoc
 abstract class _$$SuccessTaskDeleteStateImplCopyWith<$Res> {
   factory _$$SuccessTaskDeleteStateImplCopyWith(
-          _$SuccessTaskDeleteStateImpl value,
-          $Res Function(_$SuccessTaskDeleteStateImpl) then) =
-      __$$SuccessTaskDeleteStateImplCopyWithImpl<$Res>;
+    _$SuccessTaskDeleteStateImpl value,
+    $Res Function(_$SuccessTaskDeleteStateImpl) then,
+  ) = __$$SuccessTaskDeleteStateImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -564,9 +559,9 @@ class __$$SuccessTaskDeleteStateImplCopyWithImpl<$Res>
     extends _$TaskDeleteStateCopyWithImpl<$Res, _$SuccessTaskDeleteStateImpl>
     implements _$$SuccessTaskDeleteStateImplCopyWith<$Res> {
   __$$SuccessTaskDeleteStateImplCopyWithImpl(
-      _$SuccessTaskDeleteStateImpl _value,
-      $Res Function(_$SuccessTaskDeleteStateImpl) _then)
-      : super(_value, _then);
+    _$SuccessTaskDeleteStateImpl _value,
+    $Res Function(_$SuccessTaskDeleteStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TaskDeleteState
   /// with the given fields replaced by the non-null parameter values.
@@ -675,9 +670,9 @@ abstract class _SuccessTaskDeleteState extends TaskDeleteState {
 /// @nodoc
 abstract class _$$FailureTaskDeleteStateImplCopyWith<$Res> {
   factory _$$FailureTaskDeleteStateImplCopyWith(
-          _$FailureTaskDeleteStateImpl value,
-          $Res Function(_$FailureTaskDeleteStateImpl) then) =
-      __$$FailureTaskDeleteStateImplCopyWithImpl<$Res>;
+    _$FailureTaskDeleteStateImpl value,
+    $Res Function(_$FailureTaskDeleteStateImpl) then,
+  ) = __$$FailureTaskDeleteStateImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AppException exception});
 }
@@ -687,23 +682,23 @@ class __$$FailureTaskDeleteStateImplCopyWithImpl<$Res>
     extends _$TaskDeleteStateCopyWithImpl<$Res, _$FailureTaskDeleteStateImpl>
     implements _$$FailureTaskDeleteStateImplCopyWith<$Res> {
   __$$FailureTaskDeleteStateImplCopyWithImpl(
-      _$FailureTaskDeleteStateImpl _value,
-      $Res Function(_$FailureTaskDeleteStateImpl) _then)
-      : super(_value, _then);
+    _$FailureTaskDeleteStateImpl _value,
+    $Res Function(_$FailureTaskDeleteStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of TaskDeleteState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? exception = null,
-  }) {
-    return _then(_$FailureTaskDeleteStateImpl(
-      null == exception
-          ? _value.exception
-          : exception // ignore: cast_nullable_to_non_nullable
-              as AppException,
-    ));
+  $Res call({Object? exception = null}) {
+    return _then(
+      _$FailureTaskDeleteStateImpl(
+        null == exception
+            ? _value.exception
+            : exception // ignore: cast_nullable_to_non_nullable
+                  as AppException,
+      ),
+    );
   }
 }
 
@@ -738,8 +733,11 @@ class _$FailureTaskDeleteStateImpl extends _FailureTaskDeleteState {
   @override
   @pragma('vm:prefer-inline')
   _$$FailureTaskDeleteStateImplCopyWith<_$FailureTaskDeleteStateImpl>
-      get copyWith => __$$FailureTaskDeleteStateImplCopyWithImpl<
-          _$FailureTaskDeleteStateImpl>(this, _$identity);
+  get copyWith =>
+      __$$FailureTaskDeleteStateImplCopyWithImpl<_$FailureTaskDeleteStateImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -827,5 +825,5 @@ abstract class _FailureTaskDeleteState extends TaskDeleteState {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FailureTaskDeleteStateImplCopyWith<_$FailureTaskDeleteStateImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }

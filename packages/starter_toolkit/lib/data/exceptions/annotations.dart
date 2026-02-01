@@ -3,6 +3,12 @@
 /// Used by code generator to create ExceptionUiMapper methods automatically.
 /// The `canRetry` field is read from the exception class itself.
 class ExceptionUiConfig {
+  const ExceptionUiConfig({
+    required this.descriptionKey,
+    this.titleKey,
+    this.snackbarKey,
+  });
+
   /// Localization key for title (optional)
   final String? titleKey;
 
@@ -11,10 +17,4 @@ class ExceptionUiConfig {
 
   /// Localization key for snackbar (defaults to descriptionKey)
   final String? snackbarKey;
-
-  const ExceptionUiConfig({
-    required this.descriptionKey,
-    this.titleKey,
-    this.snackbarKey,
-  });
 }

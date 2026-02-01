@@ -38,10 +38,7 @@ class UrlLauncherHelper {
       );
     }
 
-    return _launch(
-      Uri.parse(url),
-      mode: LaunchMode.externalApplication,
-    );
+    return _launch(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
   static Future<void> launchTelegram(String url) async {
@@ -52,10 +49,7 @@ class UrlLauncherHelper {
       );
     }
 
-    return _launch(
-      Uri.parse(url),
-      mode: LaunchMode.externalApplication,
-    );
+    return _launch(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
   static Future<void> launchSms(String phone) async {
@@ -63,10 +57,7 @@ class UrlLauncherHelper {
   }
 
   static Future<void> launchStore(String url) async {
-    await _launch(
-      Uri.parse(url),
-      mode: LaunchMode.externalApplication,
-    );
+    await _launch(Uri.parse(url), mode: LaunchMode.externalApplication);
   }
 
   static Future<void> launchWebUrl(

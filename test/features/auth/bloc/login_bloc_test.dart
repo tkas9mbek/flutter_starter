@@ -40,7 +40,9 @@ void main() {
     unauthorizedDataSource = MockUnauthorizedDataSource();
     localDataSource = MockLocalDataSource();
     authRepository = AuthRepository(
-      const RawRepositoryExecutor().withErrorHandling().withRetry(maxRetries: 3),
+      const RawRepositoryExecutor().withErrorHandling().withRetry(
+        maxRetries: 3,
+      ),
       authorizedDataSource,
       unauthorizedDataSource,
       localDataSource,
@@ -52,86 +54,81 @@ void main() {
     expect(loginBloc.state, const LoginState.initial());
   });
 
-  group(
-    'on submitted() event',
-    () {
-      const form = LoginForm(
-        phone: '+79991234567',
-        password: 'password',
-      );
-      const event = LoginEvent.submitted(form);
-      const exception = UnauthorizedException();
-      final requestBody = AuthLoginRequestBody(
-        phone: form.phone,
-        password: form.password,
-      );
-      final authToken = AuthMockModels.authToken;
+  group('on submitted() event', () {
+    const form = LoginForm(phone: '+79991234567', password: 'password');
+    const event = LoginEvent.submitted(form);
+    const exception = UnauthorizedException();
+    final requestBody = AuthLoginRequestBody(
+      phone: form.phone,
+      password: form.password,
+    );
+    final authToken = AuthMockModels.authToken;
 
-      blocTest<LoginBloc, LoginState>(
-        'emits [loading, success] when login is successful',
-        setUp: () {
-          registerFallbackValue(requestBody);
-          registerFallbackValue(authToken);
-        },
-        build: () {
-          when(() => unauthorizedDataSource.login(requestBody))
-              .thenAnswer((_) async => authToken);
-          when(() => localDataSource.saveToken(authToken))
-              .thenAnswer((_) async {});
+    blocTest<LoginBloc, LoginState>(
+      'emits [loading, success] when login is successful',
+      setUp: () {
+        registerFallbackValue(requestBody);
+        registerFallbackValue(authToken);
+      },
+      build: () {
+        when(
+          () => unauthorizedDataSource.login(requestBody),
+        ).thenAnswer((_) async => authToken);
+        when(
+          () => localDataSource.saveToken(authToken),
+        ).thenAnswer((_) async {});
 
-          return loginBloc;
-        },
-        act: (bloc) => bloc.add(event),
-        expect: () => [
-          const LoginState.loading(),
-          const LoginState.success(),
-        ],
-        verify: (_) {
-          verify(() => unauthorizedDataSource.login(requestBody)).called(1);
-          verify(() => localDataSource.saveToken(authToken)).called(1);
-        },
-      );
+        return loginBloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [const LoginState.loading(), const LoginState.success()],
+      verify: (_) {
+        verify(() => unauthorizedDataSource.login(requestBody)).called(1);
+        verify(() => localDataSource.saveToken(authToken)).called(1);
+      },
+    );
 
-      blocTest<LoginBloc, LoginState>(
-        'emits [loading, failure] when login fails',
-        build: () {
-          when(() => unauthorizedDataSource.login(requestBody))
-              .thenThrow(exception);
+    blocTest<LoginBloc, LoginState>(
+      'emits [loading, failure] when login fails',
+      build: () {
+        when(
+          () => unauthorizedDataSource.login(requestBody),
+        ).thenThrow(exception);
 
-          return loginBloc;
-        },
-        act: (bloc) => bloc.add(event),
-        expect: () => [
-          const LoginState.loading(),
-          const LoginState.failure(exception),
-        ],
-        verify: (_) {
-          verify(() => unauthorizedDataSource.login(requestBody)).called(1);
-          verifyNever(() => localDataSource.saveToken(any()));
-        },
-      );
+        return loginBloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [
+        const LoginState.loading(),
+        const LoginState.failure(exception),
+      ],
+      verify: (_) {
+        verify(() => unauthorizedDataSource.login(requestBody)).called(1);
+        verifyNever(() => localDataSource.saveToken(any()));
+      },
+    );
 
-      blocTest(
-        'emits [loading, failure] when saveToken fails',
-        build: () {
-          when(() => unauthorizedDataSource.login(requestBody))
-              .thenAnswer((_) async => authToken);
-          when(() => localDataSource.saveToken(authToken)).thenThrow(exception);
+    blocTest(
+      'emits [loading, failure] when saveToken fails',
+      build: () {
+        when(
+          () => unauthorizedDataSource.login(requestBody),
+        ).thenAnswer((_) async => authToken);
+        when(() => localDataSource.saveToken(authToken)).thenThrow(exception);
 
-          return loginBloc;
-        },
-        act: (bloc) => bloc.add(event),
-        expect: () => [
-          const LoginState.loading(),
-          const LoginState.failure(exception),
-        ],
-        verify: (_) {
-          verify(() => unauthorizedDataSource.login(requestBody)).called(1);
-          verify(() => localDataSource.saveToken(authToken)).called(1);
-        },
-      );
-    },
-  );
+        return loginBloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [
+        const LoginState.loading(),
+        const LoginState.failure(exception),
+      ],
+      verify: (_) {
+        verify(() => unauthorizedDataSource.login(requestBody)).called(1);
+        verify(() => localDataSource.saveToken(authToken)).called(1);
+      },
+    );
+  });
 
   group('state helper methods', () {
     const initialState = LoginState.initial();

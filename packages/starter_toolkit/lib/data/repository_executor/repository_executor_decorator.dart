@@ -4,8 +4,8 @@ import 'package:starter_toolkit/data/repository_executor/repository_executor.dar
 ///
 /// Decorators add additional behavior while delegating to wrapped executor.
 abstract class RepositoryExecutorDecorator extends RepositoryExecutor {
+  const RepositoryExecutorDecorator(this.wrapped);
+
   /// The wrapped executor to delegate calls to
   final RepositoryExecutor wrapped;
-
-  const RepositoryExecutorDecorator(this.wrapped);
 }

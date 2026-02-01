@@ -21,20 +21,6 @@ class AppElevatedButton extends StatelessWidget {
     super.key,
   });
 
-  final double? height;
-  final double? width;
-  final VoidCallback? onPressed;
-  final bool loading;
-  final bool enabled;
-  final String text;
-  final Widget? icon;
-  final TextDirection iconDirection;
-  final TextStyle textStyle;
-  final Color? backgroundColor;
-  final Color? textColor;
-  final double borderRadius;
-  final EdgeInsets? padding;
-
   factory AppElevatedButton.big({
     required BuildContext context,
     required String text,
@@ -112,6 +98,20 @@ class AppElevatedButton extends StatelessWidget {
       borderRadius: 12,
     );
   }
+
+  final double? height;
+  final double? width;
+  final VoidCallback? onPressed;
+  final bool loading;
+  final bool enabled;
+  final String text;
+  final Widget? icon;
+  final TextDirection iconDirection;
+  final TextStyle textStyle;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final double borderRadius;
+  final EdgeInsets? padding;
 
   @override
   Widget build(BuildContext context) {

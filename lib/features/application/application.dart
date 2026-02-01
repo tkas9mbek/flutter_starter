@@ -27,28 +27,20 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 final _router = AppRouter();
 
 class Application extends StatelessWidget {
-  const Application({
-    super.key,
-  });
+  const Application({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
         BlocProvider<EnvironmentCubit>(
-          create: (context) => EnvironmentCubit(
-            getIt<EnvironmentRepository>(),
-          ),
+          create: (context) => EnvironmentCubit(getIt<EnvironmentRepository>()),
         ),
         BlocProvider<LanguageCubit>(
-          create: (context) => LanguageCubit(
-            getIt<SettingsRepository>(),
-          ),
+          create: (context) => LanguageCubit(getIt<SettingsRepository>()),
         ),
         BlocProvider<ThemeCubit>(
-          create: (context) => ThemeCubit(
-            getIt<SettingsRepository>(),
-          ),
+          create: (context) => ThemeCubit(getIt<SettingsRepository>()),
         ),
       ],
       child: BlocBuilder<EnvironmentCubit, AppEnvironment>(
@@ -56,54 +48,55 @@ class Application extends StatelessWidget {
           key: ValueKey(env),
           providers: [
             BlocProvider<AuthBloc>(
-              create: (context) => AuthBloc(
-                getIt<AuthRepository>(),
-              )..add(const AuthEvent.initialized()),
+              create: (context) =>
+                  AuthBloc(getIt<AuthRepository>())
+                    ..add(const AuthEvent.initialized()),
             ),
           ],
           child: BlocBuilder<LanguageCubit, LanguageOption>(
-            builder: (context, language) => BlocBuilder<ThemeCubit, ThemeModeOption>(
-              builder: (context, themeOption) {
-                final themeMode = ThemeModeHelper.getThemeMode(themeOption);
-                final brightness = MediaQuery.platformBrightnessOf(context);
-                final currentTheme = ThemeModeHelper.getCurrentTheme(
-                  themeOption,
-                  brightness,
-                );
+            builder: (context, language) =>
+                BlocBuilder<ThemeCubit, ThemeModeOption>(
+                  builder: (context, themeOption) {
+                    final themeMode = ThemeModeHelper.getThemeMode(themeOption);
+                    final brightness = MediaQuery.platformBrightnessOf(context);
+                    final currentTheme = ThemeModeHelper.getCurrentTheme(
+                      themeOption,
+                      brightness,
+                    );
 
-                return ThemeProvider(
-                  theme: currentTheme,
-                  child: MaterialApp.router(
-                    key: ValueKey('$language-$themeOption'),
-                    locale: language.locale,
-                    themeMode: themeMode,
-                    theme: themeDataFromTheme(
-                      theme: AppTheme.light(),
-                      textStyles: AppTextStyles(AppTheme.light()),
-                    ),
-                    darkTheme: themeDataFromTheme(
-                      theme: AppTheme.dark(),
-                      textStyles: AppTextStyles(AppTheme.dark()),
-                    ),
-                routerDelegate: _router.delegate(),
-                routeInformationParser: _router.defaultRouteParser(),
-                localizationsDelegates: [
-                  Localizer.delegate..load(language.locale),
-                  UikitLocalizer.delegate..load(language.locale),
-                  ToolkitLocalizer.delegate..load(language.locale),
-                  GlobalMaterialLocalizations.delegate,
-                  GlobalWidgetsLocalizations.delegate,
-                  GlobalCupertinoLocalizations.delegate,
-                ],
-                supportedLocales: Localizer.delegate.supportedLocales,
-                builder: (context, child) => GlobalRouteWrapper(
-                  router: _router,
-                  child: ApplicationWrapper(child: child!),
+                    return ThemeProvider(
+                      theme: currentTheme,
+                      child: MaterialApp.router(
+                        key: ValueKey('$language-$themeOption'),
+                        locale: language.locale,
+                        themeMode: themeMode,
+                        theme: themeDataFromTheme(
+                          theme: AppTheme.light(),
+                          textStyles: AppTextStyles(AppTheme.light()),
+                        ),
+                        darkTheme: themeDataFromTheme(
+                          theme: AppTheme.dark(),
+                          textStyles: AppTextStyles(AppTheme.dark()),
+                        ),
+                        routerDelegate: _router.delegate(),
+                        routeInformationParser: _router.defaultRouteParser(),
+                        localizationsDelegates: const [
+                          Localizer.delegate,
+                          UikitLocalizer.delegate,
+                          ToolkitLocalizer.delegate,
+                          GlobalMaterialLocalizations.delegate,
+                          GlobalWidgetsLocalizations.delegate,
+                          GlobalCupertinoLocalizations.delegate,
+                        ],
+                        supportedLocales: Localizer.delegate.supportedLocales,
+                        builder: (context, child) => GlobalRouteWrapper(
+                          router: _router,
+                          child: ApplicationWrapper(child: child!),
+                        ),
+                      ),
+                    );
+                  },
                 ),
-                  ),
-                );
-              },
-            ),
           ),
         ),
       ),

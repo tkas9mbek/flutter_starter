@@ -31,9 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   void onSubmitted(BuildContext context) {
     if (formKey.currentState?.saveAndValidate() ?? false) {
-      final form = LoginForm.fromForm(
-        formKey.currentState!.value,
-      );
+      final form = LoginForm.fromForm(formKey.currentState!.value);
       context.read<LoginBloc>().add(LoginEvent.submitted(form));
     } else {
       focusOnInvalidStateField(formKey);
@@ -60,71 +58,69 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Scaffold(
               appBar: TitleAppBar(title: Localizer.of(context).login),
               body: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: theme.surface,
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: Column(
-                        children: [
-                          AppTextField(
-                            name: LoginForm.phoneField,
-                            label: Localizer.of(context).phoneNumber,
-                            hint: Localizer.of(context).enterPhoneNumber,
-                            keyboardType: TextInputType.phone,
-                            inputFormatters: [
-                              FormInputFormatters.phoneMaxLength,
-                            ],
-                            required: true,
-                            validators: [
-                              FormValidators.phone(context),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          AppTextField(
-                            name: LoginForm.passwordField,
-                            label: Localizer.of(context).password,
-                            hint: Localizer.of(context).enterPassword,
-                            keyboardType: TextInputType.visiblePassword,
-                            canObscureText: true,
-                            required: true,
-                          ),
-                          const SizedBox(height: 24),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    GestureDetector(
-                      onTap: () =>
-                          context.router.replace(const RegistrationRoute()),
-                      child: Text(
-                        Localizer.of(context).haveNoAccount,
-                        style: textStyles.boldBody13.copyWith(
-                          color: theme.primary,
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: theme.surface,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: [
+                            AppTextField(
+                              name: LoginForm.phoneField,
+                              label: Localizer.of(context).phoneNumber,
+                              hint: Localizer.of(context).enterPhoneNumber,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FormInputFormatters.phoneMaxLength,
+                              ],
+                              required: true,
+                              validators: [FormValidators.phone(context)],
+                            ),
+                            const SizedBox(height: 20),
+                            AppTextField(
+                              name: LoginForm.passwordField,
+                              label: Localizer.of(context).password,
+                              hint: Localizer.of(context).enterPassword,
+                              keyboardType: TextInputType.visiblePassword,
+                              canObscureText: true,
+                              required: true,
+                            ),
+                            const SizedBox(height: 24),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 32),
-                    AppElevatedButton.big(
-                      context: context,
-                      loading: state.isLoading,
-                      text: Localizer.of(context).toLogin,
-                      onPressed: () => onSubmitted(context),
-                    ),
-                  ],
+                      const SizedBox(height: 24),
+                      GestureDetector(
+                        onTap: () =>
+                            context.router.replace(const RegistrationRoute()),
+                        child: Text(
+                          Localizer.of(context).haveNoAccount,
+                          style: textStyles.boldBody13.copyWith(
+                            color: theme.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      AppElevatedButton.big(
+                        context: context,
+                        loading: state.isLoading,
+                        text: Localizer.of(context).toLogin,
+                        onPressed: () => onSubmitted(context),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

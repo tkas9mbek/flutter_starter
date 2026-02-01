@@ -24,10 +24,7 @@ class AboutSettingsSection extends StatelessWidget {
         SettingsTile(
           icon: Icons.description_outlined,
           title: localizer.termsAndConditions,
-          trailing: Icon(
-            Icons.chevron_right,
-            color: theme.textSecondary,
-          ),
+          trailing: Icon(Icons.chevron_right, color: theme.textSecondary),
           onTap: () {
             NotificationSnackBar.showMessage(
               context,
@@ -40,10 +37,7 @@ class AboutSettingsSection extends StatelessWidget {
         SettingsTile(
           icon: Icons.privacy_tip_outlined,
           title: localizer.privacyPolicy,
-          trailing: Icon(
-            Icons.chevron_right,
-            color: theme.textSecondary,
-          ),
+          trailing: Icon(Icons.chevron_right, color: theme.textSecondary),
           onTap: () {
             NotificationSnackBar.showMessage(
               context,

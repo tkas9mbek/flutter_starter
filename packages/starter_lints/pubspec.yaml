@@ -1,0 +1,13 @@
+name: starter_lints
+description: Custom lint rules for flutter_starter project
+
+publish_to: 'none'
+
+version: 2.0.0
+
+environment:
+  sdk: ^3.8.0
+
+dependencies:
+  analyzer: ^7.0.0
+  custom_lint_builder: ^0.7.0

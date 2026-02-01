@@ -10,16 +10,7 @@ class PaginatedData<T> extends Equatable {
     required this.perPage,
   });
 
-  final int page;
-  final int pagesCount;
-  final int itemsCount;
-  final int perPage;
-  final List<T> items;
-
-  factory PaginatedData.fromApi(
-    PaginatedListItems<T> data, {
-    int page = 1,
-  }) =>
+  factory PaginatedData.fromApi(PaginatedListItems<T> data, {int page = 1}) =>
       PaginatedData(
         page: page,
         pagesCount: data.countPages,
@@ -27,6 +18,12 @@ class PaginatedData<T> extends Equatable {
         itemsCount: data.countItems,
         perPage: data.countPages,
       );
+
+  final int page;
+  final int pagesCount;
+  final int itemsCount;
+  final int perPage;
+  final List<T> items;
 
   bool get isEmpty => items.isEmpty;
 
@@ -39,13 +36,7 @@ class PaginatedData<T> extends Equatable {
   int get nextPage => page + 1;
 
   @override
-  List<Object> get props => [
-        page,
-        pagesCount,
-        items,
-        itemsCount,
-        perPage,
-      ];
+  List<Object> get props => [page, pagesCount, items, itemsCount, perPage];
 
   PaginatedData<T> copyWith({
     int? page,
@@ -53,39 +44,25 @@ class PaginatedData<T> extends Equatable {
     List<T>? items,
     int? itemsCount,
     int? perPage,
-  }) =>
-      PaginatedData(
-        page: page ?? this.page,
-        pagesCount: pagesCount ?? this.pagesCount,
-        items: items ?? this.items,
-        itemsCount: itemsCount ?? this.itemsCount,
-        perPage: perPage ?? this.perPage,
-      );
+  }) => PaginatedData(
+    page: page ?? this.page,
+    pagesCount: pagesCount ?? this.pagesCount,
+    items: items ?? this.items,
+    itemsCount: itemsCount ?? this.itemsCount,
+    perPage: perPage ?? this.perPage,
+  );
 
   PaginatedData<T> merge(PaginatedData<T> data) => copyWith(
-        page: nextPage,
-        perPage: data.perPage,
-        pagesCount: data.pagesCount,
-        itemsCount: data.itemsCount,
-        items: [
-          ...items,
-          ...data.items,
-        ],
-      );
+    page: nextPage,
+    perPage: data.perPage,
+    pagesCount: data.pagesCount,
+    itemsCount: data.itemsCount,
+    items: [...items, ...data.items],
+  );
 
-  PaginatedData<T> add(T item) => copyWith(
-        items: [
-          ...items,
-          item,
-        ],
-        itemsCount: itemsCount + 1,
-      );
+  PaginatedData<T> add(T item) =>
+      copyWith(items: [...items, item], itemsCount: itemsCount + 1);
 
-  PaginatedData<T> addToStart(T item) => copyWith(
-        items: [
-          item,
-          ...items,
-        ],
-        itemsCount: itemsCount + 1,
-      );
+  PaginatedData<T> addToStart(T item) =>
+      copyWith(items: [item, ...items], itemsCount: itemsCount + 1);
 }

@@ -36,18 +36,14 @@ class NetworkImageAvatar extends StatelessWidget {
     return Container(
       width: size,
       height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: randomColor,
-      ),
+      decoration: BoxDecoration(shape: BoxShape.circle, color: randomColor),
       child: ClipRRect(
         borderRadius: BorderRadius.circular(size / 2),
         child: CachedNetworkImage(
           imageUrl: imageUrl,
           fit: BoxFit.cover,
-          placeholder: (context, url) => const CustomCircularProgressIndicator(
-            color: AppColors.pureWhite,
-          ),
+          placeholder: (context, url) =>
+              const CustomCircularProgressIndicator(color: AppColors.pureWhite),
           errorWidget: (context, url, error) => placeholder != null
               ? Image(image: placeholder!, fit: BoxFit.cover)
               : Center(

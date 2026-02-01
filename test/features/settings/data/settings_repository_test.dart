@@ -29,8 +29,9 @@ void main() {
 
   group('setLanguageOption', () {
     test('saves language code via data source', () async {
-      when(() => mockDataSource.setLanguageCode('ru'))
-          .thenAnswer((_) async => {});
+      when(
+        () => mockDataSource.setLanguageCode('ru'),
+      ).thenAnswer((_) async => {});
 
       await repository.setLanguageOption(LanguageOption.fromCode('ru'));
 
@@ -61,8 +62,9 @@ void main() {
 
   group('setThemeModeOption', () {
     test('saves theme mode via data source', () async {
-      when(() => mockDataSource.setThemeMode(any()))
-          .thenAnswer((_) async => {});
+      when(
+        () => mockDataSource.setThemeMode(any()),
+      ).thenAnswer((_) async => {});
 
       await repository.setThemeModeOption(ThemeModeOption.dark);
 

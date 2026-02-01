@@ -41,57 +41,56 @@ class AppRadioGroup<T extends Object> extends StatelessWidget {
       onChanged: (value) => onChanged?.call(value),
       builder: (field) => Column(
         children: [
-          ...options.mapIndexed(
-            (index, option) {
-              final selected = field.value == option;
+          ...options.mapIndexed((index, option) {
+            final selected = field.value == option;
 
-              return GestureDetector(
-                behavior: HitTestBehavior.opaque,
-                onTap: () => field.didChange(option),
-                child: Column(
-                  children: [
-                    if (index != 0) ...[
-                      const ThinHorizontalDivider(),
-                      const SizedBox(height: 12),
-                    ],
-                    Row(
-                      children: [
-                        Container(
-                          height: 22,
-                          width: 22,
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: selected ? theme.primary : theme.border,
-                              width: 2,
-                            ),
-                          ),
-                          child: DecoratedBox(
-                            decoration: BoxDecoration(
-                              color:
-                                  selected ? theme.primary : Colors.transparent,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            optionLabelBuilder(option),
-                            style: textStyles.regularBody14,
-                          ),
-                        ),
-                      ],
-                    ),
-                    if (index != options.length - 1) ...[
-                      const SizedBox(height: 12),
-                    ],
+            return GestureDetector(
+              behavior: HitTestBehavior.opaque,
+              onTap: () => field.didChange(option),
+              child: Column(
+                children: [
+                  if (index != 0) ...[
+                    const ThinHorizontalDivider(),
+                    const SizedBox(height: 12),
                   ],
-                ),
-              );
-            },
-          ).toList(),
+                  Row(
+                    children: [
+                      Container(
+                        height: 22,
+                        width: 22,
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: selected ? theme.primary : theme.border,
+                            width: 2,
+                          ),
+                        ),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: selected
+                                ? theme.primary
+                                : Colors.transparent,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          optionLabelBuilder(option),
+                          style: textStyles.regularBody14,
+                        ),
+                      ),
+                    ],
+                  ),
+                  if (index != options.length - 1) ...[
+                    const SizedBox(height: 12),
+                  ],
+                ],
+              ),
+            );
+          }),
           if (showLastDivider) ...[
             const SizedBox(height: 12),
             const ThinHorizontalDivider(),

@@ -12,7 +12,8 @@ part of 'title_item.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 TitleItem _$TitleItemFromJson(Map<String, dynamic> json) {
   return _TitleItem.fromJson(json);
@@ -49,20 +50,20 @@ class _$TitleItemCopyWithImpl<$Res, $Val extends TitleItem>
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? title = null,
-    Object? id = freezed,
-  }) {
-    return _then(_value.copyWith(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
+  $Res call({Object? title = null, Object? id = freezed}) {
+    return _then(
+      _value.copyWith(
+            title: null == title
+                ? _value.title
+                : title // ignore: cast_nullable_to_non_nullable
+                      as String,
+            id: freezed == id
+                ? _value.id
+                : id // ignore: cast_nullable_to_non_nullable
+                      as String?,
+          )
+          as $Val,
+    );
   }
 }
 
@@ -70,8 +71,9 @@ class _$TitleItemCopyWithImpl<$Res, $Val extends TitleItem>
 abstract class _$$TitleItemImplCopyWith<$Res>
     implements $TitleItemCopyWith<$Res> {
   factory _$$TitleItemImplCopyWith(
-          _$TitleItemImpl value, $Res Function(_$TitleItemImpl) then) =
-      __$$TitleItemImplCopyWithImpl<$Res>;
+    _$TitleItemImpl value,
+    $Res Function(_$TitleItemImpl) then,
+  ) = __$$TitleItemImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({String title, String? id});
@@ -82,25 +84,25 @@ class __$$TitleItemImplCopyWithImpl<$Res>
     extends _$TitleItemCopyWithImpl<$Res, _$TitleItemImpl>
     implements _$$TitleItemImplCopyWith<$Res> {
   __$$TitleItemImplCopyWithImpl(
-      _$TitleItemImpl _value, $Res Function(_$TitleItemImpl) _then)
-      : super(_value, _then);
+    _$TitleItemImpl _value,
+    $Res Function(_$TitleItemImpl) _then,
+  ) : super(_value, _then);
 
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? title = null,
-    Object? id = freezed,
-  }) {
-    return _then(_$TitleItemImpl(
-      title: null == title
-          ? _value.title
-          : title // ignore: cast_nullable_to_non_nullable
-              as String,
-      id: freezed == id
-          ? _value.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
+  $Res call({Object? title = null, Object? id = freezed}) {
+    return _then(
+      _$TitleItemImpl(
+        title: null == title
+            ? _value.title
+            : title // ignore: cast_nullable_to_non_nullable
+                  as String,
+        id: freezed == id
+            ? _value.id
+            : id // ignore: cast_nullable_to_non_nullable
+                  as String?,
+      ),
+    );
   }
 }
 
@@ -143,9 +145,7 @@ class _$TitleItemImpl implements _TitleItem {
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$TitleItemImplToJson(
-      this,
-    );
+    return _$$TitleItemImplToJson(this);
   }
 }
 

@@ -26,7 +26,9 @@ class UikitMenuScreen extends StatelessWidget {
           BlocBuilder<ThemeCubit, ThemeMode>(
             builder: (context, themeMode) => IconButton(
               icon: Icon(
-                themeMode == ThemeMode.dark ? Icons.light_mode : Icons.dark_mode,
+                themeMode == ThemeMode.dark
+                    ? Icons.light_mode
+                    : Icons.dark_mode,
               ),
               onPressed: () => context.read<ThemeCubit>().toggleTheme(),
             ),
@@ -56,7 +58,8 @@ class UikitMenuScreen extends StatelessWidget {
               title: localizer.statusWidgets,
               subtitle: localizer.statusWidgetsDescription,
               icon: Icons.error_outline,
-              onTap: () => context.router.push(const StatusWidgetsExampleRoute()),
+              onTap: () =>
+                  context.router.push(const StatusWidgetsExampleRoute()),
             ),
             const SizedBox(height: 8),
             ExampleTile(
@@ -87,15 +90,9 @@ class UikitMenuScreen extends StatelessWidget {
               onTap: () => context.router.push(const MiscWidgetsExampleRoute()),
             ),
             const Divider(height: 48),
-            Text(
-              localizer.aboutUIKit,
-              style: textStyles.mediumTitle18,
-            ),
+            Text(localizer.aboutUIKit, style: textStyles.mediumTitle18),
             const SizedBox(height: 16),
-            Text(
-              localizer.uiKitDescription,
-              style: textStyles.regularBody14,
-            ),
+            Text(localizer.uiKitDescription, style: textStyles.regularBody14),
           ],
         ),
       ),

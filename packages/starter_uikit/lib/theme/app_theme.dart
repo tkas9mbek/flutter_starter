@@ -5,20 +5,6 @@ import 'package:starter_uikit/theme/theme_data_from_theme.dart';
 
 /// Application theme configuration with light and dark mode support.
 class AppTheme {
-  final ThemeMode themeMode;
-
-  final Color primary;
-  final Color secondary;
-  final Color surface;
-  final Color background;
-  final Color border;
-  final Color error;
-  final Color success;
-  final Color onPrimary;
-  final Color onStatus;
-  final Color textPrimary;
-  final Color textSecondary;
-
   AppTheme._({
     required this.themeMode,
     required this.primary,
@@ -35,40 +21,51 @@ class AppTheme {
   });
 
   factory AppTheme.light() => AppTheme._(
-        themeMode: ThemeMode.light,
-        primary: AppColors.vividPurple,
-        secondary: AppColors.brightAmber,
-        surface: AppColors.pureWhite,
-        background: AppColors.lightGrey,
-        border: AppColors.lightBorder,
-        error: AppColors.deepRed,
-        success: AppColors.vibrantGreen,
-        onPrimary: AppColors.whiteText,
-        onStatus: AppColors.statusText,
-        textPrimary: AppColors.blackText,
-        textSecondary: AppColors.greyText,
-      );
+    themeMode: ThemeMode.light,
+    primary: AppColors.vividPurple,
+    secondary: AppColors.brightAmber,
+    surface: AppColors.pureWhite,
+    background: AppColors.lightGrey,
+    border: AppColors.lightBorder,
+    error: AppColors.deepRed,
+    success: AppColors.vibrantGreen,
+    onPrimary: AppColors.whiteText,
+    onStatus: AppColors.statusText,
+    textPrimary: AppColors.blackText,
+    textSecondary: AppColors.greyText,
+  );
 
   factory AppTheme.dark() => AppTheme._(
-        themeMode: ThemeMode.dark,
-        primary: AppColors.lightPurple,
-        secondary: AppColors.brightAmber,
-        surface: AppColors.darkSurface,
-        background: AppColors.darkGrey,
-        border: AppColors.darkBorder,
-        error: AppColors.lightRed,
-        success: AppColors.vibrantGreen,
-        onPrimary: AppColors.blackText,
-        onStatus: AppColors.statusText,
-        textPrimary: AppColors.whiteText,
-        textSecondary: AppColors.lightGreyText,
-      );
+    themeMode: ThemeMode.dark,
+    primary: AppColors.lightPurple,
+    secondary: AppColors.brightAmber,
+    surface: AppColors.darkSurface,
+    background: AppColors.darkGrey,
+    border: AppColors.darkBorder,
+    error: AppColors.lightRed,
+    success: AppColors.vibrantGreen,
+    onPrimary: AppColors.blackText,
+    onStatus: AppColors.statusText,
+    textPrimary: AppColors.whiteText,
+    textSecondary: AppColors.lightGreyText,
+  );
+
+  final ThemeMode themeMode;
+
+  final Color primary;
+  final Color secondary;
+  final Color surface;
+  final Color background;
+  final Color border;
+  final Color error;
+  final Color success;
+  final Color onPrimary;
+  final Color onStatus;
+  final Color textPrimary;
+  final Color textSecondary;
 
   /// Converts this AppTheme to Flutter's ThemeData.
   ThemeData toThemeData() {
-    return themeDataFromTheme(
-      theme: this,
-      textStyles: AppTextStyles(this),
-    );
+    return themeDataFromTheme(theme: this, textStyles: AppTextStyles(this));
   }
 }

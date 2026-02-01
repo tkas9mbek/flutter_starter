@@ -52,7 +52,8 @@ class DialogsExampleScreen extends StatelessWidget {
       NotificationSnackBar.showMessage(
         context,
         isSuccess: true,
-        message: 'Range: ${result.$1.toString().split(' ')[0]} - ${result.$2.toString().split(' ')[0]}',
+        message:
+            'Range: ${result.$1.toString().split(' ')[0]} - ${result.$2.toString().split(' ')[0]}',
       );
     }
   }

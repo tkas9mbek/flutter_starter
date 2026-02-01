@@ -13,8 +13,9 @@ void main() {
 
   setUp(() {
     mockRepository = MockSettingsRepository();
-    when(() => mockRepository.getThemeModeOption())
-        .thenReturn(ThemeModeOption.system);
+    when(
+      () => mockRepository.getThemeModeOption(),
+    ).thenReturn(ThemeModeOption.system);
     themeCubit = ThemeCubit(mockRepository);
   });
 
@@ -25,15 +26,17 @@ void main() {
   blocTest<ThemeCubit, ThemeModeOption>(
     'emits new theme mode when setThemeModeOption is called',
     build: () {
-      when(() => mockRepository.setThemeModeOption(ThemeModeOption.light))
-          .thenAnswer((_) async => {});
+      when(
+        () => mockRepository.setThemeModeOption(ThemeModeOption.light),
+      ).thenAnswer((_) async => {});
       return themeCubit;
     },
     act: (cubit) => cubit.setThemeModeOption(ThemeModeOption.light),
     expect: () => [ThemeModeOption.light],
     verify: (_) {
-      verify(() => mockRepository.setThemeModeOption(ThemeModeOption.light))
-          .called(1);
+      verify(
+        () => mockRepository.setThemeModeOption(ThemeModeOption.light),
+      ).called(1);
     },
   );
 }

@@ -20,37 +20,13 @@ class ExampleRouter extends RootStackRouter {
 
   @override
   final List<AutoRoute> routes = [
-    AutoRoute(
-      page: UikitMenuRoute.page,
-      initial: true,
-    ),
-    AutoRoute(
-      page: ButtonsExampleRoute.page,
-      path: '/buttons',
-    ),
-    AutoRoute(
-      page: FormFieldsExampleRoute.page,
-      path: '/forms',
-    ),
-    AutoRoute(
-      page: StatusWidgetsExampleRoute.page,
-      path: '/status',
-    ),
-    AutoRoute(
-      page: AppBarsExampleRoute.page,
-      path: '/appbars',
-    ),
-    AutoRoute(
-      page: DialogsExampleRoute.page,
-      path: '/dialogs',
-    ),
-    AutoRoute(
-      page: TextWidgetsExampleRoute.page,
-      path: '/text',
-    ),
-    AutoRoute(
-      page: MiscWidgetsExampleRoute.page,
-      path: '/misc',
-    ),
+    AutoRoute(page: UikitMenuRoute.page, initial: true),
+    AutoRoute(page: ButtonsExampleRoute.page, path: '/buttons'),
+    AutoRoute(page: FormFieldsExampleRoute.page, path: '/forms'),
+    AutoRoute(page: StatusWidgetsExampleRoute.page, path: '/status'),
+    AutoRoute(page: AppBarsExampleRoute.page, path: '/appbars'),
+    AutoRoute(page: DialogsExampleRoute.page, path: '/dialogs'),
+    AutoRoute(page: TextWidgetsExampleRoute.page, path: '/text'),
+    AutoRoute(page: MiscWidgetsExampleRoute.page, path: '/misc'),
   ];
 }

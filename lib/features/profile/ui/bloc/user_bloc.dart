@@ -25,12 +25,12 @@ class UserState with _$UserState {
 }
 
 class UserBloc extends Bloc<UserEvent, UserState> {
-  final ProfileRepository _profileRepository;
-
   UserBloc(this._profileRepository) : super(const UserState.initial()) {
     on<_RequestedUserEvent>(_onRequested);
     on<_UpdatedUserEvent>(_onUpdated);
   }
+
+  final ProfileRepository _profileRepository;
 
   Future<void> _onRequested(
     _RequestedUserEvent event,

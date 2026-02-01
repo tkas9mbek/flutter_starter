@@ -93,7 +93,8 @@ class BottomSheetScreen extends StatelessWidget {
                               alignment: closeButtonAlignment,
                               child: GestureDetector(
                                 behavior: HitTestBehavior.translucent,
-                                onTap: onClosePressed ??
+                                onTap:
+                                    onClosePressed ??
                                     () => Navigator.pop(context),
                                 child: Text(
                                   closeButtonText ??
@@ -109,10 +110,7 @@ class BottomSheetScreen extends StatelessWidget {
                             const SizedBox(height: 20),
                           ],
                           if (title?.isNotEmpty ?? false) ...[
-                            Text(
-                              title!,
-                              style: textStyles.boldTitle18,
-                            ),
+                            Text(title!, style: textStyles.boldTitle18),
                           ],
                           child,
                         ],
@@ -161,8 +159,9 @@ class BottomSheetScreen extends StatelessWidget {
     final theme = ThemeProvider.of(context).theme;
 
     return showBarModalBottomSheet<T>(
-      overlayStyle:
-          const SystemUiOverlayStyle(statusBarColor: Colors.transparent),
+      overlayStyle: const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+      ),
       settings: RouteSettings(name: routeName),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.only(

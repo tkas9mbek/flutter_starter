@@ -77,10 +77,7 @@ void main() {
       expect(loginBloc.state, const LoginState.initial());
     });
 
-    const loginForm = LoginForm(
-      phone: '+79991234567',
-      password: 'password123',
-    );
+    const loginForm = LoginForm(phone: '+79991234567', password: 'password123');
 
     blocTest<LoginBloc, LoginState>(
       'completes full successful flow: BLoC → Repository → DataSource → ApiClient',
@@ -94,16 +91,14 @@ void main() {
           ),
         ).thenAnswer((_) async => AuthMockModels.authToken);
 
-        when(() => mockLocalDataSource.saveToken(any()))
-            .thenAnswer((_) async {});
+        when(
+          () => mockLocalDataSource.saveToken(any()),
+        ).thenAnswer((_) async {});
 
         return loginBloc;
       },
       act: (bloc) => bloc.add(const LoginEvent.submitted(loginForm)),
-      expect: () => [
-        const LoginState.loading(),
-        const LoginState.success(),
-      ],
+      expect: () => [const LoginState.loading(), const LoginState.success()],
       verify: (_) {
         verify(
           () => mockApiClient.requestJson<AuthToken>(
@@ -181,8 +176,9 @@ void main() {
           ),
         ).thenAnswer((_) async => AuthMockModels.authToken);
 
-        when(() => mockLocalDataSource.saveToken(any()))
-            .thenThrow(const DevelopmentException());
+        when(
+          () => mockLocalDataSource.saveToken(any()),
+        ).thenThrow(const DevelopmentException());
 
         return loginBloc;
       },
@@ -235,8 +231,9 @@ void main() {
           ),
         ).thenAnswer((_) async => AuthMockModels.authToken);
 
-        when(() => mockLocalDataSource.saveToken(any()))
-            .thenAnswer((_) async {});
+        when(
+          () => mockLocalDataSource.saveToken(any()),
+        ).thenAnswer((_) async {});
 
         return registrationBloc;
       },
@@ -312,10 +309,7 @@ void main() {
       expect: () => [
         const RegistrationState.loading(),
         const RegistrationState.failure(
-          ServerException(
-            statusCode: 400,
-            message: 'Phone already exists',
-          ),
+          ServerException(statusCode: 400, message: 'Phone already exists'),
         ),
       ],
     );
@@ -332,8 +326,9 @@ void main() {
           ),
         ).thenAnswer((_) async => AuthMockModels.authToken);
 
-        when(() => mockLocalDataSource.saveToken(any()))
-            .thenThrow(const DevelopmentException());
+        when(
+          () => mockLocalDataSource.saveToken(any()),
+        ).thenThrow(const DevelopmentException());
 
         return registrationBloc;
       },

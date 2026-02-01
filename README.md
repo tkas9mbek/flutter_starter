@@ -1,5 +1,7 @@
 # Flutter Starter Template
 
+> **Version 2.0.0** - [View Changelog](CHANGELOG.md)
+
 A production-ready Flutter template for building small to medium-sized applications, refined through years of real-world client projects.
 
 ## Background
@@ -45,6 +47,7 @@ This template provides a complete, production-ready foundation with:
 - **Comprehensive BLoC and integration tests**
 - **Full-stack integration testing** for all features
 - **Zero analyzer warnings**
+- **Custom lint rules** (starter_lints package)
 - **Extensive documentation** (CLAUDE.md + /docs)
 
 ### Developer Experience
@@ -84,10 +87,14 @@ flutter_starter/
 │   │   ├── utils/         # Helpers, validators, formatters
 │   │   └── README.md
 │   │
-│   └── starter_uikit/     # Flutter UI components
-│       ├── widgets/       # Reusable widgets
-│       ├── theme/         # Theme system
-│       ├── example/       # Demo app
+│   ├── starter_uikit/     # Flutter UI components
+│   │   ├── widgets/       # Reusable widgets
+│   │   ├── theme/         # Theme system
+│   │   ├── example/       # Demo app
+│   │   └── README.md
+│   │
+│   └── starter_lints/     # Custom lint rules
+│       ├── lib/src/lints/ # Lint implementations
 │       └── README.md
 │
 ├── test/                  # Tests (145 tests, 100% pass rate)
@@ -294,6 +301,21 @@ fvm flutter pub run flutter_native_splash:create
 **Use it for:** Consistent UI across apps sharing design
 
 [📖 UIKit Documentation](packages/starter_uikit/README.md)
+
+### Starter Lints (Custom Lint Rules)
+
+**What it provides:**
+- `avoid_widget_functions` - Prohibit `_build*` functions returning Widget
+- `prefer_arrow_except_build` - Arrow for callbacks, block for `build()` only
+- `always_spread_in_collections` - Require spread operator in collections
+- `bloc_no_bloc_dependency` - BLoCs cannot inject other BLoCs
+- `blank_line_before_return` - Require blank line before return
+- `prefer_named_parameters` - Use named params for 3+ parameters
+- `sort_constructor_params` - Order: required → defaults → optional → super
+
+**Use it for:** Enforcing consistent code style across the project
+
+[📖 Lints Documentation](packages/starter_lints/README.md)
 
 ---
 

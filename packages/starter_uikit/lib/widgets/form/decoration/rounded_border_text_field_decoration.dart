@@ -14,10 +14,7 @@ class RoundedBorderTextFieldDecoration with TextFieldDecoration {
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
         color: theme.background,
-        border: Border.all(
-          color: theme.border,
-          width: 1,
-        ),
+        border: Border.all(color: theme.border, width: 1),
       ),
       child: child,
     );

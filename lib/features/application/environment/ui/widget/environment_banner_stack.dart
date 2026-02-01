@@ -5,10 +5,7 @@ import 'package:starter/features/application/environment/ui/bloc/environment_cub
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class EnvironmentBannerStack extends StatelessWidget {
-  const EnvironmentBannerStack({
-    required this.child,
-    super.key,
-  });
+  const EnvironmentBannerStack({required this.child, super.key});
 
   final Widget child;
 

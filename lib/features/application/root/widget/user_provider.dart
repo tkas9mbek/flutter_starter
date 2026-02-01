@@ -2,11 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:starter/features/profile/model/user.dart';
 
 class UserProvider extends InheritedWidget {
-  const UserProvider({
-    required this.user,
-    required super.child,
-    super.key,
-  });
+  const UserProvider({required this.user, required super.child, super.key});
 
   final User user;
 

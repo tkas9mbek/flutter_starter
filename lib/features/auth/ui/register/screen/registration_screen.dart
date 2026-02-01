@@ -31,9 +31,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   void onSubmitted(BuildContext context) {
     if (formKey.currentState?.saveAndValidate() ?? false) {
-      final form = RegistrationForm.fromForm(
-        formKey.currentState!.value,
-      );
+      final form = RegistrationForm.fromForm(formKey.currentState!.value);
       context.read<RegistrationBloc>().add(RegistrationEvent.submitted(form));
     } else {
       focusOnInvalidStateField(formKey);
@@ -54,91 +52,89 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             child: Scaffold(
               appBar: TitleAppBar(title: Localizer.of(context).login),
               body: Center(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(24),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      Localizer.of(context).signUp,
-                      style: textStyles.boldTitle20,
-                    ),
-                    const SizedBox(height: 24),
-                    Container(
-                      padding: const EdgeInsets.all(24),
-                      decoration: BoxDecoration(
-                        color: theme.surface,
-                        borderRadius: BorderRadius.circular(16),
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        Localizer.of(context).signUp,
+                        style: textStyles.boldTitle20,
                       ),
-                      child: Column(
-                        children: [
-                          AppTextField(
-                            name: RegistrationForm.nameField,
-                            label: Localizer.of(context).name,
-                            hint: Localizer.of(context).enterYourName,
-                            keyboardType: TextInputType.name,
-                            required: true,
-                          ),
-                          const SizedBox(height: 20),
-                          AppDatePickerField(
-                            name: RegistrationForm.birthdayField,
-                            label: Localizer.of(context).birthday,
-                            hint: Localizer.of(context).selectYourBirthday,
-                            minDate: DateTime(1900),
-                            maxDate: DateTime.now(),
-                            required: true,
-                          ),
-                          const SizedBox(height: 20),
-                          AppTextField(
-                            name: RegistrationForm.phoneField,
-                            label: Localizer.of(context).phoneNumber,
-                            hint: Localizer.of(context).enterPhoneNumber,
-                            keyboardType: TextInputType.phone,
-                            inputFormatters: [
-                              FormInputFormatters.phoneMaxLength,
-                            ],
-                            required: true,
-                            validators: [
-                              FormValidators.phone(context),
-                            ],
-                          ),
-                          const SizedBox(height: 20),
-                          AppTextField(
-                            name: RegistrationForm.passwordField,
-                            label: Localizer.of(context).password,
-                            hint: Localizer.of(context).enterPassword,
-                            keyboardType: TextInputType.visiblePassword,
-                            canObscureText: true,
-                            required: true,
-                          ),
-                          const SizedBox(height: 24),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(height: 24),
-                    GestureDetector(
-                      onTap: () => context.router.replace(const LoginRoute()),
-                      child: Text(
-                        Localizer.of(context).haveAccount,
-                        style: textStyles.boldBody13.copyWith(
-                          color: theme.primary,
+                      const SizedBox(height: 24),
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: theme.surface,
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        child: Column(
+                          children: [
+                            AppTextField(
+                              name: RegistrationForm.nameField,
+                              label: Localizer.of(context).name,
+                              hint: Localizer.of(context).enterYourName,
+                              keyboardType: TextInputType.name,
+                              required: true,
+                            ),
+                            const SizedBox(height: 20),
+                            AppDatePickerField(
+                              name: RegistrationForm.birthdayField,
+                              label: Localizer.of(context).birthday,
+                              hint: Localizer.of(context).selectYourBirthday,
+                              minDate: DateTime(1900),
+                              maxDate: DateTime.now(),
+                              required: true,
+                            ),
+                            const SizedBox(height: 20),
+                            AppTextField(
+                              name: RegistrationForm.phoneField,
+                              label: Localizer.of(context).phoneNumber,
+                              hint: Localizer.of(context).enterPhoneNumber,
+                              keyboardType: TextInputType.phone,
+                              inputFormatters: [
+                                FormInputFormatters.phoneMaxLength,
+                              ],
+                              required: true,
+                              validators: [FormValidators.phone(context)],
+                            ),
+                            const SizedBox(height: 20),
+                            AppTextField(
+                              name: RegistrationForm.passwordField,
+                              label: Localizer.of(context).password,
+                              hint: Localizer.of(context).enterPassword,
+                              keyboardType: TextInputType.visiblePassword,
+                              canObscureText: true,
+                              required: true,
+                            ),
+                            const SizedBox(height: 24),
+                          ],
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 32),
-                    AppElevatedButton.big(
-                      context: context,
-                      text: Localizer.of(context).toRegister,
-                      onPressed: () => onSubmitted(context),
-                    ),
-                  ],
+                      const SizedBox(height: 24),
+                      GestureDetector(
+                        onTap: () => context.router.replace(const LoginRoute()),
+                        child: Text(
+                          Localizer.of(context).haveAccount,
+                          style: textStyles.boldBody13.copyWith(
+                            color: theme.primary,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 32),
+                      AppElevatedButton.big(
+                        context: context,
+                        text: Localizer.of(context).toRegister,
+                        onPressed: () => onSubmitted(context),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

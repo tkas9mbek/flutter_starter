@@ -21,8 +21,9 @@ class CalendarScreen extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => CalendarBloc(getIt<TaskRepository>())
-            ..add(CalendarEvent.dateSelected(DateTime.now())),
+          create: (context) =>
+              CalendarBloc(getIt<TaskRepository>())
+                ..add(CalendarEvent.dateSelected(DateTime.now())),
         ),
         BlocProvider(
           create: (context) => TaskDeleteBloc(getIt<TaskRepository>()),
@@ -49,9 +50,7 @@ class _CalendarView extends StatelessWidget {
               isSuccess: true,
               message: localizer.taskDeletedSuccessfully,
             );
-            context.read<CalendarBloc>().add(
-                  const CalendarEvent.refreshed(),
-                );
+            context.read<CalendarBloc>().add(const CalendarEvent.refreshed());
           },
           failure: (failureState) {
             NotificationSnackBar.showMessage(
@@ -70,9 +69,8 @@ class _CalendarView extends StatelessWidget {
               CalendarHorizontalDatePicker(selectedDate: state.selectedDate),
               Expanded(
                 child: state.status.when(
-                  initial: () => EmptyInformationBody(
-                    text: localizer.selectDate,
-                  ),
+                  initial: () =>
+                      EmptyInformationBody(text: localizer.selectDate),
                   loading: () => const CustomCircularProgressIndicator(),
                   success: (tasks) {
                     if (tasks.isEmpty) {
@@ -86,8 +84,8 @@ class _CalendarView extends StatelessWidget {
                   failure: (exception) => FailureWidgetLarge(
                     exception: exception,
                     onRetry: () => context.read<CalendarBloc>().add(
-                          const CalendarEvent.refreshed(),
-                        ),
+                      const CalendarEvent.refreshed(),
+                    ),
                   ),
                 ),
               ),

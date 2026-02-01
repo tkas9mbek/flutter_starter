@@ -12,7 +12,8 @@ part of 'calendar_bloc.dart';
 T _$identity<T>(T value) => value;
 
 final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
+  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
+);
 
 /// @nodoc
 mixin _$CalendarEvent {
@@ -20,47 +21,42 @@ mixin _$CalendarEvent {
   TResult when<TResult extends Object?>({
     required TResult Function(DateTime date) dateSelected,
     required TResult Function() refreshed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function(DateTime date)? dateSelected,
     TResult? Function()? refreshed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function(DateTime date)? dateSelected,
     TResult Function()? refreshed,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_DateSelectedCalendarEvent value) dateSelected,
     required TResult Function(_RefreshedCalendarEvent value) refreshed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_DateSelectedCalendarEvent value)? dateSelected,
     TResult? Function(_RefreshedCalendarEvent value)? refreshed,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_DateSelectedCalendarEvent value)? dateSelected,
     TResult Function(_RefreshedCalendarEvent value)? refreshed,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $CalendarEventCopyWith<$Res> {
   factory $CalendarEventCopyWith(
-          CalendarEvent value, $Res Function(CalendarEvent) then) =
-      _$CalendarEventCopyWithImpl<$Res, CalendarEvent>;
+    CalendarEvent value,
+    $Res Function(CalendarEvent) then,
+  ) = _$CalendarEventCopyWithImpl<$Res, CalendarEvent>;
 }
 
 /// @nodoc
@@ -80,9 +76,9 @@ class _$CalendarEventCopyWithImpl<$Res, $Val extends CalendarEvent>
 /// @nodoc
 abstract class _$$DateSelectedCalendarEventImplCopyWith<$Res> {
   factory _$$DateSelectedCalendarEventImplCopyWith(
-          _$DateSelectedCalendarEventImpl value,
-          $Res Function(_$DateSelectedCalendarEventImpl) then) =
-      __$$DateSelectedCalendarEventImplCopyWithImpl<$Res>;
+    _$DateSelectedCalendarEventImpl value,
+    $Res Function(_$DateSelectedCalendarEventImpl) then,
+  ) = __$$DateSelectedCalendarEventImplCopyWithImpl<$Res>;
   @useResult
   $Res call({DateTime date});
 }
@@ -92,23 +88,23 @@ class __$$DateSelectedCalendarEventImplCopyWithImpl<$Res>
     extends _$CalendarEventCopyWithImpl<$Res, _$DateSelectedCalendarEventImpl>
     implements _$$DateSelectedCalendarEventImplCopyWith<$Res> {
   __$$DateSelectedCalendarEventImplCopyWithImpl(
-      _$DateSelectedCalendarEventImpl _value,
-      $Res Function(_$DateSelectedCalendarEventImpl) _then)
-      : super(_value, _then);
+    _$DateSelectedCalendarEventImpl _value,
+    $Res Function(_$DateSelectedCalendarEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CalendarEvent
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? date = null,
-  }) {
-    return _then(_$DateSelectedCalendarEventImpl(
-      null == date
-          ? _value.date
-          : date // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-    ));
+  $Res call({Object? date = null}) {
+    return _then(
+      _$DateSelectedCalendarEventImpl(
+        null == date
+            ? _value.date
+            : date // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+      ),
+    );
   }
 }
 
@@ -142,8 +138,10 @@ class _$DateSelectedCalendarEventImpl implements _DateSelectedCalendarEvent {
   @override
   @pragma('vm:prefer-inline')
   _$$DateSelectedCalendarEventImplCopyWith<_$DateSelectedCalendarEventImpl>
-      get copyWith => __$$DateSelectedCalendarEventImplCopyWithImpl<
-          _$DateSelectedCalendarEventImpl>(this, _$identity);
+  get copyWith =>
+      __$$DateSelectedCalendarEventImplCopyWithImpl<
+        _$DateSelectedCalendarEventImpl
+      >(this, _$identity);
 
   @override
   @optionalTypeArgs
@@ -218,15 +216,15 @@ abstract class _DateSelectedCalendarEvent implements CalendarEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$DateSelectedCalendarEventImplCopyWith<_$DateSelectedCalendarEventImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$RefreshedCalendarEventImplCopyWith<$Res> {
   factory _$$RefreshedCalendarEventImplCopyWith(
-          _$RefreshedCalendarEventImpl value,
-          $Res Function(_$RefreshedCalendarEventImpl) then) =
-      __$$RefreshedCalendarEventImplCopyWithImpl<$Res>;
+    _$RefreshedCalendarEventImpl value,
+    $Res Function(_$RefreshedCalendarEventImpl) then,
+  ) = __$$RefreshedCalendarEventImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
@@ -234,9 +232,9 @@ class __$$RefreshedCalendarEventImplCopyWithImpl<$Res>
     extends _$CalendarEventCopyWithImpl<$Res, _$RefreshedCalendarEventImpl>
     implements _$$RefreshedCalendarEventImplCopyWith<$Res> {
   __$$RefreshedCalendarEventImplCopyWithImpl(
-      _$RefreshedCalendarEventImpl _value,
-      $Res Function(_$RefreshedCalendarEventImpl) _then)
-      : super(_value, _then);
+    _$RefreshedCalendarEventImpl _value,
+    $Res Function(_$RefreshedCalendarEventImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CalendarEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -337,16 +335,14 @@ mixin _$CalendarStatus {
     required TResult Function() loading,
     required TResult Function(List<Task> tasks) success,
     required TResult Function(AppException exception) failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? initial,
     TResult? Function()? loading,
     TResult? Function(List<Task> tasks)? success,
     TResult? Function(AppException exception)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? initial,
@@ -354,24 +350,21 @@ mixin _$CalendarStatus {
     TResult Function(List<Task> tasks)? success,
     TResult Function(AppException exception)? failure,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_InitialCalendarStatus value) initial,
     required TResult Function(_LoadingCalendarStatus value) loading,
     required TResult Function(_SuccessCalendarStatus value) success,
     required TResult Function(_FailureCalendarStatus value) failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_InitialCalendarStatus value)? initial,
     TResult? Function(_LoadingCalendarStatus value)? loading,
     TResult? Function(_SuccessCalendarStatus value)? success,
     TResult? Function(_FailureCalendarStatus value)? failure,
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_InitialCalendarStatus value)? initial,
@@ -379,15 +372,15 @@ mixin _$CalendarStatus {
     TResult Function(_SuccessCalendarStatus value)? success,
     TResult Function(_FailureCalendarStatus value)? failure,
     required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
+  }) => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class $CalendarStatusCopyWith<$Res> {
   factory $CalendarStatusCopyWith(
-          CalendarStatus value, $Res Function(CalendarStatus) then) =
-      _$CalendarStatusCopyWithImpl<$Res, CalendarStatus>;
+    CalendarStatus value,
+    $Res Function(CalendarStatus) then,
+  ) = _$CalendarStatusCopyWithImpl<$Res, CalendarStatus>;
 }
 
 /// @nodoc
@@ -407,18 +400,19 @@ class _$CalendarStatusCopyWithImpl<$Res, $Val extends CalendarStatus>
 /// @nodoc
 abstract class _$$InitialCalendarStatusImplCopyWith<$Res> {
   factory _$$InitialCalendarStatusImplCopyWith(
-          _$InitialCalendarStatusImpl value,
-          $Res Function(_$InitialCalendarStatusImpl) then) =
-      __$$InitialCalendarStatusImplCopyWithImpl<$Res>;
+    _$InitialCalendarStatusImpl value,
+    $Res Function(_$InitialCalendarStatusImpl) then,
+  ) = __$$InitialCalendarStatusImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$InitialCalendarStatusImplCopyWithImpl<$Res>
     extends _$CalendarStatusCopyWithImpl<$Res, _$InitialCalendarStatusImpl>
     implements _$$InitialCalendarStatusImplCopyWith<$Res> {
-  __$$InitialCalendarStatusImplCopyWithImpl(_$InitialCalendarStatusImpl _value,
-      $Res Function(_$InitialCalendarStatusImpl) _then)
-      : super(_value, _then);
+  __$$InitialCalendarStatusImplCopyWithImpl(
+    _$InitialCalendarStatusImpl _value,
+    $Res Function(_$InitialCalendarStatusImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CalendarStatus
   /// with the given fields replaced by the non-null parameter values.
@@ -526,18 +520,19 @@ abstract class _InitialCalendarStatus implements CalendarStatus {
 /// @nodoc
 abstract class _$$LoadingCalendarStatusImplCopyWith<$Res> {
   factory _$$LoadingCalendarStatusImplCopyWith(
-          _$LoadingCalendarStatusImpl value,
-          $Res Function(_$LoadingCalendarStatusImpl) then) =
-      __$$LoadingCalendarStatusImplCopyWithImpl<$Res>;
+    _$LoadingCalendarStatusImpl value,
+    $Res Function(_$LoadingCalendarStatusImpl) then,
+  ) = __$$LoadingCalendarStatusImplCopyWithImpl<$Res>;
 }
 
 /// @nodoc
 class __$$LoadingCalendarStatusImplCopyWithImpl<$Res>
     extends _$CalendarStatusCopyWithImpl<$Res, _$LoadingCalendarStatusImpl>
     implements _$$LoadingCalendarStatusImplCopyWith<$Res> {
-  __$$LoadingCalendarStatusImplCopyWithImpl(_$LoadingCalendarStatusImpl _value,
-      $Res Function(_$LoadingCalendarStatusImpl) _then)
-      : super(_value, _then);
+  __$$LoadingCalendarStatusImplCopyWithImpl(
+    _$LoadingCalendarStatusImpl _value,
+    $Res Function(_$LoadingCalendarStatusImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CalendarStatus
   /// with the given fields replaced by the non-null parameter values.
@@ -645,9 +640,9 @@ abstract class _LoadingCalendarStatus implements CalendarStatus {
 /// @nodoc
 abstract class _$$SuccessCalendarStatusImplCopyWith<$Res> {
   factory _$$SuccessCalendarStatusImplCopyWith(
-          _$SuccessCalendarStatusImpl value,
-          $Res Function(_$SuccessCalendarStatusImpl) then) =
-      __$$SuccessCalendarStatusImplCopyWithImpl<$Res>;
+    _$SuccessCalendarStatusImpl value,
+    $Res Function(_$SuccessCalendarStatusImpl) then,
+  ) = __$$SuccessCalendarStatusImplCopyWithImpl<$Res>;
   @useResult
   $Res call({List<Task> tasks});
 }
@@ -656,39 +651,34 @@ abstract class _$$SuccessCalendarStatusImplCopyWith<$Res> {
 class __$$SuccessCalendarStatusImplCopyWithImpl<$Res>
     extends _$CalendarStatusCopyWithImpl<$Res, _$SuccessCalendarStatusImpl>
     implements _$$SuccessCalendarStatusImplCopyWith<$Res> {
-  __$$SuccessCalendarStatusImplCopyWithImpl(_$SuccessCalendarStatusImpl _value,
-      $Res Function(_$SuccessCalendarStatusImpl) _then)
-      : super(_value, _then);
+  __$$SuccessCalendarStatusImplCopyWithImpl(
+    _$SuccessCalendarStatusImpl _value,
+    $Res Function(_$SuccessCalendarStatusImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CalendarStatus
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? tasks = null,
-  }) {
-    return _then(_$SuccessCalendarStatusImpl(
-      tasks: null == tasks
-          ? _value._tasks
-          : tasks // ignore: cast_nullable_to_non_nullable
-              as List<Task>,
-    ));
+  $Res call({Object? tasks = null}) {
+    return _then(
+      _$SuccessCalendarStatusImpl(
+        tasks: null == tasks
+            ? _value.tasks
+            : tasks // ignore: cast_nullable_to_non_nullable
+                  as List<Task>,
+      ),
+    );
   }
 }
 
 /// @nodoc
 
 class _$SuccessCalendarStatusImpl implements _SuccessCalendarStatus {
-  const _$SuccessCalendarStatusImpl({required final List<Task> tasks})
-      : _tasks = tasks;
+  const _$SuccessCalendarStatusImpl({required this.tasks});
 
-  final List<Task> _tasks;
   @override
-  List<Task> get tasks {
-    if (_tasks is EqualUnmodifiableListView) return _tasks;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_tasks);
-  }
+  final List<Task> tasks;
 
   @override
   String toString() {
@@ -700,12 +690,12 @@ class _$SuccessCalendarStatusImpl implements _SuccessCalendarStatus {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$SuccessCalendarStatusImpl &&
-            const DeepCollectionEquality().equals(other._tasks, _tasks));
+            const DeepCollectionEquality().equals(other.tasks, tasks));
   }
 
   @override
   int get hashCode =>
-      Object.hash(runtimeType, const DeepCollectionEquality().hash(_tasks));
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(tasks));
 
   /// Create a copy of CalendarStatus
   /// with the given fields replaced by the non-null parameter values.
@@ -713,8 +703,11 @@ class _$SuccessCalendarStatusImpl implements _SuccessCalendarStatus {
   @override
   @pragma('vm:prefer-inline')
   _$$SuccessCalendarStatusImplCopyWith<_$SuccessCalendarStatusImpl>
-      get copyWith => __$$SuccessCalendarStatusImplCopyWithImpl<
-          _$SuccessCalendarStatusImpl>(this, _$identity);
+  get copyWith =>
+      __$$SuccessCalendarStatusImplCopyWithImpl<_$SuccessCalendarStatusImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -801,15 +794,15 @@ abstract class _SuccessCalendarStatus implements CalendarStatus {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SuccessCalendarStatusImplCopyWith<_$SuccessCalendarStatusImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 abstract class _$$FailureCalendarStatusImplCopyWith<$Res> {
   factory _$$FailureCalendarStatusImplCopyWith(
-          _$FailureCalendarStatusImpl value,
-          $Res Function(_$FailureCalendarStatusImpl) then) =
-      __$$FailureCalendarStatusImplCopyWithImpl<$Res>;
+    _$FailureCalendarStatusImpl value,
+    $Res Function(_$FailureCalendarStatusImpl) then,
+  ) = __$$FailureCalendarStatusImplCopyWithImpl<$Res>;
   @useResult
   $Res call({AppException exception});
 }
@@ -818,23 +811,24 @@ abstract class _$$FailureCalendarStatusImplCopyWith<$Res> {
 class __$$FailureCalendarStatusImplCopyWithImpl<$Res>
     extends _$CalendarStatusCopyWithImpl<$Res, _$FailureCalendarStatusImpl>
     implements _$$FailureCalendarStatusImplCopyWith<$Res> {
-  __$$FailureCalendarStatusImplCopyWithImpl(_$FailureCalendarStatusImpl _value,
-      $Res Function(_$FailureCalendarStatusImpl) _then)
-      : super(_value, _then);
+  __$$FailureCalendarStatusImplCopyWithImpl(
+    _$FailureCalendarStatusImpl _value,
+    $Res Function(_$FailureCalendarStatusImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CalendarStatus
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? exception = null,
-  }) {
-    return _then(_$FailureCalendarStatusImpl(
-      exception: null == exception
-          ? _value.exception
-          : exception // ignore: cast_nullable_to_non_nullable
-              as AppException,
-    ));
+  $Res call({Object? exception = null}) {
+    return _then(
+      _$FailureCalendarStatusImpl(
+        exception: null == exception
+            ? _value.exception
+            : exception // ignore: cast_nullable_to_non_nullable
+                  as AppException,
+      ),
+    );
   }
 }
 
@@ -869,8 +863,11 @@ class _$FailureCalendarStatusImpl implements _FailureCalendarStatus {
   @override
   @pragma('vm:prefer-inline')
   _$$FailureCalendarStatusImplCopyWith<_$FailureCalendarStatusImpl>
-      get copyWith => __$$FailureCalendarStatusImplCopyWithImpl<
-          _$FailureCalendarStatusImpl>(this, _$identity);
+  get copyWith =>
+      __$$FailureCalendarStatusImplCopyWithImpl<_$FailureCalendarStatusImpl>(
+        this,
+        _$identity,
+      );
 
   @override
   @optionalTypeArgs
@@ -948,8 +945,9 @@ class _$FailureCalendarStatusImpl implements _FailureCalendarStatus {
 }
 
 abstract class _FailureCalendarStatus implements CalendarStatus {
-  const factory _FailureCalendarStatus(
-      {required final AppException exception}) = _$FailureCalendarStatusImpl;
+  const factory _FailureCalendarStatus({
+    required final AppException exception,
+  }) = _$FailureCalendarStatusImpl;
 
   AppException get exception;
 
@@ -957,7 +955,7 @@ abstract class _FailureCalendarStatus implements CalendarStatus {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$FailureCalendarStatusImplCopyWith<_$FailureCalendarStatusImpl>
-      get copyWith => throw _privateConstructorUsedError;
+  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
@@ -975,8 +973,9 @@ mixin _$CalendarState {
 /// @nodoc
 abstract class $CalendarStateCopyWith<$Res> {
   factory $CalendarStateCopyWith(
-          CalendarState value, $Res Function(CalendarState) then) =
-      _$CalendarStateCopyWithImpl<$Res, CalendarState>;
+    CalendarState value,
+    $Res Function(CalendarState) then,
+  ) = _$CalendarStateCopyWithImpl<$Res, CalendarState>;
   @useResult
   $Res call({DateTime selectedDate, CalendarStatus status});
 
@@ -997,20 +996,20 @@ class _$CalendarStateCopyWithImpl<$Res, $Val extends CalendarState>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? selectedDate = null,
-    Object? status = null,
-  }) {
-    return _then(_value.copyWith(
-      selectedDate: null == selectedDate
-          ? _value.selectedDate
-          : selectedDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as CalendarStatus,
-    ) as $Val);
+  $Res call({Object? selectedDate = null, Object? status = null}) {
+    return _then(
+      _value.copyWith(
+            selectedDate: null == selectedDate
+                ? _value.selectedDate
+                : selectedDate // ignore: cast_nullable_to_non_nullable
+                      as DateTime,
+            status: null == status
+                ? _value.status
+                : status // ignore: cast_nullable_to_non_nullable
+                      as CalendarStatus,
+          )
+          as $Val,
+    );
   }
 
   /// Create a copy of CalendarState
@@ -1028,8 +1027,9 @@ class _$CalendarStateCopyWithImpl<$Res, $Val extends CalendarState>
 abstract class _$$CalendarStateImplCopyWith<$Res>
     implements $CalendarStateCopyWith<$Res> {
   factory _$$CalendarStateImplCopyWith(
-          _$CalendarStateImpl value, $Res Function(_$CalendarStateImpl) then) =
-      __$$CalendarStateImplCopyWithImpl<$Res>;
+    _$CalendarStateImpl value,
+    $Res Function(_$CalendarStateImpl) then,
+  ) = __$$CalendarStateImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call({DateTime selectedDate, CalendarStatus status});
@@ -1043,27 +1043,27 @@ class __$$CalendarStateImplCopyWithImpl<$Res>
     extends _$CalendarStateCopyWithImpl<$Res, _$CalendarStateImpl>
     implements _$$CalendarStateImplCopyWith<$Res> {
   __$$CalendarStateImplCopyWithImpl(
-      _$CalendarStateImpl _value, $Res Function(_$CalendarStateImpl) _then)
-      : super(_value, _then);
+    _$CalendarStateImpl _value,
+    $Res Function(_$CalendarStateImpl) _then,
+  ) : super(_value, _then);
 
   /// Create a copy of CalendarState
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({
-    Object? selectedDate = null,
-    Object? status = null,
-  }) {
-    return _then(_$CalendarStateImpl(
-      selectedDate: null == selectedDate
-          ? _value.selectedDate
-          : selectedDate // ignore: cast_nullable_to_non_nullable
-              as DateTime,
-      status: null == status
-          ? _value.status
-          : status // ignore: cast_nullable_to_non_nullable
-              as CalendarStatus,
-    ));
+  $Res call({Object? selectedDate = null, Object? status = null}) {
+    return _then(
+      _$CalendarStateImpl(
+        selectedDate: null == selectedDate
+            ? _value.selectedDate
+            : selectedDate // ignore: cast_nullable_to_non_nullable
+                  as DateTime,
+        status: null == status
+            ? _value.status
+            : status // ignore: cast_nullable_to_non_nullable
+                  as CalendarStatus,
+      ),
+    );
   }
 }
 
@@ -1071,7 +1071,7 @@ class __$$CalendarStateImplCopyWithImpl<$Res>
 
 class _$CalendarStateImpl extends _CalendarState {
   const _$CalendarStateImpl({required this.selectedDate, required this.status})
-      : super._();
+    : super._();
 
   @override
   final DateTime selectedDate;
@@ -1106,9 +1106,10 @@ class _$CalendarStateImpl extends _CalendarState {
 }
 
 abstract class _CalendarState extends CalendarState {
-  const factory _CalendarState(
-      {required final DateTime selectedDate,
-      required final CalendarStatus status}) = _$CalendarStateImpl;
+  const factory _CalendarState({
+    required final DateTime selectedDate,
+    required final CalendarStatus status,
+  }) = _$CalendarStateImpl;
   const _CalendarState._() : super._();
 
   @override

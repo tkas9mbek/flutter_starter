@@ -31,12 +31,9 @@ class _TapActivatorState extends State<TapActivator> {
     }
 
     timer?.cancel();
-    timer = Timer(
-      const Duration(milliseconds: 500),
-      () {
-        setState(() => tapCount = 0);
-      },
-    );
+    timer = Timer(const Duration(milliseconds: 500), () {
+      setState(() => tapCount = 0);
+    });
   }
 
   @override

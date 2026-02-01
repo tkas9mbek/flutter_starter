@@ -5,6 +5,35 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.0.0] - 2025-02-01
+
+### Added
+- **Custom Lint Rules** (`starter_lints` package)
+  - `avoid_widget_functions` - Prohibit `_build*` functions returning Widget
+  - `prefer_arrow_except_build` - Arrow for callbacks, block for `build()` only
+  - `always_spread_in_collections` - Require spread operator in collections
+  - `bloc_no_bloc_dependency` - BLoCs cannot inject other BLoCs
+  - `blank_line_before_return` - Require blank line before return
+  - `prefer_named_parameters` - Use named params for 3+ parameters
+  - `sort_constructor_params` - Order: required → defaults → optional → super
+
+### Changed
+- **Code Style Improvements**
+  - Constructors now placed before fields in BLoC classes (`sort_constructors_first`)
+  - Enhanced `analysis_options.yaml` with categorized rules and severity levels
+  - Added `custom_lint` plugin integration
+  - Improved code formatting with 80-character page width
+
+### Fixed
+- Removed duplicate localization directory (`lib/l10n/generatedfi`)
+- Fixed constructor ordering warnings in all BLoC files
+
+### Documentation
+- Updated all package CHANGELOGs with proper release notes
+- Updated `starter_lints` README with activation instructions
+
+---
+
 ## [1.0.0] - 2025-01-24
 
 ### Added
@@ -77,4 +106,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   
 ---
 
+[2.0.0]: https://github.com/tkas9mbek/flutter_starter/releases/tag/v2.0.0
 [1.0.0]: https://github.com/tkas9mbek/flutter_starter/releases/tag/v1.0.0

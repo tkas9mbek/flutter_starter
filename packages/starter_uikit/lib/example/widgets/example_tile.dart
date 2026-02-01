@@ -26,10 +26,7 @@ class ExampleTile extends StatelessWidget {
         icon ?? Icons.arrow_forward,
         color: Theme.of(context).primaryColor,
       ),
-      title: Text(
-        title,
-        style: const TextStyle(fontWeight: FontWeight.w600),
-      ),
+      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600)),
       subtitle: Text(subtitle),
       trailing: const Icon(Icons.arrow_forward_ios, size: 16),
       onTap: onTap,

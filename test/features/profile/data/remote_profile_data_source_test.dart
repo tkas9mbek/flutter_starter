@@ -54,10 +54,7 @@ void main() {
         ),
       ).thenThrow(Exception('Network error'));
 
-      expect(
-        () => dataSource.getUserProfile(),
-        throwsA(isA<Exception>()),
-      );
+      expect(() => dataSource.getUserProfile(), throwsA(isA<Exception>()));
     });
   });
 }

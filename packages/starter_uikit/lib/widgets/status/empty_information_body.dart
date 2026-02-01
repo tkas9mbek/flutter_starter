@@ -41,11 +41,7 @@ class EmptyInformationBody extends StatelessWidget {
                 ),
               )
             else
-              Icon(
-                Icons.inbox_outlined,
-                size: 64,
-                color: theme.textSecondary,
-              ),
+              Icon(Icons.inbox_outlined, size: 64, color: theme.textSecondary),
             const SizedBox(height: 16),
             Text(
               text ?? UikitLocalizer.of(context).noDataAvailable,

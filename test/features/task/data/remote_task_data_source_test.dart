@@ -10,6 +10,7 @@ import '../model/task_mock_models.dart';
 
 class MockApiClient extends Mock implements ApiClient {}
 
+// ignore: avoid_implementing_value_types
 class FakeTaskCreateRequest extends Fake implements TaskCreateRequest {}
 
 void main() {
@@ -35,7 +36,8 @@ void main() {
         ),
       ).thenAnswer((invocation) async {
         final fromJson =
-            invocation.namedArguments[#fromJson] as Task Function(Map<String, dynamic>);
+            invocation.namedArguments[#fromJson]
+                as Task Function(Map<String, dynamic>);
         return [
           fromJson(TaskMockModels.rawTask1),
           fromJson(TaskMockModels.rawTask2),
@@ -65,42 +67,42 @@ void main() {
         ),
       ).thenThrow(Exception('Network error'));
 
-      expect(
-        () => dataSource.getTasks(),
-        throwsA(isA<Exception>()),
-      );
+      expect(() => dataSource.getTasks(), throwsA(isA<Exception>()));
     });
   });
 
   group('getTasksByDate', () {
     final testDate = DateTime(2025, 1, 15);
 
-    test('returns list of tasks for specific date when API call is successful',
-        () async {
-      when(
-        () => mockApiClient.requestJsonList<Task>(
-          method: HttpMethod.get,
-          path: '/tasks/date/${testDate.toIso8601String()}',
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).thenAnswer((invocation) async {
-        final fromJson =
-            invocation.namedArguments[#fromJson] as Task Function(Map<String, dynamic>);
-        return [fromJson(TaskMockModels.rawTask1)];
-      });
+    test(
+      'returns list of tasks for specific date when API call is successful',
+      () async {
+        when(
+          () => mockApiClient.requestJsonList<Task>(
+            method: HttpMethod.get,
+            path: '/tasks/date/${testDate.toIso8601String()}',
+            fromJson: any(named: 'fromJson'),
+          ),
+        ).thenAnswer((invocation) async {
+          final fromJson =
+              invocation.namedArguments[#fromJson]
+                  as Task Function(Map<String, dynamic>);
+          return [fromJson(TaskMockModels.rawTask1)];
+        });
 
-      final result = await dataSource.getTasksByDate(testDate);
+        final result = await dataSource.getTasksByDate(testDate);
 
-      expect(result.length, equals(1));
-      expect(result[0].id, equals(TaskMockModels.task1.id));
-      verify(
-        () => mockApiClient.requestJsonList<Task>(
-          method: HttpMethod.get,
-          path: '/tasks/date/${testDate.toIso8601String()}',
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(1);
-    });
+        expect(result.length, equals(1));
+        expect(result[0].id, equals(TaskMockModels.task1.id));
+        verify(
+          () => mockApiClient.requestJsonList<Task>(
+            method: HttpMethod.get,
+            path: '/tasks/date/${testDate.toIso8601String()}',
+            fromJson: any(named: 'fromJson'),
+          ),
+        ).called(1);
+      },
+    );
 
     test('throws exception when API call fails', () async {
       when(
@@ -137,7 +139,8 @@ void main() {
         ),
       ).thenAnswer((invocation) async {
         final fromJson =
-            invocation.namedArguments[#fromJson] as Task Function(Map<String, dynamic>);
+            invocation.namedArguments[#fromJson]
+                as Task Function(Map<String, dynamic>);
         return fromJson(TaskMockModels.rawTask3);
       });
 
@@ -192,7 +195,8 @@ void main() {
         ),
       ).thenAnswer((invocation) async {
         final fromJson =
-            invocation.namedArguments[#fromJson] as Task Function(Map<String, dynamic>);
+            invocation.namedArguments[#fromJson]
+                as Task Function(Map<String, dynamic>);
         return fromJson(TaskMockModels.rawTask1);
       });
 
@@ -255,10 +259,7 @@ void main() {
         ),
       ).thenThrow(Exception('Network error'));
 
-      expect(
-        () => dataSource.deleteTask(taskId),
-        throwsA(isA<Exception>()),
-      );
+      expect(() => dataSource.deleteTask(taskId), throwsA(isA<Exception>()));
     });
   });
 

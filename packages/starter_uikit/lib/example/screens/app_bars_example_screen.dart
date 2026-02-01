@@ -36,10 +36,7 @@ class _AppBarsExampleScreenState extends State<AppBarsExampleScreen> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Text(
-            localizer.titleAppBar,
-            style: textStyles.mediumBody16,
-          ),
+          Text(localizer.titleAppBar, style: textStyles.mediumBody16),
           const SizedBox(height: 12),
           DecoratedBox(
             decoration: BoxDecoration(
@@ -65,10 +62,7 @@ class _AppBarsExampleScreenState extends State<AppBarsExampleScreen> {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            localizer.baseAppBar,
-            style: textStyles.mediumBody16,
-          ),
+          Text(localizer.baseAppBar, style: textStyles.mediumBody16),
           const SizedBox(height: 12),
           DecoratedBox(
             decoration: BoxDecoration(
@@ -99,10 +93,7 @@ class _AppBarsExampleScreenState extends State<AppBarsExampleScreen> {
             ),
           ),
           const SizedBox(height: 24),
-          Text(
-            localizer.transparentAppBar,
-            style: textStyles.mediumBody16,
-          ),
+          Text(localizer.transparentAppBar, style: textStyles.mediumBody16),
           const SizedBox(height: 12),
           DecoratedBox(
             decoration: BoxDecoration(

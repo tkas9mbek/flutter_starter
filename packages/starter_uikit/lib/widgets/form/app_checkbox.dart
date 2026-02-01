@@ -34,10 +34,7 @@ class AppCheckBox extends StatelessWidget {
                   borderRadius: BorderRadius.circular(4),
                 )
               : BoxDecoration(
-                  border: Border.all(
-                    color: theme.border,
-                    width: 2,
-                  ),
+                  border: Border.all(color: theme.border, width: 2),
                   borderRadius: BorderRadius.circular(4),
                 ),
           child: selected

@@ -39,8 +39,9 @@ void main() {
     blocTest<CalendarBloc, CalendarState>(
       'emits [loading, success] with selected date and tasks',
       build: () {
-        when(() => mockDataSource.getTasksByDate(testDate))
-            .thenAnswer((_) async => TaskMockModels.tasksForDate1);
+        when(
+          () => mockDataSource.getTasksByDate(testDate),
+        ).thenAnswer((_) async => TaskMockModels.tasksForDate1);
 
         return calendarBloc;
       },
@@ -63,8 +64,9 @@ void main() {
     blocTest<CalendarBloc, CalendarState>(
       'emits [loading, success] with empty task list',
       build: () {
-        when(() => mockDataSource.getTasksByDate(testDate))
-            .thenAnswer((_) async => []);
+        when(
+          () => mockDataSource.getTasksByDate(testDate),
+        ).thenAnswer((_) async => []);
 
         return calendarBloc;
       },
@@ -87,8 +89,9 @@ void main() {
     blocTest<CalendarBloc, CalendarState>(
       'emits [loading, failure] when getTasksByDate fails',
       build: () {
-        when(() => mockDataSource.getTasksByDate(testDate))
-            .thenThrow(const NoInternetException());
+        when(
+          () => mockDataSource.getTasksByDate(testDate),
+        ).thenThrow(const NoInternetException());
 
         return calendarBloc;
       },
@@ -113,8 +116,9 @@ void main() {
     blocTest<CalendarBloc, CalendarState>(
       'updates selectedDate when switching between dates',
       build: () {
-        when(() => mockDataSource.getTasksByDate(any()))
-            .thenAnswer((_) async => TaskMockModels.tasksForDate1);
+        when(
+          () => mockDataSource.getTasksByDate(any()),
+        ).thenAnswer((_) async => TaskMockModels.tasksForDate1);
 
         return calendarBloc;
       },
@@ -148,8 +152,9 @@ void main() {
     blocTest<CalendarBloc, CalendarState>(
       'emits [loading, success] with current selectedDate',
       build: () {
-        when(() => mockDataSource.getTasksByDate(initialDate))
-            .thenAnswer((_) async => [TaskMockModels.task1]);
+        when(
+          () => mockDataSource.getTasksByDate(initialDate),
+        ).thenAnswer((_) async => [TaskMockModels.task1]);
 
         return calendarBloc;
       },
@@ -176,8 +181,9 @@ void main() {
     blocTest<CalendarBloc, CalendarState>(
       'emits [loading, failure] when refresh fails',
       build: () {
-        when(() => mockDataSource.getTasksByDate(initialDate))
-            .thenThrow(const ServerException(statusCode: 500));
+        when(
+          () => mockDataSource.getTasksByDate(initialDate),
+        ).thenThrow(const ServerException(statusCode: 500));
 
         return calendarBloc;
       },
@@ -206,8 +212,9 @@ void main() {
     blocTest<CalendarBloc, CalendarState>(
       'preserves selectedDate when refreshing',
       build: () {
-        when(() => mockDataSource.getTasksByDate(initialDate))
-            .thenAnswer((_) async => [TaskMockModels.task1]);
+        when(
+          () => mockDataSource.getTasksByDate(initialDate),
+        ).thenAnswer((_) async => [TaskMockModels.task1]);
 
         return calendarBloc;
       },
@@ -235,9 +242,7 @@ void main() {
     );
     final failureState = CalendarState(
       selectedDate: testDate,
-      status: const CalendarStatus.failure(
-        exception: NoInternetException(),
-      ),
+      status: const CalendarStatus.failure(exception: NoInternetException()),
     );
 
     test('isLoading returns true for loading status', () {

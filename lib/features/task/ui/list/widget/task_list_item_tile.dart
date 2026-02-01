@@ -8,10 +8,7 @@ import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class TaskListItemTile extends StatelessWidget {
-  const TaskListItemTile({
-    required this.task,
-    super.key,
-  });
+  const TaskListItemTile({required this.task, super.key});
 
   final Task task;
 
@@ -34,21 +31,13 @@ class TaskListItemTile extends StatelessWidget {
           color: Colors.red,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Icon(
-          Icons.delete_outline,
-          color: Colors.white,
-          size: 28,
-        ),
+        child: const Icon(Icons.delete_outline, color: Colors.white, size: 28),
       ),
       onDismissed: (_) {
-        context.read<TaskDeleteBloc>().add(
-              TaskDeleteEvent.deleted(task.id),
-            );
+        context.read<TaskDeleteBloc>().add(TaskDeleteEvent.deleted(task.id));
       },
       child: InkWell(
-        onTap: () => context.router.push(
-          TaskDetailsRoute(task: task),
-        ),
+        onTap: () => context.router.push(TaskDetailsRoute(task: task)),
         borderRadius: BorderRadius.circular(12),
         child: Padding(
           padding: const EdgeInsets.all(16),

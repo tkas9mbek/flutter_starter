@@ -14,6 +14,7 @@ Flutter starter template using:
 **Local Packages:**
 - `starter_toolkit`: Common utilities and configurations
 - `starter_uikit`: Reusable UI components and theme system
+- `starter_lints`: Custom lint rules for code consistency
 
 ---
 
@@ -54,9 +55,11 @@ fvm flutter --no-color pub global run intl_utils:generate        # Localization
 
 ### Code Generation Triggers
 
-- **build_runner**: After modifying router configs, JSON models, Freezed classes
+- **build_runner**: After modifying router configs, JSON models, Freezed data models (NOT BLoC events/states)
 - **generate_exception_mapper.dart**: After adding/modifying AppException classes
 - **intl_utils**: After modifying ARB files
+
+**Note**: BLoC events and states use native Dart 3 sealed classes (no code generation). Freezed is used only for data models that need `fromJson`/`toJson` and `copyWith`.
 
 ---
 
@@ -88,16 +91,23 @@ Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, 
 // BLoC stores domain exception
 try {
   final data = await _repository.getData();
-  return emit(State.success(data));
+  return emit(SuccessMyState(data));
 } on AppException catch (e) {
-  return emit(State.failure(e));
+  return emit(FailureMyState(e));
 }
 
-// UI maps to localized model
-failure: (failureState) {
-  final uiModel = ExceptionUiMapper(context).map(failureState.exception);
-  return FailureWidgetLarge(uiModel: uiModel, onRetry: _retry);
-}
+// UI handles failure state with pattern matching
+BlocBuilder<MyBloc, MyState>(
+  builder: (context, state) {
+    if (state case FailureMyState(:final exception)) {
+      return FailureWidgetLarge(
+        exception: exception,
+        onRetry: _retry,
+      );
+    }
+    // ... other states
+  },
+)
 ```
 
 **Adding new exceptions:**
@@ -206,6 +216,9 @@ blocTest<UserBloc, UserState>(
 - **Imports**: Package imports only (no relative imports in lib/)
 - **Widgets**: Never use functions that return widgets - extract to widget classes
 - **Class Size**: Keep < 100 lines; split if > 200 lines
+- **BLoC Separation**: BLoCs must NOT depend on other BLoCs - use UI layer for coordination
+- **Arrow Syntax**: Always use `=>`, except: `build()` method and nested callbacks like `() => setState(() {})`
+- **Spread in Collections**: Always use `if (cond) ...[Widget()]` even for single widget
 
 ### BLoC Formatting Rules
 
@@ -215,23 +228,27 @@ blocTest<UserBloc, UserState>(
 2. **Whitespace separation**: Add blank line before every `emit()` call
 3. **Variable naming**: Use descriptive names (`successState`) not `s`
 4. **Helper methods**: Add `isLoading` getters instead of `maybeMap` checks
+5. **Native Dart 3 sealed classes**: Use native sealed classes for BLoC events/states (NOT Freezed)
 
 **Correct Example:**
 ```dart
-Future<void> _onRequested(_Requested event, Emitter<State> emit) async {
-  emit(const State.loading());
+Future<void> _onRequested(
+  RequestedMyEvent event,
+  Emitter<MyState> emit,
+) async {
+  emit(const LoadingMyState());
 
   try {
     final data = await _repository.getData();
 
-    return emit(State.success(data));
+    return emit(SuccessMyState(data));
   } on AppException catch (e) {
-    return emit(State.failure(e));
+    return emit(FailureMyState(e));
   }
 }
 
 // State helper
-bool get isLoading => this is _LoadingMyState;
+bool get isLoading => this is LoadingMyState;
 ```
 
 ### Comments and Documentation
@@ -285,21 +302,21 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 
 **Usage:**
 ```dart
-// ✓ Correct - Use uikit widgets
-BlocBuilder<Bloc, State>(
-  builder: (context, state) => state.maybeMap(
-    loading: (_) => const CustomCircularProgressIndicator(),
-    empty: (_) => EmptyInformationBody(text: Localizer.of(context).noData),
-    failure: (failureState) => FailureWidgetLarge(
-      exception: failureState.exception,
+// ✓ Correct - Use uikit widgets with Dart 3 pattern matching
+BlocBuilder<MyBloc, MyState>(
+  builder: (context, state) => switch (state) {
+    LoadingMyState() => const CustomCircularProgressIndicator(),
+    EmptyMyState() => EmptyInformationBody(text: Localizer.of(context).noData),
+    FailureMyState(:final exception) => FailureWidgetLarge(
+      exception: exception,
       onRetry: _retry,
     ),
-    orElse: () => ...,
-  ),
+    SuccessMyState(:final data) => SuccessView(data: data),
+  },
 )
 
 // ✗ Wrong - Manual implementation
-loading: (_) => const Center(child: CircularProgressIndicator()),
+LoadingMyState() => const Center(child: CircularProgressIndicator()),
 ```
 
 **Theme Usage:**
@@ -328,9 +345,14 @@ Text('Hello', style: TextStyle(fontSize: 14))
 6. **Single Responsibility**: Extract widgets when class > 100 lines
 7. **No Useless Comments**: Only `///` doc comments for public APIs
 8. **Descriptive Names**: Never use `s` for state - use `successState`, `failureState`
-9. **State Helpers**: Add getters instead of verbose `maybeMap` checks
+9. **State Helpers**: Add getters instead of verbose pattern matching in multiple places
 10. **Async Context**: Use `if (!mounted) return` after async operations
 11. **Dependency Sorting**: SDK dependencies first, then alphabetical
+12. **BLoC Independence**: BLoCs must NOT inject other BLoCs - coordinate via UI layer
+13. **Arrow vs Block**: Always use `=>`, except `build()` and nested callbacks `() => setState(() {})`
+14. **Always Spread**: Use `if (cond) ...[Widget()]` in collections, even for single widget
+15. **Native Dart 3 for BLoC**: Use native sealed classes for BLoC events/states - NOT Freezed
+16. **Dart 3 Pattern Matching**: Use `switch` expressions and `if (state case Type)` instead of Freezed's `when`/`map`
 
 **File Creation:**
 - **NEVER** create files unless absolutely necessary
@@ -341,45 +363,142 @@ Text('Hello', style: TextStyle(fontSize: 14))
 
 ## BLoC State Patterns
 
-**AI Instruction**: Follow these patterns for better state management.
+**AI Instruction**: Follow these patterns for better state management. Use native Dart 3 sealed classes for BLoC events and states (NOT Freezed).
+
+### Why Native Dart 3 Sealed Classes for BLoC?
+
+- **Dart 3 pattern matching**: Native `switch` expressions and `if (state case Type)` replace Freezed's `when`/`map` methods
+- **Simpler code**: No code generation required for BLoC events/states
+- **Better IDE support**: Direct class names without private prefixes
+- **Freezed for data models**: Continue using Freezed for domain models that need `fromJson`/`toJson` and `copyWith`
+
+### Standard State Pattern
+
+For simple states without persistent data:
+
+```dart
+// Events - sealed class hierarchy
+sealed class LoginEvent {
+  const LoginEvent();
+}
+
+final class SubmittedLoginEvent extends LoginEvent {
+  const SubmittedLoginEvent(this.form);
+  final LoginForm form;
+}
+
+// States - sealed class hierarchy
+sealed class LoginState {
+  const LoginState();
+  bool get isLoading => this is LoadingLoginState;
+}
+
+final class InitialLoginState extends LoginState {
+  const InitialLoginState();
+}
+
+final class LoadingLoginState extends LoginState {
+  const LoadingLoginState();
+}
+
+final class SuccessLoginState extends LoginState {
+  const SuccessLoginState();
+}
+
+final class FailureLoginState extends LoginState {
+  const FailureLoginState(this.exception);
+  final AppException exception;
+}
+
+// Usage in UI with Dart 3 pattern matching
+BlocListener<LoginBloc, LoginState>(
+  listener: (context, state) {
+    if (state case FailureLoginState(:final exception)) {
+      NotificationSnackBar.showExceptionMessage(context, exception: exception);
+    }
+  },
+  // ...
+)
+
+// In BlocBuilder with switch expression
+builder: (context, state) => switch (state) {
+  SuccessLoginState() => SuccessView(),
+  FailureLoginState(:final exception) => FailureView(exception),
+  _ => LoadingView(),
+}
+```
 
 ### Nested Status Pattern
 
 For states with persistent data across status changes:
 
 ```dart
-@freezed
-class CalendarStatus with _$CalendarStatus {
-  const factory CalendarStatus.initial() = _InitialCalendarStatus;
-  const factory CalendarStatus.loading() = _LoadingCalendarStatus;
-  const factory CalendarStatus.success({required List<Task> tasks}) = _SuccessCalendarStatus;
-  const factory CalendarStatus.failure({required AppException exception}) = _FailureCalendarStatus;
+// Status (nested state for calendar content)
+sealed class CalendarStatus {
+  const CalendarStatus();
+  bool get isInitial => this is InitialCalendarStatus;
+  bool get isLoading => this is LoadingCalendarStatus;
+  bool get isSuccess => this is SuccessCalendarStatus;
+  bool get isFailure => this is FailureCalendarStatus;
 }
 
-@freezed
-class CalendarState with _$CalendarState {
-  const factory CalendarState({
-    required DateTime selectedDate,
-    required CalendarStatus status,
-  }) = _CalendarState;
+final class InitialCalendarStatus extends CalendarStatus {
+  const InitialCalendarStatus();
+}
 
-  const CalendarState._();
+final class LoadingCalendarStatus extends CalendarStatus {
+  const LoadingCalendarStatus();
+}
+
+final class SuccessCalendarStatus extends CalendarStatus {
+  const SuccessCalendarStatus({required this.tasks});
+  final List<Task> tasks;
+}
+
+final class FailureCalendarStatus extends CalendarStatus {
+  const FailureCalendarStatus({required this.exception});
+  final AppException exception;
+}
+
+// State with manual copyWith (only when needed)
+final class CalendarState {
+  const CalendarState({
+    required this.selectedDate,
+    required this.status,
+  });
 
   factory CalendarState.initial() => CalendarState(
     selectedDate: DateTime.now(),
-    status: const CalendarStatus.initial(),
+    status: const InitialCalendarStatus(),
   );
 
-  bool get isLoading => status is _LoadingCalendarStatus;
+  final DateTime selectedDate;
+  final CalendarStatus status;
+
+  bool get isLoading => status is LoadingCalendarStatus;
+
+  CalendarState copyWith({
+    DateTime? selectedDate,
+    CalendarStatus? status,
+  }) => CalendarState(
+    selectedDate: selectedDate ?? this.selectedDate,
+    status: status ?? this.status,
+  );
 }
 
-// Usage in UI
-state.status.when(
-  initial: () => EmptyView(),
-  loading: () => LoadingView(),
-  success: (tasks) => SuccessView(tasks),
-  failure: (exception) => FailureView(exception),
-)
+// Usage in UI with switch expression
+Widget _buildStatusContent(CalendarStatus status, Localizer localizer) =>
+  switch (status) {
+    InitialCalendarStatus() => EmptyInformationBody(text: localizer.selectDate),
+    LoadingCalendarStatus() => const CustomCircularProgressIndicator(),
+    SuccessCalendarStatus(:final tasks) => tasks.isEmpty
+        ? EmptyInformationBody(text: localizer.noTasksForDate)
+        : TasksTimelineList(tasks: tasks),
+    FailureCalendarStatus(:final exception) => FailureWidgetLarge(
+        exception: exception,
+        onRetry: _retry,
+      ),
+  };
 
 // Access persistent data
 CalendarPicker(selectedDate: state.selectedDate)
@@ -387,21 +506,29 @@ CalendarPicker(selectedDate: state.selectedDate)
 
 ### Refreshed Event Pattern
 
-Add `refreshed()` event to avoid extracting state data for reload:
+Add `RefreshedXxxEvent` to avoid extracting state data for reload:
 
 ```dart
-@freezed
-class CalendarEvent with _$CalendarEvent {
-  const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
-  const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;  // ✓ Add this
+// Events
+sealed class CalendarEvent {
+  const CalendarEvent();
+}
+
+final class DateSelectedCalendarEvent extends CalendarEvent {
+  const DateSelectedCalendarEvent(this.date);
+  final DateTime date;
+}
+
+final class RefreshedCalendarEvent extends CalendarEvent {
+  const RefreshedCalendarEvent();  // ✓ Add this
 }
 
 // ✓ Clean usage
-context.read<CalendarBloc>().add(const CalendarEvent.refreshed());
+context.read<CalendarBloc>().add(const RefreshedCalendarEvent());
 
 // ✗ Wrong - extracting state
 final date = state.selectedDate;
-context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
+context.read<CalendarBloc>().add(DateSelectedCalendarEvent(date));
 ```
 
 ---
@@ -455,10 +582,10 @@ For detailed information, see:
 - [Architecture Guide](./docs/architecture.md) - Layered architecture, dependency inversion
 - [Exception Handling](./docs/exception_handling.md) - Custom exceptions, mappers, executors
 - [Structure Guide](./docs/structure.md) - File organization
-- [Code Formatting](./docs/code-formatting.md) - Code style rules
+- [Code Formatting](./docs/code_formatting.md) - Code style rules
 - [Testing Guide](./docs/testing.md) - Testing strategies
 - [BLoC & Freezed Guide](./docs/bloc) - BLoC patterns
 
 ---
 
-**Last Updated**: January 2025
+**Last Updated**: February 2026

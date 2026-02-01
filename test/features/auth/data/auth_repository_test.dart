@@ -25,9 +25,7 @@ void main() {
   late MockAuthLocalDataSource mockLocalDataSource;
 
   setUpAll(() {
-    registerFallbackValue(
-      const AuthLoginRequestBody(phone: '', password: ''),
-    );
+    registerFallbackValue(const AuthLoginRequestBody(phone: '', password: ''));
     registerFallbackValue(
       AuthRegisterRequestBody(
         name: '',
@@ -36,9 +34,7 @@ void main() {
         birthday: DateTime.now(),
       ),
     );
-    registerFallbackValue(
-      const AuthToken(accessToken: '', refreshToken: ''),
-    );
+    registerFallbackValue(const AuthToken(accessToken: '', refreshToken: ''));
   });
 
   setUp(() {
@@ -56,8 +52,9 @@ void main() {
 
   group('clearIfNotLaunchedBefore', () {
     test('delegates to local data source', () async {
-      when(() => mockLocalDataSource.clearIfNotLaunchedBefore())
-          .thenAnswer((_) async => {});
+      when(
+        () => mockLocalDataSource.clearIfNotLaunchedBefore(),
+      ).thenAnswer((_) async => {});
 
       await repository.clearIfNotLaunchedBefore();
 
@@ -68,10 +65,8 @@ void main() {
   group('hasToken', () {
     test('returns true when token exists', () async {
       when(() => mockLocalDataSource.getToken()).thenAnswer(
-        (_) async => const AuthToken(
-          accessToken: 'access',
-          refreshToken: 'refresh',
-        ),
+        (_) async =>
+            const AuthToken(accessToken: 'access', refreshToken: 'refresh'),
       );
 
       final result = await repository.hasToken();
@@ -90,19 +85,16 @@ void main() {
 
   group('logout', () {
     test('emits unauthenticated status and clears storage', () async {
-      when(() => mockAuthorizedDataSource.logout())
-          .thenAnswer((_) async => {});
-      when(() => mockLocalDataSource.clearStorage())
-          .thenAnswer((_) async => {});
+      when(() => mockAuthorizedDataSource.logout()).thenAnswer((_) async => {});
+      when(
+        () => mockLocalDataSource.clearStorage(),
+      ).thenAnswer((_) async => {});
 
       final statusStream = repository.status;
 
-      repository.logout();
+      await repository.logout();
 
-      await expectLater(
-        statusStream,
-        emits(AuthStatus.unauthenticated),
-      );
+      await expectLater(statusStream, emits(AuthStatus.unauthenticated));
     });
   });
 
@@ -113,22 +105,18 @@ void main() {
         refreshToken: 'refresh_token',
       );
 
-      when(() => mockUnauthorizedDataSource.login(any()))
-          .thenAnswer((_) async => token);
-      when(() => mockLocalDataSource.saveToken(any()))
-          .thenAnswer((_) async => {});
+      when(
+        () => mockUnauthorizedDataSource.login(any()),
+      ).thenAnswer((_) async => token);
+      when(
+        () => mockLocalDataSource.saveToken(any()),
+      ).thenAnswer((_) async => {});
 
       final statusStream = repository.status;
 
-      repository.login(
-        phone: '+79991234567',
-        password: 'password123',
-      );
+      await repository.login(phone: '+79991234567', password: 'password123');
 
-      await expectLater(
-        statusStream,
-        emits(AuthStatus.authenticated),
-      );
+      await expectLater(statusStream, emits(AuthStatus.authenticated));
 
       verify(() => mockLocalDataSource.saveToken(token)).called(1);
     });
@@ -141,24 +129,23 @@ void main() {
         refreshToken: 'refresh_token',
       );
 
-      when(() => mockUnauthorizedDataSource.register(any()))
-          .thenAnswer((_) async => token);
-      when(() => mockLocalDataSource.saveToken(any()))
-          .thenAnswer((_) async => {});
+      when(
+        () => mockUnauthorizedDataSource.register(any()),
+      ).thenAnswer((_) async => token);
+      when(
+        () => mockLocalDataSource.saveToken(any()),
+      ).thenAnswer((_) async => {});
 
       final statusStream = repository.status;
 
-      repository.register(
+      await repository.register(
         name: 'Test User',
         phone: '+79991234567',
         password: 'password123',
         birthday: DateTime(1990, 1, 1),
       );
 
-      await expectLater(
-        statusStream,
-        emits(AuthStatus.authenticated),
-      );
+      await expectLater(statusStream, emits(AuthStatus.authenticated));
 
       verify(() => mockLocalDataSource.saveToken(token)).called(1);
     });
