@@ -18,10 +18,8 @@ class UikitLocalizer {
   static UikitLocalizer? _current;
 
   static UikitLocalizer get current {
-    assert(
-      _current != null,
-      'No instance of UikitLocalizer was loaded. Try to initialize the UikitLocalizer delegate before accessing UikitLocalizer.current.',
-    );
+    assert(_current != null,
+        'No instance of UikitLocalizer was loaded. Try to initialize the UikitLocalizer delegate before accessing UikitLocalizer.current.');
     return _current!;
   }
 
@@ -43,10 +41,8 @@ class UikitLocalizer {
 
   static UikitLocalizer of(BuildContext context) {
     final instance = UikitLocalizer.maybeOf(context);
-    assert(
-      instance != null,
-      'No instance of UikitLocalizer present in the widget tree. Did you add UikitLocalizer.delegate in localizationsDelegates?',
-    );
+    assert(instance != null,
+        'No instance of UikitLocalizer present in the widget tree. Did you add UikitLocalizer.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -56,67 +52,132 @@ class UikitLocalizer {
 
   /// `Back`
   String get back {
-    return Intl.message('Back', name: 'back', desc: '', args: []);
+    return Intl.message(
+      'Back',
+      name: 'back',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Next`
   String get next {
-    return Intl.message('Next', name: 'next', desc: '', args: []);
+    return Intl.message(
+      'Next',
+      name: 'next',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `June`
   String get monthJune {
-    return Intl.message('June', name: 'monthJune', desc: '', args: []);
+    return Intl.message(
+      'June',
+      name: 'monthJune',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `April`
   String get monthApril {
-    return Intl.message('April', name: 'monthApril', desc: '', args: []);
+    return Intl.message(
+      'April',
+      name: 'monthApril',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `August`
   String get monthAugust {
-    return Intl.message('August', name: 'monthAugust', desc: '', args: []);
+    return Intl.message(
+      'August',
+      name: 'monthAugust',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `December`
   String get monthDecember {
-    return Intl.message('December', name: 'monthDecember', desc: '', args: []);
+    return Intl.message(
+      'December',
+      name: 'monthDecember',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `February`
   String get monthFebruary {
-    return Intl.message('February', name: 'monthFebruary', desc: '', args: []);
+    return Intl.message(
+      'February',
+      name: 'monthFebruary',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `January`
   String get monthJanuary {
-    return Intl.message('January', name: 'monthJanuary', desc: '', args: []);
+    return Intl.message(
+      'January',
+      name: 'monthJanuary',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `July`
   String get monthJuly {
-    return Intl.message('July', name: 'monthJuly', desc: '', args: []);
+    return Intl.message(
+      'July',
+      name: 'monthJuly',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `March`
   String get monthMarch {
-    return Intl.message('March', name: 'monthMarch', desc: '', args: []);
+    return Intl.message(
+      'March',
+      name: 'monthMarch',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `May`
   String get monthMay {
-    return Intl.message('May', name: 'monthMay', desc: '', args: []);
+    return Intl.message(
+      'May',
+      name: 'monthMay',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `November`
   String get monthNovember {
-    return Intl.message('November', name: 'monthNovember', desc: '', args: []);
+    return Intl.message(
+      'November',
+      name: 'monthNovember',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `October`
   String get monthOctober {
-    return Intl.message('October', name: 'monthOctober', desc: '', args: []);
+    return Intl.message(
+      'October',
+      name: 'monthOctober',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `September`
@@ -131,32 +192,62 @@ class UikitLocalizer {
 
   /// `Select`
   String get toSelect {
-    return Intl.message('Select', name: 'toSelect', desc: '', args: []);
+    return Intl.message(
+      'Select',
+      name: 'toSelect',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Retry`
   String get retry {
-    return Intl.message('Retry', name: 'retry', desc: '', args: []);
+    return Intl.message(
+      'Retry',
+      name: 'retry',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Done`
   String get done {
-    return Intl.message('Done', name: 'done', desc: '', args: []);
+    return Intl.message(
+      'Done',
+      name: 'done',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Cancel`
   String get cancellation {
-    return Intl.message('Cancel', name: 'cancellation', desc: '', args: []);
+    return Intl.message(
+      'Cancel',
+      name: 'cancellation',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Gallery`
   String get gallery {
-    return Intl.message('Gallery', name: 'gallery', desc: '', args: []);
+    return Intl.message(
+      'Gallery',
+      name: 'gallery',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Camera`
   String get camera {
-    return Intl.message('Camera', name: 'camera', desc: '', args: []);
+    return Intl.message(
+      'Camera',
+      name: 'camera',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `No data available`
@@ -311,7 +402,12 @@ class UikitLocalizer {
 
   /// `UI Kit`
   String get uiKit {
-    return Intl.message('UI Kit', name: 'uiKit', desc: '', args: []);
+    return Intl.message(
+      'UI Kit',
+      name: 'uiKit',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `UI Kit Component Examples`
@@ -326,7 +422,12 @@ class UikitLocalizer {
 
   /// `Buttons`
   String get buttons {
-    return Intl.message('Buttons', name: 'buttons', desc: '', args: []);
+    return Intl.message(
+      'Buttons',
+      name: 'buttons',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Elevated and outlined buttons with loading states`
@@ -341,7 +442,12 @@ class UikitLocalizer {
 
   /// `Form Fields`
   String get formFields {
-    return Intl.message('Form Fields', name: 'formFields', desc: '', args: []);
+    return Intl.message(
+      'Form Fields',
+      name: 'formFields',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Text fields, dropdowns, date pickers`
@@ -376,7 +482,12 @@ class UikitLocalizer {
 
   /// `App Bars`
   String get appBars {
-    return Intl.message('App Bars', name: 'appBars', desc: '', args: []);
+    return Intl.message(
+      'App Bars',
+      name: 'appBars',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Title and base app bars`
@@ -391,7 +502,12 @@ class UikitLocalizer {
 
   /// `Dialogs`
   String get dialogs {
-    return Intl.message('Dialogs', name: 'dialogs', desc: '', args: []);
+    return Intl.message(
+      'Dialogs',
+      name: 'dialogs',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Bottom sheets, date pickers, confirmations`
@@ -496,12 +612,22 @@ class UikitLocalizer {
 
   /// `Text Field`
   String get textField {
-    return Intl.message('Text Field', name: 'textField', desc: '', args: []);
+    return Intl.message(
+      'Text Field',
+      name: 'textField',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Enter text`
   String get enterText {
-    return Intl.message('Enter text', name: 'enterText', desc: '', args: []);
+    return Intl.message(
+      'Enter text',
+      name: 'enterText',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Dropdown Field`
@@ -526,17 +652,32 @@ class UikitLocalizer {
 
   /// `Option 1`
   String get option1 {
-    return Intl.message('Option 1', name: 'option1', desc: '', args: []);
+    return Intl.message(
+      'Option 1',
+      name: 'option1',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Option 2`
   String get option2 {
-    return Intl.message('Option 2', name: 'option2', desc: '', args: []);
+    return Intl.message(
+      'Option 2',
+      name: 'option2',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Option 3`
   String get option3 {
-    return Intl.message('Option 3', name: 'option3', desc: '', args: []);
+    return Intl.message(
+      'Option 3',
+      name: 'option3',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Date Picker`
@@ -551,7 +692,12 @@ class UikitLocalizer {
 
   /// `Checkbox`
   String get checkboxField {
-    return Intl.message('Checkbox', name: 'checkboxField', desc: '', args: []);
+    return Intl.message(
+      'Checkbox',
+      name: 'checkboxField',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Agree to terms`
@@ -576,7 +722,12 @@ class UikitLocalizer {
 
   /// `Empty State`
   String get emptyState {
-    return Intl.message('Empty State', name: 'emptyState', desc: '', args: []);
+    return Intl.message(
+      'Empty State',
+      name: 'emptyState',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Failure State`
@@ -601,7 +752,12 @@ class UikitLocalizer {
 
   /// `Base App Bar`
   String get baseAppBar {
-    return Intl.message('Base App Bar', name: 'baseAppBar', desc: '', args: []);
+    return Intl.message(
+      'Base App Bar',
+      name: 'baseAppBar',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Transparent App Bar`
@@ -666,7 +822,12 @@ class UikitLocalizer {
 
   /// `Show Dialog`
   String get showDialog {
-    return Intl.message('Show Dialog', name: 'showDialog', desc: '', args: []);
+    return Intl.message(
+      'Show Dialog',
+      name: 'showDialog',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Confirm Action`
@@ -691,12 +852,22 @@ class UikitLocalizer {
 
   /// `Confirm`
   String get confirm {
-    return Intl.message('Confirm', name: 'confirm', desc: '', args: []);
+    return Intl.message(
+      'Confirm',
+      name: 'confirm',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Cancel`
   String get cancel {
-    return Intl.message('Cancel', name: 'cancel', desc: '', args: []);
+    return Intl.message(
+      'Cancel',
+      name: 'cancel',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Auto-formatted Text`
@@ -751,7 +922,12 @@ class UikitLocalizer {
 
   /// `About UI Kit`
   String get aboutUIKit {
-    return Intl.message('About UI Kit', name: 'aboutUIKit', desc: '', args: []);
+    return Intl.message(
+      'About UI Kit',
+      name: 'aboutUIKit',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `This UIKit package contains reusable widgets and components:\n\n• Custom app bars\n• Styled buttons with loading states\n• Form fields with validation\n• Status widgets for different scenarios\n• Notifications via snackbar\n• Theme system support\n\nUse these examples as a reference when building production features.`

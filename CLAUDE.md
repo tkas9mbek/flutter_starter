@@ -55,11 +55,11 @@ fvm flutter --no-color pub global run intl_utils:generate        # Localization
 
 ### Code Generation Triggers
 
-- **build_runner**: After modifying router configs, JSON models, Freezed data models (NOT BLoC events/states)
+- **build_runner**: After modifying router configs, JSON models, Freezed models (including BLoC events/states)
 - **generate_exception_mapper.dart**: After adding/modifying AppException classes
 - **intl_utils**: After modifying ARB files
 
-**Note**: BLoC events and states use native Dart 3 sealed classes (no code generation). Freezed is used only for data models that need `fromJson`/`toJson` and `copyWith`.
+**Note**: BLoC events and states use Freezed with `@freezed` annotation. Run `build_runner` after modifying any BLoC event/state classes.
 
 ---
 
@@ -91,22 +91,22 @@ Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, 
 // BLoC stores domain exception
 try {
   final data = await _repository.getData();
-  return emit(SuccessMyState(data));
+
+  return emit(MyState.success(data));
 } on AppException catch (e) {
-  return emit(FailureMyState(e));
+  return emit(MyState.failure(e));
 }
 
-// UI handles failure state with pattern matching
+// UI handles failure state with Freezed pattern matching
 BlocBuilder<MyBloc, MyState>(
-  builder: (context, state) {
-    if (state case FailureMyState(:final exception)) {
-      return FailureWidgetLarge(
-        exception: exception,
-        onRetry: _retry,
-      );
-    }
-    // ... other states
-  },
+  builder: (context, state) => state.maybeMap(
+    success: (successState) => SuccessView(data: successState.data),
+    failure: (failureState) => FailureWidgetLarge(
+      exception: failureState.exception,
+      onRetry: _retry,
+    ),
+    orElse: () => const CustomCircularProgressIndicator(),
+  ),
 )
 ```
 
@@ -227,28 +227,28 @@ blocTest<UserBloc, UserState>(
 1. **Return emit pattern**: Always `return emit(state)` for final emit
 2. **Whitespace separation**: Add blank line before every `emit()` call
 3. **Variable naming**: Use descriptive names (`successState`) not `s`
-4. **Helper methods**: Add `isLoading` getters instead of `maybeMap` checks
-5. **Native Dart 3 sealed classes**: Use native sealed classes for BLoC events/states (NOT Freezed)
+4. **Helper methods**: Add `isLoading` getters using `this is _LoadingMyState`
+5. **Freezed for BLoC**: Use `@freezed` annotation for all BLoC events and states
 
 **Correct Example:**
 ```dart
 Future<void> _onRequested(
-  RequestedMyEvent event,
+  _RequestedMyEvent event,
   Emitter<MyState> emit,
 ) async {
-  emit(const LoadingMyState());
+  emit(const MyState.loading());
 
   try {
     final data = await _repository.getData();
 
-    return emit(SuccessMyState(data));
+    return emit(MyState.success(data));
   } on AppException catch (e) {
-    return emit(FailureMyState(e));
+    return emit(MyState.failure(e));
   }
 }
 
-// State helper
-bool get isLoading => this is LoadingMyState;
+// State helper (inside Freezed class with const MyState._();)
+bool get isLoading => this is _LoadingMyState;
 ```
 
 ### Comments and Documentation
@@ -302,21 +302,25 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 
 **Usage:**
 ```dart
-// ✓ Correct - Use uikit widgets with Dart 3 pattern matching
+// ✓ Correct - Use uikit widgets with Freezed pattern matching
 BlocBuilder<MyBloc, MyState>(
-  builder: (context, state) => switch (state) {
-    LoadingMyState() => const CustomCircularProgressIndicator(),
-    EmptyMyState() => EmptyInformationBody(text: Localizer.of(context).noData),
-    FailureMyState(:final exception) => FailureWidgetLarge(
-      exception: exception,
+  builder: (context, state) => state.maybeMap(
+    success: (successState) {
+      if (successState.data.isEmpty) {
+        return EmptyInformationBody(text: Localizer.of(context).noData);
+      }
+      return SuccessView(data: successState.data);
+    },
+    failure: (failureState) => FailureWidgetLarge(
+      exception: failureState.exception,
       onRetry: _retry,
     ),
-    SuccessMyState(:final data) => SuccessView(data: data),
-  },
+    orElse: () => const CustomCircularProgressIndicator(),
+  ),
 )
 
 // ✗ Wrong - Manual implementation
-LoadingMyState() => const Center(child: CircularProgressIndicator()),
+orElse: () => const Center(child: CircularProgressIndicator()),
 ```
 
 **Theme Usage:**
@@ -351,8 +355,8 @@ Text('Hello', style: TextStyle(fontSize: 14))
 12. **BLoC Independence**: BLoCs must NOT inject other BLoCs - coordinate via UI layer
 13. **Arrow vs Block**: Always use `=>`, except `build()` and nested callbacks `() => setState(() {})`
 14. **Always Spread**: Use `if (cond) ...[Widget()]` in collections, even for single widget
-15. **Native Dart 3 for BLoC**: Use native sealed classes for BLoC events/states - NOT Freezed
-16. **Dart 3 Pattern Matching**: Use `switch` expressions and `if (state case Type)` instead of Freezed's `when`/`map`
+15. **Freezed for BLoC**: Use `@freezed` for all BLoC events and states with factory constructors
+16. **Freezed Pattern Matching**: Use `.when()`, `.maybeMap()`, or `.mapOrNull()` for state handling in UI
 
 **File Creation:**
 - **NEVER** create files unless absolutely necessary
@@ -363,69 +367,56 @@ Text('Hello', style: TextStyle(fontSize: 14))
 
 ## BLoC State Patterns
 
-**AI Instruction**: Follow these patterns for better state management. Use native Dart 3 sealed classes for BLoC events and states (NOT Freezed).
+**AI Instruction**: Follow these patterns for better state management. Use Freezed for all BLoC events and states.
 
-### Why Native Dart 3 Sealed Classes for BLoC?
+### Why Freezed for BLoC?
 
-- **Dart 3 pattern matching**: Native `switch` expressions and `if (state case Type)` replace Freezed's `when`/`map` methods
-- **Simpler code**: No code generation required for BLoC events/states
-- **Better IDE support**: Direct class names without private prefixes
-- **Freezed for data models**: Continue using Freezed for domain models that need `fromJson`/`toJson` and `copyWith`
+- **Automatic equality**: Freezed generates `==` and `hashCode` for proper state comparison
+- **Pattern matching**: Use `.when()`, `.maybeMap()`, `.mapOrNull()` for exhaustive/partial matching
+- **copyWith**: Auto-generated for states with multiple fields
+- **Consistent codebase**: All BLoCs follow the same Freezed pattern
 
 ### Standard State Pattern
 
 For simple states without persistent data:
 
 ```dart
-// Events - sealed class hierarchy
-sealed class LoginEvent {
-  const LoginEvent();
+// Events - Freezed with factory constructors
+@freezed
+class LoginEvent with _$LoginEvent {
+  const factory LoginEvent.submitted(LoginForm form) = _SubmittedLoginEvent;
 }
 
-final class SubmittedLoginEvent extends LoginEvent {
-  const SubmittedLoginEvent(this.form);
-  final LoginForm form;
+// States - Freezed with factory constructors
+@freezed
+class LoginState with _$LoginState {
+  const LoginState._();  // Required for custom getters
+
+  const factory LoginState.initial() = _InitialLoginState;
+  const factory LoginState.loading() = _LoadingLoginState;
+  const factory LoginState.success() = _SuccessLoginState;
+  const factory LoginState.failure(AppException exception) = _FailureLoginState;
+
+  bool get isLoading => this is _LoadingLoginState;
 }
 
-// States - sealed class hierarchy
-sealed class LoginState {
-  const LoginState();
-  bool get isLoading => this is LoadingLoginState;
-}
-
-final class InitialLoginState extends LoginState {
-  const InitialLoginState();
-}
-
-final class LoadingLoginState extends LoginState {
-  const LoadingLoginState();
-}
-
-final class SuccessLoginState extends LoginState {
-  const SuccessLoginState();
-}
-
-final class FailureLoginState extends LoginState {
-  const FailureLoginState(this.exception);
-  final AppException exception;
-}
-
-// Usage in UI with Dart 3 pattern matching
+// Usage in UI with Freezed pattern matching
 BlocListener<LoginBloc, LoginState>(
-  listener: (context, state) {
-    if (state case FailureLoginState(:final exception)) {
-      NotificationSnackBar.showExceptionMessage(context, exception: exception);
-    }
-  },
+  listener: (context, state) => state.mapOrNull(
+    failure: (state) => NotificationSnackBar.showExceptionMessage(
+      context,
+      exception: state.exception,
+    ),
+  ),
   // ...
 )
 
-// In BlocBuilder with switch expression
-builder: (context, state) => switch (state) {
-  SuccessLoginState() => SuccessView(),
-  FailureLoginState(:final exception) => FailureView(exception),
-  _ => LoadingView(),
-}
+// In BlocBuilder with maybeMap
+builder: (context, state) => state.maybeMap(
+  success: (_) => const SuccessView(),
+  failure: (failureState) => FailureView(failureState.exception),
+  orElse: () => const LoadingView(),
+)
 ```
 
 ### Nested Status Pattern
@@ -433,102 +424,72 @@ builder: (context, state) => switch (state) {
 For states with persistent data across status changes:
 
 ```dart
-// Status (nested state for calendar content)
-sealed class CalendarStatus {
-  const CalendarStatus();
-  bool get isInitial => this is InitialCalendarStatus;
-  bool get isLoading => this is LoadingCalendarStatus;
-  bool get isSuccess => this is SuccessCalendarStatus;
-  bool get isFailure => this is FailureCalendarStatus;
+// Status (nested Freezed for calendar content)
+@freezed
+class CalendarStatus with _$CalendarStatus {
+  const factory CalendarStatus.initial() = _InitialCalendarStatus;
+  const factory CalendarStatus.loading() = _LoadingCalendarStatus;
+  const factory CalendarStatus.success({required List<Task> tasks}) = _SuccessCalendarStatus;
+  const factory CalendarStatus.failure({required AppException exception}) = _FailureCalendarStatus;
 }
 
-final class InitialCalendarStatus extends CalendarStatus {
-  const InitialCalendarStatus();
-}
+// State with Freezed (auto copyWith)
+@freezed
+class CalendarState with _$CalendarState {
+  const CalendarState._();
 
-final class LoadingCalendarStatus extends CalendarStatus {
-  const LoadingCalendarStatus();
-}
-
-final class SuccessCalendarStatus extends CalendarStatus {
-  const SuccessCalendarStatus({required this.tasks});
-  final List<Task> tasks;
-}
-
-final class FailureCalendarStatus extends CalendarStatus {
-  const FailureCalendarStatus({required this.exception});
-  final AppException exception;
-}
-
-// State with manual copyWith (only when needed)
-final class CalendarState {
-  const CalendarState({
-    required this.selectedDate,
-    required this.status,
-  });
+  const factory CalendarState({
+    required DateTime selectedDate,
+    required CalendarStatus status,
+  }) = _CalendarState;
 
   factory CalendarState.initial() => CalendarState(
     selectedDate: DateTime.now(),
-    status: const InitialCalendarStatus(),
+    status: const CalendarStatus.initial(),
   );
 
-  final DateTime selectedDate;
-  final CalendarStatus status;
-
-  bool get isLoading => status is LoadingCalendarStatus;
-
-  CalendarState copyWith({
-    DateTime? selectedDate,
-    CalendarStatus? status,
-  }) => CalendarState(
-    selectedDate: selectedDate ?? this.selectedDate,
-    status: status ?? this.status,
-  );
+  bool get isLoading => status is _LoadingCalendarStatus;
 }
 
-// Usage in UI with switch expression
+// Usage in UI with Freezed .when()
 Widget _buildStatusContent(CalendarStatus status, Localizer localizer) =>
-  switch (status) {
-    InitialCalendarStatus() => EmptyInformationBody(text: localizer.selectDate),
-    LoadingCalendarStatus() => const CustomCircularProgressIndicator(),
-    SuccessCalendarStatus(:final tasks) => tasks.isEmpty
-        ? EmptyInformationBody(text: localizer.noTasksForDate)
-        : TasksTimelineList(tasks: tasks),
-    FailureCalendarStatus(:final exception) => FailureWidgetLarge(
-        exception: exception,
-        onRetry: _retry,
-      ),
-  };
+  status.when(
+    initial: () => EmptyInformationBody(text: localizer.selectDate),
+    loading: () => const CustomCircularProgressIndicator(),
+    success: (tasks) {
+      if (tasks.isEmpty) {
+        return EmptyInformationBody(text: localizer.noTasksForDate);
+      }
+      return TasksTimelineList(tasks: tasks);
+    },
+    failure: (exception) => FailureWidgetLarge(
+      exception: exception,
+      onRetry: _retry,
+    ),
+  );
 
-// Access persistent data
+// Access persistent data (copyWith auto-generated by Freezed)
 CalendarPicker(selectedDate: state.selectedDate)
 ```
 
 ### Refreshed Event Pattern
 
-Add `RefreshedXxxEvent` to avoid extracting state data for reload:
+Add `.refreshed()` event to avoid extracting state data for reload:
 
 ```dart
-// Events
-sealed class CalendarEvent {
-  const CalendarEvent();
-}
-
-final class DateSelectedCalendarEvent extends CalendarEvent {
-  const DateSelectedCalendarEvent(this.date);
-  final DateTime date;
-}
-
-final class RefreshedCalendarEvent extends CalendarEvent {
-  const RefreshedCalendarEvent();  // ✓ Add this
+// Events with Freezed
+@freezed
+class CalendarEvent with _$CalendarEvent {
+  const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
+  const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;  // ✓ Add this
 }
 
 // ✓ Clean usage
-context.read<CalendarBloc>().add(const RefreshedCalendarEvent());
+context.read<CalendarBloc>().add(const CalendarEvent.refreshed());
 
 // ✗ Wrong - extracting state
 final date = state.selectedDate;
-context.read<CalendarBloc>().add(DateSelectedCalendarEvent(date));
+context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
 ```
 
 ---

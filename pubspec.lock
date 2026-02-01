@@ -1290,13 +1290,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.12.1"
-  starter_lints:
-    dependency: "direct dev"
-    description:
-      path: "packages/starter_lints"
-      relative: true
-    source: path
-    version: "2.0.0"
   stream_channel:
     dependency: transitive
     description:

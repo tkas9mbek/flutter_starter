@@ -18,10 +18,8 @@ class ToolkitLocalizer {
   static ToolkitLocalizer? _current;
 
   static ToolkitLocalizer get current {
-    assert(
-      _current != null,
-      'No instance of ToolkitLocalizer was loaded. Try to initialize the ToolkitLocalizer delegate before accessing ToolkitLocalizer.current.',
-    );
+    assert(_current != null,
+        'No instance of ToolkitLocalizer was loaded. Try to initialize the ToolkitLocalizer delegate before accessing ToolkitLocalizer.current.');
     return _current!;
   }
 
@@ -43,10 +41,8 @@ class ToolkitLocalizer {
 
   static ToolkitLocalizer of(BuildContext context) {
     final instance = ToolkitLocalizer.maybeOf(context);
-    assert(
-      instance != null,
-      'No instance of ToolkitLocalizer present in the widget tree. Did you add ToolkitLocalizer.delegate in localizationsDelegates?',
-    );
+    assert(instance != null,
+        'No instance of ToolkitLocalizer present in the widget tree. Did you add ToolkitLocalizer.delegate in localizationsDelegates?');
     return instance!;
   }
 
@@ -356,17 +352,32 @@ class ToolkitLocalizer {
 
   /// `Today`
   String get today {
-    return Intl.message('Today', name: 'today', desc: '', args: []);
+    return Intl.message(
+      'Today',
+      name: 'today',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Yesterday`
   String get yesterday {
-    return Intl.message('Yesterday', name: 'yesterday', desc: '', args: []);
+    return Intl.message(
+      'Yesterday',
+      name: 'yesterday',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `Tomorrow`
   String get tomorrow {
-    return Intl.message('Tomorrow', name: 'tomorrow', desc: '', args: []);
+    return Intl.message(
+      'Tomorrow',
+      name: 'tomorrow',
+      desc: '',
+      args: [],
+    );
   }
 
   /// `{hours} h {minutes} min`
