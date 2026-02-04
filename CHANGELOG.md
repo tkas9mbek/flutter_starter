@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [2.0.1] - 2025-02-01
+## [2.0.1] - 2026-02-01
 
 ### Fixed
 - **CLAUDE.md** - Corrected BLoC documentation to reflect Freezed patterns (not native Dart 3)
@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [2.0.0] - 2025-02-01
+## [2.0.0] - 2026-02-01
 
 ### Added
 - **Custom Lint Rules** (`starter_lints` package): `avoid_widget_functions`, `prefer_arrow_except_build`, `always_spread_in_collections`, `bloc_no_bloc_dependency`, `blank_line_before_return`, `prefer_named_parameters`, `sort_constructor_params`
@@ -25,7 +25,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [1.0.0] - 2025-01-24
+## [1.0.0] - 2026-01-24
 
 ### Added
 - **Architecture**: Three-layer Clean Architecture with Repository Executor pattern (error handling, retry, caching decorators)
