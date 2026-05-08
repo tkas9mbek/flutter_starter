@@ -16,21 +16,38 @@ class AuthRefreshInterceptor extends QueuedInterceptor {
     DioException err,
     ErrorInterceptorHandler handler,
   ) async {
-    if (err.response?.statusCode == 401) {
-      try {
-        await tryRefreshToken?.call();
-        final response = await dio.fetch(err.requestOptions);
-
-        return handler.resolve(response);
-      } on DioException catch (e) {
-        if (e.response?.statusCode == 401) {
-          return logout?.call();
-        }
-
-        return handler.reject(e);
-      }
+    if (err.response?.statusCode != 401) {
+      return handler.next(err);
     }
 
-    return handler.next(err);
+    if (tryRefreshToken == null) {
+      await logout?.call();
+
+      return handler.reject(err);
+    }
+
+    try {
+      await tryRefreshToken!.call();
+      final refreshedResponse = await dio.fetch(err.requestOptions);
+
+      return handler.resolve(refreshedResponse);
+    } on DioException catch (refreshError) {
+      if (refreshError.response?.statusCode == 401) {
+        await logout?.call();
+      }
+
+      return handler.reject(refreshError);
+    } catch (error, stackTrace) {
+      await logout?.call();
+
+      return handler.reject(
+        DioException(
+          requestOptions: err.requestOptions,
+          type: DioExceptionType.unknown,
+          error: error,
+          stackTrace: stackTrace,
+        ),
+      );
+    }
   }
 }

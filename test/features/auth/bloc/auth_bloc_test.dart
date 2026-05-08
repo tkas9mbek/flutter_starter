@@ -32,6 +32,7 @@ void main() {
     authRepository = AuthRepository(
       const RawRepositoryExecutor().withErrorHandling().withRetry(
         maxRetries: 3,
+        retryDelay: const Duration(milliseconds: 10),
       ),
       authorizedDataSource,
       unauthorizedDataSource,
@@ -107,8 +108,12 @@ void main() {
     blocTest<AuthBloc, AuthState>(
       'calls logout on AuthRepository.',
       build: () {
+        when(
+          () => localDataSource.getToken(),
+        ).thenAnswer((_) async => AuthMockModels.authToken);
         when(() => localDataSource.clearStorage()).thenAnswer((_) async {});
         when(() => authorizedDataSource.logout()).thenAnswer((_) async {});
+
         return authBloc;
       },
       act: (bloc) => bloc.add(event),

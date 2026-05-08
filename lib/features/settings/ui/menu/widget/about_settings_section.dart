@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:starter/core/consts/core_consts.dart';
 import 'package:starter/features/settings/ui/menu/widget/settings_card.dart';
 import 'package:starter/features/settings/ui/menu/widget/settings_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
@@ -18,7 +19,7 @@ class AboutSettingsSection extends StatelessWidget {
         SettingsTile(
           icon: Icons.info_outline,
           title: localizer.version,
-          subtitle: '1.0.0',
+          subtitle: CoreConsts.appVersion,
         ),
         const Divider(height: 1),
         SettingsTile(

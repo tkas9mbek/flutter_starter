@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_decorator.dart';
 
@@ -26,10 +25,17 @@ class ErrorHandlingExecutor extends RepositoryExecutorDecorator {
     } on AppException {
       rethrow;
     } catch (e) {
-      // Unknown error - rethrow in debug mode for easier debugging
-      if (kDebugMode) {
+      var isDebugMode = false;
+      assert(() {
+        isDebugMode = true;
+
+        return true;
+      }());
+
+      if (isDebugMode) {
         rethrow;
       }
+
       // In production, wrap as development error
       throw const DevelopmentException();
     }

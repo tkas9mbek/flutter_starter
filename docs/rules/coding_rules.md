@@ -126,10 +126,6 @@ Forbid `Impl`, `Module`, `Manager`, `Helper` (in non-helper files), `Data`, `Inf
 
 Inside `lib/` and `packages/*/lib/`, use `package:starter/...` — never relative paths.
 
-### Screen = two files
-
-`{feature}_route.dart` (auto_route definition) + `{feature}_screen.dart` (widget). Never combine.
-
 ### Flat widget folders
 
 Keep `ui/widget/` flat. Don't nest by section (`ui/widget/header/`). If folder browsing becomes painful, split the **feature** by flow (`list/`, `details/`) — each with its own flat `widget/`.
@@ -473,12 +469,12 @@ void configure({bool loud = false}) { ... }
 
 If `null` carries semantic meaning, model the third state as an enum.
 
-### Required-named for 3+ parameters
+### Required-named for 5+ parameters
 
-For functions/constructors with 3 or more parameters, prefer named parameters with `required` so call sites self-document.
+For functions/constructors with 5 or more parameters, prefer named parameters with `required` so call sites self-document.
 
 ```dart
-configure(host: 'localhost', port: 8080, secure: true);
+configure(host: 'localhost', port: 8080, secure: true, retries: 3, timeout: 5);
 ```
 
 ---
@@ -527,7 +523,7 @@ throw const ServerException(statusCode: 404, message: 'Task not found');
 - Build mocks via JSON fixture + `fromJson` — never construct domain models inline.
 - Cover success, empty, and failure for every BLoC event.
 - `registerFallbackValue` for every custom type used in `any(named:)`.
-- `blocTest` under retry decorators uses `wait: const Duration(seconds: 8)`.
+- `blocTest` under retry decorators must match `wait` to retry settings (for example `8s` for `2s × 3 retries`, or `300ms` for `10ms × 3`).
 
 Full guide: [../guides/testing.md](../guides/testing.md).
 

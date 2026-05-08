@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:starter/core/consts/storage_keys.dart';
@@ -8,27 +10,52 @@ import 'package:starter/features/application/environment/model/app_environment.d
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/dio_api_client.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 class DataModule extends AppModule {
   @override
   bool get requiresReconfiguration => true;
 
   @override
-  void registerDependencies() {
+  Future<void> registerDependencies() async {
+    await unregisterIfRegistered<ApiClient>();
+    await unregisterIfRegistered<ApiClient>(instanceName: 'unauthorized');
+    await unregisterIfRegistered<Dio>(
+      disposingFunction: (dio) => dio.close(force: true),
+    );
+    await unregisterIfRegistered<Dio>(
+      instanceName: 'unauthorized',
+      disposingFunction: (dio) => dio.close(force: true),
+    );
+
+    final secureStorage = getIt<FlutterSecureStorage>();
     final authInterceptor = InterceptorsWrapper(
       onRequest: (options, handler) async {
-        final token = await const FlutterSecureStorage().read(
+        final token = await secureStorage.read(
           key: SecureStorageKeys.jwtTokenKey,
         );
 
         if (token == null) {
-          return getIt.get<AuthRepository>().logout();
+          if (getIt.isRegistered<AuthRepository>()) {
+            unawaited(getIt<AuthRepository>().logout());
+          }
+
+          return handler.reject(
+            DioException(
+              requestOptions: options,
+              response: Response<dynamic>(
+                requestOptions: options,
+                statusCode: 401,
+              ),
+              type: DioExceptionType.badResponse,
+              error: const UnauthorizedException(),
+            ),
+          );
         }
 
-        final headers = <String, dynamic>{'Authorization': 'Bearer $token'};
+        options.headers['Authorization'] = 'Bearer $token';
 
-        options.headers.addAll(headers);
-        handler.next(options);
+        return handler.next(options);
       },
     );
 

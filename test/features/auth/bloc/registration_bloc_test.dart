@@ -42,6 +42,7 @@ void main() {
     authRepository = AuthRepository(
       const RawRepositoryExecutor().withErrorHandling().withRetry(
         maxRetries: 3,
+        retryDelay: const Duration(milliseconds: 10),
       ),
       authorizedDataSource,
       unauthorizedDataSource,
@@ -108,7 +109,7 @@ void main() {
         return registrationBloc;
       },
       act: (bloc) => bloc.add(event),
-      wait: const Duration(seconds: 15),
+      wait: const Duration(milliseconds: 300),
       expect: () => [
         const RegistrationState.loading(),
         const RegistrationState.failure(exception),

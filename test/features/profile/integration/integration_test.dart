@@ -37,7 +37,7 @@ void main() {
     profileRepository = ProfileRepository(
       const RawRepositoryExecutor().withErrorHandling().withRetry(
         maxRetries: 3,
-        retryDelay: const Duration(seconds: 2),
+        retryDelay: const Duration(milliseconds: 10),
       ),
       profileDataSource,
     );
@@ -92,7 +92,7 @@ void main() {
         return userBloc;
       },
       act: (bloc) => bloc.add(const UserEvent.requested()),
-      wait: const Duration(seconds: 8),
+      wait: const Duration(milliseconds: 300),
       expect: () => [
         const UserState.loading(),
         const UserState.failure(NoInternetException()),
@@ -122,7 +122,7 @@ void main() {
         return userBloc;
       },
       act: (bloc) => bloc.add(const UserEvent.requested()),
-      wait: const Duration(seconds: 8),
+      wait: const Duration(milliseconds: 300),
       expect: () => [
         const UserState.loading(),
         predicate<UserState>(

@@ -36,6 +36,12 @@ class AuthRepository {
   Future<void> logout() async {
     _controller.add(AuthStatus.unauthenticated);
 
+    final token = await _localDataSource.getToken();
+
+    if (token == null) {
+      return _localDataSource.clearStorage();
+    }
+
     await _repositoryExecutor.execute(() async {
       await _authorizedDataSource.logout();
       await _localDataSource.clearStorage();
@@ -74,4 +80,6 @@ class AuthRepository {
 
     _controller.add(AuthStatus.authenticated);
   }
+
+  Future<void> dispose() => _controller.close();
 }

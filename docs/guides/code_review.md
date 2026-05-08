@@ -83,6 +83,7 @@
 | UI-6 | Mild Violation 🟡 | Block body where arrow body fits | Use `=>` (except `build()` and nested callbacks) |
 | UI-7 | Mild Violation 🟡 | `BuildContext` used after `await` without `mounted` check | `if (!mounted) return;` after the await |
 | UI-8 | Mild Violation 🟡 | `FormBuilder*` used directly | Use `starter_uikit` form widgets (`AppTextField`, `AppDropdownField`, …) |
+| UI-9 | Mild Violation 🟡 | `build()` widget tree is too deeply nested | Extract deep subtrees into their own widget classes |
 
 ---
 
@@ -117,7 +118,7 @@
 |---|---|---|---|
 | TEST-1 | Severe Violation 🔴 | Domain models constructed inline in tests | Build via JSON fixture + `fromJson` in `test/features/{feature}/assets/` |
 | TEST-2 | Severe Violation 🔴 | `MissingStubError` because `any(named: ...)` lacks fallback | `registerFallbackValue` for every custom type used inside `any(named:)` |
-| TEST-3 | Mild Violation 🟡 | `blocTest` under retry decorator without `wait:` | Add `wait: const Duration(seconds: 8)` (3 retries × 2s) |
+| TEST-3 | Mild Violation 🟡 | `blocTest` under retry decorator without retry-aware `wait:` | Set `wait` to match retry settings (for example `8s` for `2s × 3`, `300ms` for `10ms × 3`) |
 | TEST-4 | Mild Violation 🟡 | BLoC test missing failure-path coverage | Cover success, empty, and failure for every event |
 | TEST-5 | Mild Violation 🟡 | Integration test mocking the Repository | Mock only `ApiClient`. Everything else stays real. |
 

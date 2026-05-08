@@ -14,18 +14,26 @@ class AppErrorInterceptor extends Interceptor {
   void onError(DioException err, ErrorInterceptorHandler handler) {
     customDioErrorHandler?.call(err);
 
-    if (err.error is SocketException) {
-      throw const NoInternetException();
+    if (err.error is AppException) {
+      return handler.next(err);
     }
 
-    final responseData = err.response?.data;
-    final message = responseData is Map<String, dynamic>
-        ? responseData['message'] as String?
-        : null;
+    final appException = err.error is SocketException
+        ? const NoInternetException()
+        : AppException.fromDioResponse(
+            statusCode: err.response?.statusCode,
+            response: err.response,
+          );
 
-    throw ServerException(
-      statusCode: err.response?.statusCode,
-      message: message,
+    return handler.next(
+      DioException(
+        requestOptions: err.requestOptions,
+        response: err.response,
+        type: err.type,
+        error: appException,
+        stackTrace: err.stackTrace,
+        message: err.message,
+      ),
     );
   }
 }

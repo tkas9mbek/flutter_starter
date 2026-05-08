@@ -42,6 +42,7 @@ void main() {
     authRepository = AuthRepository(
       const RawRepositoryExecutor().withErrorHandling().withRetry(
         maxRetries: 3,
+        retryDelay: const Duration(milliseconds: 10),
       ),
       authorizedDataSource,
       unauthorizedDataSource,

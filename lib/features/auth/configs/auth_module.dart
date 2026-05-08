@@ -20,11 +20,18 @@ class AuthModule extends AppModule {
   bool get requiresReconfiguration => true;
 
   @override
-  void registerDependencies() {
-    final env = getIt<AppEnvironment>();
+  Future<void> registerDependencies() async {
+    await unregisterIfRegistered<AuthRepository>(
+      disposingFunction: (repository) => repository.dispose(),
+    );
+    await unregisterIfRegistered<AuthLocalDataSource>();
+    await unregisterIfRegistered<AuthUnauthorizedDataSource>();
+    await unregisterIfRegistered<AuthAuthorizedDataSource>();
 
     getIt
       ..registerLazySingleton<AuthAuthorizedDataSource>(() {
+        final env = getIt<AppEnvironment>();
+
         if (env.useMock) {
           return const MockAuthAuthorizedDataSource();
         }
@@ -32,6 +39,8 @@ class AuthModule extends AppModule {
         return RemoteAuthAuthorizedDataSource(getIt<ApiClient>());
       })
       ..registerLazySingleton<AuthUnauthorizedDataSource>(() {
+        final env = getIt<AppEnvironment>();
+
         if (env.useMock) {
           return const MockAuthUnauthorizedDataSource();
         }

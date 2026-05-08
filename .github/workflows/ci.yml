@@ -1,0 +1,61 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  flutter-quality:
+    name: Flutter Quality
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Custom lint (warnings/info non-fatal)
+        run: dart run custom_lint --no-fatal-infos --no-fatal-warnings
+
+      - name: Analyze
+        run: flutter analyze
+
+  flutter-tests:
+    name: Flutter Tests (${{ matrix.shard.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard:
+          - name: application-settings
+            paths: test/features/application test/features/settings
+          - name: auth-profile
+            paths: test/features/auth test/features/profile
+          - name: task
+            paths: test/features/task
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Test shard
+        run: flutter test --reporter compact --concurrency 4 ${{ matrix.shard.paths }}

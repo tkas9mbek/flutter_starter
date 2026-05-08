@@ -1,6 +1,6 @@
 # Flutter Starter Template
 
-> **Version 2.0.0** - [View Changelog](CHANGELOG.md)
+> **Version 2.0.1** - [View Changelog](CHANGELOG.md)
 
 A production-ready Flutter template for building small to medium-sized applications, refined through years of real-world client projects.
 
@@ -14,7 +14,7 @@ Working in outsource companies and developing apps for various clients, I needed
 
 In client projects, it's common to have **multiple apps sharing the same backend or design system** (e.g., customer app + admin app). By separating the UIKit and Toolkit into independent packages:
 
-- **Toolkit** (pure Dart): Share business logic, API clients, and utilities across all apps
+- **Toolkit** (shared utilities package): Share business logic, API clients, and utilities across apps
 - **UIKit** (Flutter widgets): Reuse UI components while allowing customization per app
 
 This modular approach has proven invaluable when building app families for clients, dramatically reducing development time and improving code consistency.
@@ -40,7 +40,7 @@ This template provides a complete, production-ready foundation with:
 - **Task management** with calendar (example feature)
 - **Theme system** (light/dark mode)
 - **Localization** (English & Russian)
-- **Environment configuration** (dev, staging, production)
+- **Environment configuration** (mock, dev, prod)
 
 ### Code Quality
 - **145 tests passing** (100% pass rate)
@@ -56,7 +56,37 @@ This template provides a complete, production-ready foundation with:
 - **UIKit example app** showcasing all components
 - **Theme-aware widgets** with consistent styling
 - **Complete localization setup**
-- **AI-friendly documentation** (optimized for Claude Code)
+- **AI-friendly documentation** (optimized for Codex and Claude Code)
+
+---
+
+## Quick Start
+
+```bash
+fvm flutter pub get
+fvm flutter analyze
+fvm flutter test
+fvm flutter run
+```
+
+### First 10-Minute Bootstrap Checklist
+
+1. Update API base URLs in `lib/core/consts/core_consts.dart`
+2. Update store URLs in `lib/core/consts/core_consts.dart`
+3. Confirm environment defaults (`mock`, `dev`, `prod`) in `lib/features/application/environment/model/app_environment.dart`
+4. Set your app version in `pubspec.yaml` and keep `CoreConsts.appVersion` in sync
+5. Run code generation if you changed models/routes/localization:
+   - `fvm flutter pub run build_runner build --delete-conflicting-outputs`
+   - `fvm flutter --no-color pub global run intl_utils:generate`
+
+## CI
+
+GitHub Actions is configured in `.github/workflows/ci.yml` and runs:
+
+1. `flutter pub get`
+2. `dart run custom_lint --no-fatal-infos --no-fatal-warnings`
+3. `flutter analyze`
+4. `flutter test` split across feature shards in parallel
 
 ---
 
@@ -82,7 +112,7 @@ flutter_starter/
 │   └── main.dart          # App entry point
 │
 ├── packages/
-│   ├── starter_toolkit/   # Pure Dart utilities
+│   ├── starter_toolkit/   # Shared utilities and data infrastructure
 │   │   ├── data/          # API client, exceptions, executors
 │   │   ├── utils/         # Helpers, validators, formatters
 │   │   └── README.md
@@ -167,7 +197,7 @@ return emit(State.failure(e));
 
 // In UI - map to localized model
 final uiModel = ExceptionUiMapper(context).map(exception);
-FailureWidgetLarge(uiModel: uiModel, onRetry: _retry);
+FailureWidgetLarge(exception: exception, onRetry: _retry);
 ```
 
 ### 3. Repository Executors
@@ -272,7 +302,7 @@ fvm flutter pub run flutter_native_splash:create
 
 ## Available Packages
 
-### Starter Toolkit (Pure Dart)
+### Starter Toolkit (Shared Utilities)
 
 **What it provides:**
 - API client with type-safe methods
@@ -322,7 +352,8 @@ fvm flutter pub run flutter_native_splash:create
 
 The template includes extensive documentation:
 
-- **[CLAUDE.md](CLAUDE.md)** - Comprehensive guide for AI assistants (14.5KB, optimized for Claude Code)
+- **[AGENTS.md](AGENTS.md)** - Comprehensive guide for Codex and agentic coding assistants
+- **[CLAUDE.md](CLAUDE.md)** - Companion guide for Claude Code workflows
 - **[AI Context](docs/ai-context/)** - Concise AI-friendly cheat-sheets per topic
 - **[Architecture Guide](docs/guides/architecture.md)** - Three-layer architecture, dependency inversion
 - **[BLoC & Freezed Guide](docs/guides/freezed_bloc.md)** - State management patterns
@@ -331,7 +362,7 @@ The template includes extensive documentation:
 - **[Exception Handling](docs/guides/exception_handling.md)** - Two-layer exception system, code generation
 - **[Structure Guide](docs/guides/structure.md)** - File organization, feature layout
 - **[Testing Guide](docs/guides/testing.md)** - Testing strategies, patterns, best practices
-- **[Coding Rules](docs/rules/coding-rules.md)** - Consolidated rule set + lint mapping
+- **[Coding Rules](docs/rules/coding_rules.md)** - Consolidated rule set + lint mapping
 - **[BLoC File Rules](docs/rules/bloc.md)** - File layout & basic flow
 - **[Code Formatting](docs/rules/code_formatting.md)** - Code style, BLoC patterns, conventions
 - **[Git Workflow](docs/rules/git_workflow.md)** - Branch / commit / PR naming

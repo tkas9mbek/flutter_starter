@@ -84,7 +84,10 @@ void main() {
   });
 
   group('logout', () {
-    test('emits unauthenticated status and clears storage', () async {
+    test('calls API logout when token exists', () async {
+      when(() => mockLocalDataSource.getToken()).thenAnswer(
+        (_) async => const AuthToken(accessToken: 'a', refreshToken: 'b'),
+      );
       when(() => mockAuthorizedDataSource.logout()).thenAnswer((_) async => {});
       when(
         () => mockLocalDataSource.clearStorage(),
@@ -95,6 +98,21 @@ void main() {
       await repository.logout();
 
       await expectLater(statusStream, emits(AuthStatus.unauthenticated));
+
+      verify(() => mockAuthorizedDataSource.logout()).called(1);
+      verify(() => mockLocalDataSource.clearStorage()).called(1);
+    });
+
+    test('skips API logout when token is missing', () async {
+      when(() => mockLocalDataSource.getToken()).thenAnswer((_) async => null);
+      when(
+        () => mockLocalDataSource.clearStorage(),
+      ).thenAnswer((_) async => {});
+
+      await repository.logout();
+
+      verifyNever(() => mockAuthorizedDataSource.logout());
+      verify(() => mockLocalDataSource.clearStorage()).called(1);
     });
   });
 

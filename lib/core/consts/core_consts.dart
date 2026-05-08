@@ -1,9 +1,12 @@
 class CoreConsts {
   // Store URLs
-  static const String appStoreUrl =
-      'https://apps.apple.com/us/app/uniwork/id6737682406';
+  // Replace with your application store URLs before release.
+  static const String appStoreUrl = 'https://apps.apple.com/app/id0000000000';
   static const String playStoreUrl =
-      'https://play.google.com/store/apps/details?id=kg.aksoft.unibook_master';
+      'https://play.google.com/store/apps/details?id=com.example.app';
+
+  // Keep in sync with pubspec.yaml version.
+  static const String appVersion = '2.0.1';
 
   // Backend URLs
   static const String prodBaseUrl = 'https://example.com';

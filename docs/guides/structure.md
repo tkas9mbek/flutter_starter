@@ -11,7 +11,7 @@ flutter_starter/
 │   ├── features/          # Feature modules
 │   └── l10n/             # Localization (generated)
 ├── packages/
-│   ├── starter_toolkit/  # Utilities (pure Dart)
+│   ├── starter_toolkit/  # Shared utilities and data infrastructure
 │   └── starter_uikit/    # UI components (Flutter)
 ├── assets/               # Images, icons
 └── test/                 # Tests
@@ -108,7 +108,7 @@ ui/
 
 Extract to packages only when used in 3+ features
 
-### starter_toolkit (Pure Dart)
+### starter_toolkit (Shared Utilities)
 
 ```
 packages/starter_toolkit/lib/
@@ -117,7 +117,7 @@ packages/starter_toolkit/lib/
 └── validators/       # Input validators
 ```
 
-**Use when**: Pure Dart, no business logic, multi-feature
+**Use when**: Cross-feature helpers, data/client abstractions, reusable infrastructure
 
 ### starter_uikit (Flutter)
 
@@ -158,7 +158,7 @@ Follow this order
 4. Add data layer (DataSource implementations: Remote/Local/Mock)
 5. Add DI module
 6. Add UI (BLoC, screens, widgets)
-7. Register module in `main.dart`
+7. Register module in `lib/core/di/app_configurator.dart`
 8. Add routes in `app_router.dart`
 
 ---
@@ -166,8 +166,8 @@ Follow this order
 ## Related Documentation
 
 - [Architecture](./architecture.md) - Layer structure
-- [Naming](./naming.md) - Naming standards
-- [Code Formatting](./code_formatting.md) - Style guide
+- [Naming](../rules/naming.md) - Naming standards
+- [Code Formatting](../rules/code_formatting.md) - Style guide
 - [Testing](./testing.md) - Test strategies
 
 ---

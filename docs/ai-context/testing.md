@@ -21,7 +21,7 @@ test/features/{feature}/
 | T2 | One BLoC unit test per event covering: success, empty, failure. |
 | T3 | Integration tests mock only `ApiClient`. Everything else is real. |
 | T4 | Register fallback values for **every** custom type used inside `any(named:)` matchers. |
-| T5 | `blocTest` for tests under retry decorators must set `wait: const Duration(seconds: 8)` (3 retries × 2s). |
+| T5 | `blocTest` for retry decorators must set `wait` based on retry settings (for example `8s` for `2s × 3`, or `300ms` for `10ms × 3`). |
 
 ## Mocktail fallbacks
 

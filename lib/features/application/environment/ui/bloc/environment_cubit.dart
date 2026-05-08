@@ -8,6 +8,10 @@ class EnvironmentCubit extends Cubit<AppEnvironment> {
   final EnvironmentRepository _repository;
 
   Future<void> setEnvironment(AppEnvironment environment) async {
+    if (environment == state) {
+      return;
+    }
+
     await _repository.changeEnvironment(environment);
 
     emit(environment);

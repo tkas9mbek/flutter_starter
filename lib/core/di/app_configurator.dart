@@ -12,6 +12,8 @@ import 'package:starter/features/settings/configs/settings_module.dart';
 import 'package:starter/features/task/configs/task_module.dart';
 
 class AppConfigurator {
+  static Future<void> _reconfigureQueue = Future.value();
+
   static final List<AppModule> _allModules = [
     CoreModule(),
     EnvironmentModule(),
@@ -29,7 +31,25 @@ class AppConfigurator {
   }
 
   static Future<void> reconfigure(AppEnvironment newEnvironment) async {
+    final reconfigureFuture = _reconfigureQueue.then(
+      (_) => _applyReconfiguration(newEnvironment),
+    );
+
+    _reconfigureQueue = reconfigureFuture.catchError((_) {});
+
+    await reconfigureFuture;
+  }
+
+  static Future<void> _applyReconfiguration(
+    AppEnvironment newEnvironment,
+  ) async {
     if (getIt.isRegistered<AppEnvironment>()) {
+      final currentEnvironment = getIt<AppEnvironment>();
+
+      if (currentEnvironment == newEnvironment) {
+        return;
+      }
+
       await getIt.unregister<AppEnvironment>();
     }
 

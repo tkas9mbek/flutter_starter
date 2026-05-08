@@ -53,5 +53,5 @@ class AppEnvironment extends Equatable {
   final bool useMock;
 
   @override
-  List<Object> get props => [baseUrl, name, useMock];
+  List<Object> get props => [name, baseUrl, baseApiUrl, showBanner, useMock];
 }

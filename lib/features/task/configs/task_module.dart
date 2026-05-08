@@ -1,5 +1,5 @@
-import 'package:get_it/get_it.dart';
 import 'package:starter/core/di/app_module.dart';
+import 'package:starter/core/di/injection.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/task/data/mock_task_data_source.dart';
 import 'package:starter/features/task/data/remote_task_data_source.dart';
@@ -16,7 +16,11 @@ class TaskModule extends AppModule {
 
   @override
   Future<void> registerDependencies() async {
-    final getIt = GetIt.instance;
+    await unregisterIfRegistered<TasksListBloc>();
+    await unregisterIfRegistered<CalendarBloc>();
+    await unregisterIfRegistered<TaskRepository>();
+    await unregisterIfRegistered<TaskDataSource>();
+
     getIt
       ..registerFactory<TaskDataSource>(() {
         final env = getIt<AppEnvironment>();

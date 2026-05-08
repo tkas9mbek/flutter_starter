@@ -66,6 +66,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | UI-6 | 🟡 `[lint]` | `=>` except `build()` and nested callbacks |
 | UI-7 | 🟡 | `if (!context.mounted) return;` after every `await` that uses context |
 | UI-8 | 🟡 | Use `starter_uikit` form widgets, not bare `FormBuilder*` |
+| UI-9 | 🟡 `[lint]` | `build()` widget nesting ≤ 10 levels — extract deep subtrees |
 
 ## NAME
 
@@ -94,7 +95,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 |---|---|---|
 | TEST-1 | 🔴 | Build mocks via JSON + `fromJson` |
 | TEST-2 | 🔴 | Register fallback values for custom types in `any(named:)` |
-| TEST-3 | 🟡 | `blocTest` with retry needs `wait: const Duration(seconds: 8)` |
+| TEST-3 | 🟡 | `blocTest` with retry must set `wait` based on retry delay/retries (e.g. `8s` for `2s × 3`, `300ms` for `10ms × 3`) |
 | TEST-4 | 🟡 | Cover success / empty / failure per event |
 | TEST-5 | 🟡 | Integration mocks only `ApiClient` |
 

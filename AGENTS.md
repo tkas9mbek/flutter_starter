@@ -1,6 +1,6 @@
-# CLAUDE.md
+# AGENTS.md
 
-> **AI Context**: This file provides guidance to Claude Code (claude.ai/code) when working with this repository. Follow these instructions precisely.
+> **AI Context**: This file provides guidance to Codex (Codex.ai/code) when working with this repository. Follow these instructions precisely.
 
 ## Read This First
 

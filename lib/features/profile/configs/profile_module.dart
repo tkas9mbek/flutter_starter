@@ -13,11 +13,14 @@ class ProfileModule extends AppModule {
   bool get requiresReconfiguration => true;
 
   @override
-  void registerDependencies() {
-    final env = getIt<AppEnvironment>();
+  Future<void> registerDependencies() async {
+    await unregisterIfRegistered<ProfileRepository>();
+    await unregisterIfRegistered<ProfileDataSource>();
 
     getIt
       ..registerLazySingleton<ProfileDataSource>(() {
+        final env = getIt<AppEnvironment>();
+
         if (env.useMock) {
           return const MockProfileDataSource();
         }

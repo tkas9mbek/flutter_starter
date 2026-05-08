@@ -62,13 +62,14 @@ void main() {
     );
 
     blocTest<EnvironmentCubit, AppEnvironment>(
-      'completes full flow: Cubit → Repository → DataSource → SharedPreferences (Mock)',
+      'does nothing when selecting the current environment',
       build: () => environmentCubit,
       act: (cubit) => cubit.setEnvironment(AppEnvironment.mock()),
-      expect: () => [AppEnvironment.mock()],
+      expect: () => <AppEnvironment>[],
       verify: (_) {
         final savedEnv = sharedPreferences.getString('env_url_key');
-        expect(savedEnv, 'mock');
+        expect(savedEnv, isNull);
+        verifyNever(() => mockSecureStorage.deleteAll());
       },
     );
 
