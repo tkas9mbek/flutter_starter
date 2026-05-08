@@ -1,10 +1,8 @@
 # BLoC + Freezed Guide
 
-> **AI Context**: This document describes the standardized process for creating BLoCs using `flutter_bloc` and `freezed`. Follow these patterns for consistency.
-
 ## Quick Reference
 
-**AI Instruction**: When creating a BLoC:
+When creating a BLoC:
 1. Use Freezed for immutable states and events
 2. Keep all definitions in ONE file (`feature_bloc.dart`)
 3. Use standard state names: `initial`, `loading`, `success`, `failure`
@@ -14,7 +12,7 @@
 
 ## BLoC File Structure
 
-**AI Instruction**: All BLoC code goes in ONE file with parts:
+All BLoC code goes in ONE file with parts:
 
 ```dart
 // feature_bloc.dart
@@ -81,7 +79,7 @@ class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
 
 ## Standard State Patterns
 
-**AI Instruction**: Use these standard state patterns:
+Use these standard state patterns:
 
 ### 1. List Loading Pattern
 
@@ -133,7 +131,7 @@ class ItemOperationState with _$ItemOperationState {
 
 ### 4. Nested Status Pattern (For Persistent Data)
 
-**AI Instruction**: For states that need persistent data (like selectedDate, filters, pagination) across status changes, use a nested status pattern:
+For states that need persistent data (like selectedDate, filters, pagination) across status changes, use a nested status pattern:
 
 ```dart
 // Status union - handles loading/success/failure
@@ -257,7 +255,7 @@ BlocBuilder<CalendarBloc, CalendarState>(
 
 ## Standard Event Patterns
 
-**AI Instruction**: Use past-tense event names:
+Use past-tense event names:
 
 ### 1. Data Fetching Events
 
@@ -306,7 +304,7 @@ class ItemEvent with _$ItemEvent {
 
 ## BLoC Event Handlers
 
-**AI Instruction**: Separate handlers for each event:
+Separate handlers for each event:
 
 ```dart
 class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
@@ -359,7 +357,7 @@ class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
 
 ### 1. BlocBuilder (Display Data)
 
-**AI Instruction**: Use `BlocBuilder` to display state-dependent UI:
+Use `BlocBuilder` to display state-dependent UI:
 
 ```dart
 BlocBuilder<ItemListBloc, ItemListState>(
@@ -374,7 +372,7 @@ BlocBuilder<ItemListBloc, ItemListState>(
 
 ### 2. BlocListener (Side Effects)
 
-**AI Instruction**: Use `BlocListener` for navigation, snackbars, dialogs:
+Use `BlocListener` for navigation, snackbars, dialogs:
 
 ```dart
 BlocListener<ItemOperationBloc, ItemOperationState>(
@@ -422,7 +420,7 @@ BlocConsumer<ItemBloc, ItemState>(
 
 ## State Helper Methods
 
-**AI Instruction**: Add helper getters to State for common checks:
+Add helper getters to State for common checks:
 
 ```dart
 @freezed

@@ -1,7 +1,5 @@
 # Code Review Guide
 
-> **AI Context**: Use this checklist when reviewing pull requests in this project. Each finding cites a rule ID so the author can resolve it without re-deriving the standard.
-
 ## Severity Levels
 
 | Severity | Meaning |

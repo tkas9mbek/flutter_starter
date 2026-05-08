@@ -331,6 +331,8 @@ The template includes extensive documentation:
 - **[Exception Handling](docs/guides/exception_handling.md)** - Two-layer exception system, code generation
 - **[Structure Guide](docs/guides/structure.md)** - File organization, feature layout
 - **[Testing Guide](docs/guides/testing.md)** - Testing strategies, patterns, best practices
+- **[Coding Rules](docs/rules/coding-rules.md)** - Consolidated rule set + lint mapping
+- **[BLoC File Rules](docs/rules/bloc.md)** - File layout & basic flow
 - **[Code Formatting](docs/rules/code_formatting.md)** - Code style, BLoC patterns, conventions
 - **[Git Workflow](docs/rules/git_workflow.md)** - Branch / commit / PR naming
 - **[Naming Conventions](docs/rules/naming.md)** - Consistent naming patterns

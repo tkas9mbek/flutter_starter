@@ -1,10 +1,8 @@
 # Naming Conventions
 
-> **AI Context**: Class and variable naming standards. Names should reveal purpose, type, and feature ownership.
-
 ## Core Principle
 
-**AI Instruction**: Follow the pattern: **Feature + Description + Type**
+Follow the pattern: **Feature + Description + Type**
 
 By reading a name, developers should understand:
 - What feature it belongs to
@@ -17,7 +15,7 @@ By reading a name, developers should understand:
 
 ### Functions & Methods
 
-**AI Instruction**: Start with a verb indicating the action
+Start with a verb indicating the action
 
 ```dart
 // ✓ Correct
@@ -55,7 +53,7 @@ class UserScreen { ... }              // Missing description
 
 ## File Names
 
-**AI Instruction**: Use `snake_case`. Match the main class name
+Use `snake_case`. Match the main class name
 
 ```dart
 // Class: TaxPaymentScreen
@@ -74,7 +72,7 @@ class UserScreen { ... }              // Missing description
 
 ### Abstract Classes
 
-**AI Instruction**: Use the base pattern without implementation prefix
+Use the base pattern without implementation prefix
 
 ```dart
 // ✓ Correct - Abstract
@@ -88,7 +86,7 @@ abstract class AbstractUserDataSource { ... }  // No "Abstract" prefix
 
 ### Concrete Implementations
 
-**AI Instruction**: Prefix with implementation type
+Prefix with implementation type
 
 ```dart
 // ✓ Correct - Implementations
@@ -104,7 +102,7 @@ class SecureAuthLocalDataSource implements AuthLocalDataSource { ... }
 
 ## Widget Naming
 
-**AI Instruction**: Use descriptive names based on purpose, not just widget type
+Use descriptive names based on purpose, not just widget type
 
 ### Generic Widgets
 
@@ -124,7 +122,7 @@ class TaskWidget extends StatelessWidget { ... }     // Too generic
 
 ### Avoid Generic Names
 
-**AI Instruction**: Never use `Container`, `Widget`, `Component` in names
+Never use `Container`, `Widget`, `Component` in names
 
 ```dart
 // ✓ Correct
@@ -141,7 +139,7 @@ class InfoComponent { ... }
 
 ## BLoC Naming
 
-**AI Instruction**: Follow official [BLoC naming conventions](https://bloclibrary.dev/naming-conventions/)
+Follow official [BLoC naming conventions](https://bloclibrary.dev/naming-conventions/)
 
 ### BLoC Classes
 
@@ -155,7 +153,7 @@ class ProfileDetailsBloc extends Bloc<ProfileDetailsEvent, ProfileDetailsState> 
 
 ### Events
 
-**AI Instruction**: Use **past tense** (events represent actions that already occurred)
+Use **past tense** (events represent actions that already occurred)
 
 ```dart
 @freezed
@@ -171,7 +169,7 @@ class UserListEvent with _$UserListEvent {
 
 ### States
 
-**AI Instruction**: Use **nouns** (states represent snapshots)
+Use **nouns** (states represent snapshots)
 
 ```dart
 @freezed
@@ -188,7 +186,7 @@ class UserListState with _$UserListState {
 
 ### Common BLoC Names
 
-**AI Instruction**: Use these standard patterns:
+Use these standard patterns:
 
 | Purpose | Pattern | Example |
 |---------|---------|---------|
@@ -200,7 +198,7 @@ class UserListState with _$UserListState {
 
 ## Model Naming
 
-**AI Instruction**: Use domain-specific names, avoid generic suffixes
+Use domain-specific names, avoid generic suffixes
 
 ```dart
 // ✓ Correct
@@ -234,7 +232,7 @@ class Task { ... }
 
 ### Repository
 
-**AI Instruction**: Usually one per feature, omit description
+Usually one per feature, omit description
 
 ```dart
 // ✓ Correct - Single implementation
@@ -250,7 +248,7 @@ class PayPalPaymentRepository implements PaymentRepository { ... }
 
 ### DataSource
 
-**AI Instruction**: Always abstract, prefix implementations
+Always abstract, prefix implementations
 
 ```dart
 // Abstract
@@ -270,7 +268,7 @@ class MockAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
 
 ## Service Naming
 
-**AI Instruction**: API services use `Feature + Service`
+API services use `Feature + Service`
 
 ```dart
 // ✓ Correct - Retrofit services

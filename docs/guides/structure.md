@@ -1,10 +1,8 @@
 # Project Structure Guide
 
-> **AI Context**: File and folder organization patterns. Follow these when creating features.
-
 ## Root Structure
 
-**AI Instruction**: Three main directories: `lib/`, `packages/`, `assets/`
+Three main directories: `lib/`, `packages/`, `assets/`
 
 ```
 flutter_starter/
@@ -23,7 +21,7 @@ flutter_starter/
 
 ## Core Structure
 
-**AI Instruction**: Only application-wide, feature-independent code
+Only application-wide, feature-independent code
 
 ```
 lib/core/
@@ -39,7 +37,7 @@ lib/core/
 
 ## Feature Structure
 
-**AI Instruction**: Standard pattern: data → domain → model → configs → ui
+Standard pattern: data → domain → model → configs → ui
 
 ```
 lib/features/{feature}/
@@ -56,7 +54,7 @@ lib/features/{feature}/
 
 ### Layer Rules
 
-**AI Instruction**: Follow these strictly
+Follow these strictly
 
 | Layer | Flutter? | Contains | Rules |
 |-------|----------|----------|-------|
@@ -67,7 +65,7 @@ lib/features/{feature}/
 
 ## Feature Grouping
 
-**AI Instruction**: Group only small (< 5 files), tightly related features
+Group only small (< 5 files), tightly related features
 
 ```
 lib/features/application/
@@ -81,7 +79,7 @@ lib/features/application/
 
 ## UI Organization
 
-**AI Instruction**: Flat structure for simple, subdivided for complex
+Flat structure for simple, subdivided for complex
 
 ### Simple Features (1-2 screens)
 
@@ -108,7 +106,7 @@ ui/
 
 ## Package Structure
 
-**AI Instruction**: Extract to packages only when used in 3+ features
+Extract to packages only when used in 3+ features
 
 ### starter_toolkit (Pure Dart)
 
@@ -134,7 +132,7 @@ packages/starter_uikit/lib/
 
 ## File Naming
 
-**AI Instruction**: `snake_case` for files, `PascalCase` for classes
+`snake_case` for files, `PascalCase` for classes
 
 ```
 authentication_data_source.dart          → AuthenticationDataSource
@@ -152,7 +150,7 @@ authentication_module.dart               → AuthenticationModule
 
 ## Adding New Feature
 
-**AI Instruction**: Follow this order
+Follow this order
 
 1. Create `lib/features/{feature}/`
 2. Add models (freezed classes with JSON serialization)

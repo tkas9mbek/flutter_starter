@@ -1,12 +1,10 @@
 # Freezed BLoC Guide
 
-> **AI Context**: Deep dive on the BLoC + Freezed patterns used across this project. Read [bloc.md](./bloc.md) first for the file-layout basics — this guide focuses on state shapes, decisions, and patterns the basics don't cover.
-
 ## When to read which guide
 
 | You're… | Read |
 |---|---|
-| Creating your first BLoC in this codebase | [bloc.md](./bloc.md) |
+| Creating your first BLoC in this codebase | [bloc.md](../rules/bloc.md) |
 | Picking between flat states and nested status | This guide → "State shape decisions" |
 | Wiring a refresh / retry / pagination flow | This guide → "Patterns" |
 | Reviewing a BLoC PR | [code_review.md](./code_review.md) → `BLOC-*` rules |
@@ -294,7 +292,7 @@ fvm flutter pub run build_runner watch --delete-conflicting-outputs
 
 ## See also
 
-- [bloc.md](./bloc.md) — file layout, basic flow
+- [bloc.md](../rules/bloc.md) — file layout, basic flow
 - [code_review.md](./code_review.md) — `BLOC-*` rules
 - [exception_handling.md](./exception_handling.md) — what `AppException` looks like and how it reaches `failure` states
 - [../ai-context/bloc.md](../ai-context/bloc.md) — AI-friendly cheat sheet

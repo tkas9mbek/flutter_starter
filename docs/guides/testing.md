@@ -1,10 +1,8 @@
 # Testing Guide
 
-> **AI Context**: Comprehensive testing strategy for Flutter project using BLoC pattern with 145 tests passing (100% pass rate). Every BLoC must have tests. Use JSON assets for mock data. All features have full integration test coverage.
-
 ## Test Structure
 
-**AI Instruction**: All tests organized under `test/features/{feature}/` directory
+All tests organized under `test/features/{feature}/` directory
 
 ```
 test/features/{feature}/
@@ -17,11 +15,11 @@ test/features/{feature}/
 
 ## Core Testing Strategy
 
-**AI Instruction**: Three types of tests - unit tests for data/repositories, BLoC tests, and integration tests
+Three types of tests - unit tests for data/repositories, BLoC tests, and integration tests
 
 ### 1. Data Layer Unit Tests (Required for Repositories)
 
-**AI Instruction**: Test Repository and DataSource classes with mocked dependencies
+Test Repository and DataSource classes with mocked dependencies
 
 ```
 Repository (Real) → DataSource (Mock)
@@ -35,7 +33,7 @@ DataSource (Real) → ApiClient (Mock)
 
 ### 2. BLoC Unit Tests (Required)
 
-**AI Instruction**: Test BLoC with mocked Repository
+Test BLoC with mocked Repository
 
 ```
 BLoC (Real) → Repository (Mock)
@@ -50,7 +48,7 @@ BLoC (Real) → Repository (Mock)
 
 ### 3. Integration Tests (Recommended)
 
-**AI Instruction**: Test entire stack with only ApiClient mocked
+Test entire stack with only ApiClient mocked
 
 ```
 BLoC (Real) → Repository (Real) → DataSource (Real) → ApiClient (Mock)
@@ -62,7 +60,7 @@ BLoC (Real) → Repository (Real) → DataSource (Real) → ApiClient (Mock)
 
 ## Test Quality Requirements
 
-**AI Instruction**: All tests must meet these standards
+All tests must meet these standards
 
 - **Fast**: < 1 second per test class
 - **Independent**: No real network/database/backend
@@ -88,7 +86,7 @@ dev_dependencies:
 
 ### Pattern 1: JSON Assets and Mock Models
 
-**AI Instruction**: ALWAYS use JSON assets instead of creating models in code
+ALWAYS use JSON assets instead of creating models in code
 
 #### Step 1: Create JSON Test Data
 
@@ -131,7 +129,7 @@ class TaskMockModels {
 
 ### Pattern 2: Repository Unit Tests
 
-**AI Instruction**: Test all Repository methods with mocked DataSource
+Test all Repository methods with mocked DataSource
 
 ```dart
 // test/features/task/data/task_repository_test.dart
@@ -187,7 +185,7 @@ void main() {
 
 ### Pattern 3: DataSource Tests with fromJson
 
-**AI Instruction**: Test DataSource API calls AND fromJson deserialization
+Test DataSource API calls AND fromJson deserialization
 
 ```dart
 // test/features/task/data/remote_task_data_source_test.dart
@@ -246,7 +244,7 @@ void main() {
 
 ### Pattern 4: BLoC Unit Tests
 
-**AI Instruction**: Test all scenarios for each event: success, empty, failure
+Test all scenarios for each event: success, empty, failure
 
 ```dart
 // test/features/task/bloc/tasks_list_bloc_test.dart
@@ -340,7 +338,7 @@ void main() {
 
 ### Pattern 5: Integration Tests
 
-**AI Instruction**: Test full stack with only ApiClient/SharedPreferences mocked
+Test full stack with only ApiClient/SharedPreferences mocked
 
 ```dart
 // test/features/auth/integration/integration_test.dart
@@ -446,7 +444,7 @@ void main() {
 
 ### Pattern 6: Testing toJson Serialization
 
-**AI Instruction**: Test toJson methods for request models
+Test toJson methods for request models
 
 ```dart
 // test/features/auth/data/remote_auth_unauthorized_data_source_test.dart
@@ -495,7 +493,7 @@ group('TaskCreateRequest', () {
 
 ## Coverage Measurement
 
-**AI Instruction**: Always verify coverage for all classes
+Always verify coverage for all classes
 
 ### Generate Coverage Report
 
@@ -541,7 +539,7 @@ open coverage/html/index.html
 
 ## Testing Checklist
 
-**AI Instruction**: Use this checklist for every feature
+Use this checklist for every feature
 
 ### JSON Assets & Mock Models
 - [ ] JSON files created in `test/features/{feature}/assets/`

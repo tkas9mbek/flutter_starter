@@ -1,7 +1,5 @@
 # Git Workflow
 
-> **AI Context**: Naming conventions for branches, commits, and pull / merge requests in this project. Adopt or adapt the ticket prefix (`PROJ-`, `JIRA-`, `LIN-`, …) to match your tracker. The rest is portable.
-
 ---
 
 # Part 1: Branch Naming

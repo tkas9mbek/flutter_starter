@@ -552,6 +552,8 @@ For detailed information, see:
 - [Testing Guide](./docs/guides/testing.md) - Testing strategies
 
 **Rules:**
+- [Coding Rules](./docs/rules/coding-rules.md) - Consolidated rule set with lint mapping
+- [BLoC File Rules](./docs/rules/bloc.md) - File layout & basic flow
 - [Code Formatting](./docs/rules/code_formatting.md) - Code style rules
 - [Git Workflow](./docs/rules/git_workflow.md) - Branch / commit / PR naming
 - [Naming Conventions](./docs/rules/naming.md) - Naming patterns

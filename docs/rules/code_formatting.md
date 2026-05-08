@@ -1,7 +1,5 @@
 # Code Formatting Guide
 
-> **AI Context**: Code formatting standards for the project. Follow these rules when writing or refactoring code.
-
 ## Table of Contents
 
 1. [File Organization](#file-organization)
@@ -16,7 +14,7 @@
 
 ## File Organization
 
-**AI Instruction**: One public class per file. File name matches class name.
+One public class per file. File name matches class name.
 
 **Exceptions:**
 - Private helper classes (prefix `_`)
@@ -59,7 +57,7 @@ ui/widget/                          ui/widget/
 
 ## Class Size & SRP
 
-**AI Instruction**: Use class size as SRP heuristic:
+Use class size as SRP heuristic:
 - **< 100 lines**: ✅ Good
 - **100-200 lines**: ⚠️ Review carefully
 - **> 200 lines**: ❌ Split it!
@@ -92,7 +90,7 @@ If yes, split into separate classes.
 
 ### Screen Widgets
 
-**AI Instruction**: Split large screens into smaller widgets:
+Split large screens into smaller widgets:
 
 ```dart
 // ✗ Wrong - 220+ lines
@@ -123,7 +121,7 @@ class TasksListScreen extends StatelessWidget {
 
 ### BLoC Separation
 
-**AI Instruction**: BLoCs must NOT depend on other BLoCs. Use UI layer for coordination.
+BLoCs must NOT depend on other BLoCs. Use UI layer for coordination.
 
 ```dart
 // ✗ Wrong - Direct BLoC dependency
@@ -172,7 +170,7 @@ class ItemsScreen extends StatelessWidget {
 
 ### Whitespace Rules
 
-**AI Instruction**: Add blank line before control structures:
+Add blank line before control structures:
 
 ```dart
 // ✓ Correct
@@ -189,7 +187,7 @@ void process(String input) {
 
 ### Bracket Rules
 
-**AI Instruction**: Always use brackets for control structures in regular code:
+Always use brackets for control structures in regular code:
 
 ```dart
 // ✓ Correct
@@ -203,7 +201,7 @@ if (condition) doSomething();
 
 ### Spread in Collections
 
-**AI Instruction**: Always use spread operator `...[` after `if`/`for` in collections, even for single widget:
+Always use spread operator `...[` after `if`/`for` in collections, even for single widget:
 
 ```dart
 // ✓ Correct - Spread for multiple widgets
@@ -291,7 +289,7 @@ A short ternary on one line stays a ternary — this rule is about long, branchi
 
 ## Class Member Ordering
 
-**AI Instruction**: Follow this order strictly:
+Follow this order strictly:
 
 1. Constructors (default first, then named)
 2. Constants of same type
@@ -307,7 +305,7 @@ A short ternary on one line stays a ternary — this rule is about long, branchi
 
 ### Constructor Parameters
 
-**AI Instruction**: Order named parameters:
+Order named parameters:
 
 1. Required parameters
 2. Parameters with defaults
@@ -332,7 +330,7 @@ class CustomButton extends StatelessWidget {
 
 ### 1. No Functions Returning Widgets
 
-**AI Instruction**: Never create functions that return widgets. Extract to widget classes.
+Never create functions that return widgets. Extract to widget classes.
 
 ```dart
 // ✗ Wrong
@@ -346,7 +344,7 @@ class UserAvatar extends StatelessWidget { ... }
 
 ### 2. StatefulWidget State
 
-**AI Instruction**: StatefulWidget should be public, State class should be private:
+StatefulWidget should be public, State class should be private:
 
 ```dart
 class CounterWidget extends StatefulWidget {
@@ -364,7 +362,7 @@ class _CounterWidgetState extends State<CounterWidget> {
 
 ### 3. Arrow Expressions
 
-**AI Instruction**: Always use arrow `=>` for callbacks, with two exceptions:
+Always use arrow `=>` for callbacks, with two exceptions:
 1. `build()` method - always uses block body `{}`
 2. Nested callbacks - avoid `() => setState(() {})` pattern
 
@@ -421,7 +419,7 @@ BlocListener<Bloc, State>(
 
 ### 4. Use whenOrNull Instead of maybeWhen
 
-**AI Instruction**: For listeners with single case, use `whenOrNull` not `maybeWhen`:
+For listeners with single case, use `whenOrNull` not `maybeWhen`:
 
 ```dart
 // ✓ Correct
@@ -440,7 +438,7 @@ listener: (context, state) {
 
 ### 4a. BlocBuilder Uses maybeMap / maybeWhen, Not mapOrNull
 
-**AI Instruction**: `BlocBuilder` must always return a non-null `Widget`. Use `maybeMap` / `maybeWhen` so `orElse` provides a fallback. Never use `mapOrNull` / `whenOrNull` inside `BlocBuilder` — they return `Widget?` and Flutter will throw at runtime.
+`BlocBuilder` must always return a non-null `Widget`. Use `maybeMap` / `maybeWhen` so `orElse` provides a fallback. Never use `mapOrNull` / `whenOrNull` inside `BlocBuilder` — they return `Widget?` and Flutter will throw at runtime.
 
 The pairing is:
 
@@ -469,7 +467,7 @@ BlocBuilder<MyBloc, MyState>(
 
 ### 5. Localization Required
 
-**AI Instruction**: All user-facing strings MUST use localization:
+All user-facing strings MUST use localization:
 
 ```dart
 // ✗ Wrong - Hard-coded strings
@@ -483,7 +481,7 @@ Text(Localizer.of(context).noTasksYet)
 
 ### 6. Use Toolkit/UIKit Helpers
 
-**AI Instruction**: Reuse existing helpers from toolkit/uikit:
+Reuse existing helpers from toolkit/uikit:
 
 ```dart
 // ✗ Wrong - Manual date comparison
@@ -500,7 +498,7 @@ final isTomorrow = date.isTomorrow;
 
 ### 7. No Useless Comments
 
-**AI Instruction**: Remove obvious comments that add no value:
+Remove obvious comments that add no value:
 
 ```dart
 // ✗ Wrong
@@ -521,7 +519,7 @@ Checkbox(...)
 
 ### 8. Super Method Calls
 
-**AI Instruction**: Call `super` at start, except `dispose()`/`deactivate()` at end:
+Call `super` at start, except `dispose()`/`deactivate()` at end:
 
 ```dart
 @override
@@ -541,7 +539,7 @@ void dispose() {
 
 ## Comments
 
-**AI Instruction**: Write self-documenting code. Minimize inline comments.
+Write self-documenting code. Minimize inline comments.
 
 ### Minimize Code Comments
 
@@ -565,7 +563,7 @@ double calculateTotal(List<Item> items) =>
 
 ### Public API Documentation
 
-**AI Instruction**: Document public APIs in shared modules (toolkit, uikit):
+Document public APIs in shared modules (toolkit, uikit):
 
 - ✅ 1-3 line summary using `///`
 - ✅ Brief description of purpose

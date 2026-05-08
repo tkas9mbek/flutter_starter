@@ -1,7 +1,5 @@
 # Architecture Guide
 
-> **AI Context**: This document defines the architectural principles for the Flutter starter project. Follow these principles when implementing features.
-
 ## Core Principles
 
 1. **Dependency Inversion**: Both Data and UI layers depend on Domain abstractions
@@ -41,21 +39,21 @@
 
 ### 1. Vertical Dependencies
 
-**AI Instruction**: Dependencies flow toward Domain abstractions:
+Dependencies flow toward Domain abstractions:
 - **Presentation** depends on **Domain** (uses Repository, Abstract DS)
 - **Data** implements **Domain** (implements Abstract DS)
 - **Domain** has no dependencies (pure Dart, defines contracts)
 
 ### 2. Horizontal Dependencies
 
-**AI Instruction**: ONLY Flutter widgets can have horizontal dependencies:
+ONLY Flutter widgets can have horizontal dependencies:
 - ✅ Widgets can import other widgets
 - ❌ BLoCs **cannot** depend on other BLoCs (use reactive mechanisms instead)
 - ❌ Repositories **cannot** depend on other Repositories
 
 ### 3. Flutter Framework
 
-**AI Instruction**: ONLY Presentation layer can import Flutter:
+ONLY Presentation layer can import Flutter:
 - ❌ Data Layer: No Flutter imports
 - ❌ Domain Layer: No Flutter imports
 - ✅ Presentation Layer: Full Flutter access
@@ -187,7 +185,7 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
 
 ## Why Abstract DataSources?
 
-**AI Instruction**: DataSources are abstract because they need flexibility:
+DataSources are abstract because they need flexibility:
 
 ### Multiple Implementations
 
@@ -238,7 +236,7 @@ blocTest<UserListBloc, UserListState>(
 
 ## Why Concrete Repositories?
 
-**AI Instruction**: Repositories are usually concrete because:
+Repositories are usually concrete because:
 
 1. **No logic** - Just delegation to DataSource
 2. **Single implementation** - Rarely need variants
@@ -323,7 +321,7 @@ BlocBuilder<UserListBloc, UserListState>(
 
 ## BLoC Communication
 
-**AI Instruction**: BLoCs should not have direct dependencies on other BLoCs. Instead, use reactive mechanisms:
+BLoCs should not have direct dependencies on other BLoCs. Instead, use reactive mechanisms:
 
 ### ❌ Wrong - Direct BLoC Dependency
 
@@ -382,7 +380,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
 
 ## Exception Handling
 
-**AI Instruction**: Use two-layer exception architecture:
+Use two-layer exception architecture:
 
 ### Data Layer Exceptions
 
@@ -513,7 +511,7 @@ See [Exception Handling & Repository Executors Guide](./exception_handling.md) f
 
 ## Repository Executors
 
-**AI Instruction**: Use decorator pattern for cross-cutting concerns.
+Use decorator pattern for cross-cutting concerns.
 
 Repository executors add functionality through composition:
 

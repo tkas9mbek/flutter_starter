@@ -1,7 +1,5 @@
 # Exception Handling & Repository Executors
 
-> **AI Context**: Comprehensive guide for custom exceptions, exception mappers, and repository executors.
-
 ## Table of Contents
 
 1. [Exception Handling](#exception-handling)
