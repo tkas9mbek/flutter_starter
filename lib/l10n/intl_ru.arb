@@ -27,6 +27,7 @@
   "theme": "Тема",
   "light": "Светлая",
   "dark": "Тёмная",
+  "system": "Системная",
   "themeSwitchingComingSoon": "Переключение темы скоро появится!",
   "language": "Язык",
   "selectLanguage": "Выберите язык",

@@ -320,6 +320,16 @@ class Localizer {
     );
   }
 
+  /// `System`
+  String get system {
+    return Intl.message(
+      'System',
+      name: 'system',
+      desc: '',
+      args: [],
+    );
+  }
+
   /// `Theme switching coming soon!`
   String get themeSwitchingComingSoon {
     return Intl.message(

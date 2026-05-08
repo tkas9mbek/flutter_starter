@@ -1,3 +1,8 @@
+/// Formats [secondsRemaining] as a zero-padded `HH:MM:SS` (or shorter) string.
+///
+/// Toggle which components appear via [showHours], [showMinutes], and
+/// [showSeconds]. Hours are always shown once [secondsRemaining] reaches
+/// one hour, regardless of [showHours].
 String formatHoursMinutesSeconds(
   int secondsRemaining, {
   bool showSeconds = true,

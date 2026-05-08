@@ -1,6 +1,7 @@
 import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/model/task_create_request.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 class MockTaskDataSource implements TaskDataSource {
   final List<Task> _tasks = [
@@ -94,7 +95,7 @@ class MockTaskDataSource implements TaskDataSource {
     final index = _tasks.indexWhere((task) => task.id == id);
 
     if (index == -1) {
-      throw Exception('Task not found');
+      throw const ServerException(statusCode: 404, message: 'Task not found');
     }
 
     final task = Task(

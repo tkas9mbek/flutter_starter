@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:starter_toolkit/l10n/generated/l10n.dart';
 
+/// Reusable [FormFieldValidator]s with localized default messages.
 class FormValidators {
+  /// Returns a validator that fails when the value is null, empty, or a
+  /// blank string. Empty lists are also rejected.
   static FormFieldValidator<T> required<T>(
     BuildContext context, {
     String? message,
@@ -15,6 +18,9 @@ class FormValidators {
     return null;
   };
 
+  /// Returns a validator that fails when the value is non-empty and does
+  /// not match an `http(s)://` URL pattern. Empty values pass — combine
+  /// with [required] to forbid them.
   static FormFieldValidator<T> url<T>(
     BuildContext context, {
     String? message,
@@ -35,6 +41,9 @@ class FormValidators {
     return null;
   };
 
+  /// Returns a validator that fails when the value's length is outside
+  /// the 10–16 character range. Empty values pass — combine with
+  /// [required] to forbid them.
   static FormFieldValidator<String> phone(
     BuildContext context, {
     String? message,

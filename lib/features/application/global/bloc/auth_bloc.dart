@@ -54,7 +54,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             }
 
             return emit(const AuthState.unauthenticated());
-          } catch (e) {
+          }
+          // ignore: avoid_catches_without_on_clauses — boot-time auth fallback must absorb any error (corrupted storage, unexpected exceptions); crashing on startup is worse than falling back to unauthenticated
+          catch (_) {
             return emit(const AuthState.unauthenticated());
           }
         },

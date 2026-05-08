@@ -78,7 +78,7 @@
 | ID | Type | Description | Suggested Fix |
 |---|---|---|---|
 | UI-1 | Severe Violation 🔴 | Hardcoded user-facing string | `Localizer.of(context).{key}` |
-| UI-2 | Severe Violation 🔴 | Hardcoded color or `TextStyle` | `ThemeProvider.of(context).theme` / `.textStyles` |
+| UI-2 | Mild Violation 🟡 | Hardcoded color or `TextStyle` `[lint: no_hardcoded_colors]` | `ThemeProvider.of(context).theme` / `.textStyles` |
 | UI-3 | Severe Violation 🔴 | Reimplements a widget that exists in `starter_uikit` | Use `FailureWidgetLarge`, `EmptyInformationBody`, `AppElevatedButton`, `AppTextField`, etc. |
 | UI-4 | Severe Violation 🔴 | `Widget _buildFoo()` builder method | Extract to a `StatelessWidget`/`StatefulWidget` class |
 | UI-5 | Mild Violation 🟡 | Single widget added to a `children:` list as a literal element | Use spread: `if (cond) ...[Widget()]` even for one |

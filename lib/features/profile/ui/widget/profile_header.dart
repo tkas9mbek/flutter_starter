@@ -20,7 +20,7 @@ class ProfileHeader extends StatelessWidget {
           child: Text(
             user.name.isNotEmpty ? user.name[0].toUpperCase() : '',
             style: textStyles.boldTitle20.copyWith(
-              color: Colors.white,
+              color: theme.onPrimary,
               fontSize: 24,
             ),
           ),

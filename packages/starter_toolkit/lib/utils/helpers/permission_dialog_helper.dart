@@ -3,9 +3,16 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+/// Builds a custom rationale dialog and resolves to the user's consent.
 typedef PermissionDialogBuilder = Future<bool> Function(BuildContext context);
 
+/// Coordinates platform permission requests with a custom rationale dialog.
+///
+/// On Android, the rationale dialog is shown before the OS prompt. On iOS,
+/// the OS prompt is invoked directly because Apple guidelines forbid
+/// pre-prompting.
 class PermissionDialogHelper {
+  /// Shows the camera-permission rationale [dialogBuilder].
   static Future<bool> showCameraPermissionDialog({
     required BuildContext context,
     required PermissionDialogBuilder dialogBuilder,
@@ -16,6 +23,7 @@ class PermissionDialogHelper {
     return dialogBuilder(context);
   }
 
+  /// Shows the location-permission rationale [dialogBuilder].
   static Future<bool> showLocationPermissionDialog({
     required BuildContext context,
     required PermissionDialogBuilder dialogBuilder,
@@ -26,6 +34,7 @@ class PermissionDialogHelper {
     return dialogBuilder(context);
   }
 
+  /// Shows the photos-permission rationale [dialogBuilder].
   static Future<bool> showPhotosPermissionDialog({
     required BuildContext context,
     required PermissionDialogBuilder dialogBuilder,
@@ -36,6 +45,8 @@ class PermissionDialogHelper {
     return dialogBuilder(context);
   }
 
+  /// Requests camera permission, showing the [dialogBuilder] rationale on
+  /// Android first. Returns whether the OS ultimately granted access.
   static Future<bool> requestCameraPermissionWithDialog({
     required BuildContext context,
     required PermissionDialogBuilder dialogBuilder,
@@ -72,6 +83,8 @@ class PermissionDialogHelper {
     return result.isGranted;
   }
 
+  /// Requests photos permission, showing the [dialogBuilder] rationale on
+  /// Android first. iOS treats `limited` access as granted.
   static Future<bool> requestPhotosPermissionWithDialog({
     required BuildContext context,
     required PermissionDialogBuilder dialogBuilder,
@@ -112,6 +125,8 @@ class PermissionDialogHelper {
     return result.isGranted;
   }
 
+  /// Requests location permission, showing the [dialogBuilder] rationale
+  /// on Android first. Returns whether the OS ultimately granted access.
   static Future<bool> requestLocationPermissionWithDialog({
     required BuildContext context,
     required PermissionDialogBuilder dialogBuilder,

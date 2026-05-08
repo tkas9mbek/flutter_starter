@@ -28,10 +28,14 @@ class TaskListItemTile extends StatelessWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: 20),
         decoration: BoxDecoration(
-          color: Colors.red,
+          color: theme.error,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: const Icon(Icons.delete_outline, color: Colors.white, size: 28),
+        child: Icon(
+          Icons.delete_outline,
+          color: theme.onStatus,
+          size: 28,
+        ),
       ),
       onDismissed: (_) {
         context.read<TaskDeleteBloc>().add(TaskDeleteEvent.deleted(task.id));

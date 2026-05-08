@@ -84,6 +84,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signUp": MessageLookupByLibrary.simpleMessage("Регистрация"),
         "startTime": MessageLookupByLibrary.simpleMessage("Время начала"),
         "status": MessageLookupByLibrary.simpleMessage("Статус"),
+        "system": MessageLookupByLibrary.simpleMessage("Системная"),
         "task": MessageLookupByLibrary.simpleMessage("задача"),
         "taskDeleted": m0,
         "taskDeletedSuccessfully":

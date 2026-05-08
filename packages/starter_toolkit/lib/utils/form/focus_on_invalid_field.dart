@@ -4,6 +4,10 @@ import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 
+/// Scrolls the first field with a validation error into view.
+///
+/// Looks up the form via [formKey], finds the first invalid field, and
+/// animates the surrounding scrollable so the field is visible.
 void focusOnInvalidStateField(GlobalKey<FormBuilderState> formKey) {
   final entry = formKey.currentState?.fields.entries.firstWhereOrNull(
     (element) => element.value.hasError,

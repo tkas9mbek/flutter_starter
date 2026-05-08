@@ -1,12 +1,16 @@
 import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
+/// Reusable [TextInputFormatter]s for common form fields.
 class FormInputFormatters {
+  /// Phone mask without country code: `(###) ###-##-##`.
   static final phoneShortMask = MaskTextInputFormatter(mask: '(###) ###-##-##');
 
+  /// Phone mask with `+7` country code: `+7 (###) ###-##-##`.
   static final phoneLongMask = MaskTextInputFormatter(
     mask: '+7 (###) ###-##-##',
   );
 
+  /// Length limit matching the longest formatted phone (18 chars).
   static final phoneMaxLength = LengthLimitingTextInputFormatter(18);
 }

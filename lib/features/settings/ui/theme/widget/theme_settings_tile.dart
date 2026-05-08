@@ -17,7 +17,7 @@ class ThemeSettingsTile extends StatelessWidget {
     return switch (option) {
       ThemeModeOption.light => localizer.light,
       ThemeModeOption.dark => localizer.dark,
-      ThemeModeOption.system => 'System',
+      ThemeModeOption.system => localizer.system,
     };
   }
 

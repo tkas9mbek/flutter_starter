@@ -27,6 +27,7 @@
   "theme": "Theme",
   "light": "Light",
   "dark": "Dark",
+  "system": "System",
   "themeSwitchingComingSoon": "Theme switching coming soon!",
   "language": "Language",
   "selectLanguage": "Select language",
