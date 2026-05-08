@@ -86,7 +86,11 @@ GitHub Actions is configured in `.github/workflows/ci.yml` and runs:
 1. `flutter pub get`
 2. `dart run custom_lint --no-fatal-infos --no-fatal-warnings`
 3. `flutter analyze`
-4. `flutter test` split across feature shards in parallel
+4. `flutter test` split across per-feature shards in parallel
+
+Optional strict lint gate:
+
+- Use **Run workflow** (`workflow_dispatch`) with `strict_lint = true` to run `dart run custom_lint` in strict mode (fatal warnings/infos).
 
 ---
 

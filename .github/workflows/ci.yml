@@ -5,6 +5,13 @@ on:
   push:
     branches:
       - main
+  workflow_dispatch:
+    inputs:
+      strict_lint:
+        description: Run strict custom_lint (fatal warnings and infos)
+        required: false
+        default: false
+        type: boolean
 
 jobs:
   flutter-quality:
@@ -30,6 +37,27 @@ jobs:
       - name: Analyze
         run: flutter analyze
 
+  flutter-quality-strict:
+    name: Flutter Quality (Strict Lints)
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.strict_lint }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.32.0'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Custom lint (strict)
+        run: dart run custom_lint
+
   flutter-tests:
     name: Flutter Tests (${{ matrix.shard.name }})
     runs-on: ubuntu-latest
@@ -37,10 +65,14 @@ jobs:
       fail-fast: false
       matrix:
         shard:
-          - name: application-settings
-            paths: test/features/application test/features/settings
-          - name: auth-profile
-            paths: test/features/auth test/features/profile
+          - name: application
+            paths: test/features/application
+          - name: settings
+            paths: test/features/settings
+          - name: auth
+            paths: test/features/auth
+          - name: profile
+            paths: test/features/profile
           - name: task
             paths: test/features/task
 

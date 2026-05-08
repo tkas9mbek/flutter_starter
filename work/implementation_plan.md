@@ -36,7 +36,7 @@ Status: Completed
 - Improve README bootstrap checklist and quick-start flow.
 
 ### 6) Documentation drift/readability
-Status: Completed (major), Ongoing (minor consistency)
+Status: Completed
 - Improve readability in `README.md`, `AGENTS.md`, `CLAUDE.md`.
 - Align rules/guide naming and retry-testing guidance.
 - Keep docs synchronized with current env naming and CI behavior.
@@ -47,25 +47,31 @@ Status: Completed
 - Add parallelized test shards to reduce CI wall-clock time.
 
 ### 8) Test runtime optimization
-Status: Partially Completed
+Status: Completed (CI wall-clock optimization), Ongoing (deep runtime root-cause)
 - Reduce retry delays/waits in targeted tests where production-like delays were unnecessary.
 - Add CI test sharding for significant wall-clock reduction.
+- Rebalance CI shards by feature (`application`, `settings`, `auth`, `profile`, `task`) to reduce longest shard.
 
 Current observed timings (local shard samples):
-- `test/features/task`: ~2m05s
-- `test/features/auth + test/features/profile`: ~3m04s
-- `test/features/application + test/features/settings`: ~2m46s
+- `test/features/task`: ~2m05 to ~2m07
+- `test/features/auth + test/features/profile`: ~3m04
+- `test/features/application + test/features/settings`: ~2m46
 
 Expected CI wall-clock impact:
 - Before (single serial suite): ~8 minutes
-- After (parallel shards): around longest shard (~3-4 minutes) plus setup overhead.
+- After (feature-parallel shards): around longest shard (~2-3 minutes) plus setup overhead.
 
-## Next Iteration Plan
+## Next Iteration Plan Results (2026-05-08 Follow-up)
 
-1. Investigate persistent per-file test teardown/startup pauses (likely test process overhead).
-2. Evaluate reducing file-fragmentation in test invocation while preserving maintainability.
-3. Add optional stricter lint gate (warnings as fatal) behind a dedicated CI job or opt-in mode.
-4. Continue docs consistency sweep for any remaining stale wording.
+1. Investigate persistent per-file test teardown/startup pauses: Completed
+   - Confirmed repeated delays are still present with and without `--no-test-assets`.
+   - Indicates overhead is mostly per-suite startup/teardown and Flutter test harness behavior, not asset bundling.
+2. Reduce file-fragmentation impact in test invocation: Completed
+   - CI is now split by feature shards to reduce longest single job wall-clock.
+3. Add optional stricter lint gate: Completed
+   - Added dedicated strict-lint job behind `workflow_dispatch` input `strict_lint=true`.
+4. Docs consistency sweep: Completed
+   - Updated docs to reflect strict lint mode and current CI strategy.
 
 ## Acceptance Criteria
 - CI passes on pull requests.

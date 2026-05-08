@@ -35,6 +35,7 @@ fvm flutter run                                                   # Run app
 fvm flutter pub run build_runner build --delete-conflicting-outputs  # Generate code
 fvm flutter analyze                                              # Run analyzer
 fvm dart run custom_lint --no-fatal-infos --no-fatal-warnings   # Run custom lints
+fvm dart run custom_lint                                         # Strict custom lints (fatal warnings/infos)
 ```
 
 **Testing:**
