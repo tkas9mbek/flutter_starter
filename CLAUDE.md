@@ -39,7 +39,7 @@ fvm flutter test --coverage                                      # Run with cove
 **Code Generation:**
 ```bash
 fvm flutter pub run build_runner build --delete-conflicting-outputs  # Routes, JSON, Freezed
-dart run tool/generate_exception_mapper.dart                     # Exception mapper methods
+dart run utils/generators/generate_exception_mapper.dart                     # Exception mapper methods
 fvm flutter --no-color pub global run intl_utils:generate        # Localization
 ```
 
@@ -112,7 +112,7 @@ BlocBuilder<MyBloc, MyState>(
 
 **Adding new exceptions:**
 1. Add sealed class extending `AppException` with `@ExceptionUiConfig`
-2. Run `dart run tool/generate_exception_mapper.dart`
+2. Run `dart run utils/generators/generate_exception_mapper.dart`
 3. Generator updates mapper and decorator automatically
 
 ### Repository Executors
@@ -540,12 +540,21 @@ context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
 
 For detailed information, see:
 
-- [Architecture Guide](./docs/architecture.md) - Layered architecture, dependency inversion
-- [Exception Handling](./docs/exception_handling.md) - Custom exceptions, mappers, executors
-- [Structure Guide](./docs/structure.md) - File organization
-- [Code Formatting](./docs/code_formatting.md) - Code style rules
-- [Testing Guide](./docs/testing.md) - Testing strategies
-- [BLoC & Freezed Guide](./docs/bloc) - BLoC patterns
+**AI-tailored short references:** [docs/ai-context/](./docs/ai-context/)
+
+**Full guides:**
+- [Architecture Guide](./docs/guides/architecture.md) - Layered architecture, dependency inversion
+- [BLoC & Freezed Guide](./docs/guides/freezed_bloc.md) - BLoC patterns
+- [Code Review Guide](./docs/guides/code_review.md) - Severity-based review checklist
+- [Estimation Guide](./docs/guides/estimation.md) - Story-point estimation method
+- [Exception Handling](./docs/guides/exception_handling.md) - Custom exceptions, mappers, executors
+- [Structure Guide](./docs/guides/structure.md) - File organization
+- [Testing Guide](./docs/guides/testing.md) - Testing strategies
+
+**Rules:**
+- [Code Formatting](./docs/rules/code_formatting.md) - Code style rules
+- [Git Workflow](./docs/rules/git_workflow.md) - Branch / commit / PR naming
+- [Naming Conventions](./docs/rules/naming.md) - Naming patterns
 
 ---
 

@@ -13,7 +13,7 @@ import 'package:analyzer/dart/ast/visitor.dart';
 ///
 /// Run this generator after modifying AppException factories:
 /// ```bash
-/// dart run tool/generate_exception_mapper.dart
+/// dart run utils/generators/generate_exception_mapper.dart
 /// ```
 Future<void> main() async {
   print('🔍 Analyzing AppException...');

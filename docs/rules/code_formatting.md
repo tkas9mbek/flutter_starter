@@ -40,6 +40,21 @@ class Task { ... }
 class Settings { ... }
 ```
 
+### Flat widget folders
+
+Keep `ui/widget/` flat — do not nest folders like `ui/widget/header/`, `ui/widget/footer/`. If a screen has so many widgets that flat browsing becomes painful, split the **feature** by flow (`list/`, `details/`, `operation/`) instead, each with its own flat `widget/`.
+
+```
+✓ Good                              ✗ Bad
+ui/widget/                          ui/widget/
+├── user_avatar.dart                ├── header/
+├── user_card.dart                  │   ├── user_avatar.dart
+├── user_list_header.dart           │   └── user_list_header.dart
+└── user_list_item.dart             └── list/
+                                        ├── user_card.dart
+                                        └── user_list_item.dart
+```
+
 ---
 
 ## Class Size & SRP
@@ -225,6 +240,53 @@ Column(
 )
 ```
 
+### Underscore Prefix is for Class Members Only
+
+A leading `_` declares a private class-level member. Don't use it on local variables inside methods — local privacy is implicit.
+
+```dart
+// ✗ Wrong
+final _result = await _repository.fetch();
+final _filtered = _result.where((e) => e.active).toList();
+
+return _filtered;
+
+// ✓ Correct
+final result = await _repository.fetch();
+final filtered = result.where((e) => e.active).toList();
+
+return filtered;
+```
+
+### Multi-line Ternary → if/else
+
+A ternary expression that spans many lines reads worse than an explicit `if`/`else`. Convert when:
+
+- A single-condition ternary spans **more than 10 lines**.
+- A nested (2+) ternary spans **5+ lines**.
+
+```dart
+// ✗ Wrong - nested ternary, hard to scan
+final label = state.isLoading
+    ? localizer.loading
+    : state.hasError
+        ? localizer.error
+        : state.isEmpty
+            ? localizer.empty
+            : localizer.ready;
+
+// ✓ Correct - explicit if/else with early returns
+String _resolveLabel(MyState state, Localizer localizer) {
+  if (state.isLoading) return localizer.loading;
+  if (state.hasError) return localizer.error;
+  if (state.isEmpty) return localizer.empty;
+
+  return localizer.ready;
+}
+```
+
+A short ternary on one line stays a ternary — this rule is about long, branching ones.
+
 ---
 
 ## Class Member Ordering
@@ -376,6 +438,35 @@ listener: (context, state) {
 },
 ```
 
+### 4a. BlocBuilder Uses maybeMap / maybeWhen, Not mapOrNull
+
+**AI Instruction**: `BlocBuilder` must always return a non-null `Widget`. Use `maybeMap` / `maybeWhen` so `orElse` provides a fallback. Never use `mapOrNull` / `whenOrNull` inside `BlocBuilder` — they return `Widget?` and Flutter will throw at runtime.
+
+The pairing is:
+
+| Widget | Use | Why |
+|--------|-----|-----|
+| `BlocBuilder` | `maybeMap` / `maybeWhen` (with `orElse`) | must return a Widget |
+| `BlocListener` | `mapOrNull` / `whenOrNull` | side-effects only, no return |
+
+```dart
+// ✓ Correct
+BlocBuilder<MyBloc, MyState>(
+  builder: (context, state) => state.maybeMap(
+    success: (s) => SuccessView(data: s.data),
+    failure: (s) => FailureWidgetLarge(exception: s.exception, onRetry: _retry),
+    orElse: () => const CustomCircularProgressIndicator(),
+  ),
+)
+
+// ✗ Wrong - mapOrNull returns Widget?
+BlocBuilder<MyBloc, MyState>(
+  builder: (context, state) => state.mapOrNull(
+    success: (s) => SuccessView(data: s.data),
+  )!, // crashes for any unhandled state
+)
+```
+
 ### 5. Localization Required
 
 **AI Instruction**: All user-facing strings MUST use localization:
@@ -499,26 +590,79 @@ class RetriableRepositoryExecutor extends RepositoryExecutor { ... }
 
 ---
 
+## Line Length Limits
+
+- **100 characters** for ordinary code.
+- **200 characters** for deeply composed widget trees where a chain still reads cleaner on one line than broken up.
+
+When a line approaches the limit, prefer:
+
+1. Extracting a complex sub-expression to a named local variable.
+2. Splitting a builder into a private widget class.
+3. Method chaining onto a new line (each `.method()` aligned).
+
+Hard-wrapping a single expression mid-argument is the worst option — extract first.
+
+---
+
+## Data Layer
+
+### No `print()` in production code
+
+```dart
+// ❌ BAD — strips no metadata, lands in production logs
+print(error);
+
+// ✅ FIX — use Flutter's debug-aware logger or dart:developer
+debugPrint('$error');
+log('Failed to fetch payments: $error', name: 'PaymentRepository');
+```
+
+`print` is allowed only inside `utils/generators/` (developer scripts).
+
+### Generated mappers are read-only
+
+`exception_ui_mapper.dart` and `exception_ui_mapper_decorator.dart` are produced by `dart run utils/generators/generate_exception_mapper.dart`. Never edit them by hand — the next codegen run will overwrite your changes. Add new mappings by adding `@ExceptionUiConfig` factories to `AppException` and re-running the generator.
+
+---
+
+## Cleanup & Anti-Patterns
+
+| Rule | Why |
+|------|-----|
+| No backwards-compat aliases | Dead code bloat; confuses new readers |
+| No empty stub methods | File clutter; signal that a TODO was abandoned |
+| No scattered `// ignore:` lines | Fix the root cause. When unavoidable, use `// ignore_for_file:` at the top of the file with a `—` justification, e.g. `// ignore_for_file: avoid_print — developer-only generator script`. Prefer file-level over per-line ignores. |
+| Add `Key` only when needed | Unnecessary keys defeat Flutter's widget-reuse optimization |
+| Comments only when WHY is non-obvious | The code already says WHAT |
+| No leftover `_unused` renamed locals after a refactor | Delete instead — name is not load-bearing context |
+
+---
+
 ## Validation Checklist
 
 | Category | Rules |
 |----------|-------|
 | **Files** | One public class per file • File name = class name |
 | **Size** | Classes < 100 lines • Screens split into widgets • BLoCs independent |
+| **Lines** | < 100 chars (simple) • < 200 chars (complex widget chains) |
 | **Brackets** | Always brackets for control structures • Always `if (cond) ...[Widget()]` in collections |
 | **Ordering** | Constructors → final fields → methods → `build()` → `==`/`hashCode`/`toString` |
 | **Params** | required → defaults → optional → `super.key` |
 | **Arrows** | Always `=>` except: `build()` method, nested callbacks `setState` |
 | **Widgets** | No widget functions • Private state class • `super.init` first, `super.dispose` last |
 | **Comments** | Self-documenting code • `///` for public APIs only • No obvious comments |
+| **Logging** | `debugPrint` / `log` only • Never `print` outside `utils/generators/` |
+| **Cleanup** | No back-compat aliases • No empty stubs • Prefer `ignore_for_file:` with justification |
 
 ---
 
 ## Related Documentation
 
-- [Architecture](./architecture.md) - Layer structure
-- [Structure](./structure.md) - File organization
+- [Architecture](../guides/architecture.md) - Layer structure
+- [Structure](../guides/structure.md) - File organization
 - [Naming](./naming.md) - Naming conventions
+- [Git Workflow](./git_workflow.md) - Branch & commit rules
 
 ---
 

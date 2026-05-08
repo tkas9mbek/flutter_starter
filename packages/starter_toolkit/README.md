@@ -371,7 +371,7 @@ final class NoInternetException extends AppException {
 
 **Adding new exceptions:**
 1. Create sealed class extending `AppException` with `@ExceptionUiConfig`
-2. Run: `dart run tool/generate_exception_mapper.dart`
+2. Run: `dart run utils/generators/generate_exception_mapper.dart`
 3. Code generator automatically updates mapper and decorator
 
 ### Repository Executor Pattern
@@ -428,7 +428,7 @@ fvm flutter pub run build_runner build --delete-conflicting-outputs
 Generate exception mapper:
 
 ```bash
-dart run tool/generate_exception_mapper.dart
+dart run utils/generators/generate_exception_mapper.dart
 ```
 
 Generate localization files:

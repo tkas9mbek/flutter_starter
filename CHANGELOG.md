@@ -13,7 +13,7 @@ All notable changes to this project will be documented in this file.
 ## [2.0.0] - 2026-02-01
 
 ### Added
-- **Custom Lint Rules** (`starter_lints` package): `avoid_widget_functions`, `prefer_arrow_except_build`, `always_spread_in_collections`, `bloc_no_bloc_dependency`, `blank_line_before_return`, `prefer_named_parameters`, `sort_constructor_params`
+- **Custom Lint Rules** (`starter_lints` package): `avoid_widget_functions`, `prefer_arrow_except_build`, `always_spread_in_collections`, `bloc_no_bloc_dependency`, `blank_line_before_return`, `sort_constructor_params`
 
 ### Changed
 - Enhanced `analysis_options.yaml` with categorized rules

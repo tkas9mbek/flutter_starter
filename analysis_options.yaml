@@ -11,7 +11,7 @@ analyzer:
     - "lib/generated_plugin_registrant.dart"
     - "**/l10n/generated/**"
     - "lib/gen/**"
-    - "tool/**"
+    - "utils/generators/**"
 
   errors:
     # =========================================================

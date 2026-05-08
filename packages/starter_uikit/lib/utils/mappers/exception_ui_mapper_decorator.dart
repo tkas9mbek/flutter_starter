@@ -7,7 +7,7 @@ import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 /// while delegating others to the wrapped mapper.
 ///
 /// Delegations are auto-generated from @ExceptionUiConfig annotations.
-/// Run: dart run tool/generate_exception_mapper.dart
+/// Run: dart run utils/generators/generate_exception_mapper.dart
 abstract class ExceptionUiMapperDecorator extends ExceptionUiMapper {
   ExceptionUiMapperDecorator(super.context, this.wrapped);
 

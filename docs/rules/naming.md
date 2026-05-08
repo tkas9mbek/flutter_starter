@@ -352,6 +352,24 @@ const factory LoginState.failure(AppException exception) = _FailureLoginState;
 
 ---
 
+## Anti-Patterns: Bad → Good
+
+Concrete corrections for the most common naming mistakes seen in review.
+
+| ❌ Bad | ✅ Correct | Why |
+|--------|-----------|-----|
+| `Property` | `RealEstateProperty` | Too generic — missing feature context |
+| `UserModel` | `User` | `Model` suffix is redundant for domain types |
+| `TitleValueTile` | `TaxPropertyTitleValueTile` | Missing feature prefix — collides across modules |
+| `ImageContainer` | `UserAvatarCard` | `Container` is a Flutter widget; pick a specific UI type (Card / Panel / Tile) |
+| `AddUserBloc` | `UserCreationBloc` | BLoCs are named with nouns, not verbs |
+| `UserFetchEvent` | `UserRequestedEvent` | Events must be past tense |
+| `UserLocalDataSource` | `LocalUserDataSource` | Source prefix (Remote / Local / Mock) comes first |
+| `AddUserWidget` | `UserCreationButton` | `Widget` is vague; use a concrete UI type |
+| `MainScreen` | `HomeDashboardScreen` | Avoid `Main` / `Default` — say what the screen actually is |
+
+---
+
 ## Quick Reference
 
 | Component | Pattern | Example |
@@ -372,9 +390,9 @@ const factory LoginState.failure(AppException exception) = _FailureLoginState;
 
 ## Related Documentation
 
-- [Architecture](./architecture.md) - Layer structure
-- [Structure](./structure.md) - File organization
-- [BLoC & Freezed](./bloc) - BLoC patterns
+- [Architecture](../guides/architecture.md) - Layer structure
+- [Structure](../guides/structure.md) - File organization
+- [BLoC & Freezed](../guides/freezed_bloc.md) - BLoC patterns
 
 ---
 

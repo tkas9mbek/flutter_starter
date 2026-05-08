@@ -253,7 +253,7 @@ The template uses several code generators:
 fvm flutter pub run build_runner build --delete-conflicting-outputs
 
 # Exception mappers (custom tool)
-dart run tool/generate_exception_mapper.dart
+dart run utils/generators/generate_exception_mapper.dart
 
 # Localization files
 fvm flutter --no-color pub global run intl_utils:generate
@@ -310,7 +310,6 @@ fvm flutter pub run flutter_native_splash:create
 - `always_spread_in_collections` - Require spread operator in collections
 - `bloc_no_bloc_dependency` - BLoCs cannot inject other BLoCs
 - `blank_line_before_return` - Require blank line before return
-- `prefer_named_parameters` - Use named params for 3+ parameters
 - `sort_constructor_params` - Order: required → defaults → optional → super
 
 **Use it for:** Enforcing consistent code style across the project
@@ -324,13 +323,17 @@ fvm flutter pub run flutter_native_splash:create
 The template includes extensive documentation:
 
 - **[CLAUDE.md](CLAUDE.md)** - Comprehensive guide for AI assistants (14.5KB, optimized for Claude Code)
-- **[Architecture Guide](docs/architecture.md)** - Three-layer architecture, dependency inversion
-- **[Exception Handling](docs/exception_handling.md)** - Two-layer exception system, code generation
-- **[Testing Guide](docs/testing.md)** - Testing strategies, patterns, best practices
-- **[Code Formatting](docs/code-formatting.md)** - Code style, BLoC patterns, conventions
-- **[Structure Guide](docs/structure.md)** - File organization, feature layout
-- **[Naming Conventions](docs/naming.md)** - Consistent naming patterns
-- **[BLoC & Freezed Guide](docs/bloc/)** - State management patterns
+- **[AI Context](docs/ai-context/)** - Concise AI-friendly cheat-sheets per topic
+- **[Architecture Guide](docs/guides/architecture.md)** - Three-layer architecture, dependency inversion
+- **[BLoC & Freezed Guide](docs/guides/freezed_bloc.md)** - State management patterns
+- **[Code Review Guide](docs/guides/code_review.md)** - Severity-based review checklist
+- **[Estimation Guide](docs/guides/estimation.md)** - Story-point estimation method
+- **[Exception Handling](docs/guides/exception_handling.md)** - Two-layer exception system, code generation
+- **[Structure Guide](docs/guides/structure.md)** - File organization, feature layout
+- **[Testing Guide](docs/guides/testing.md)** - Testing strategies, patterns, best practices
+- **[Code Formatting](docs/rules/code_formatting.md)** - Code style, BLoC patterns, conventions
+- **[Git Workflow](docs/rules/git_workflow.md)** - Branch / commit / PR naming
+- **[Naming Conventions](docs/rules/naming.md)** - Consistent naming patterns
 
 ---
 
@@ -380,7 +383,7 @@ Edit theme files in `packages/starter_uikit/lib/theme/`:
 
 2. Run generator:
    ```bash
-   dart run tool/generate_exception_mapper.dart
+   dart run utils/generators/generate_exception_mapper.dart
    ```
 
 3. Add localization keys to ARB files

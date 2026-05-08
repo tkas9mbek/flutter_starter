@@ -6,7 +6,7 @@ import 'package:starter_uikit/models/exception_ui_model.dart';
 /// Maps domain exceptions to UI models with localization.
 ///
 /// Methods are auto-generated from @ExceptionUiConfig annotations.
-/// Run: dart run tool/generate_exception_mapper.dart
+/// Run: dart run utils/generators/generate_exception_mapper.dart
 class ExceptionUiMapper {
   ExceptionUiMapper(this.context) {
     _localizer = UikitLocalizer.of(context);

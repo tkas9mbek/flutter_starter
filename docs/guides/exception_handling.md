@@ -182,7 +182,7 @@ final class PaymentFailedException extends AppException {
 **Step 3: Generate code**
 
 ```bash
-dart run tool/generate_exception_mapper.dart
+dart run utils/generators/generate_exception_mapper.dart
 fvm flutter --no-color pub global run intl_utils:generate
 ```
 
