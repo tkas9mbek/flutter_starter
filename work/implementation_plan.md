@@ -73,6 +73,20 @@ Expected CI wall-clock impact:
 4. Docs consistency sweep: Completed
    - Updated docs to reflect strict lint mode and current CI strategy.
 
+## Next Iteration Plan Results (2026-05-09 Follow-up)
+
+1. Reduce test fixture I/O overhead: Completed
+   - Converted JSON mock model helpers to load fixture files once per test process and reuse parsed models.
+   - Preserved JSON + `fromJson` based test data strategy while removing repeated disk reads.
+2. Tighten async waits in retry-based tests: Completed
+   - Reduced conservative `blocTest.wait` values from 300ms to 120ms in retry scenarios with 10ms retry delay.
+   - Replaced a fixed 10ms settings integration sleep with a zero-duration async tick.
+3. Trim CI command overhead: Completed
+   - Added `--no-pub` to `flutter analyze` and shard test invocations in CI after dependency install.
+4. Runtime optimization status: Updated
+   - CI wall-clock is now improved via sharding + reduced per-test overhead from fixture caching and tighter waits.
+   - Further deep runtime improvements would require broader test architecture changes (merging very small suites or replacing some integration coverage with faster contract-level tests).
+
 ## Acceptance Criteria
 - CI passes on pull requests.
 - Analyzer passes.

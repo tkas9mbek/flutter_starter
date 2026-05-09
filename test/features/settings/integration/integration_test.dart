@@ -173,7 +173,7 @@ void main() {
       expect(themeCubit.state, ThemeModeOption.dark);
 
       languageCubit.setLanguageOption(languageOptionsAvailable[1]);
-      await Future.delayed(const Duration(milliseconds: 10));
+      await Future<void>.delayed(Duration.zero);
 
       // Theme should remain unchanged
       expect(themeCubit.state, ThemeModeOption.dark);

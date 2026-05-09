@@ -5,20 +5,28 @@ import 'package:starter/features/auth/model/auth_token.dart';
 import 'package:starter/features/profile/model/user.dart';
 
 class AuthMockModels {
-  static dynamic getJsonFromFile(String fileName) {
+  static dynamic _getJsonFromFile(String fileName) {
     const basePath = 'test/features/auth/assets';
     final jsonString = File('$basePath/$fileName').readAsStringSync();
 
     return json.decode(jsonString);
   }
 
+  static final Map<String, dynamic> _rawToken =
+      _getJsonFromFile('token.json') as Map<String, dynamic>;
+  static final Map<String, dynamic> _rawUser =
+      _getJsonFromFile('user.json') as Map<String, dynamic>;
+
+  static final AuthToken _authToken = AuthToken.fromJson(_rawToken);
+  static final User _user = User.fromJson(_rawUser);
+
   static Map<String, dynamic> get rawToken =>
-      getJsonFromFile('token.json') as Map<String, dynamic>;
+      Map<String, dynamic>.from(_rawToken);
 
   static Map<String, dynamic> get rawUser =>
-      getJsonFromFile('user.json') as Map<String, dynamic>;
+      Map<String, dynamic>.from(_rawUser);
 
-  static AuthToken get authToken => AuthToken.fromJson(rawToken);
+  static AuthToken get authToken => _authToken;
 
-  static User get user => User.fromJson(rawUser);
+  static User get user => _user;
 }

@@ -109,7 +109,7 @@ void main() {
         return registrationBloc;
       },
       act: (bloc) => bloc.add(event),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(milliseconds: 120),
       expect: () => [
         const RegistrationState.loading(),
         const RegistrationState.failure(exception),

@@ -92,7 +92,7 @@ void main() {
         return userBloc;
       },
       act: (bloc) => bloc.add(const UserEvent.requested()),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(milliseconds: 120),
       expect: () => [
         const UserState.loading(),
         const UserState.failure(NoInternetException()),
@@ -122,7 +122,7 @@ void main() {
         return userBloc;
       },
       act: (bloc) => bloc.add(const UserEvent.requested()),
-      wait: const Duration(milliseconds: 300),
+      wait: const Duration(milliseconds: 120),
       expect: () => [
         const UserState.loading(),
         predicate<UserState>(
