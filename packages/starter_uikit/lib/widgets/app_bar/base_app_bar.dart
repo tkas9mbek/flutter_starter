@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -30,7 +31,7 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       elevation: 2,
       centerTitle: false,
       shadowColor: theme.themeMode == ThemeMode.dark
-          ? Colors.black.withValues(alpha: 0.5)
+          ? AppColors.blackText.withValues(alpha: 0.5)
           : theme.background.withValues(alpha: 0.5),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),

@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
 import 'package:starter/features/task/ui/calendar/widget/calendar_date_picker_item.dart';
 import 'package:starter_toolkit/utils/date/date_time_extension.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class CalendarHorizontalDatePicker extends StatelessWidget {
@@ -25,7 +26,7 @@ class CalendarHorizontalDatePicker extends StatelessWidget {
         color: theme.surface,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.05),
+            color: AppColors.blackText.withValues(alpha: 0.05),
             blurRadius: 10,
             offset: const Offset(0, 2),
           ),

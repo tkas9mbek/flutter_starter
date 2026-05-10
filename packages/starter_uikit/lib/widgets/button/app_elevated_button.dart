@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_base_button.dart';
 
@@ -121,7 +122,7 @@ class AppElevatedButton extends StatelessWidget {
       disabledBackgroundColor: theme.surface,
       disabledTextColor: theme.textSecondary,
       borderRadius: borderRadius,
-      borderColor: Colors.transparent,
+      borderColor: AppColors.transparent,
       height: height,
       text: text,
       onPressed: onPressed,

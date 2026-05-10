@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
 
 class AppBaseButton extends StatelessWidget {
@@ -63,7 +64,7 @@ class AppBaseButton extends StatelessWidget {
         onLongPress: active ? onLongPressed : onDisabledPressed ?? () {},
         style: ButtonStyle(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-          overlayColor: WidgetStateProperty.all<Color>(Colors.transparent),
+          overlayColor: WidgetStateProperty.all<Color>(AppColors.transparent),
           elevation: WidgetStateProperty.all<double>(0),
           backgroundColor: WidgetStateProperty.all<Color>(
             enabled || disabledBackgroundColor == null
@@ -79,7 +80,7 @@ class AppBaseButton extends StatelessWidget {
             ),
           ),
           side: WidgetStateProperty.all<BorderSide>(
-            BorderSide(color: borderColor ?? Colors.transparent, width: 1),
+            BorderSide(color: borderColor ?? AppColors.transparent, width: 1),
           ),
           padding: WidgetStateProperty.all<EdgeInsets>(
             padding ?? EdgeInsets.zero,

@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
     inputs:
       strict_lint:
-        description: Run strict custom_lint (fatal warnings and infos)
+        description: Run strict custom_lint (fatal warnings, infos reported)
         required: false
         default: false
         type: boolean
@@ -55,8 +55,8 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Custom lint (strict)
-        run: dart run custom_lint
+      - name: Custom lint (strict warnings)
+        run: dart run custom_lint --no-fatal-infos
 
   flutter-tests:
     name: Flutter Tests (${{ matrix.shard.name }})

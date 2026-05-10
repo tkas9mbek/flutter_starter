@@ -7,6 +7,7 @@ import 'package:starter/features/application/root/widget/user_provider.dart';
 import 'package:starter/features/profile/ui/widget/profile_header.dart';
 import 'package:starter/features/profile/ui/widget/profile_info_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
@@ -35,7 +36,7 @@ class ProfileScreen extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black.withValues(alpha: 0.05),
+                    color: AppColors.blackText.withValues(alpha: 0.05),
                     blurRadius: 10,
                     offset: const Offset(0, 2),
                   ),

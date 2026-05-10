@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/application/environment/ui/bloc/environment_cubit.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class EnvironmentBannerStack extends StatelessWidget {
@@ -20,7 +21,7 @@ class EnvironmentBannerStack extends StatelessWidget {
         Align(
           alignment: Alignment.topCenter,
           child: Material(
-            color: Colors.transparent,
+            color: AppColors.transparent,
             child: SafeArea(
               child: BlocBuilder<EnvironmentCubit, AppEnvironment>(
                 builder: (context, env) => env.showBanner

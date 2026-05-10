@@ -4,6 +4,7 @@ import 'package:starter/core/router/app_router.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/bottom/bottom_nav_item.dart';
 
@@ -48,8 +49,8 @@ class _RootScreenState extends State<RootScreen> {
           boxShadow: [
             BoxShadow(
               color: theme.themeMode == ThemeMode.dark
-                  ? Colors.black.withValues(alpha: 0.3)
-                  : Colors.black.withValues(alpha: 0.1),
+                  ? AppColors.blackText.withValues(alpha: 0.3)
+                  : AppColors.blackText.withValues(alpha: 0.1),
               blurRadius: 20,
               offset: const Offset(0, -3),
             ),

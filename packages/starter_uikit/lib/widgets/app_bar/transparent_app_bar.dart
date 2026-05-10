@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/app_bar_content.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
@@ -80,8 +81,8 @@ class _TransparentAppBarState extends State<TransparentAppBar> {
             )
           : AppBar(
               key: const ValueKey('transparent'),
-              backgroundColor: Colors.transparent,
-              surfaceTintColor: Colors.transparent,
+              backgroundColor: AppColors.transparent,
+              surfaceTintColor: AppColors.transparent,
               systemOverlayStyle: SystemUiOverlayStyle.dark,
               automaticallyImplyLeading: false,
               titleSpacing: 0,

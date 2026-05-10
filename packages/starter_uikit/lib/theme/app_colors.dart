@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
+  static const Color transparent = Color(0x00000000);
+
   // Primary colors
   static const Color vividPurple = Color(0xFF6200EE);
   static const Color lightPurple = Color(0xFFBB86FC);

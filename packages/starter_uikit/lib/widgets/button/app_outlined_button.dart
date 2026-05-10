@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_base_button.dart';
 
@@ -116,10 +117,10 @@ class AppOutlinedButton extends StatelessWidget {
     final theme = ThemeProvider.of(context).theme;
 
     return AppBaseButton(
-      disabledBackgroundColor: Colors.transparent,
+      disabledBackgroundColor: AppColors.transparent,
       disabledTextColor: theme.textSecondary,
       borderRadius: borderRadius,
-      backgroundColor: Colors.transparent,
+      backgroundColor: AppColors.transparent,
       height: height,
       textStyle: textStyle,
       text: text,

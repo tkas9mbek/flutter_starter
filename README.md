@@ -90,7 +90,7 @@ GitHub Actions is configured in `.github/workflows/ci.yml` and runs:
 
 Optional strict lint gate:
 
-- Use **Run workflow** (`workflow_dispatch`) with `strict_lint = true` to run `dart run custom_lint` in strict mode (fatal warnings/infos).
+- Use **Run workflow** (`workflow_dispatch`) with `strict_lint = true` to run `dart run custom_lint --no-fatal-infos` (fatal warnings, infos reported).
 
 ---
 

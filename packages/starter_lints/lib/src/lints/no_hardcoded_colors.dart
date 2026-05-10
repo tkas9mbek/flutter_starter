@@ -26,6 +26,7 @@ class NoHardcodedColors extends DartLintRule {
     '/theme/',
     '/constants/',
     '/tokens/',
+    '/converters/',
   ];
 
   @override

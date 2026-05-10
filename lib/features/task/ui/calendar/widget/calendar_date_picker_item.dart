@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class CalendarDatePickerItem extends StatelessWidget {
@@ -25,7 +26,7 @@ class CalendarDatePickerItem extends StatelessWidget {
         width: 60,
         margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: isSelected ? theme.primary : Colors.transparent,
+          color: isSelected ? theme.primary : AppColors.transparent,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color: isSelected ? theme.primary : theme.border,
@@ -38,14 +39,14 @@ class CalendarDatePickerItem extends StatelessWidget {
             Text(
               DateFormat('EEE').format(date),
               style: textStyles.regularBody12.copyWith(
-                color: isSelected ? Colors.white : theme.textSecondary,
+                color: isSelected ? theme.onPrimary : theme.textSecondary,
               ),
             ),
             const SizedBox(height: 4),
             Text(
               date.day.toString(),
               style: textStyles.boldBody16.copyWith(
-                color: isSelected ? Colors.white : theme.textPrimary,
+                color: isSelected ? theme.onPrimary : theme.textPrimary,
               ),
             ),
           ],

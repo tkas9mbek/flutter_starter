@@ -47,7 +47,7 @@ Status: Completed
 - Add parallelized test shards to reduce CI wall-clock time.
 
 ### 8) Test runtime optimization
-Status: Completed (CI wall-clock optimization), Ongoing (deep runtime root-cause)
+Status: Completed (practical CI/runtime optimization for template scale)
 - Reduce retry delays/waits in targeted tests where production-like delays were unnecessary.
 - Add CI test sharding for significant wall-clock reduction.
 - Rebalance CI shards by feature (`application`, `settings`, `auth`, `profile`, `task`) to reduce longest shard.
@@ -86,6 +86,18 @@ Expected CI wall-clock impact:
 4. Runtime optimization status: Updated
    - CI wall-clock is now improved via sharding + reduced per-test overhead from fixture caching and tighter waits.
    - Further deep runtime improvements would require broader test architecture changes (merging very small suites or replacing some integration coverage with faster contract-level tests).
+
+## Next Iteration Plan Results (2026-05-10 Follow-up)
+
+1. Warning-level lint debt cleanup: Completed
+   - Fixed all custom-lint warning-level findings (including hardcoded color usage and BuildContext field storage).
+   - Current `custom_lint` warning count is zero.
+2. Strict lint gate stabilization: Completed
+   - Strict workflow now runs with fatal warnings and non-fatal infos (`dart run custom_lint --no-fatal-infos`).
+   - Keeps style guidance visible while preventing noisy info-only failures.
+3. Runtime optimization closure: Completed
+   - Remaining observed delays are primarily Flutter test harness/file transition costs.
+   - With sharded CI, fixture caching, and reduced waits already applied, additional gains require architecture tradeoffs not suitable for the template baseline.
 
 ## Acceptance Criteria
 - CI passes on pull requests.

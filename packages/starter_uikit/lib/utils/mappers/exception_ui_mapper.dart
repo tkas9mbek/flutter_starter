@@ -8,12 +8,10 @@ import 'package:starter_uikit/models/exception_ui_model.dart';
 /// Methods are auto-generated from @ExceptionUiConfig annotations.
 /// Run: dart run utils/generators/generate_exception_mapper.dart
 class ExceptionUiMapper {
-  ExceptionUiMapper(this.context) {
-    _localizer = UikitLocalizer.of(context);
-  }
+  ExceptionUiMapper(BuildContext context)
+    : _localizer = UikitLocalizer.of(context);
 
-  final BuildContext context;
-  late final UikitLocalizer _localizer;
+  final UikitLocalizer _localizer;
 
   // START GENERATED METHODS
   /// Maps domain exception to UI model

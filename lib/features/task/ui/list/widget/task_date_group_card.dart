@@ -4,6 +4,7 @@ import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/list/widget/task_list_item_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/utils/date/date_time_extension.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class TaskDateGroupCard extends StatelessWidget {
@@ -47,7 +48,7 @@ class TaskDateGroupCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
+                  color: AppColors.blackText.withValues(alpha: 0.05),
                   blurRadius: 10,
                   offset: const Offset(0, 2),
                 ),

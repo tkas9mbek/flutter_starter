@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 class BottomSheetScreen extends StatelessWidget {
@@ -160,7 +161,7 @@ class BottomSheetScreen extends StatelessWidget {
 
     return showBarModalBottomSheet<T>(
       overlayStyle: const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
+        statusBarColor: AppColors.transparent,
       ),
       settings: RouteSettings(name: routeName),
       shape: const RoundedRectangleBorder(
