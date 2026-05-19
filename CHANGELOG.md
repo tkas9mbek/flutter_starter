@@ -6,7 +6,9 @@ All notable changes to this project will be documented in this file.
 
 ### Added
 - GitHub Actions CI for linting, analyzer checks, and parallelized per-feature test shards
-- Shared app version constant surfaced in settings UI and release-prep documentation
+- Shared app version constant (`CoreConsts.appVersion`) surfaced in the settings UI and release-prep documentation
+- `starter_lints` rules: `avoid_build_context_field`, `avoid_mutable_bloc_fields`, `braces_in_flow_control`, `no_flutter_in_data_domain`, `no_hardcoded_colors`, `prefer_bool_default`, `prefer_map_or_null`
+- `AGENTS.md` and restructured documentation: human-facing `docs/guides/`, AI-context cheat sheets `docs/ai-context/`, and consolidated `docs/rules/` (new code-review, estimation, Freezed/BLoC, git-workflow, and coding-rules guides)
 
 ### Changed
 - Stabilized runtime environment reconfiguration to avoid no-op churn and concurrent DI races
@@ -14,7 +16,11 @@ All notable changes to this project will be documented in this file.
 - Centralized DI unregister helpers and made auth/data re-registration safer and idempotent
 - Removed template leakage from product-specific bootstrap values and refreshed bootstrap guidance
 - Improved AI-facing and human-facing documentation for architecture, testing, naming, and release workflow
-- Reduced test wall-clock time through fixture caching, tighter retry waits, and CI shard rebalancing
+- Refactored unit, BLoC, and integration suites onto shared JSON fixture helpers; rebalanced CI test shards
+- Regenerated localization (`intl`) output for the app, `starter_toolkit`, and `starter_uikit`
+
+### Removed
+- `starter_lints` rule `prefer_named_parameters`
 
 ### Fixed
 - Pinned lint pipeline compatibility so `custom_lint` runs reliably in CI and local development
