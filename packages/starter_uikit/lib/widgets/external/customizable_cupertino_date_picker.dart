@@ -252,14 +252,30 @@ class _CustomizableCupertinoDatePickerState
         alignment: Alignment.center,
         child: Text(
           '${values[index]}',
-          style: index == selectedValueIndex
-              ? widget.selectedStyle
-              : isDisabled(index)
-              ? widget.disabledStyle
-              : widget.unselectedStyle,
+          style: _itemStyle(
+            index: index,
+            selectedValueIndex: selectedValueIndex,
+            isDisabled: isDisabled,
+          ),
         ),
       ),
     );
+  }
+
+  TextStyle? _itemStyle({
+    required int index,
+    required int selectedValueIndex,
+    required bool Function(int) isDisabled,
+  }) {
+    if (index == selectedValueIndex) {
+      return widget.selectedStyle;
+    }
+
+    if (isDisabled(index)) {
+      return widget.disabledStyle;
+    }
+
+    return widget.unselectedStyle;
   }
 
   Widget _daySelector() {

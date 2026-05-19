@@ -15,7 +15,7 @@ import 'package:starter_lints/src/lints/max_widget_nesting.dart';
 import 'package:starter_lints/src/lints/multi_line_ternary.dart';
 import 'package:starter_lints/src/lints/no_flutter_in_data_domain.dart';
 import 'package:starter_lints/src/lints/no_hardcoded_colors.dart';
-import 'package:starter_lints/src/lints/prefer_arrow_except_build_and_nested.dart';
+import 'package:starter_lints/src/lints/prefer_arrow_except_build.dart';
 import 'package:starter_lints/src/lints/prefer_bool_default.dart';
 import 'package:starter_lints/src/lints/prefer_map_or_null.dart';
 import 'package:starter_lints/src/lints/sort_constructor_params.dart';

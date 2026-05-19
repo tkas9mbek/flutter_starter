@@ -3,8 +3,8 @@ import 'package:starter/core/consts/core_consts.dart';
 import 'package:starter_toolkit/data/interceptor/app_error_interceptor.dart';
 import 'package:starter_toolkit/data/interceptor/auth_refresh_interceptor.dart';
 
-class ApiProvider {
-  ApiProvider({this.authInterceptor, this.tryRefreshToken, this.logout});
+class DioProvider {
+  DioProvider({this.authInterceptor, this.tryRefreshToken, this.logout});
 
   final Interceptor? authInterceptor;
   final Future<void> Function()? tryRefreshToken;

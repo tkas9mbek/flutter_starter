@@ -13,8 +13,7 @@ class ThemeInBuildOnly extends DartLintRule {
     problemMessage:
         'Do not store theme in state fields. '
         'Get theme in build() as a local variable.',
-    correctionMessage:
-        'Move ThemeProvider.of(context) into build().',
+    correctionMessage: 'Move ThemeProvider.of(context) into build().',
     errorSeverity: ErrorSeverity.WARNING,
   );
 
@@ -28,11 +27,7 @@ class ThemeInBuildOnly extends DartLintRule {
     errorSeverity: ErrorSeverity.WARNING,
   );
 
-  static const _themeTypes = {
-    'AppTheme',
-    'AppTextStyles',
-    'ThemeData',
-  };
+  static const _themeTypes = {'AppTheme', 'AppTextStyles', 'ThemeData'};
 
   @override
   void run(

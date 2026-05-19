@@ -59,7 +59,7 @@ class DataModule extends AppModule {
       },
     );
 
-    final apiProvider = ApiProvider(
+    final dioProvider = DioProvider(
       authInterceptor: authInterceptor,
       logout: () async => getIt.get<AuthRepository>().logout(),
     );
@@ -68,10 +68,10 @@ class DataModule extends AppModule {
 
     getIt
       ..registerSingleton<Dio>(
-        apiProvider.getDio(useToken: false),
+        dioProvider.getDio(useToken: false),
         instanceName: 'unauthorized',
       )
-      ..registerSingleton<Dio>(apiProvider.getDio(useToken: true))
+      ..registerSingleton<Dio>(dioProvider.getDio(useToken: true))
       ..registerFactory<ApiClient>(
         () => DioApiClient(
           dio: getIt<Dio>(instanceName: 'unauthorized'),
