@@ -18,8 +18,10 @@ class Localizer {
   static Localizer? _current;
 
   static Localizer get current {
-    assert(_current != null,
-        'No instance of Localizer was loaded. Try to initialize the Localizer delegate before accessing Localizer.current.');
+    assert(
+      _current != null,
+      'No instance of Localizer was loaded. Try to initialize the Localizer delegate before accessing Localizer.current.',
+    );
     return _current!;
   }
 
@@ -41,8 +43,10 @@ class Localizer {
 
   static Localizer of(BuildContext context) {
     final instance = Localizer.maybeOf(context);
-    assert(instance != null,
-        'No instance of Localizer present in the widget tree. Did you add Localizer.delegate in localizationsDelegates?');
+    assert(
+      instance != null,
+      'No instance of Localizer present in the widget tree. Did you add Localizer.delegate in localizationsDelegates?',
+    );
     return instance!;
   }
 
@@ -52,22 +56,12 @@ class Localizer {
 
   /// `Login`
   String get login {
-    return Intl.message(
-      'Login',
-      name: 'login',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Login', name: 'login', desc: '', args: []);
   }
 
   /// `Sign Up`
   String get signUp {
-    return Intl.message(
-      'Sign Up',
-      name: 'signUp',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Sign Up', name: 'signUp', desc: '', args: []);
   }
 
   /// `Phone Number`
@@ -92,12 +86,7 @@ class Localizer {
 
   /// `Password`
   String get password {
-    return Intl.message(
-      'Password',
-      name: 'password',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Password', name: 'password', desc: '', args: []);
   }
 
   /// `Enter password`
@@ -112,42 +101,22 @@ class Localizer {
 
   /// `Log In`
   String get toLogin {
-    return Intl.message(
-      'Log In',
-      name: 'toLogin',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Log In', name: 'toLogin', desc: '', args: []);
   }
 
   /// `Register`
   String get toRegister {
-    return Intl.message(
-      'Register',
-      name: 'toRegister',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Register', name: 'toRegister', desc: '', args: []);
   }
 
   /// `Log Out`
   String get toLogout {
-    return Intl.message(
-      'Log Out',
-      name: 'toLogout',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Log Out', name: 'toLogout', desc: '', args: []);
   }
 
   /// `Calendar`
   String get calendar {
-    return Intl.message(
-      'Calendar',
-      name: 'calendar',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Calendar', name: 'calendar', desc: '', args: []);
   }
 
   /// `Don't have an account?`
@@ -172,22 +141,12 @@ class Localizer {
 
   /// `Tasks`
   String get tasks {
-    return Intl.message(
-      'Tasks',
-      name: 'tasks',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tasks', name: 'tasks', desc: '', args: []);
   }
 
   /// `No tasks yet`
   String get noTasksYet {
-    return Intl.message(
-      'No tasks yet',
-      name: 'noTasksYet',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('No tasks yet', name: 'noTasksYet', desc: '', args: []);
   }
 
   /// `{title} deleted`
@@ -202,32 +161,17 @@ class Localizer {
 
   /// `task`
   String get task {
-    return Intl.message(
-      'task',
-      name: 'task',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('task', name: 'task', desc: '', args: []);
   }
 
   /// `tasks`
   String get tasks_plural {
-    return Intl.message(
-      'tasks',
-      name: 'tasks_plural',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('tasks', name: 'tasks_plural', desc: '', args: []);
   }
 
   /// `tasks`
   String get tasks_many {
-    return Intl.message(
-      'tasks',
-      name: 'tasks_many',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('tasks', name: 'tasks_many', desc: '', args: []);
   }
 
   /// `Select a date`
@@ -252,82 +196,42 @@ class Localizer {
 
   /// `Today`
   String get today {
-    return Intl.message(
-      'Today',
-      name: 'today',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Today', name: 'today', desc: '', args: []);
   }
 
   /// `Tomorrow`
   String get tomorrow {
-    return Intl.message(
-      'Tomorrow',
-      name: 'tomorrow',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Tomorrow', name: 'tomorrow', desc: '', args: []);
   }
 
   /// `Settings`
   String get settings {
-    return Intl.message(
-      'Settings',
-      name: 'settings',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Settings', name: 'settings', desc: '', args: []);
   }
 
   /// `Appearance`
   String get appearance {
-    return Intl.message(
-      'Appearance',
-      name: 'appearance',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Appearance', name: 'appearance', desc: '', args: []);
   }
 
   /// `Theme`
   String get theme {
-    return Intl.message(
-      'Theme',
-      name: 'theme',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Theme', name: 'theme', desc: '', args: []);
   }
 
   /// `Light`
   String get light {
-    return Intl.message(
-      'Light',
-      name: 'light',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Light', name: 'light', desc: '', args: []);
   }
 
   /// `Dark`
   String get dark {
-    return Intl.message(
-      'Dark',
-      name: 'dark',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Dark', name: 'dark', desc: '', args: []);
   }
 
   /// `System`
   String get system {
-    return Intl.message(
-      'System',
-      name: 'system',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('System', name: 'system', desc: '', args: []);
   }
 
   /// `Theme switching coming soon!`
@@ -342,12 +246,7 @@ class Localizer {
 
   /// `Language`
   String get language {
-    return Intl.message(
-      'Language',
-      name: 'language',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Language', name: 'language', desc: '', args: []);
   }
 
   /// `Select language`
@@ -362,22 +261,12 @@ class Localizer {
 
   /// `About`
   String get about {
-    return Intl.message(
-      'About',
-      name: 'about',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('About', name: 'about', desc: '', args: []);
   }
 
   /// `Version`
   String get version {
-    return Intl.message(
-      'Version',
-      name: 'version',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Version', name: 'version', desc: '', args: []);
   }
 
   /// `Terms and Conditions`
@@ -422,32 +311,17 @@ class Localizer {
 
   /// `Profile`
   String get profile {
-    return Intl.message(
-      'Profile',
-      name: 'profile',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Profile', name: 'profile', desc: '', args: []);
   }
 
   /// `Birthday`
   String get birthday {
-    return Intl.message(
-      'Birthday',
-      name: 'birthday',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Birthday', name: 'birthday', desc: '', args: []);
   }
 
   /// `Age`
   String get age {
-    return Intl.message(
-      'Age',
-      name: 'age',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Age', name: 'age', desc: '', args: []);
   }
 
   /// `{count, plural, one{{count} year old} other{{count} years old}}`
@@ -474,12 +348,7 @@ class Localizer {
 
   /// `Retry`
   String get retry {
-    return Intl.message(
-      'Retry',
-      name: 'retry',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Retry', name: 'retry', desc: '', args: []);
   }
 
   /// `Logging out...`
@@ -494,22 +363,12 @@ class Localizer {
 
   /// `Refresh`
   String get refresh {
-    return Intl.message(
-      'Refresh',
-      name: 'refresh',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Refresh', name: 'refresh', desc: '', args: []);
   }
 
   /// `Name`
   String get name {
-    return Intl.message(
-      'Name',
-      name: 'name',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Name', name: 'name', desc: '', args: []);
   }
 
   /// `Enter your name`
@@ -554,22 +413,12 @@ class Localizer {
 
   /// `Delete`
   String get delete {
-    return Intl.message(
-      'Delete',
-      name: 'delete',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Delete', name: 'delete', desc: '', args: []);
   }
 
   /// `Delete Task`
   String get deleteTask {
-    return Intl.message(
-      'Delete Task',
-      name: 'deleteTask',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Delete Task', name: 'deleteTask', desc: '', args: []);
   }
 
   /// `Are you sure you want to delete this task?`
@@ -584,12 +433,7 @@ class Localizer {
 
   /// `Cancel`
   String get cancel {
-    return Intl.message(
-      'Cancel',
-      name: 'cancel',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Cancel', name: 'cancel', desc: '', args: []);
   }
 
   /// `Task deleted successfully`
@@ -624,42 +468,22 @@ class Localizer {
 
   /// `Start Time`
   String get startTime {
-    return Intl.message(
-      'Start Time',
-      name: 'startTime',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Start Time', name: 'startTime', desc: '', args: []);
   }
 
   /// `End Time`
   String get endTime {
-    return Intl.message(
-      'End Time',
-      name: 'endTime',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('End Time', name: 'endTime', desc: '', args: []);
   }
 
   /// `Description`
   String get description {
-    return Intl.message(
-      'Description',
-      name: 'description',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Description', name: 'description', desc: '', args: []);
   }
 
   /// `Completed`
   String get completed {
-    return Intl.message(
-      'Completed',
-      name: 'completed',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Completed', name: 'completed', desc: '', args: []);
   }
 
   /// `Not Completed`
@@ -674,12 +498,7 @@ class Localizer {
 
   /// `Status`
   String get status {
-    return Intl.message(
-      'Status',
-      name: 'status',
-      desc: '',
-      args: [],
-    );
+    return Intl.message('Status', name: 'status', desc: '', args: []);
   }
 }
 

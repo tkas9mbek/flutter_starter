@@ -44,9 +44,10 @@ void main() {
     userBloc = UserBloc(profileRepository);
   });
 
-  test('initial state is initial()', () {
-    expect(userBloc.state, const UserState.initial());
-  });
+  test(
+    'initial state is initial()',
+    () => expect(userBloc.state, const UserState.initial()),
+  );
 
   group('getUserProfile flow', () {
     blocTest<UserBloc, UserState>(
@@ -67,15 +68,13 @@ void main() {
         const UserState.loading(),
         UserState.success(ProfileMockModels.user),
       ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<User>(
-            method: any(named: 'method'),
-            path: '/profile',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-      },
+      verify: (_) => verify(
+        () => mockApiClient.requestJson<User>(
+          method: any(named: 'method'),
+          path: '/profile',
+          fromJson: any(named: 'fromJson'),
+        ),
+      ).called(1),
     );
 
     blocTest<UserBloc, UserState>(
@@ -97,15 +96,13 @@ void main() {
         const UserState.loading(),
         const UserState.failure(NoInternetException()),
       ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<User>(
-            method: any(named: 'method'),
-            path: '/profile',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(greaterThan(1)); // Called multiple times due to retry
-      },
+      verify: (_) => verify(
+        () => mockApiClient.requestJson<User>(
+          method: any(named: 'method'),
+          path: '/profile',
+          fromJson: any(named: 'fromJson'),
+        ),
+      ).called(greaterThan(1)),
     );
 
     blocTest<UserBloc, UserState>(
@@ -133,33 +130,30 @@ void main() {
               false,
         ),
       ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<User>(
-            method: any(named: 'method'),
-            path: '/profile',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(greaterThan(1)); // Called multiple times due to retry
-      },
+      verify: (_) => verify(
+        () => mockApiClient.requestJson<User>(
+          method: any(named: 'method'),
+          path: '/profile',
+          fromJson: any(named: 'fromJson'),
+        ),
+      ).called(greaterThan(1)),
     );
   });
 
-  group('updateUser flow', () {
-    blocTest<UserBloc, UserState>(
+  group(
+    'updateUser flow',
+    () => blocTest<UserBloc, UserState>(
       'updates user state directly without API call',
       build: () => userBloc,
       act: (bloc) => bloc.add(UserEvent.updated(ProfileMockModels.updatedUser)),
       expect: () => [UserState.success(ProfileMockModels.updatedUser)],
-      verify: (_) {
-        verifyNever(
-          () => mockApiClient.requestJson<User>(
-            method: any(named: 'method'),
-            path: any(named: 'path'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        );
-      },
-    );
-  });
+      verify: (_) => verifyNever(
+        () => mockApiClient.requestJson<User>(
+          method: any(named: 'method'),
+          path: any(named: 'path'),
+          fromJson: any(named: 'fromJson'),
+        ),
+      ),
+    ),
+  );
 }

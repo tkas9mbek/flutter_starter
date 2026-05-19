@@ -11,13 +11,13 @@ class AppElevatedButton extends StatelessWidget {
     this.enabled = true,
     this.loading = false,
     this.iconDirection = TextDirection.ltr,
+    this.borderRadius = 12,
     this.onPressed,
     this.width,
     this.icon,
     this.height,
     this.backgroundColor,
     this.textColor,
-    this.borderRadius = 12,
     this.padding,
     super.key,
   });
@@ -25,12 +25,12 @@ class AppElevatedButton extends StatelessWidget {
   factory AppElevatedButton.big({
     required BuildContext context,
     required String text,
-    VoidCallback? onPressed,
-    Widget? icon,
     TextDirection iconDirection = TextDirection.ltr,
     bool loading = false,
     bool enabled = true,
     double? width = double.infinity,
+    VoidCallback? onPressed,
+    Widget? icon,
   }) {
     final textStyles = ThemeProvider.of(context).textStyles;
 
@@ -51,12 +51,12 @@ class AppElevatedButton extends StatelessWidget {
   factory AppElevatedButton.medium({
     required BuildContext context,
     required String text,
-    VoidCallback? onPressed,
-    Widget? icon,
     TextDirection iconDirection = TextDirection.ltr,
     bool loading = false,
     bool enabled = true,
     double? width = double.infinity,
+    VoidCallback? onPressed,
+    Widget? icon,
   }) {
     final textStyles = ThemeProvider.of(context).textStyles;
 
@@ -77,12 +77,12 @@ class AppElevatedButton extends StatelessWidget {
   factory AppElevatedButton.small({
     required BuildContext context,
     required String text,
-    VoidCallback? onPressed,
-    Widget? icon,
     TextDirection iconDirection = TextDirection.ltr,
     bool loading = false,
     bool enabled = true,
     double? width,
+    VoidCallback? onPressed,
+    Widget? icon,
   }) {
     final textStyles = ThemeProvider.of(context).textStyles;
 

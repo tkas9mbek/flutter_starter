@@ -20,6 +20,7 @@ class PermissionDialogHelper {
     if (!context.mounted) {
       return Future.value(false);
     }
+
     return dialogBuilder(context);
   }
 
@@ -31,6 +32,7 @@ class PermissionDialogHelper {
     if (!context.mounted) {
       return Future.value(false);
     }
+
     return dialogBuilder(context);
   }
 
@@ -42,6 +44,7 @@ class PermissionDialogHelper {
     if (!context.mounted) {
       return Future.value(false);
     }
+
     return dialogBuilder(context);
   }
 
@@ -64,6 +67,7 @@ class PermissionDialogHelper {
     // On iOS, skip custom dialog and request permission directly
     if (Platform.isIOS) {
       final result = await Permission.camera.request();
+
       return result.isGranted;
     }
 
@@ -80,6 +84,7 @@ class PermissionDialogHelper {
     }
 
     final result = await Permission.camera.request();
+
     return result.isGranted;
   }
 
@@ -105,6 +110,7 @@ class PermissionDialogHelper {
     // On iOS, skip custom dialog and request permission directly
     if (Platform.isIOS) {
       final result = await permission.request();
+
       // On iOS, both granted and limited access should be treated as permission granted
       return result.isGranted || result.isLimited;
     }
@@ -122,6 +128,7 @@ class PermissionDialogHelper {
     }
 
     final result = await permission.request();
+
     return result.isGranted;
   }
 
@@ -144,6 +151,7 @@ class PermissionDialogHelper {
     // On iOS, skip custom dialog and request permission directly
     if (Platform.isIOS) {
       final result = await Permission.location.request();
+
       return result.isGranted;
     }
 
@@ -160,6 +168,7 @@ class PermissionDialogHelper {
     }
 
     final result = await Permission.location.request();
+
     return result.isGranted;
   }
 }

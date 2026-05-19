@@ -10,11 +10,9 @@ String capitalizeFirstLetter(String? input) {
 }
 
 /// Removes whitespace and non-word symbols from [input].
-String removeSpaceAndSymbols(String input) {
-  return input.replaceAll(RegExp(r'\s+|[^\w\s]'), '');
-}
+String removeSpaceAndSymbols(String input) =>
+    input.replaceAll(RegExp(r'\s+|[^\w\s]'), '');
 
 /// Strips display formatting (spaces, parens, dashes) from a phone number.
-String cleanPhoneNumber(String input) {
-  return input.replaceAll(RegExp(r'[\s\(\)\-]'), '');
-}
+String cleanPhoneNumber(String input) =>
+    input.replaceAll(RegExp(r'[\s\(\)\-]'), '');

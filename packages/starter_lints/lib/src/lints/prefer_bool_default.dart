@@ -29,9 +29,9 @@ class PreferBoolDefault extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addFunctionDeclaration((node) {
-      _checkParameters(node.functionExpression.parameters, reporter);
-    });
+    context.registry.addFunctionDeclaration(
+      (node) => _checkParameters(node.functionExpression.parameters, reporter),
+    );
 
     context.registry.addMethodDeclaration((node) {
       final hasOverride = node.metadata.any(
@@ -45,9 +45,9 @@ class PreferBoolDefault extends DartLintRule {
       _checkParameters(node.parameters, reporter);
     });
 
-    context.registry.addConstructorDeclaration((node) {
-      _checkParameters(node.parameters, reporter);
-    });
+    context.registry.addConstructorDeclaration(
+      (node) => _checkParameters(node.parameters, reporter),
+    );
   }
 
   void _checkParameters(
@@ -82,8 +82,6 @@ class PreferBoolDefault extends DartLintRule {
       return false;
     }
 
-    final source = type.toSource();
-
-    return source == 'bool?';
+    return type.toSource() == 'bool?';
   }
 }

@@ -7,6 +7,12 @@ class CustomizableCupertinoDatePicker extends StatefulWidget {
   const CustomizableCupertinoDatePicker({
     required this.itemExtent,
     required this.onSelectedItemChanged,
+    this.squeeze = 1.45,
+    this.diameterRatio = 1.1,
+    this.magnification = 1.0,
+    this.offAxisFraction = 0.0,
+    this.useMaginifier = false,
+    this.selectionOverlay = const CupertinoPickerDefaultSelectionOverlay(),
     this.minDate,
     this.maxDate,
     this.selectedDate,
@@ -14,12 +20,6 @@ class CustomizableCupertinoDatePicker extends StatefulWidget {
     this.unselectedStyle,
     this.disabledStyle,
     this.backgroundColor,
-    this.squeeze = 1.45,
-    this.diameterRatio = 1.1,
-    this.magnification = 1.0,
-    this.offAxisFraction = 0.0,
-    this.useMaginifier = false,
-    this.selectionOverlay = const CupertinoPickerDefaultSelectionOverlay(),
     super.key,
   });
 
@@ -122,6 +122,7 @@ class _CustomizableCupertinoDatePickerState
   /// check if selected year is a leap year
   bool _isLeapYear() {
     final year = _minDate.year + _selectedYearIndex;
+
     return year % 4 == 0 &&
         (year % 100 != 0 || (year % 100 == 0 && year % 400 == 0));
   }
@@ -131,6 +132,7 @@ class _CustomizableCupertinoDatePickerState
     if (_selectedMonthIndex == 1) {
       _days[1] = _isLeapYear() ? 29 : 28;
     }
+
     return _days[_selectedMonthIndex];
   }
 

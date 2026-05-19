@@ -35,6 +35,7 @@ class AppScreenshotHelper {
     final image = await boundary.toImage(pixelRatio: actualPixelRatio);
     final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
     image.dispose();
+
     return byteData?.buffer.asUint8List();
   }
 }

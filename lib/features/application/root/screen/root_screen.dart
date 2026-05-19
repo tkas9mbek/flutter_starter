@@ -22,6 +22,7 @@ class RootScreen extends StatefulWidget {
         'RootScreen.of() called with a context that does not contain a RootScreen.',
       );
     }
+
     return result.context;
   }
 

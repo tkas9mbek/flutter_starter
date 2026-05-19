@@ -29,7 +29,7 @@ class EmptyInformationBody extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (iconPath != null)
+            if (iconPath != null) ...[
               SvgPicture.asset(
                 iconPath!,
                 package: UiConsts.package,
@@ -39,9 +39,10 @@ class EmptyInformationBody extends StatelessWidget {
                   theme.textSecondary,
                   BlendMode.srcIn,
                 ),
-              )
-            else
+              ),
+            ] else ...[
               Icon(Icons.inbox_outlined, size: 64, color: theme.textSecondary),
+            ],
             const SizedBox(height: 16),
             Text(
               text ?? UikitLocalizer.of(context).noDataAvailable,

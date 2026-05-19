@@ -14,9 +14,9 @@ class AppRadioGroup<T extends Object> extends StatelessWidget {
   const AppRadioGroup({
     required this.name,
     required this.options,
-    this.selected,
     this.optionLabelBuilder = defaultOptionLabelBuilder,
     this.showLastDivider = false,
+    this.selected,
     this.validator,
     this.onChanged,
     super.key,

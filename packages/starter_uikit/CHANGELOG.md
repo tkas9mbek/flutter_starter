@@ -2,6 +2,13 @@
 
 All notable changes to starter_uikit will be documented in this file.
 
+## [2.1.0] - 2026-05-14
+
+### Changed
+- Updated package version to align with the main app `2.1.0` release
+- Kept the shared status, theme, and form widget APIs stable while the template release hardened surrounding app flows
+- Continued to use the shared exception-to-UI mapping flow for settings and failure states
+
 ## [2.0.0] - 2025-02-01
 
 ### Changed

@@ -16,9 +16,7 @@ void main() {
   late TaskRepository repository;
   late MockTaskDataSource mockDataSource;
 
-  setUpAll(() {
-    registerFallbackValue(FakeTaskCreateRequest());
-  });
+  setUpAll(() => registerFallbackValue(FakeTaskCreateRequest()));
 
   setUp(() {
     mockDataSource = MockTaskDataSource();
@@ -28,8 +26,9 @@ void main() {
     );
   });
 
-  group('getTasks', () {
-    test('returns list of tasks from data source', () async {
+  group(
+    'getTasks',
+    () => test('returns list of tasks from data source', () async {
       when(
         () => mockDataSource.getTasks(),
       ).thenAnswer((_) async => TaskMockModels.allTasks);
@@ -38,26 +37,31 @@ void main() {
 
       expect(result, equals(TaskMockModels.allTasks));
       verify(() => mockDataSource.getTasks()).called(1);
-    });
-  });
+    }),
+  );
 
-  group('getTasksByDate', () {
-    test('returns list of tasks for specific date from data source', () async {
-      final testDate = DateTime(2025, 1, 15);
-      when(
-        () => mockDataSource.getTasksByDate(testDate),
-      ).thenAnswer((_) async => [TaskMockModels.task1]);
+  group(
+    'getTasksByDate',
+    () => test(
+      'returns list of tasks for specific date from data source',
+      () async {
+        final testDate = DateTime(2025, 1, 15);
+        when(
+          () => mockDataSource.getTasksByDate(testDate),
+        ).thenAnswer((_) async => [TaskMockModels.task1]);
 
-      final result = await repository.getTasksByDate(testDate);
+        final result = await repository.getTasksByDate(testDate);
 
-      expect(result.length, equals(1));
-      expect(result[0], equals(TaskMockModels.task1));
-      verify(() => mockDataSource.getTasksByDate(testDate)).called(1);
-    });
-  });
+        expect(result.length, equals(1));
+        expect(result[0], equals(TaskMockModels.task1));
+        verify(() => mockDataSource.getTasksByDate(testDate)).called(1);
+      },
+    ),
+  );
 
-  group('createTask', () {
-    test('returns created task from data source', () async {
+  group(
+    'createTask',
+    () => test('returns created task from data source', () async {
       final request = TaskCreateRequest(
         title: 'New Task',
         description: 'Description',
@@ -74,11 +78,12 @@ void main() {
 
       expect(result, equals(TaskMockModels.task3));
       verify(() => mockDataSource.createTask(request)).called(1);
-    });
-  });
+    }),
+  );
 
-  group('updateTask', () {
-    test('returns updated task from data source', () async {
+  group(
+    'updateTask',
+    () => test('returns updated task from data source', () async {
       const taskId = '1';
       final request = TaskCreateRequest(
         title: 'Updated Task',
@@ -96,11 +101,12 @@ void main() {
 
       expect(result, equals(TaskMockModels.task1));
       verify(() => mockDataSource.updateTask(taskId, request)).called(1);
-    });
-  });
+    }),
+  );
 
-  group('deleteTask', () {
-    test('delegates to data source', () async {
+  group(
+    'deleteTask',
+    () => test('delegates to data source', () async {
       const taskId = '1';
 
       when(() => mockDataSource.deleteTask(taskId)).thenAnswer((_) async => {});
@@ -108,6 +114,6 @@ void main() {
       await repository.deleteTask(taskId);
 
       verify(() => mockDataSource.deleteTask(taskId)).called(1);
-    });
-  });
+    }),
+  );
 }

@@ -24,21 +24,19 @@ class BracesInFlowControl extends DartLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    context.registry.addForStatement((node) {
-      _check(node.body, node.offset, node.root, reporter);
-    });
+    context.registry.addForStatement(
+      (node) => _check(node.body, node.offset, node.root, reporter),
+    );
 
-    context.registry.addWhileStatement((node) {
-      _check(node.body, node.offset, node.root, reporter);
-    });
+    context.registry.addWhileStatement(
+      (node) => _check(node.body, node.offset, node.root, reporter),
+    );
 
-    context.registry.addDoStatement((node) {
-      _check(node.body, node.offset, node.root, reporter);
-    });
+    context.registry.addDoStatement(
+      (node) => _check(node.body, node.offset, node.root, reporter),
+    );
 
-    context.registry.addIfStatement((node) {
-      _checkIf(node, reporter);
-    });
+    context.registry.addIfStatement((node) => _checkIf(node, reporter));
   }
 
   void _check(

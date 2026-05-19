@@ -22,8 +22,9 @@ void main() {
     );
   });
 
-  group('saveEnvName', () {
-    test('saves environment name to SharedPreferences', () async {
+  group(
+    'saveEnvName',
+    () => test('saves environment name to SharedPreferences', () async {
       when(
         () => mockSharedPreferences.setString(any(), any()),
       ).thenAnswer((_) async => true);
@@ -33,8 +34,8 @@ void main() {
       verify(
         () => mockSharedPreferences.setString('env_url_key', 'dev'),
       ).called(1);
-    });
-  });
+    }),
+  );
 
   group('getEnvName', () {
     test('returns environment name from SharedPreferences', () {
@@ -55,13 +56,14 @@ void main() {
     });
   });
 
-  group('clearSecureStorage', () {
-    test('clears all secure storage', () async {
+  group(
+    'clearSecureStorage',
+    () => test('clears all secure storage', () async {
       when(() => mockSecureStorage.deleteAll()).thenAnswer((_) async => {});
 
       await dataSource.clearSecureStorage();
 
       verify(() => mockSecureStorage.deleteAll()).called(1);
-    });
-  });
+    }),
+  );
 }

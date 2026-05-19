@@ -1,6 +1,6 @@
 # Flutter Starter Template
 
-> **Version 2.0.1** - [View Changelog](CHANGELOG.md)
+> **Version 2.1.0** - [View Changelog](CHANGELOG.md)
 
 A production-ready Flutter template for building small to medium-sized applications, refined through years of real-world client projects.
 
@@ -65,7 +65,7 @@ This template provides a complete, production-ready foundation with:
 ```bash
 fvm flutter pub get
 fvm flutter analyze
-fvm flutter test
+fvm flutter test --concurrency 4
 fvm flutter run
 ```
 
@@ -86,7 +86,7 @@ GitHub Actions is configured in `.github/workflows/ci.yml` and runs:
 1. `flutter pub get`
 2. `dart run custom_lint --no-fatal-infos --no-fatal-warnings`
 3. `flutter analyze`
-4. `flutter test` split across per-feature shards in parallel
+4. `flutter test --concurrency 4` locally, with CI also split across per-feature shards in parallel
 
 Optional strict lint gate:
 
@@ -254,10 +254,10 @@ The template includes comprehensive tests:
 
 ```bash
 # Run all tests
-fvm flutter test
+fvm flutter test --concurrency 4
 
 # Run with coverage
-fvm flutter test --coverage
+fvm flutter test --coverage --concurrency 4
 
 # View coverage report
 genhtml coverage/lcov.info -o coverage/html

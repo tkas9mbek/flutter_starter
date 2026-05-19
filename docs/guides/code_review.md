@@ -139,7 +139,7 @@
 
 ## Review Workflow
 
-1. **Pull** the branch, run `fvm flutter analyze` and `fvm flutter test`. Fail → block.
+1. **Pull** the branch, run `fvm flutter analyze` and `fvm flutter test --concurrency 4`. Fail → block.
 2. **Read the diff** top-to-bottom against this checklist. Tag findings as `<ID>: <severity> <comment>`.
 3. **Cluster** findings: blockers first, then mild, then suggestions.
 4. **Approve only when** all 🔴 are resolved and 🟡 either fixed or tagged with TODO referencing the rule ID.

@@ -2,6 +2,14 @@
 
 All notable changes to starter_lints will be documented in this file.
 
+## [2.1.0] - 2026-05-14
+
+### Added
+- Additional lint coverage used by the template’s stricter 2.1 release workflow
+
+### Changed
+- Updated package version to align with the main app `2.1.0` release
+
 ## [2.0.0] - 2025-02-01
 
 ### Added

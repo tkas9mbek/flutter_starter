@@ -16,19 +16,21 @@ void main() {
     repository = SettingsRepository(mockDataSource);
   });
 
-  group('getLanguageOption', () {
-    test('returns language option from data source', () {
+  group(
+    'getLanguageOption',
+    () => test('returns language option from data source', () {
       when(() => mockDataSource.getLanguageCode()).thenReturn('en');
 
       final result = repository.getLanguageOption();
 
       expect(result.code, equals('en'));
       verify(() => mockDataSource.getLanguageCode()).called(1);
-    });
-  });
+    }),
+  );
 
-  group('setLanguageOption', () {
-    test('saves language code via data source', () async {
+  group(
+    'setLanguageOption',
+    () => test('saves language code via data source', () async {
       when(
         () => mockDataSource.setLanguageCode('ru'),
       ).thenAnswer((_) async => {});
@@ -36,32 +38,35 @@ void main() {
       await repository.setLanguageOption(LanguageOption.fromCode('ru'));
 
       verify(() => mockDataSource.setLanguageCode('ru')).called(1);
-    });
-  });
+    }),
+  );
 
-  group('getLanguageCode', () {
-    test('returns language code from language option', () {
+  group(
+    'getLanguageCode',
+    () => test('returns language code from language option', () {
       when(() => mockDataSource.getLanguageCode()).thenReturn('ru');
 
       final result = repository.getLanguageCode();
 
       expect(result, equals('ru'));
       verify(() => mockDataSource.getLanguageCode()).called(1);
-    });
-  });
+    }),
+  );
 
-  group('getThemeModeOption', () {
-    test('returns theme mode option from data source', () {
+  group(
+    'getThemeModeOption',
+    () => test('returns theme mode option from data source', () {
       when(() => mockDataSource.getThemeMode()).thenReturn('light');
 
       final result = repository.getThemeModeOption();
 
       expect(result, equals(ThemeModeOption.light));
-    });
-  });
+    }),
+  );
 
-  group('setThemeModeOption', () {
-    test('saves theme mode via data source', () async {
+  group(
+    'setThemeModeOption',
+    () => test('saves theme mode via data source', () async {
       when(
         () => mockDataSource.setThemeMode(any()),
       ).thenAnswer((_) async => {});
@@ -69,6 +74,6 @@ void main() {
       await repository.setThemeModeOption(ThemeModeOption.dark);
 
       verify(() => mockDataSource.setThemeMode(any())).called(1);
-    });
-  });
+    }),
+  );
 }

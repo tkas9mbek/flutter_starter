@@ -8,9 +8,9 @@ class AppBarContent extends StatelessWidget {
   /// Represents the content of the AppBar, base widget for most appbars.
   const AppBarContent({
     required this.title,
+    this.automaticallyImplyLeading = true,
     this.subtitle,
     this.actions,
-    this.automaticallyImplyLeading = true,
     super.key,
   });
 

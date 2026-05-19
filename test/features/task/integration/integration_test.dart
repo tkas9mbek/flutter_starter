@@ -43,9 +43,7 @@ void main() {
   group('CalendarBloc integration', () {
     late CalendarBloc calendarBloc;
 
-    setUp(() {
-      calendarBloc = CalendarBloc(taskRepository);
-    });
+    setUp(() => calendarBloc = CalendarBloc(taskRepository));
 
     test('initial state has today as selectedDate and initial status', () {
       final now = DateTime.now();
@@ -81,15 +79,13 @@ void main() {
           status: CalendarStatus.success(tasks: [TaskMockModels.task1]),
         ),
       ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: '/tasks/date/${testDate.toIso8601String()}',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-      },
+      verify: (_) => verify(
+        () => mockApiClient.requestJsonList<Task>(
+          method: any(named: 'method'),
+          path: '/tasks/date/${testDate.toIso8601String()}',
+          fromJson: any(named: 'fromJson'),
+        ),
+      ).called(1),
     );
 
     blocTest<CalendarBloc, CalendarState>(
@@ -148,28 +144,25 @@ void main() {
           status: CalendarStatus.success(tasks: [TaskMockModels.task1]),
         ),
       ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: '/tasks/date/${testDate.toIso8601String()}',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-      },
+      verify: (_) => verify(
+        () => mockApiClient.requestJsonList<Task>(
+          method: any(named: 'method'),
+          path: '/tasks/date/${testDate.toIso8601String()}',
+          fromJson: any(named: 'fromJson'),
+        ),
+      ).called(1),
     );
   });
 
   group('TasksListBloc integration', () {
     late TasksListBloc tasksListBloc;
 
-    setUp(() {
-      tasksListBloc = TasksListBloc(taskRepository);
-    });
+    setUp(() => tasksListBloc = TasksListBloc(taskRepository));
 
-    test('initial state is initial()', () {
-      expect(tasksListBloc.state, const TasksListState.initial());
-    });
+    test(
+      'initial state is initial()',
+      () => expect(tasksListBloc.state, const TasksListState.initial()),
+    );
 
     blocTest<TasksListBloc, TasksListState>(
       'completes full successful flow: getTasks, groups by date, sorts by time',
@@ -202,15 +195,13 @@ void main() {
           ),
         ];
       },
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: '/tasks',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-      },
+      verify: (_) => verify(
+        () => mockApiClient.requestJsonList<Task>(
+          method: any(named: 'method'),
+          path: '/tasks',
+          fromJson: any(named: 'fromJson'),
+        ),
+      ).called(1),
     );
 
     blocTest<TasksListBloc, TasksListState>(

@@ -16,9 +16,10 @@ void main() {
     taskDeleteBloc = TaskDeleteBloc(mockTaskRepository);
   });
 
-  test('initial state is initial()', () {
-    expect(taskDeleteBloc.state, const TaskDeleteState.initial());
-  });
+  test(
+    'initial state is initial()',
+    () => expect(taskDeleteBloc.state, const TaskDeleteState.initial()),
+  );
 
   group('on deleted() event', () {
     const taskId = 'task-123';
@@ -39,9 +40,8 @@ void main() {
         const TaskDeleteState.loading(),
         const TaskDeleteState.success(),
       ],
-      verify: (_) {
-        verify(() => mockTaskRepository.deleteTask(taskId)).called(1);
-      },
+      verify: (_) =>
+          verify(() => mockTaskRepository.deleteTask(taskId)).called(1),
     );
 
     blocTest<TaskDeleteBloc, TaskDeleteState>(
@@ -56,9 +56,8 @@ void main() {
         const TaskDeleteState.loading(),
         const TaskDeleteState.failure(exception),
       ],
-      verify: (_) {
-        verify(() => mockTaskRepository.deleteTask(taskId)).called(1);
-      },
+      verify: (_) =>
+          verify(() => mockTaskRepository.deleteTask(taskId)).called(1),
     );
 
     blocTest<TaskDeleteBloc, TaskDeleteState>(

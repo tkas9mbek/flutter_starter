@@ -27,13 +27,12 @@ void main() {
   group('LanguageCubit integration', () {
     late LanguageCubit languageCubit;
 
-    setUp(() {
-      languageCubit = LanguageCubit(settingsRepository);
-    });
+    setUp(() => languageCubit = LanguageCubit(settingsRepository));
 
-    test('initial state is defaultLanguageOption when no saved preference', () {
-      expect(languageCubit.state, defaultLanguageOption);
-    });
+    test(
+      'initial state is defaultLanguageOption when no saved preference',
+      () => expect(languageCubit.state, defaultLanguageOption),
+    );
 
     blocTest<LanguageCubit, LanguageOption>(
       'completes full flow: Cubit → Repository → DataSource → SharedPreferences (English)',
@@ -68,12 +67,10 @@ void main() {
     blocTest<LanguageCubit, LanguageOption>(
       'switches between languages multiple times',
       build: () => languageCubit,
-      act: (cubit) {
-        cubit
-          ..setLanguageOption(languageOptionsAvailable[0])
-          ..setLanguageOption(languageOptionsAvailable[1])
-          ..setLanguageOption(languageOptionsAvailable[0]);
-      },
+      act: (cubit) => cubit
+        ..setLanguageOption(languageOptionsAvailable[0])
+        ..setLanguageOption(languageOptionsAvailable[1])
+        ..setLanguageOption(languageOptionsAvailable[0]),
       expect: () => [
         languageOptionsAvailable[0],
         languageOptionsAvailable[1],
@@ -89,13 +86,12 @@ void main() {
   group('ThemeCubit integration', () {
     late ThemeCubit themeCubit;
 
-    setUp(() {
-      themeCubit = ThemeCubit(settingsRepository);
-    });
+    setUp(() => themeCubit = ThemeCubit(settingsRepository));
 
-    test('initial state defaults to System when no saved preference', () {
-      expect(themeCubit.state, ThemeModeOption.system);
-    });
+    test(
+      'initial state defaults to System when no saved preference',
+      () => expect(themeCubit.state, ThemeModeOption.system),
+    );
 
     blocTest<ThemeCubit, ThemeModeOption>(
       'completes full flow: Cubit → Repository → DataSource → SharedPreferences (Light)',
@@ -141,13 +137,11 @@ void main() {
     blocTest<ThemeCubit, ThemeModeOption>(
       'switches between themes multiple times',
       build: () => themeCubit,
-      act: (cubit) {
-        cubit
-          ..setThemeModeOption(ThemeModeOption.dark)
-          ..setThemeModeOption(ThemeModeOption.light)
-          ..setThemeModeOption(ThemeModeOption.system)
-          ..setThemeModeOption(ThemeModeOption.dark);
-      },
+      act: (cubit) => cubit
+        ..setThemeModeOption(ThemeModeOption.dark)
+        ..setThemeModeOption(ThemeModeOption.light)
+        ..setThemeModeOption(ThemeModeOption.system)
+        ..setThemeModeOption(ThemeModeOption.dark),
       expect: () => [
         ThemeModeOption.dark,
         ThemeModeOption.light,
@@ -161,8 +155,9 @@ void main() {
     );
   });
 
-  group('Combined Settings integration', () {
-    test('language and theme preferences are independent', () async {
+  group(
+    'Combined Settings integration',
+    () => test('language and theme preferences are independent', () async {
       await sharedPreferences.setString('language_code', 'ru');
       await sharedPreferences.setString('theme_mode', 'dark');
 
@@ -175,9 +170,8 @@ void main() {
       languageCubit.setLanguageOption(languageOptionsAvailable[1]);
       await Future<void>.delayed(Duration.zero);
 
-      // Theme should remain unchanged
       expect(themeCubit.state, ThemeModeOption.dark);
       expect(sharedPreferences.getString('theme_mode'), 'dark');
-    });
-  });
+    }),
+  );
 }

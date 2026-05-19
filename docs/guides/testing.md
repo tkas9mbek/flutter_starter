@@ -499,7 +499,7 @@ Always verify coverage for all classes
 
 ```bash
 # Run tests with coverage
-fvm flutter test --coverage
+fvm flutter test --coverage --concurrency 4
 
 # Generate HTML report
 genhtml coverage/lcov.info -o coverage/html

@@ -73,10 +73,11 @@ class AvoidMutableBlocFields extends DartLintRule {
   bool _isExemptType(String typeName) {
     final stripped = typeName.replaceAll('?', '').trim();
 
-    return _exemptTypeSuffixes.any((suffix) {
-      return stripped == suffix ||
+    return _exemptTypeSuffixes.any(
+      (suffix) =>
+          stripped == suffix ||
           stripped.startsWith('$suffix<') ||
-          stripped.endsWith('.$suffix');
-    });
+          stripped.endsWith('.$suffix'),
+    );
   }
 }

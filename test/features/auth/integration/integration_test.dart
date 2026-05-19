@@ -69,13 +69,12 @@ void main() {
   group('LoginBloc integration', () {
     late LoginBloc loginBloc;
 
-    setUp(() {
-      loginBloc = LoginBloc(authRepository);
-    });
+    setUp(() => loginBloc = LoginBloc(authRepository));
 
-    test('initial state is initial()', () {
-      expect(loginBloc.state, const LoginState.initial());
-    });
+    test(
+      'initial state is initial()',
+      () => expect(loginBloc.state, const LoginState.initial()),
+    );
 
     const loginForm = LoginForm(phone: '+79991234567', password: 'password123');
 
@@ -131,16 +130,14 @@ void main() {
         const LoginState.loading(),
         const LoginState.failure(NoInternetException()),
       ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/login',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-      },
+      verify: (_) => verify(
+        () => mockApiClient.requestJson<AuthToken>(
+          method: any(named: 'method'),
+          path: '/auth/login',
+          body: any(named: 'body'),
+          fromJson: any(named: 'fromJson'),
+        ),
+      ).called(1),
     );
 
     blocTest<LoginBloc, LoginState>(
@@ -204,13 +201,12 @@ void main() {
   group('RegistrationBloc integration', () {
     late RegistrationBloc registrationBloc;
 
-    setUp(() {
-      registrationBloc = RegistrationBloc(authRepository);
-    });
+    setUp(() => registrationBloc = RegistrationBloc(authRepository));
 
-    test('initial state is initial()', () {
-      expect(registrationBloc.state, const RegistrationState.initial());
-    });
+    test(
+      'initial state is initial()',
+      () => expect(registrationBloc.state, const RegistrationState.initial()),
+    );
 
     final registrationForm = RegistrationForm(
       name: 'Test User',
@@ -274,16 +270,14 @@ void main() {
         const RegistrationState.loading(),
         const RegistrationState.failure(NoInternetException()),
       ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/register',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-      },
+      verify: (_) => verify(
+        () => mockApiClient.requestJson<AuthToken>(
+          method: any(named: 'method'),
+          path: '/auth/register',
+          body: any(named: 'body'),
+          fromJson: any(named: 'fromJson'),
+        ),
+      ).called(1),
     );
 
     blocTest<RegistrationBloc, RegistrationState>(

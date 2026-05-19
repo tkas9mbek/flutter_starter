@@ -15,11 +15,11 @@ class DropdownBottomSheet<T extends Object> extends StatelessWidget {
   /// By default, it uses the `toString` method.
   const DropdownBottomSheet({
     required this.options,
-    this.selected,
-    this.title,
     this.showCloseButton = true,
     this.showResizeIndicator = true,
     this.optionLabelBuilder = defaultOptionLabelBuilder,
+    this.selected,
+    this.title,
     super.key,
   });
 

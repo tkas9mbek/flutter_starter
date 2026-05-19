@@ -14,6 +14,13 @@ import 'package:starter_uikit/widgets/form/decoration/text_field_decoration.dart
 class AppDatePickerField extends StatefulWidget {
   const AppDatePickerField({
     required this.name,
+    this.decoration = const FilledTextFieldDecoration(),
+    this.enabled = true,
+    this.hideErrorText = false,
+    this.hasClearButton = false,
+    this.colorLabelOnError = false,
+    this.loading = false,
+    this.required = false,
     this.label,
     this.hint,
     this.prefix,
@@ -22,13 +29,6 @@ class AppDatePickerField extends StatefulWidget {
     this.color,
     this.minDate,
     this.maxDate,
-    this.decoration = const FilledTextFieldDecoration(),
-    this.enabled = true,
-    this.hideErrorText = false,
-    this.hasClearButton = false,
-    this.colorLabelOnError = false,
-    this.loading = false,
-    this.required = false,
     super.key,
   });
 
@@ -65,9 +65,9 @@ class _AppDatePickerFieldState extends State<AppDatePickerField> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      textController = FormBuilder.of(context)?.fields[childName];
-    });
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => textController = FormBuilder.of(context)?.fields[childName],
+    );
   }
 
   void updateChildValue(DateTime? value) {
@@ -84,7 +84,7 @@ class _AppDatePickerFieldState extends State<AppDatePickerField> {
       enabled: widget.enabled,
       validator: FormBuilderValidators.compose([
         ...?widget.validators,
-        if (widget.required) FormBuilderValidators.required(),
+        if (widget.required) ...[FormBuilderValidators.required()],
       ]),
       builder: (form) => AppTextField(
         name: childName,

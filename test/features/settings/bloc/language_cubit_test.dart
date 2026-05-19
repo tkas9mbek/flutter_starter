@@ -30,19 +30,13 @@ void main() {
       when(
         () => mockRepository.setLanguageOption(englishOption),
       ).thenAnswer((_) async => {});
+
       return languageCubit;
     },
-    act: (cubit) {
-      final englishOption = LanguageOption.fromCode('en');
-      cubit.setLanguageOption(englishOption);
-    },
-    expect: () {
-      final englishOption = LanguageOption.fromCode('en');
-      return [englishOption];
-    },
-    verify: (_) {
-      final englishOption = LanguageOption.fromCode('en');
-      verify(() => mockRepository.setLanguageOption(englishOption)).called(1);
-    },
+    act: (cubit) => cubit.setLanguageOption(LanguageOption.fromCode('en')),
+    expect: () => [LanguageOption.fromCode('en')],
+    verify: (_) => verify(
+      () => mockRepository.setLanguageOption(LanguageOption.fromCode('en')),
+    ).called(1),
   );
 }

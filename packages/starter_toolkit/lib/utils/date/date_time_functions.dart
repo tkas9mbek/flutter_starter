@@ -39,13 +39,12 @@ String getShortenedDayOfWeek(DateTime date) {
 
 String getFullDayOfWeek(DateTime date) {
   final formatter = DateFormat.EEEE();
+
   return formatter.format(date);
 }
 
-String getFullDayByIndex(int day) {
-  final date = monday.add(Duration(days: day));
-  return getFullDayOfWeek(date);
-}
+String getFullDayByIndex(int day) =>
+    getFullDayOfWeek(monday.add(Duration(days: day)));
 
 String getCurrentMonth(BuildContext context, [String? explicitLocale]) {
   final locale = explicitLocale ?? Localizations.localeOf(context).languageCode;
@@ -55,19 +54,16 @@ String getCurrentMonth(BuildContext context, [String? explicitLocale]) {
   if (month.isEmpty) {
     return month;
   }
+
   return month[0].toUpperCase() + month.substring(1);
 }
 
-String getFormattedTimeRange(DateTime start, DateTime end) {
-  final formatter = DateFormat.Hm();
-  return '${formatter.format(start)}-${formatter.format(end)}';
-}
+String getFormattedTimeRange(DateTime start, DateTime end) =>
+    '${DateFormat.Hm().format(start)}-${DateFormat.Hm().format(end)}';
 
-String getFormattedDateRange(String startDate, String endDate) {
-  final formatter = DateFormat('dd.MM.yyyy');
-  return '${formatter.format(DateTime.parse(startDate))} - '
-      '${formatter.format(DateTime.parse(endDate))}';
-}
+String getFormattedDateRange(String startDate, String endDate) =>
+    '${DateFormat('dd.MM.yyyy').format(DateTime.parse(startDate))} - '
+    '${DateFormat('dd.MM.yyyy').format(DateTime.parse(endDate))}';
 
 String getFormattedMonth(
   DateTime date,
@@ -81,12 +77,12 @@ String getFormattedMonth(
   if (month.isEmpty) {
     return month;
   }
+
   return month[0].toLowerCase() + month.substring(1);
 }
 
-String getTextualDayMonthYear(DateTime date, BuildContext context) {
-  return '${date.day} ${getFormattedMonth(date, context)} ${date.year}';
-}
+String getTextualDayMonthYear(DateTime date, BuildContext context) =>
+    '${date.day} ${getFormattedMonth(date, context)} ${date.year}';
 
 String getLocalizedDateLabel(BuildContext context, DateTime date) {
   final now = DateTime.now();

@@ -25,9 +25,10 @@ void main() {
     tasksListBloc = TasksListBloc(taskRepository);
   });
 
-  test('initial state is initial()', () {
-    expect(tasksListBloc.state, const TasksListState.initial());
-  });
+  test(
+    'initial state is initial()',
+    () => expect(tasksListBloc.state, const TasksListState.initial()),
+  );
 
   group('on requested() event', () {
     blocTest<TasksListBloc, TasksListState>(
@@ -57,9 +58,7 @@ void main() {
           ),
         ];
       },
-      verify: (_) {
-        verify(() => mockDataSource.getTasks()).called(1);
-      },
+      verify: (_) => verify(() => mockDataSource.getTasks()).called(1),
     );
 
     blocTest<TasksListBloc, TasksListState>(
@@ -74,9 +73,7 @@ void main() {
         const TasksListState.loading(),
         const TasksListState.success(tasks: [], groupedTasks: {}),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getTasks()).called(1);
-      },
+      verify: (_) => verify(() => mockDataSource.getTasks()).called(1),
     );
 
     blocTest<TasksListBloc, TasksListState>(
@@ -91,18 +88,16 @@ void main() {
         return tasksListBloc;
       },
       act: (bloc) => bloc.add(const TasksListEvent.requested()),
-      verify: (bloc) {
-        bloc.state.whenOrNull(
-          success: (tasks, groupedTasks) {
-            final date1 = DateTime(2025, 1, 15);
-            final date1OnlyDay = DateTime(date1.year, date1.month, date1.day);
-            final groupedList = groupedTasks[date1OnlyDay]!;
+      verify: (bloc) => bloc.state.whenOrNull(
+        success: (tasks, groupedTasks) {
+          final date1 = DateTime(2025, 1, 15);
+          final date1OnlyDay = DateTime(date1.year, date1.month, date1.day);
+          final groupedList = groupedTasks[date1OnlyDay]!;
 
-            expect(groupedList[0].startTime.hour, equals(9));
-            expect(groupedList[1].startTime.hour, equals(14));
-          },
-        );
-      },
+          expect(groupedList[0].startTime.hour, equals(9));
+          expect(groupedList[1].startTime.hour, equals(14));
+        },
+      ),
     );
 
     blocTest<TasksListBloc, TasksListState>(
@@ -119,9 +114,7 @@ void main() {
         const TasksListState.loading(),
         const TasksListState.failure(NoInternetException()),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getTasks()).called(1);
-      },
+      verify: (_) => verify(() => mockDataSource.getTasks()).called(1),
     );
 
     blocTest<TasksListBloc, TasksListState>(
@@ -144,9 +137,7 @@ void main() {
               false,
         ),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getTasks()).called(1);
-      },
+      verify: (_) => verify(() => mockDataSource.getTasks()).called(1),
     );
   });
 

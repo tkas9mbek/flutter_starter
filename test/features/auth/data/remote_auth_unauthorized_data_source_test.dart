@@ -27,8 +27,9 @@ void main() {
     dataSource = RemoteAuthUnauthorizedDataSource(mockApiClient);
   });
 
-  group('login', () {
-    test(
+  group(
+    'login',
+    () => test(
       'calls ApiClient with correct parameters and returns AuthToken',
       () async {
         const body = AuthLoginRequestBody(
@@ -47,6 +48,7 @@ void main() {
           final fromJson =
               invocation.namedArguments[#fromJson]
                   as AuthToken Function(Map<String, dynamic>);
+
           return fromJson(AuthMockModels.rawToken);
         });
 
@@ -69,11 +71,12 @@ void main() {
           ),
         ).called(1);
       },
-    );
-  });
+    ),
+  );
 
-  group('register', () {
-    test(
+  group(
+    'register',
+    () => test(
       'calls ApiClient with correct parameters and returns AuthToken',
       () async {
         final body = AuthRegisterRequestBody(
@@ -94,6 +97,7 @@ void main() {
           final fromJson =
               invocation.namedArguments[#fromJson]
                   as AuthToken Function(Map<String, dynamic>);
+
           return fromJson(AuthMockModels.rawToken);
         });
 
@@ -116,11 +120,12 @@ void main() {
           ),
         ).called(1);
       },
-    );
-  });
+    ),
+  );
 
-  group('AuthLoginRequestBody', () {
-    test('toJson serializes correctly', () {
+  group(
+    'AuthLoginRequestBody',
+    () => test('toJson serializes correctly', () {
       const body = AuthLoginRequestBody(
         phone: '+79991234567',
         password: 'password123',
@@ -131,11 +136,12 @@ void main() {
       expect(json['phone'], equals('+79991234567'));
       expect(json['password'], equals('password123'));
       expect(json.length, equals(2));
-    });
-  });
+    }),
+  );
 
-  group('AuthRegisterRequestBody', () {
-    test('toJson serializes correctly', () {
+  group(
+    'AuthRegisterRequestBody',
+    () => test('toJson serializes correctly', () {
       final birthday = DateTime(1990, 1, 15);
       final body = AuthRegisterRequestBody(
         name: 'Test User',
@@ -151,6 +157,6 @@ void main() {
       expect(json['password'], equals('password123'));
       expect(json['birthday'], equals(birthday.toIso8601String()));
       expect(json.length, equals(4));
-    });
-  });
+    }),
+  );
 }

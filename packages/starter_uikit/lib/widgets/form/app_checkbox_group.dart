@@ -14,11 +14,11 @@ class AppCheckboxGroup<T extends Object> extends StatelessWidget {
   const AppCheckboxGroup({
     required this.name,
     required this.options,
-    this.selected,
     this.optionLabelBuilder = defaultOptionLabelBuilder,
     this.showLastDivider = false,
     this.hideErrorText = true,
     this.enabled = true,
+    this.selected,
     this.validator,
     this.onChanged,
     super.key,

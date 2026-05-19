@@ -11,9 +11,9 @@ class SafeVerticalBox extends StatelessWidget {
   ///
   /// This widget is useful for creating a safe space at the top or bottom of the screen.
   const SafeVerticalBox({
-    this.height,
     this.top = false,
     this.bottom = false,
+    this.height,
     super.key,
   });
 

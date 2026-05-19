@@ -62,11 +62,14 @@ class MockTaskDataSource implements TaskDataSource {
   Future<List<Task>> getTasksByDate(DateTime date) async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    return _tasks.where((task) {
-      return task.date.year == date.year &&
-          task.date.month == date.month &&
-          task.date.day == date.day;
-    }).toList();
+    return _tasks
+        .where(
+          (task) =>
+              task.date.year == date.year &&
+              task.date.month == date.month &&
+              task.date.day == date.day,
+        )
+        .toList();
   }
 
   @override

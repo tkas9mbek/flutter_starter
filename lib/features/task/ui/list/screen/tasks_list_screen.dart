@@ -41,25 +41,27 @@ class _TasksListView extends StatelessWidget {
     final localizer = Localizer.of(context);
 
     return BlocListener<TaskDeleteBloc, TaskDeleteState>(
-      listener: (context, state) {
-        state.mapOrNull(
-          success: (_) {
-            NotificationSnackBar.showMessage(
-              context,
-              isSuccess: true,
-              message: localizer.taskDeletedSuccessfully,
-            );
-            context.read<TasksListBloc>().add(const TasksListEvent.requested());
-          },
-          failure: (failureState) {
-            NotificationSnackBar.showMessage(
-              context,
-              isSuccess: false,
-              message: localizer.failedToDeleteTask,
-            );
-          },
-        );
-      },
+      listener: (context, state) => state.mapOrNull(
+        success: (_) {
+          NotificationSnackBar.showMessage(
+            context,
+            isSuccess: true,
+            message: localizer.taskDeletedSuccessfully,
+          );
+          context.read<TasksListBloc>().add(const TasksListEvent.requested());
+
+          return null;
+        },
+        failure: (_) {
+          NotificationSnackBar.showMessage(
+            context,
+            isSuccess: false,
+            message: localizer.failedToDeleteTask,
+          );
+
+          return null;
+        },
+      ),
       child: Scaffold(
         appBar: TitleAppBar(title: localizer.tasks),
         body: BlocBuilder<TasksListBloc, TasksListState>(

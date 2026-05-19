@@ -10,8 +10,8 @@ class ExceptionUiModel extends Equatable {
   const ExceptionUiModel({
     required this.description,
     required this.snackbarDescription,
-    this.title,
     this.canRetry = true,
+    this.title,
   });
 
   /// Creates UI model for "no retry" scenarios

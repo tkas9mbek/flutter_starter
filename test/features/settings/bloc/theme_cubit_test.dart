@@ -19,9 +19,10 @@ void main() {
     themeCubit = ThemeCubit(mockRepository);
   });
 
-  test('initial state is from repository', () {
-    expect(themeCubit.state, equals(ThemeModeOption.system));
-  });
+  test(
+    'initial state is from repository',
+    () => expect(themeCubit.state, equals(ThemeModeOption.system)),
+  );
 
   blocTest<ThemeCubit, ThemeModeOption>(
     'emits new theme mode when setThemeModeOption is called',
@@ -29,14 +30,13 @@ void main() {
       when(
         () => mockRepository.setThemeModeOption(ThemeModeOption.light),
       ).thenAnswer((_) async => {});
+
       return themeCubit;
     },
     act: (cubit) => cubit.setThemeModeOption(ThemeModeOption.light),
     expect: () => [ThemeModeOption.light],
-    verify: (_) {
-      verify(
-        () => mockRepository.setThemeModeOption(ThemeModeOption.light),
-      ).called(1);
-    },
+    verify: (_) => verify(
+      () => mockRepository.setThemeModeOption(ThemeModeOption.light),
+    ).called(1),
   );
 }

@@ -8,11 +8,11 @@ class TitleAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// * [bottom] is an optional widget that can be placed at the bottom of the app bar.
   const TitleAppBar({
     required this.title,
+    this.automaticallyImplyLeading = true,
+    this.height = 52,
     this.subtitle,
     this.actions,
     this.bottom,
-    this.automaticallyImplyLeading = true,
-    this.height = 52,
     super.key,
   });
 

@@ -40,8 +40,8 @@ fvm dart run custom_lint                                         # Strict custom
 
 **Testing:**
 ```bash
-fvm flutter test                                                 # Run all tests
-fvm flutter test --coverage                                      # Run with coverage
+fvm flutter test --concurrency 4                                 # Run all tests (stable local concurrency)
+fvm flutter test --coverage --concurrency 4                      # Run with coverage
 ```
 
 **Code Generation:**

@@ -41,9 +41,10 @@ void main() {
     authBloc = AuthBloc(authRepository);
   });
 
-  test('initial state is unknown()', () {
-    expect(authBloc.state, const AuthState.unknown());
-  });
+  test(
+    'initial state is unknown()',
+    () => expect(authBloc.state, const AuthState.unknown()),
+  );
 
   group('on initialized() event', () {
     const event = AuthEvent.initialized();
@@ -57,6 +58,7 @@ void main() {
         when(
           () => localDataSource.getToken(),
         ).thenAnswer((_) async => AuthMockModels.authToken);
+
         return authBloc;
       },
       act: (bloc) => bloc.add(event),
@@ -74,6 +76,7 @@ void main() {
           () => localDataSource.clearIfNotLaunchedBefore(),
         ).thenAnswer((_) async {});
         when(() => localDataSource.getToken()).thenAnswer((_) async => null);
+
         return authBloc;
       },
       act: (bloc) => bloc.add(event),
@@ -91,6 +94,7 @@ void main() {
           () => localDataSource.clearIfNotLaunchedBefore(),
         ).thenAnswer((_) async {});
         when(() => localDataSource.getToken()).thenThrow(Exception('Error'));
+
         return authBloc;
       },
       act: (bloc) => bloc.add(event),

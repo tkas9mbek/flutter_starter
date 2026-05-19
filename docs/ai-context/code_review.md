@@ -112,7 +112,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 
 ## Workflow
 
-1. Pull, run `fvm flutter analyze` and `fvm flutter test` — fail = block.
+1. Pull, run `fvm flutter analyze` and `fvm flutter test --concurrency 4` — fail = block.
 2. Read diff against this checklist; tag findings as `<RULE-ID>: <severity> <comment>`.
 3. Cluster: blockers first, then mild, then suggestions.
 4. Approve only when 🔴 are resolved and 🟡 are fixed or TODO'd with rule ID.

@@ -12,6 +12,7 @@ class PrimitiveTypeConverters {
     }
 
     buffer.write(json.replaceFirst('#', ''));
+
     return Color(int.parse(buffer.toString(), radix: 16));
   }
 

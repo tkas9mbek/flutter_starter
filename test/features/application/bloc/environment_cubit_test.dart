@@ -30,9 +30,7 @@ void main() {
     environmentCubit = EnvironmentCubit(realRepository);
   });
 
-  tearDown(() {
-    unawaited(environmentCubit.close());
-  });
+  tearDown(() => unawaited(environmentCubit.close()));
 
   group('EnvironmentCubit', () {
     test('initial state is correctly read from the repository', () {

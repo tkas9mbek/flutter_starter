@@ -32,23 +32,27 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
     return BlocProvider(
       create: (context) => TaskDeleteBloc(getIt<TaskRepository>()),
       child: BlocListener<TaskDeleteBloc, TaskDeleteState>(
-        listener: (context, state) {
-          state.mapOrNull(
-            success: (_) {
-              NotificationSnackBar.showMessage(
-                context,
-                isSuccess: true,
-                message: localizer.taskDeletedSuccessfully,
-              );
-              unawaited(context.router.maybePop());
-            },
-            failure: (failureState) => NotificationSnackBar.showMessage(
+        listener: (context, state) => state.mapOrNull(
+          success: (_) {
+            NotificationSnackBar.showMessage(
+              context,
+              isSuccess: true,
+              message: localizer.taskDeletedSuccessfully,
+            );
+            unawaited(context.router.maybePop());
+
+            return null;
+          },
+          failure: (failureState) {
+            NotificationSnackBar.showMessage(
               context,
               isSuccess: false,
               message: localizer.failedToDeleteTask,
-            ),
-          );
-        },
+            );
+
+            return null;
+          },
+        ),
         child: Scaffold(
           appBar: TitleAppBar(title: localizer.taskDetails),
           body: Column(

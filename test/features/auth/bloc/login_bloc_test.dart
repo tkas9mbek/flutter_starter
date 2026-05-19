@@ -25,9 +25,7 @@ class MockUnauthorizedDataSource extends Mock
 class MockLocalDataSource extends Mock implements AuthLocalDataSource {}
 
 void main() {
-  setUpAll(() {
-    registerFallbackValue(FakeAuthToken());
-  });
+  setUpAll(() => registerFallbackValue(FakeAuthToken()));
 
   late LoginBloc loginBloc;
   late MockAuthorizedDataSource authorizedDataSource;
@@ -51,9 +49,10 @@ void main() {
     loginBloc = LoginBloc(authRepository);
   });
 
-  test('initial state is initial()', () {
-    expect(loginBloc.state, const LoginState.initial());
-  });
+  test(
+    'initial state is initial()',
+    () => expect(loginBloc.state, const LoginState.initial()),
+  );
 
   group('on submitted() event', () {
     const form = LoginForm(phone: '+79991234567', password: 'password');

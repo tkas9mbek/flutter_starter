@@ -50,8 +50,9 @@ void main() {
     );
   });
 
-  group('clearIfNotLaunchedBefore', () {
-    test('delegates to local data source', () async {
+  group(
+    'clearIfNotLaunchedBefore',
+    () => test('delegates to local data source', () async {
       when(
         () => mockLocalDataSource.clearIfNotLaunchedBefore(),
       ).thenAnswer((_) async => {});
@@ -59,8 +60,8 @@ void main() {
       await repository.clearIfNotLaunchedBefore();
 
       verify(() => mockLocalDataSource.clearIfNotLaunchedBefore()).called(1);
-    });
-  });
+    }),
+  );
 
   group('hasToken', () {
     test('returns true when token exists', () async {
@@ -116,56 +117,62 @@ void main() {
     });
   });
 
-  group('login', () {
-    test('saves token and emits authenticated status on success', () async {
-      const token = AuthToken(
-        accessToken: 'access_token',
-        refreshToken: 'refresh_token',
-      );
+  group(
+    'login',
+    () => test(
+      'saves token and emits authenticated status on success',
+      () async {
+        const token = AuthToken(
+          accessToken: 'access_token',
+          refreshToken: 'refresh_token',
+        );
 
-      when(
-        () => mockUnauthorizedDataSource.login(any()),
-      ).thenAnswer((_) async => token);
-      when(
-        () => mockLocalDataSource.saveToken(any()),
-      ).thenAnswer((_) async => {});
+        when(
+          () => mockUnauthorizedDataSource.login(any()),
+        ).thenAnswer((_) async => token);
+        when(
+          () => mockLocalDataSource.saveToken(any()),
+        ).thenAnswer((_) async => {});
 
-      final statusStream = repository.status;
+        final statusStream = repository.status;
 
-      await repository.login(phone: '+79991234567', password: 'password123');
+        await repository.login(phone: '+79991234567', password: 'password123');
 
-      await expectLater(statusStream, emits(AuthStatus.authenticated));
+        await expectLater(statusStream, emits(AuthStatus.authenticated));
 
-      verify(() => mockLocalDataSource.saveToken(token)).called(1);
-    });
-  });
+        verify(() => mockLocalDataSource.saveToken(token)).called(1);
+      },
+    ),
+  );
 
-  group('register', () {
-    test('saves token and emits authenticated status on success', () async {
-      const token = AuthToken(
-        accessToken: 'access_token',
-        refreshToken: 'refresh_token',
-      );
+  group(
+    'register',
+    () =>
+        test('saves token and emits authenticated status on success', () async {
+          const token = AuthToken(
+            accessToken: 'access_token',
+            refreshToken: 'refresh_token',
+          );
 
-      when(
-        () => mockUnauthorizedDataSource.register(any()),
-      ).thenAnswer((_) async => token);
-      when(
-        () => mockLocalDataSource.saveToken(any()),
-      ).thenAnswer((_) async => {});
+          when(
+            () => mockUnauthorizedDataSource.register(any()),
+          ).thenAnswer((_) async => token);
+          when(
+            () => mockLocalDataSource.saveToken(any()),
+          ).thenAnswer((_) async => {});
 
-      final statusStream = repository.status;
+          final statusStream = repository.status;
 
-      await repository.register(
-        name: 'Test User',
-        phone: '+79991234567',
-        password: 'password123',
-        birthday: DateTime(1990, 1, 1),
-      );
+          await repository.register(
+            name: 'Test User',
+            phone: '+79991234567',
+            password: 'password123',
+            birthday: DateTime(1990, 1, 1),
+          );
 
-      await expectLater(statusStream, emits(AuthStatus.authenticated));
+          await expectLater(statusStream, emits(AuthStatus.authenticated));
 
-      verify(() => mockLocalDataSource.saveToken(token)).called(1);
-    });
-  });
+          verify(() => mockLocalDataSource.saveToken(token)).called(1);
+        }),
+  );
 }

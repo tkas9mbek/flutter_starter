@@ -41,9 +41,8 @@ class ApiProvider {
 
     dio.interceptors.add(
       AppErrorInterceptor(
-        customDioErrorHandler: (exception) {
-          customDioErrorHandler?.call(exception);
-        },
+        customDioErrorHandler: (exception) =>
+            customDioErrorHandler?.call(exception),
       ),
     );
 

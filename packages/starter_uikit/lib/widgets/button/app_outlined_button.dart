@@ -11,13 +11,13 @@ class AppOutlinedButton extends StatelessWidget {
     this.enabled = true,
     this.loading = false,
     this.iconDirection = TextDirection.ltr,
+    this.borderRadius = 12,
     this.onPressed,
     this.width,
     this.icon,
     this.height,
     this.borderColor,
     this.textColor,
-    this.borderRadius = 12,
     this.padding,
     super.key,
   });
@@ -25,12 +25,12 @@ class AppOutlinedButton extends StatelessWidget {
   factory AppOutlinedButton.big({
     required BuildContext context,
     required String text,
-    VoidCallback? onPressed,
-    Widget? icon,
     TextDirection iconDirection = TextDirection.ltr,
     bool loading = false,
     bool enabled = true,
     double? width = double.infinity,
+    VoidCallback? onPressed,
+    Widget? icon,
   }) {
     return AppOutlinedButton(
       height: 52,
@@ -49,12 +49,12 @@ class AppOutlinedButton extends StatelessWidget {
   factory AppOutlinedButton.medium({
     required BuildContext context,
     required String text,
-    VoidCallback? onPressed,
-    Widget? icon,
     TextDirection iconDirection = TextDirection.ltr,
     bool loading = false,
     bool enabled = true,
     double? width = double.infinity,
+    VoidCallback? onPressed,
+    Widget? icon,
   }) {
     final textStyles = ThemeProvider.of(context).textStyles;
 
@@ -75,12 +75,12 @@ class AppOutlinedButton extends StatelessWidget {
   factory AppOutlinedButton.small({
     required BuildContext context,
     required String text,
-    VoidCallback? onPressed,
-    Widget? icon,
     TextDirection iconDirection = TextDirection.ltr,
     bool loading = false,
     bool enabled = true,
     double? width,
+    VoidCallback? onPressed,
+    Widget? icon,
   }) {
     final textStyles = ThemeProvider.of(context).textStyles;
 

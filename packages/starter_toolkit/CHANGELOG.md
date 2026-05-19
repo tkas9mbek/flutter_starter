@@ -2,6 +2,13 @@
 
 All notable changes to starter_toolkit will be documented in this file.
 
+## [2.1.0] - 2026-05-14
+
+### Changed
+- Updated package version to align with the main app `2.1.0` release
+- Hardened API client interceptor error normalization and auth refresh behavior
+- Preserved repository executor and utility APIs while improving release-readiness docs
+
 ## [2.0.0] - 2025-02-01
 
 ### Changed

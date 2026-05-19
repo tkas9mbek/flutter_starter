@@ -25,9 +25,10 @@ void main() {
     userBloc = UserBloc(profileRepository);
   });
 
-  test('initial state is initial()', () {
-    expect(userBloc.state, const UserState.initial());
-  });
+  test(
+    'initial state is initial()',
+    () => expect(userBloc.state, const UserState.initial()),
+  );
 
   group('on requested() event', () {
     blocTest<UserBloc, UserState>(
@@ -44,9 +45,7 @@ void main() {
         const UserState.loading(),
         UserState.success(ProfileMockModels.user),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getUserProfile()).called(1);
-      },
+      verify: (_) => verify(() => mockDataSource.getUserProfile()).called(1),
     );
 
     blocTest<UserBloc, UserState>(
@@ -63,9 +62,7 @@ void main() {
         const UserState.loading(),
         const UserState.failure(NoInternetException()),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getUserProfile()).called(1);
-      },
+      verify: (_) => verify(() => mockDataSource.getUserProfile()).called(1),
     );
 
     blocTest<UserBloc, UserState>(
@@ -88,9 +85,7 @@ void main() {
               false,
         ),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getUserProfile()).called(1);
-      },
+      verify: (_) => verify(() => mockDataSource.getUserProfile()).called(1),
     );
   });
 

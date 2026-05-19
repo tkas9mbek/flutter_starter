@@ -22,16 +22,16 @@ class BottomSheetScreen extends StatelessWidget {
   /// * [bottomChild] is the content at the bottom of the bottom sheet.
   const BottomSheetScreen({
     required this.child,
-    this.title,
-    this.closeButtonText,
     this.padding = const EdgeInsets.fromLTRB(12, 12, 12, 20),
-    this.onClosePressed,
     this.showCloseButton = true,
     this.showResizeIndicator = true,
     this.isDismissible = true,
     this.closeButtonAlignment = Alignment.centerLeft,
-    this.bgColor,
     this.ignoreSafeArea = false,
+    this.title,
+    this.closeButtonText,
+    this.onClosePressed,
+    this.bgColor,
     this.bottomChild,
     super.key,
   });

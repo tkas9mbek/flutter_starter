@@ -6,7 +6,7 @@ class CoreConsts {
       'https://play.google.com/store/apps/details?id=com.example.app';
 
   // Keep in sync with pubspec.yaml version.
-  static const String appVersion = '2.0.1';
+  static const String appVersion = '2.1.0';
 
   // Backend URLs
   static const String prodBaseUrl = 'https://example.com';

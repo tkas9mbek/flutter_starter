@@ -20,16 +20,13 @@ class _ButtonsExampleScreenState extends State<ButtonsExampleScreen> {
   bool _isLoading = false;
 
   Future<void> _simulateLoading() async {
-    setState(() {
-      _isLoading = true;
-    });
+    setState(() => _isLoading = true);
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) {
       return;
     }
-    setState(() {
-      _isLoading = false;
-    });
+
+    setState(() => _isLoading = false);
   }
 
   void _showNotification(String message) {
@@ -80,13 +77,13 @@ class _ButtonsExampleScreenState extends State<ButtonsExampleScreen> {
             const SizedBox(height: 12),
             AppElevatedButton.big(
               context: context,
-              text: 'Disabled',
+              text: localizer.disabledButton,
               enabled: false,
             ),
             const SizedBox(height: 12),
             AppOutlinedButton.big(
               context: context,
-              text: 'Disabled',
+              text: localizer.disabledButton,
               enabled: false,
             ),
             const SizedBox(height: 24),

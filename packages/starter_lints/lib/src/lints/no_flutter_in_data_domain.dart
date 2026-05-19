@@ -13,8 +13,7 @@ class NoFlutterInDataDomain extends DartLintRule {
 
   static const _code = LintCode(
     name: 'no_flutter_in_data_domain',
-    problemMessage:
-        'Flutter imports are not allowed in data or domain layers.',
+    problemMessage: 'Flutter imports are not allowed in data or domain layers.',
     correctionMessage:
         'Move Flutter-dependent code to the presentation layer, or use '
         'package:meta / dart:developer instead.',

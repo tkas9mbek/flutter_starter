@@ -56,9 +56,8 @@ void main() {
           status: CalendarStatus.success(tasks: TaskMockModels.tasksForDate1),
         ),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getTasksByDate(testDate)).called(1);
-      },
+      verify: (_) =>
+          verify(() => mockDataSource.getTasksByDate(testDate)).called(1),
     );
 
     blocTest<CalendarBloc, CalendarState>(
@@ -81,9 +80,8 @@ void main() {
           status: const CalendarStatus.success(tasks: []),
         ),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getTasksByDate(testDate)).called(1);
-      },
+      verify: (_) =>
+          verify(() => mockDataSource.getTasksByDate(testDate)).called(1),
     );
 
     blocTest<CalendarBloc, CalendarState>(
@@ -108,9 +106,8 @@ void main() {
           ),
         ),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getTasksByDate(testDate)).called(1);
-      },
+      verify: (_) =>
+          verify(() => mockDataSource.getTasksByDate(testDate)).called(1),
     );
 
     blocTest<CalendarBloc, CalendarState>(
@@ -173,9 +170,8 @@ void main() {
           status: CalendarStatus.success(tasks: [TaskMockModels.task1]),
         ),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getTasksByDate(initialDate)).called(1);
-      },
+      verify: (_) =>
+          verify(() => mockDataSource.getTasksByDate(initialDate)).called(1),
     );
 
     blocTest<CalendarBloc, CalendarState>(
@@ -204,9 +200,8 @@ void main() {
           ),
         ),
       ],
-      verify: (_) {
-        verify(() => mockDataSource.getTasksByDate(initialDate)).called(1);
-      },
+      verify: (_) =>
+          verify(() => mockDataSource.getTasksByDate(initialDate)).called(1),
     );
 
     blocTest<CalendarBloc, CalendarState>(
@@ -223,9 +218,7 @@ void main() {
         status: const CalendarStatus.initial(),
       ),
       act: (bloc) => bloc.add(const CalendarEvent.refreshed()),
-      verify: (bloc) {
-        expect(bloc.state.selectedDate, equals(initialDate));
-      },
+      verify: (bloc) => expect(bloc.state.selectedDate, equals(initialDate)),
     );
   });
 

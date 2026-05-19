@@ -42,23 +42,19 @@ void main() {
   group('EnvironmentCubit integration', () {
     late EnvironmentCubit environmentCubit;
 
-    setUp(() {
-      environmentCubit = EnvironmentCubit(environmentRepository);
-    });
+    setUp(() => environmentCubit = EnvironmentCubit(environmentRepository));
 
-    test('initial state defaults to Mock when no saved preference', () {
-      expect(environmentCubit.state, AppEnvironment.mock());
-    });
+    test(
+      'initial state defaults to Mock when no saved preference',
+      () => expect(environmentCubit.state, AppEnvironment.mock()),
+    );
 
     blocTest<EnvironmentCubit, AppEnvironment>(
       'completes full flow: Cubit → Repository → DataSource → SharedPreferences (Dev)',
       build: () => environmentCubit,
       act: (cubit) => cubit.setEnvironment(AppEnvironment.dev()),
       expect: () => [AppEnvironment.dev()],
-      verify: (_) {
-        final savedEnv = sharedPreferences.getString('env_url_key');
-        expect(savedEnv, 'dev');
-      },
+      verify: (_) => expect(sharedPreferences.getString('env_url_key'), 'dev'),
     );
 
     blocTest<EnvironmentCubit, AppEnvironment>(
@@ -78,10 +74,7 @@ void main() {
       build: () => environmentCubit,
       act: (cubit) => cubit.setEnvironment(AppEnvironment.prod()),
       expect: () => [AppEnvironment.prod()],
-      verify: (_) {
-        final savedEnv = sharedPreferences.getString('env_url_key');
-        expect(savedEnv, 'prod');
-      },
+      verify: (_) => expect(sharedPreferences.getString('env_url_key'), 'prod'),
     );
 
     test('loads saved environment preference from SharedPreferences', () async {

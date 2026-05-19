@@ -2,6 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+## [2.1.0] - 2026-05-14
+
+### Added
+- GitHub Actions CI for linting, analyzer checks, and parallelized per-feature test shards
+- Shared app version constant surfaced in settings UI and release-prep documentation
+
+### Changed
+- Stabilized runtime environment reconfiguration to avoid no-op churn and concurrent DI races
+- Hardened interceptor and auth-refresh error flow behavior across 401 and logout paths
+- Centralized DI unregister helpers and made auth/data re-registration safer and idempotent
+- Removed template leakage from product-specific bootstrap values and refreshed bootstrap guidance
+- Improved AI-facing and human-facing documentation for architecture, testing, naming, and release workflow
+- Reduced test wall-clock time through fixture caching, tighter retry waits, and CI shard rebalancing
+
+### Fixed
+- Pinned lint pipeline compatibility so `custom_lint` runs reliably in CI and local development
+- Cleared warning-level lint debt and stabilized the optional strict lint gate behavior
+
 ## [2.0.1] - 2026-02-01
 
 ### Fixed
@@ -37,6 +55,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+[2.1.0]: https://github.com/tkas9mbek/flutter_starter/releases/tag/v2.1.0
 [2.0.1]: https://github.com/tkas9mbek/flutter_starter/releases/tag/v2.0.1
 [2.0.0]: https://github.com/tkas9mbek/flutter_starter/releases/tag/v2.0.0
 [1.0.0]: https://github.com/tkas9mbek/flutter_starter/releases/tag/v1.0.0

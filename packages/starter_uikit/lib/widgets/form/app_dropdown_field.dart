@@ -21,18 +21,18 @@ class AppDropdownField<T extends Object> extends StatefulWidget {
   const AppDropdownField({
     required this.options,
     required this.name,
-    this.label,
-    this.title,
-    this.hint,
-    this.prefix,
-    this.initialValue,
-    this.validators,
     this.decoration = const FilledTextFieldDecoration(),
     this.optionLabelBuilder = defaultOptionLabelBuilder,
     this.enabled = true,
     this.required = false,
     this.hideErrorText = true,
     this.colorLabelOnError = false,
+    this.label,
+    this.title,
+    this.hint,
+    this.prefix,
+    this.initialValue,
+    this.validators,
     super.key,
   });
 
@@ -103,7 +103,7 @@ class _AppDropdownFieldState<T extends Object>
       initialValue: widget.initialValue,
       validator: FormBuilderValidators.compose([
         ...?widget.validators,
-        if (widget.required) FormBuilderValidators.required(),
+        if (widget.required) ...[FormBuilderValidators.required()],
       ]),
       builder: (field) => AppTextField(
         name: textFieldName,

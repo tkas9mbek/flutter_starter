@@ -31,15 +31,10 @@ class TaskListItemTile extends StatelessWidget {
           color: theme.error,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(
-          Icons.delete_outline,
-          color: theme.onStatus,
-          size: 28,
-        ),
+        child: Icon(Icons.delete_outline, color: theme.onStatus, size: 28),
       ),
-      onDismissed: (_) {
-        context.read<TaskDeleteBloc>().add(TaskDeleteEvent.deleted(task.id));
-      },
+      onDismissed: (_) =>
+          context.read<TaskDeleteBloc>().add(TaskDeleteEvent.deleted(task.id)),
       child: InkWell(
         onTap: () => context.router.push(TaskDetailsRoute(task: task)),
         borderRadius: BorderRadius.circular(12),

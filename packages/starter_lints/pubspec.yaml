@@ -3,7 +3,7 @@ description: Custom lint rules for flutter_starter project
 
 publish_to: 'none'
 
-version: 2.0.1
+version: 2.1.0
 
 resolution: workspace
 

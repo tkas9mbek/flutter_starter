@@ -15,9 +15,10 @@ class CalendarHorizontalDatePicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
 
-    final dates = List.generate(7, (index) {
-      return selectedDate.add(Duration(days: index - 3));
-    });
+    final dates = List.generate(
+      7,
+      (index) => selectedDate.add(Duration(days: index - 3)),
+    );
 
     return Container(
       height: 100,

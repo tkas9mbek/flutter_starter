@@ -14,9 +14,7 @@ class MockApiClient extends Mock implements ApiClient {}
 class FakeTaskCreateRequest extends Fake implements TaskCreateRequest {}
 
 void main() {
-  setUpAll(() {
-    registerFallbackValue(FakeTaskCreateRequest());
-  });
+  setUpAll(() => registerFallbackValue(FakeTaskCreateRequest()));
 
   late RemoteTaskDataSource dataSource;
   late MockApiClient mockApiClient;
@@ -38,6 +36,7 @@ void main() {
         final fromJson =
             invocation.namedArguments[#fromJson]
                 as Task Function(Map<String, dynamic>);
+
         return [
           fromJson(TaskMockModels.rawTask1),
           fromJson(TaskMockModels.rawTask2),
@@ -87,6 +86,7 @@ void main() {
           final fromJson =
               invocation.namedArguments[#fromJson]
                   as Task Function(Map<String, dynamic>);
+
           return [fromJson(TaskMockModels.rawTask1)];
         });
 
@@ -141,6 +141,7 @@ void main() {
         final fromJson =
             invocation.namedArguments[#fromJson]
                 as Task Function(Map<String, dynamic>);
+
         return fromJson(TaskMockModels.rawTask3);
       });
 
@@ -197,6 +198,7 @@ void main() {
         final fromJson =
             invocation.namedArguments[#fromJson]
                 as Task Function(Map<String, dynamic>);
+
         return fromJson(TaskMockModels.rawTask1);
       });
 
@@ -263,8 +265,9 @@ void main() {
     });
   });
 
-  group('TaskCreateRequest', () {
-    test('toJson serializes correctly', () {
+  group(
+    'TaskCreateRequest',
+    () => test('toJson serializes correctly', () {
       final date = DateTime(2025, 1, 20);
       final startTime = DateTime(2025, 1, 20, 9, 0);
       final endTime = DateTime(2025, 1, 20, 10, 30);
@@ -285,6 +288,6 @@ void main() {
       expect(json['startTime'], equals(startTime.toIso8601String()));
       expect(json['endTime'], equals(endTime.toIso8601String()));
       expect(json.length, equals(5));
-    });
-  });
+    }),
+  );
 }
