@@ -7,7 +7,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 - GitHub Actions CI for linting, analyzer checks, and parallelized per-feature test shards
 - Shared app version constant (`CoreConsts.appVersion`) surfaced in the settings UI and release-prep documentation
-- `starter_lints` rules: `avoid_build_context_field`, `avoid_mutable_bloc_fields`, `braces_in_flow_control`, `no_flutter_in_data_domain`, `no_hardcoded_colors`, `prefer_bool_default`, `prefer_map_or_null`
+- `starter_lints` rules: `avoid_build_context_field`, `avoid_mutable_bloc_fields`, `braces_in_flow_control`, `no_flutter_in_data_domain`, `no_hardcoded_colors`, `prefer_bool_default`, `prefer_map_or_null`, `avoid_naming_antipatterns`, `bloc_listener_builder_usage`, `class_size_warning`, `max_widget_nesting`, `multi_line_ternary`, `theme_in_build_only`
 - `AGENTS.md` and restructured documentation: human-facing `docs/guides/`, AI-context cheat sheets `docs/ai-context/`, and consolidated `docs/rules/` (new code-review, estimation, Freezed/BLoC, git-workflow, and coding-rules guides)
 
 ### Changed

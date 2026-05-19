@@ -6,6 +6,9 @@ All notable changes to starter_lints will be documented in this file.
 
 ### Added
 - Additional lint coverage used by the template’s stricter 2.1 release workflow
+- Ported advisory rules from the parallel `release/2.1.0` line: `avoid_naming_antipatterns`,
+  `bloc_listener_builder_usage`, `class_size_warning`, `max_widget_nesting`,
+  `multi_line_ternary`, `theme_in_build_only` (all INFO severity)
 
 ### Changed
 - Updated package version to align with the main app `2.1.0` release

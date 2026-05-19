@@ -23,6 +23,12 @@ Custom lint rules for flutter_starter project.
 | `avoid_mutable_bloc_fields` | WARNING | BLoC/Cubit instance fields must be final (subscriptions/timers exempt) |
 | `prefer_map_or_null` | INFO | `mapOrNull`/`whenOrNull` over `maybeMap`/`maybeWhen` with empty `orElse` |
 | `prefer_bool_default` | INFO | Avoid `bool?` parameters — use a default value |
+| `avoid_naming_antipatterns` | INFO | No `Impl`/`Model`/`Helper`/`Manager`/`Data`/`Info`/`Util` name suffixes |
+| `bloc_listener_builder_usage` | INFO | `BlocListener` uses `mapOrNull`/`whenOrNull`; `BlocBuilder` uses `maybeMap`/`maybeWhen` |
+| `class_size_warning` | INFO | Class exceeds 100 lines — consider splitting for SRP |
+| `max_widget_nesting` | INFO | `build()` widget nesting exceeds 8 levels — extract subtrees |
+| `multi_line_ternary` | INFO | Long/multi-line ternary — use if/else with early return |
+| `theme_in_build_only` | INFO | Don't store theme types as fields — read in `build()` |
 
 ## Usage
 
