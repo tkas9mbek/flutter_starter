@@ -3,10 +3,11 @@
 ## Quick Reference
 
 When creating a BLoC:
-1. Use Freezed for immutable states and events
+1. Use Freezed `sealed` unions for immutable states and events
 2. Keep all definitions in ONE file (`feature_bloc.dart`)
 3. Use standard state names: `initial`, `loading`, `success`, `failure`
 4. Use past-tense event names: `requested`, `submitted`, `refreshed`
+5. State case classes are public (`SuccessFeatureState`) so UI can pattern-match; event case classes stay private (`_RequestedFeatureEvent`)
 
 ---
 
@@ -21,26 +22,26 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'feature_bloc.freezed.dart';  // Generated file
 
-// 1. Events (union type)
+// 1. Events (union type — case classes stay private)
 @freezed
-class FeatureEvent with _$FeatureEvent {
+sealed class FeatureEvent with _$FeatureEvent {
   const factory FeatureEvent.requested() = _RequestedFeatureEvent;
   const factory FeatureEvent.submitted(Data data) = _SubmittedFeatureEvent;
   const factory FeatureEvent.refreshed() = _RefreshedFeatureEvent;
 }
 
-// 2. States (union type)
+// 2. States (union type — case classes are public so UI can pattern-match)
 @freezed
-class FeatureState with _$FeatureState {
+sealed class FeatureState with _$FeatureState {
   const FeatureState._();  // Enable extensions
 
-  const factory FeatureState.initial() = _InitialFeatureState;
-  const factory FeatureState.loading() = _LoadingFeatureState;
-  const factory FeatureState.success(List<Item> items) = _SuccessFeatureState;
-  const factory FeatureState.failure(AppException exception) = _FailureFeatureState;
+  const factory FeatureState.initial() = InitialFeatureState;
+  const factory FeatureState.loading() = LoadingFeatureState;
+  const factory FeatureState.success(List<Item> items) = SuccessFeatureState;
+  const factory FeatureState.failure(AppException exception) = FailureFeatureState;
 
   // Helper getters
-  bool get isLoading => this is _LoadingFeatureState;
+  bool get isLoading => this is LoadingFeatureState;
 }
 
 // 3. BLoC
@@ -48,28 +49,37 @@ class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
   final FeatureRepository _repository;
 
   FeatureBloc(this._repository) : super(const FeatureState.initial()) {
-    on<FeatureEvent>((event, emit) => event.when(
-      requested: () => _onRequested(emit),
-      submitted: (data) => _onSubmitted(data, emit),
-      refreshed: () => _onRefreshed(emit),
-    ));
+    on<_RequestedFeatureEvent>(_onRequested);
+    on<_SubmittedFeatureEvent>(_onSubmitted);
+    on<_RefreshedFeatureEvent>(_onRefreshed);
   }
 
-  Future<void> _onRequested(Emitter<FeatureState> emit) async {
+  Future<void> _onRequested(
+    _RequestedFeatureEvent event,
+    Emitter<FeatureState> emit,
+  ) async {
     emit(const FeatureState.loading());
+
     try {
       final items = await _repository.getItems();
-      emit(FeatureState.success(items));
+
+      return emit(FeatureState.success(items));
     } on AppException catch (e) {
-      emit(FeatureState.failure(e));
+      return emit(FeatureState.failure(e));
     }
   }
 
-  Future<void> _onSubmitted(Data data, Emitter<FeatureState> emit) async {
-    // Handle submission
+  Future<void> _onSubmitted(
+    _SubmittedFeatureEvent event,
+    Emitter<FeatureState> emit,
+  ) async {
+    // Handle submission (event.data carries the payload)
   }
 
-  Future<void> _onRefreshed(Emitter<FeatureState> emit) async {
+  Future<void> _onRefreshed(
+    _RefreshedFeatureEvent event,
+    Emitter<FeatureState> emit,
+  ) async {
     // Handle refresh
   }
 }
@@ -85,17 +95,17 @@ Use these standard state patterns:
 
 ```dart
 @freezed
-class ItemListState with _$ItemListState {
+sealed class ItemListState with _$ItemListState {
   const ItemListState._();
 
-  const factory ItemListState.initial() = _InitialItemListState;
-  const factory ItemListState.loading() = _LoadingItemListState;
-  const factory ItemListState.success(List<Item> items) = _SuccessItemListState;
-  const factory ItemListState.failure(AppException exception) = _FailureItemListState;
+  const factory ItemListState.initial() = InitialItemListState;
+  const factory ItemListState.loading() = LoadingItemListState;
+  const factory ItemListState.success(List<Item> items) = SuccessItemListState;
+  const factory ItemListState.failure(AppException exception) = FailureItemListState;
 
   // Helper getters
-  bool get isLoading => this is _LoadingItemListState;
-  bool get hasData => this is _SuccessItemListState;
+  bool get isLoading => this is LoadingItemListState;
+  bool get hasData => this is SuccessItemListState;
 }
 ```
 
@@ -103,13 +113,13 @@ class ItemListState with _$ItemListState {
 
 ```dart
 @freezed
-class ItemDetailsState with _$ItemDetailsState {
+sealed class ItemDetailsState with _$ItemDetailsState {
   const ItemDetailsState._();
 
-  const factory ItemDetailsState.initial() = _InitialItemDetailsState;
-  const factory ItemDetailsState.loading() = _LoadingItemDetailsState;
-  const factory ItemDetailsState.success(Item item) = _SuccessItemDetailsState;
-  const factory ItemDetailsState.failure(AppException exception) = _FailureItemDetailsState;
+  const factory ItemDetailsState.initial() = InitialItemDetailsState;
+  const factory ItemDetailsState.loading() = LoadingItemDetailsState;
+  const factory ItemDetailsState.success(Item item) = SuccessItemDetailsState;
+  const factory ItemDetailsState.failure(AppException exception) = FailureItemDetailsState;
 }
 ```
 
@@ -117,15 +127,15 @@ class ItemDetailsState with _$ItemDetailsState {
 
 ```dart
 @freezed
-class ItemOperationState with _$ItemOperationState {
+sealed class ItemOperationState with _$ItemOperationState {
   const ItemOperationState._();
 
-  const factory ItemOperationState.initial() = _InitialItemOperationState;
-  const factory ItemOperationState.submitting() = _SubmittingItemOperationState;
-  const factory ItemOperationState.success() = _SuccessItemOperationState;
-  const factory ItemOperationState.failure(AppException exception) = _FailureItemOperationState;
+  const factory ItemOperationState.initial() = InitialItemOperationState;
+  const factory ItemOperationState.submitting() = SubmittingItemOperationState;
+  const factory ItemOperationState.success() = SuccessItemOperationState;
+  const factory ItemOperationState.failure(AppException exception) = FailureItemOperationState;
 
-  bool get isSubmitting => this is _SubmittingItemOperationState;
+  bool get isSubmitting => this is SubmittingItemOperationState;
 }
 ```
 
@@ -136,20 +146,20 @@ For states that need persistent data (like selectedDate, filters, pagination) ac
 ```dart
 // Status union - handles loading/success/failure
 @freezed
-class CalendarStatus with _$CalendarStatus {
-  const factory CalendarStatus.initial() = _InitialCalendarStatus;
-  const factory CalendarStatus.loading() = _LoadingCalendarStatus;
+sealed class CalendarStatus with _$CalendarStatus {
+  const factory CalendarStatus.initial() = InitialCalendarStatus;
+  const factory CalendarStatus.loading() = LoadingCalendarStatus;
   const factory CalendarStatus.success({
     required List<Task> tasks,
-  }) = _SuccessCalendarStatus;
+  }) = SuccessCalendarStatus;
   const factory CalendarStatus.failure({
     required AppException exception,
-  }) = _FailureCalendarStatus;
+  }) = FailureCalendarStatus;
 }
 
-// State with persistent data + nested status
+// State with persistent data + nested status (single constructor → abstract)
 @freezed
-class CalendarState with _$CalendarState {
+abstract class CalendarState with _$CalendarState {
   const factory CalendarState({
     required DateTime selectedDate,  // Persists across status changes
     required CalendarStatus status,   // Changes with loading/success/failure
@@ -164,12 +174,12 @@ class CalendarState with _$CalendarState {
   );
 
   // Helper methods
-  bool get isLoading => status is _LoadingCalendarStatus;
+  bool get isLoading => status is LoadingCalendarStatus;
 }
 
 // Events
 @freezed
-class CalendarEvent with _$CalendarEvent {
+sealed class CalendarEvent with _$CalendarEvent {
   const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
   const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;  // Reloads current date
 }
@@ -227,14 +237,15 @@ BlocBuilder<CalendarBloc, CalendarState>(
       // Access persistent data directly
       CalendarPicker(selectedDate: state.selectedDate),
 
-      // Use nested status for content
+      // Use nested status for content — exhaustive switch expression
       Expanded(
-        child: state.status.when(
-          initial: () => EmptyView(),
-          loading: () => LoadingIndicator(),
-          success: (tasks) => TasksList(tasks: tasks),
-          failure: (exception) => ErrorWidget(exception: exception),
-        ),
+        child: switch (state.status) {
+          InitialCalendarStatus() => EmptyView(),
+          LoadingCalendarStatus() => LoadingIndicator(),
+          SuccessCalendarStatus(:final tasks) => TasksList(tasks: tasks),
+          FailureCalendarStatus(:final exception) =>
+            ErrorWidget(exception: exception),
+        },
       ),
     ],
   ),
@@ -261,7 +272,7 @@ Use past-tense event names:
 
 ```dart
 @freezed
-class ItemEvent with _$ItemEvent {
+sealed class ItemEvent with _$ItemEvent {
   // Load initial data
   const factory ItemEvent.requested() = _RequestedItemEvent;
 
@@ -277,7 +288,7 @@ class ItemEvent with _$ItemEvent {
 
 ```dart
 @freezed
-class ItemOperationEvent with _$ItemOperationEvent {
+sealed class ItemOperationEvent with _$ItemOperationEvent {
   // Submit form/operation
   const factory ItemOperationEvent.submitted(ItemData data) = _SubmittedItemOperationEvent;
 
@@ -293,7 +304,7 @@ class ItemOperationEvent with _$ItemOperationEvent {
 
 ```dart
 @freezed
-class ItemEvent with _$ItemEvent {
+sealed class ItemEvent with _$ItemEvent {
   const factory ItemEvent.itemSelected(String id) = _ItemSelectedItemEvent;
   const factory ItemEvent.itemDeselected() = _ItemDeselectedItemEvent;
   const factory ItemEvent.itemToggled(String id) = _ItemToggledItemEvent;
@@ -304,7 +315,7 @@ class ItemEvent with _$ItemEvent {
 
 ## BLoC Event Handlers
 
-Separate handlers for each event:
+Register a typed `on<_Event>` per event and give each its own handler:
 
 ```dart
 class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
@@ -312,40 +323,52 @@ class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
 
   FeatureBloc(this._repository) : super(const FeatureState.initial()) {
     // Map each event to handler
-    on<FeatureEvent>((event, emit) => event.when(
-      requested: () => _onRequested(emit),
-      submitted: (data) => _onSubmitted(data, emit),
-      deleted: (id) => _onDeleted(id, emit),
-    ));
+    on<_RequestedFeatureEvent>(_onRequested);
+    on<_SubmittedFeatureEvent>(_onSubmitted);
+    on<_DeletedFeatureEvent>(_onDeleted);
   }
 
   // Separate handler methods
-  Future<void> _onRequested(Emitter<FeatureState> emit) async {
+  Future<void> _onRequested(
+    _RequestedFeatureEvent event,
+    Emitter<FeatureState> emit,
+  ) async {
     emit(const FeatureState.loading());
+
     try {
       final data = await _repository.getData();
-      emit(FeatureState.success(data));
+
+      return emit(FeatureState.success(data));
     } on AppException catch (e) {
-      emit(FeatureState.failure(e));
+      return emit(FeatureState.failure(e));
     }
   }
 
-  Future<void> _onSubmitted(Data data, Emitter<FeatureState> emit) async {
+  Future<void> _onSubmitted(
+    _SubmittedFeatureEvent event,
+    Emitter<FeatureState> emit,
+  ) async {
     emit(const FeatureState.submitting());
+
     try {
-      await _repository.save(data);
-      emit(const FeatureState.success());
+      await _repository.save(event.data);
+
+      return emit(const FeatureState.success());
     } on AppException catch (e) {
-      emit(FeatureState.failure(e));
+      return emit(FeatureState.failure(e));
     }
   }
 
-  Future<void> _onDeleted(String id, Emitter<FeatureState> emit) async {
+  Future<void> _onDeleted(
+    _DeletedFeatureEvent event,
+    Emitter<FeatureState> emit,
+  ) async {
     try {
-      await _repository.delete(id);
-      emit(const FeatureState.success());
+      await _repository.delete(event.id);
+
+      return emit(const FeatureState.success());
     } on AppException catch (e) {
-      emit(FeatureState.failure(e));
+      return emit(FeatureState.failure(e));
     }
   }
 }
@@ -357,39 +380,38 @@ class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
 
 ### 1. BlocBuilder (Display Data)
 
-Use `BlocBuilder` to display state-dependent UI:
+Use `BlocBuilder` with an exhaustive `switch` over the sealed state:
 
 ```dart
 BlocBuilder<ItemListBloc, ItemListState>(
-  builder: (context, state) => state.when(
-    initial: () => const SizedBox.shrink(),
-    loading: () => const Center(child: CircularProgressIndicator()),
-    success: (items) => ItemListView(items: items),
-    failure: (exception) => ErrorWidget(exception: exception),
-  ),
+  builder: (context, state) => switch (state) {
+    InitialItemListState() => const SizedBox.shrink(),
+    LoadingItemListState() => const Center(child: CircularProgressIndicator()),
+    SuccessItemListState(:final items) => ItemListView(items: items),
+    FailureItemListState(:final exception) => ErrorWidget(exception: exception),
+  },
 )
 ```
 
 ### 2. BlocListener (Side Effects)
 
-Use `BlocListener` for navigation, snackbars, dialogs:
+Use `BlocListener` with `if-case` / `is` checks for navigation, snackbars, dialogs:
 
 ```dart
 BlocListener<ItemOperationBloc, ItemOperationState>(
   listener: (context, state) {
-    state.whenOrNull(
-      success: () {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Item saved successfully')),
-        );
-        context.router.pop();
-      },
-      failure: (exception) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(exception.toString())),
-        );
-      },
-    );
+    if (state is SuccessItemOperationState) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Item saved successfully')),
+      );
+      context.router.pop();
+    }
+
+    if (state case FailureItemOperationState(:final exception)) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(exception.toString())),
+      );
+    }
   },
   child: YourForm(),
 )
@@ -401,17 +423,14 @@ BlocListener<ItemOperationBloc, ItemOperationState>(
 BlocConsumer<ItemBloc, ItemState>(
   listener: (context, state) {
     // Handle side effects
-    state.whenOrNull(
-      failure: (exception) => showErrorDialog(context, exception),
-    );
+    if (state case FailureItemState(:final exception)) {
+      showErrorDialog(context, exception);
+    }
   },
-  builder: (context, state) {
-    // Build UI
-    return state.when(
-      loading: () => LoadingWidget(),
-      success: (item) => ItemWidget(item: item),
-      failure: (_) => ErrorPlaceholder(),
-    );
+  builder: (context, state) => switch (state) {
+    SuccessItemState(:final item) => ItemWidget(item: item),
+    FailureItemState() => ErrorPlaceholder(),
+    InitialItemState() || LoadingItemState() => LoadingWidget(),
   },
 )
 ```
@@ -424,27 +443,28 @@ Add helper getters to State for common checks:
 
 ```dart
 @freezed
-class ItemListState with _$ItemListState {
+sealed class ItemListState with _$ItemListState {
   const ItemListState._();  // Enable custom methods
 
-  const factory ItemListState.initial() = _InitialItemListState;
-  const factory ItemListState.loading() = _LoadingItemListState;
-  const factory ItemListState.success(List<Item> items) = _SuccessItemListState;
-  const factory ItemListState.failure(AppException exception) = _FailureItemListState;
+  const factory ItemListState.initial() = InitialItemListState;
+  const factory ItemListState.loading() = LoadingItemListState;
+  const factory ItemListState.success(List<Item> items) = SuccessItemListState;
+  const factory ItemListState.failure(AppException exception) = FailureItemListState;
 
   // Helper getters
-  bool get isLoading => this is _LoadingItemListState;
-  bool get hasData => this is _SuccessItemListState;
-  bool get hasError => this is _FailureItemListState;
+  bool get isLoading => this is LoadingItemListState;
+  bool get hasData => this is SuccessItemListState;
+  bool get hasError => this is FailureItemListState;
 
-  List<Item> get items => maybeWhen(
-    success: (items) => items,
-    orElse: () => [],
-  );
+  List<Item> get items => switch (this) {
+    SuccessItemListState(:final items) => items,
+    _ => [],
+  };
 
-  String? get errorMessage => whenOrNull(
-    failure: (exception) => exception.toString(),
-  );
+  String? get errorMessage => switch (this) {
+    FailureItemListState(:final exception) => exception.toString(),
+    _ => null,
+  };
 }
 ```
 
@@ -459,9 +479,10 @@ fvm flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
 **Generated methods:**
-- `when`, `whenOrNull`, `maybeWhen` - Pattern matching
-- `map`, `mapOrNull`, `maybeMap` - Type-safe mapping
 - `copyWith` - Create modified copies
+- `==` / `hashCode` - Value equality for correct `BlocBuilder` rebuilds
+
+**Pattern matching:** Freezed 3 no longer generates `when` / `map` helpers. Use Dart's built-in `switch` expressions and `if-case` on the sealed state classes instead.
 
 ---
 
@@ -478,49 +499,56 @@ import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 part 'user_list_bloc.freezed.dart';
 
 @freezed
-class UserListEvent with _$UserListEvent {
+sealed class UserListEvent with _$UserListEvent {
   const factory UserListEvent.requested() = _RequestedUserListEvent;
   const factory UserListEvent.refreshed() = _RefreshedUserListEvent;
 }
 
 @freezed
-class UserListState with _$UserListState {
+sealed class UserListState with _$UserListState {
   const UserListState._();
 
-  const factory UserListState.initial() = _InitialUserListState;
-  const factory UserListState.loading() = _LoadingUserListState;
-  const factory UserListState.success(List<User> users) = _SuccessUserListState;
-  const factory UserListState.failure(AppException exception) = _FailureUserListState;
+  const factory UserListState.initial() = InitialUserListState;
+  const factory UserListState.loading() = LoadingUserListState;
+  const factory UserListState.success(List<User> users) = SuccessUserListState;
+  const factory UserListState.failure(AppException exception) = FailureUserListState;
 
-  bool get isLoading => this is _LoadingUserListState;
+  bool get isLoading => this is LoadingUserListState;
 }
 
 class UserListBloc extends Bloc<UserListEvent, UserListState> {
   final UserRepository _repository;
 
   UserListBloc(this._repository) : super(const UserListState.initial()) {
-    on<UserListEvent>((event, emit) => event.when(
-      requested: () => _onRequested(emit),
-      refreshed: () => _onRefreshed(emit),
-    ));
+    on<_RequestedUserListEvent>(_onRequested);
+    on<_RefreshedUserListEvent>(_onRefreshed);
   }
 
-  Future<void> _onRequested(Emitter<UserListState> emit) async {
+  Future<void> _onRequested(
+    _RequestedUserListEvent event,
+    Emitter<UserListState> emit,
+  ) async {
     emit(const UserListState.loading());
+
     try {
       final users = await _repository.getUsers();
-      emit(UserListState.success(users));
+
+      return emit(UserListState.success(users));
     } on AppException catch (e) {
-      emit(UserListState.failure(e));
+      return emit(UserListState.failure(e));
     }
   }
 
-  Future<void> _onRefreshed(Emitter<UserListState> emit) async {
+  Future<void> _onRefreshed(
+    _RefreshedUserListEvent event,
+    Emitter<UserListState> emit,
+  ) async {
     try {
       final users = await _repository.getUsers();
-      emit(UserListState.success(users));
+
+      return emit(UserListState.success(users));
     } on AppException catch (e) {
-      emit(UserListState.failure(e));
+      return emit(UserListState.failure(e));
     }
   }
 }
@@ -543,38 +571,41 @@ Add to your VS Code snippets for quick BLoC generation:
       "part '${TM_FILENAME_BASE}.freezed.dart';",
       "",
       "@freezed",
-      "class ${1:Feature}Event with _$${1:Feature}Event {",
+      "sealed class ${1:Feature}Event with _$${1:Feature}Event {",
       "  const factory ${1:Feature}Event.requested() = _Requested${1:Feature}Event;",
       "}",
       "",
       "@freezed",
-      "class ${1:Feature}State with _$${1:Feature}State {",
+      "sealed class ${1:Feature}State with _$${1:Feature}State {",
       "  const ${1:Feature}State._();",
       "",
-      "  const factory ${1:Feature}State.initial() = _Initial${1:Feature}State;",
-      "  const factory ${1:Feature}State.loading() = _Loading${1:Feature}State;",
-      "  const factory ${1:Feature}State.success() = _Success${1:Feature}State;",
-      "  const factory ${1:Feature}State.failure(AppException exception) = _Failure${1:Feature}State;",
+      "  const factory ${1:Feature}State.initial() = Initial${1:Feature}State;",
+      "  const factory ${1:Feature}State.loading() = Loading${1:Feature}State;",
+      "  const factory ${1:Feature}State.success() = Success${1:Feature}State;",
+      "  const factory ${1:Feature}State.failure(AppException exception) = Failure${1:Feature}State;",
       "",
-      "  bool get isLoading => this is _Loading${1:Feature}State;",
+      "  bool get isLoading => this is Loading${1:Feature}State;",
       "}",
       "",
       "class ${1:Feature}Bloc extends Bloc<${1:Feature}Event, ${1:Feature}State> {",
       "  final ${1:Feature}Repository _repository;",
       "",
       "  ${1:Feature}Bloc(this._repository) : super(const ${1:Feature}State.initial()) {",
-      "    on<${1:Feature}Event>((event, emit) => event.when(",
-      "      requested: () => _onRequested(emit),",
-      "    ));",
+      "    on<_Requested${1:Feature}Event>(_onRequested);",
       "  }",
       "",
-      "  Future<void> _onRequested(Emitter<${1:Feature}State> emit) async {",
+      "  Future<void> _onRequested(",
+      "    _Requested${1:Feature}Event event,",
+      "    Emitter<${1:Feature}State> emit,",
+      "  ) async {",
       "    emit(const ${1:Feature}State.loading());",
+      "",
       "    try {",
       "      final data = await _repository.getData();",
-      "      emit(${1:Feature}State.success());",
+      "",
+      "      return emit(${1:Feature}State.success());",
       "    } on AppException catch (e) {",
-      "      emit(${1:Feature}State.failure(e));",
+      "      return emit(${1:Feature}State.failure(e));",
       "    }",
       "  }",
       "}"
@@ -591,7 +622,3 @@ Add to your VS Code snippets for quick BLoC generation:
 - [Flutter BLoC Documentation](https://bloclibrary.dev)
 - [Freezed Package](https://pub.dev/packages/freezed)
 - [Flutter Freezed BLoC Without Boilerplate](https://medium.com/@morning-stars/flutter-freezed-bloc-7-2-0-without-boilerplate-99fe6051f8d)
-
----
-
-**Last Updated**: November 18, 2025

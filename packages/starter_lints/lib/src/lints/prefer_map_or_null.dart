@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -20,7 +20,7 @@ class PreferMapOrNull extends DartLintRule {
     correctionMessage:
         'Replace maybeMap with mapOrNull (or maybeWhen with whenOrNull) '
         'and remove the empty orElse argument.',
-    errorSeverity: ErrorSeverity.INFO,
+    errorSeverity: DiagnosticSeverity.INFO,
   );
 
   static const _targetMethodNames = <String>{'maybeMap', 'maybeWhen'};
@@ -28,7 +28,7 @@ class PreferMapOrNull extends DartLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addMethodInvocation((node) {

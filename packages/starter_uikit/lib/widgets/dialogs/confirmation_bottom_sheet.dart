@@ -3,6 +3,9 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 
+/// A bottom sheet asking the user to confirm an action, showing a [title],
+/// optional descriptive [text], and a full-width confirm button.
+/// Pops with `true` when confirmed; dismissing otherwise yields `null`.
 class ConfirmationBottomSheet extends StatelessWidget {
   const ConfirmationBottomSheet({
     required this.title,

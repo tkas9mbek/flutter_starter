@@ -391,7 +391,3 @@ Concrete corrections for the most common naming mistakes seen in review.
 - [Architecture](../guides/architecture.md) - Layer structure
 - [Structure](../guides/structure.md) - File organization
 - [BLoC & Freezed](../guides/freezed_bloc.md) - BLoC patterns
-
----
-
-**Last Updated**: January 18, 2025

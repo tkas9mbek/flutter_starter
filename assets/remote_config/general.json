@@ -1,0 +1,12 @@
+{
+  "appVersion": {
+    "minimal": {
+      "ios": "1.0.0",
+      "android": "1.0.0"
+    },
+    "current": {
+      "ios": "1.0.0",
+      "android": "1.0.0"
+    }
+  }
+}

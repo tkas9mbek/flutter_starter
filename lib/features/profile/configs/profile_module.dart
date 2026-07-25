@@ -1,27 +1,30 @@
 import 'package:starter/core/di/app_module.dart';
-import 'package:starter/core/di/injection.dart';
-import 'package:starter/features/application/environment/model/app_environment.dart';
+import 'package:starter/core/global/global_variables.dart';
 import 'package:starter/features/profile/data/mock_profile_data_source.dart';
 import 'package:starter/features/profile/data/remote_profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_repository.dart';
+import 'package:starter/features/profile/ui/overview/bloc/user_bloc.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
 class ProfileModule extends AppModule {
   @override
   bool get requiresReconfiguration => true;
 
   @override
-  Future<void> registerDependencies() async {
-    await unregisterIfRegistered<ProfileRepository>();
-    await unregisterIfRegistered<ProfileDataSource>();
+  List<Unregister> get unregisterCallbacks => [
+    unregisterIfRegistered<UserBloc>,
+    unregisterIfRegistered<ProfileRepository>,
+    unregisterIfRegistered<ProfileDataSource>,
+  ];
 
+  @override
+  void register() {
     getIt
       ..registerLazySingleton<ProfileDataSource>(() {
-        final env = getIt<AppEnvironment>();
-
-        if (env.useMock) {
+        if (useMock) {
           return const MockProfileDataSource();
         }
 
@@ -35,6 +38,7 @@ class ProfileModule extends AppModule {
           ),
           getIt<ProfileDataSource>(),
         ),
-      );
+      )
+      ..registerFactory(() => UserBloc(getIt<ProfileRepository>()));
   }
 }

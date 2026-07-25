@@ -11,13 +11,10 @@ import 'package:starter_uikit/widgets/form/app_text_field.dart';
 import 'package:starter_uikit/widgets/form/decoration/filled_text_field_decoration.dart';
 import 'package:starter_uikit/widgets/form/decoration/text_field_decoration.dart';
 
+/// FormBuilder-backed single-select field shown as a read-only [AppTextField]
+/// with a chevron suffix; tapping opens a [DropdownBottomSheet] with
+/// [options] labelled via [optionLabelBuilder].
 class AppDropdownField<T extends Object> extends StatefulWidget {
-  /// Similar to [AppTextField], but with a dropdown.
-  /// A dropdown field that allows the user to select an option from a list.
-  /// The selected option is returned as a value when the form is submitted.
-  /// * [options] is a list of options to choose from.
-  /// * [optionLabelBuilder] is a function that converts an option to a string.
-  /// By default, it uses the `toString` method.
   const AppDropdownField({
     required this.options,
     required this.name,
@@ -100,6 +97,7 @@ class _AppDropdownFieldState<T extends Object>
   Widget build(BuildContext context) {
     return FormBuilderField<T>(
       name: widget.name,
+      enabled: widget.enabled,
       initialValue: widget.initialValue,
       validator: FormBuilderValidators.compose([
         ...?widget.validators,
@@ -114,6 +112,7 @@ class _AppDropdownFieldState<T extends Object>
         hint: widget.hint,
         prefix: widget.prefix,
         decoration: widget.decoration,
+        enabled: widget.enabled,
         readOnly: true,
         hideErrorText: widget.hideErrorText,
         colorLabelOnError: widget.colorLabelOnError,

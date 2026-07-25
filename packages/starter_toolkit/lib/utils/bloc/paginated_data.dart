@@ -1,6 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:starter_toolkit/data/model/paginated_list_items.dart';
 
+/// Immutable page of items with pagination metadata and helpers to append and merge pages.
 class PaginatedData<T> extends Equatable {
   const PaginatedData({
     required this.page,

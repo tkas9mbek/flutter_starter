@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,187 +9,272 @@ part of 'auth_login_request_body.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
-AuthLoginRequestBody _$AuthLoginRequestBodyFromJson(Map<String, dynamic> json) {
-  return _AuthLoginRequestBody.fromJson(json);
-}
 
 /// @nodoc
 mixin _$AuthLoginRequestBody {
-  String get phone => throw _privateConstructorUsedError;
-  String get password => throw _privateConstructorUsedError;
+
+ String get phone; String get password;
+/// Create a copy of AuthLoginRequestBody
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$AuthLoginRequestBodyCopyWith<AuthLoginRequestBody> get copyWith => _$AuthLoginRequestBodyCopyWithImpl<AuthLoginRequestBody>(this as AuthLoginRequestBody, _$identity);
 
   /// Serializes this AuthLoginRequestBody to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  Map<String, dynamic> toJson();
 
-  /// Create a copy of AuthLoginRequestBody
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $AuthLoginRequestBodyCopyWith<AuthLoginRequestBody> get copyWith =>
-      throw _privateConstructorUsedError;
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthLoginRequestBody&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.password, password) || other.password == password));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,phone,password);
+
+@override
+String toString() {
+  return 'AuthLoginRequestBody(phone: $phone, password: $password)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $AuthLoginRequestBodyCopyWith<$Res> {
-  factory $AuthLoginRequestBodyCopyWith(
-    AuthLoginRequestBody value,
-    $Res Function(AuthLoginRequestBody) then,
-  ) = _$AuthLoginRequestBodyCopyWithImpl<$Res, AuthLoginRequestBody>;
-  @useResult
-  $Res call({String phone, String password});
-}
+abstract mixin class $AuthLoginRequestBodyCopyWith<$Res>  {
+  factory $AuthLoginRequestBodyCopyWith(AuthLoginRequestBody value, $Res Function(AuthLoginRequestBody) _then) = _$AuthLoginRequestBodyCopyWithImpl;
+@useResult
+$Res call({
+ String phone, String password
+});
 
+
+
+
+}
 /// @nodoc
-class _$AuthLoginRequestBodyCopyWithImpl<
-  $Res,
-  $Val extends AuthLoginRequestBody
->
+class _$AuthLoginRequestBodyCopyWithImpl<$Res>
     implements $AuthLoginRequestBodyCopyWith<$Res> {
-  _$AuthLoginRequestBodyCopyWithImpl(this._value, this._then);
+  _$AuthLoginRequestBodyCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final AuthLoginRequestBody _self;
+  final $Res Function(AuthLoginRequestBody) _then;
 
-  /// Create a copy of AuthLoginRequestBody
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? phone = null, Object? password = null}) {
-    return _then(
-      _value.copyWith(
-            phone: null == phone
-                ? _value.phone
-                : phone // ignore: cast_nullable_to_non_nullable
-                      as String,
-            password: null == password
-                ? _value.password
-                : password // ignore: cast_nullable_to_non_nullable
-                      as String,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of AuthLoginRequestBody
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? phone = null,Object? password = null,}) {
+  return _then(_self.copyWith(
+phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-/// @nodoc
-abstract class _$$AuthLoginRequestBodyImplCopyWith<$Res>
-    implements $AuthLoginRequestBodyCopyWith<$Res> {
-  factory _$$AuthLoginRequestBodyImplCopyWith(
-    _$AuthLoginRequestBodyImpl value,
-    $Res Function(_$AuthLoginRequestBodyImpl) then,
-  ) = __$$AuthLoginRequestBodyImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String phone, String password});
 }
 
-/// @nodoc
-class __$$AuthLoginRequestBodyImplCopyWithImpl<$Res>
-    extends _$AuthLoginRequestBodyCopyWithImpl<$Res, _$AuthLoginRequestBodyImpl>
-    implements _$$AuthLoginRequestBodyImplCopyWith<$Res> {
-  __$$AuthLoginRequestBodyImplCopyWithImpl(
-    _$AuthLoginRequestBodyImpl _value,
-    $Res Function(_$AuthLoginRequestBodyImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of AuthLoginRequestBody
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? phone = null, Object? password = null}) {
-    return _then(
-      _$AuthLoginRequestBodyImpl(
-        phone: null == phone
-            ? _value.phone
-            : phone // ignore: cast_nullable_to_non_nullable
-                  as String,
-        password: null == password
-            ? _value.password
-            : password // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
+/// Adds pattern-matching-related methods to [AuthLoginRequestBody].
+extension AuthLoginRequestBodyPatterns on AuthLoginRequestBody {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _AuthLoginRequestBody value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _AuthLoginRequestBody() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _AuthLoginRequestBody value)  $default,){
+final _that = this;
+switch (_that) {
+case _AuthLoginRequestBody():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _AuthLoginRequestBody value)?  $default,){
+final _that = this;
+switch (_that) {
+case _AuthLoginRequestBody() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String phone,  String password)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _AuthLoginRequestBody() when $default != null:
+return $default(_that.phone,_that.password);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String phone,  String password)  $default,) {final _that = this;
+switch (_that) {
+case _AuthLoginRequestBody():
+return $default(_that.phone,_that.password);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String phone,  String password)?  $default,) {final _that = this;
+switch (_that) {
+case _AuthLoginRequestBody() when $default != null:
+return $default(_that.phone,_that.password);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$AuthLoginRequestBodyImpl implements _AuthLoginRequestBody {
-  const _$AuthLoginRequestBodyImpl({
-    required this.phone,
-    required this.password,
-  });
 
-  factory _$AuthLoginRequestBodyImpl.fromJson(Map<String, dynamic> json) =>
-      _$$AuthLoginRequestBodyImplFromJson(json);
+class _AuthLoginRequestBody implements AuthLoginRequestBody {
+  const _AuthLoginRequestBody({required this.phone, required this.password});
+  factory _AuthLoginRequestBody.fromJson(Map<String, dynamic> json) => _$AuthLoginRequestBodyFromJson(json);
 
-  @override
-  final String phone;
-  @override
-  final String password;
+@override final  String phone;
+@override final  String password;
 
-  @override
-  String toString() {
-    return 'AuthLoginRequestBody(phone: $phone, password: $password)';
-  }
+/// Create a copy of AuthLoginRequestBody
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$AuthLoginRequestBodyCopyWith<_AuthLoginRequestBody> get copyWith => __$AuthLoginRequestBodyCopyWithImpl<_AuthLoginRequestBody>(this, _$identity);
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$AuthLoginRequestBodyImpl &&
-            (identical(other.phone, phone) || other.phone == phone) &&
-            (identical(other.password, password) ||
-                other.password == password));
-  }
-
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  int get hashCode => Object.hash(runtimeType, phone, password);
-
-  /// Create a copy of AuthLoginRequestBody
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$AuthLoginRequestBodyImplCopyWith<_$AuthLoginRequestBodyImpl>
-  get copyWith =>
-      __$$AuthLoginRequestBodyImplCopyWithImpl<_$AuthLoginRequestBodyImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$AuthLoginRequestBodyImplToJson(this);
-  }
+@override
+Map<String, dynamic> toJson() {
+  return _$AuthLoginRequestBodyToJson(this, );
 }
 
-abstract class _AuthLoginRequestBody implements AuthLoginRequestBody {
-  const factory _AuthLoginRequestBody({
-    required final String phone,
-    required final String password,
-  }) = _$AuthLoginRequestBodyImpl;
-
-  factory _AuthLoginRequestBody.fromJson(Map<String, dynamic> json) =
-      _$AuthLoginRequestBodyImpl.fromJson;
-
-  @override
-  String get phone;
-  @override
-  String get password;
-
-  /// Create a copy of AuthLoginRequestBody
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$AuthLoginRequestBodyImplCopyWith<_$AuthLoginRequestBodyImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthLoginRequestBody&&(identical(other.phone, phone) || other.phone == phone)&&(identical(other.password, password) || other.password == password));
 }
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,phone,password);
+
+@override
+String toString() {
+  return 'AuthLoginRequestBody(phone: $phone, password: $password)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$AuthLoginRequestBodyCopyWith<$Res> implements $AuthLoginRequestBodyCopyWith<$Res> {
+  factory _$AuthLoginRequestBodyCopyWith(_AuthLoginRequestBody value, $Res Function(_AuthLoginRequestBody) _then) = __$AuthLoginRequestBodyCopyWithImpl;
+@override @useResult
+$Res call({
+ String phone, String password
+});
+
+
+
+
+}
+/// @nodoc
+class __$AuthLoginRequestBodyCopyWithImpl<$Res>
+    implements _$AuthLoginRequestBodyCopyWith<$Res> {
+  __$AuthLoginRequestBodyCopyWithImpl(this._self, this._then);
+
+  final _AuthLoginRequestBody _self;
+  final $Res Function(_AuthLoginRequestBody) _then;
+
+/// Create a copy of AuthLoginRequestBody
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? phone = null,Object? password = null,}) {
+  return _then(_AuthLoginRequestBody(
+phone: null == phone ? _self.phone : phone // ignore: cast_nullable_to_non_nullable
+as String,password: null == password ? _self.password : password // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+// dart format on

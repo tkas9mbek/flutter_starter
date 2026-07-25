@@ -3,8 +3,10 @@ import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
 import 'package:starter_uikit/widgets/dialogs/app_cupertino_date_picker.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 
+/// A bottom sheet with a Cupertino wheel picker for choosing a single date
+/// within an optional [minDate]/[maxDate] range. On confirm it pops with the
+/// selected [DateTime], or calls [onDateSelected] instead when provided.
 class DateTimePickerBottomSheet extends StatefulWidget {
-  /// A bottom sheet that allows the user to select a date.
   const DateTimePickerBottomSheet({
     required this.title,
     required this.backText,
@@ -39,23 +41,19 @@ class _DateTimePickerBottomSheetState extends State<DateTimePickerBottomSheet> {
   }
 
   DateTime _getValidInitialDate() {
-    if (widget.initialDate != null) {
-      return widget.initialDate!;
-    }
-
-    final now = DateTime.now();
+    final initialDate = widget.initialDate ?? DateTime.now();
     final minDate = widget.minDate;
     final maxDate = widget.maxDate;
 
-    if (minDate != null && now.isBefore(minDate)) {
+    if (minDate != null && initialDate.isBefore(minDate)) {
       return minDate;
     }
 
-    if (maxDate != null && now.isAfter(maxDate)) {
+    if (maxDate != null && initialDate.isAfter(maxDate)) {
       return maxDate;
     }
 
-    return now;
+    return initialDate;
   }
 
   @override

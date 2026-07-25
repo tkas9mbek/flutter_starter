@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -16,7 +16,7 @@ class BlocListenerBuilderUsage extends DartLintRule {
         'BlocListener should use whenOrNull/mapOrNull, not maybeWhen/maybeMap.',
     correctionMessage:
         'Replace maybeWhen/maybeMap with whenOrNull/mapOrNull in BlocListener.',
-    errorSeverity: ErrorSeverity.INFO,
+    errorSeverity: DiagnosticSeverity.INFO,
   );
 
   static const _builderCode = LintCode(
@@ -25,17 +25,17 @@ class BlocListenerBuilderUsage extends DartLintRule {
         'BlocBuilder should use maybeMap/maybeWhen, not mapOrNull/whenOrNull.',
     correctionMessage:
         'Replace mapOrNull/whenOrNull with maybeMap/maybeWhen in BlocBuilder.',
-    errorSeverity: ErrorSeverity.INFO,
+    errorSeverity: DiagnosticSeverity.INFO,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addInstanceCreationExpression((node) {
-      final typeName = node.constructorName.type.name2.lexeme;
+      final typeName = node.constructorName.type.name.lexeme;
 
       if (typeName == 'BlocListener' || typeName.startsWith('BlocListener<')) {
         _checkListener(node, reporter);
@@ -47,7 +47,10 @@ class BlocListenerBuilderUsage extends DartLintRule {
     });
   }
 
-  void _checkListener(InstanceCreationExpression node, ErrorReporter reporter) {
+  void _checkListener(
+    InstanceCreationExpression node,
+    DiagnosticReporter reporter,
+  ) {
     final listenerArg = node.argumentList.arguments
         .whereType<NamedExpression>()
         .where((arg) => arg.name.label.name == 'listener');
@@ -63,7 +66,10 @@ class BlocListenerBuilderUsage extends DartLintRule {
     });
   }
 
-  void _checkBuilder(InstanceCreationExpression node, ErrorReporter reporter) {
+  void _checkBuilder(
+    InstanceCreationExpression node,
+    DiagnosticReporter reporter,
+  ) {
     final builderArg = node.argumentList.arguments
         .whereType<NamedExpression>()
         .where((arg) => arg.name.label.name == 'builder');

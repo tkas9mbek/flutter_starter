@@ -1,8 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/cupertino.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 
+/// A fully customizable day/month/year wheel picker built from three
+/// [CupertinoPicker]s, clamping selection to [minDate]/[maxDate] (defaulting
+/// to +/-100 years), handling month lengths and leap years, and styling
+/// selected, unselected, and disabled items independently.
 class CustomizableCupertinoDatePicker extends StatefulWidget {
   const CustomizableCupertinoDatePicker({
     required this.itemExtent,
@@ -55,18 +57,22 @@ class _CustomizableCupertinoDatePickerState
   late final FixedExtentScrollController _dayScrollController;
   late final FixedExtentScrollController _monthScrollController;
   late final FixedExtentScrollController _yearScrollController;
-  final _days = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
   @override
   void initState() {
     super.initState();
     _validateDates();
-
-    _dayScrollController = FixedExtentScrollController();
-    _monthScrollController = FixedExtentScrollController();
-    _yearScrollController = FixedExtentScrollController();
-
     _initDates();
+
+    _dayScrollController = FixedExtentScrollController(
+      initialItem: _selectedDayIndex,
+    );
+    _monthScrollController = FixedExtentScrollController(
+      initialItem: _selectedMonthIndex,
+    );
+    _yearScrollController = FixedExtentScrollController(
+      initialItem: _selectedYearIndex,
+    );
   }
 
   void _validateDates() {
@@ -89,71 +95,46 @@ class _CustomizableCupertinoDatePickerState
 
   void _initDates() {
     final currentDate = DateTime.now();
-    _minDate = widget.minDate ?? DateTime(currentDate.year - 100);
-    _maxDate = widget.maxDate ?? DateTime(currentDate.year + 100);
+    final minDate = widget.minDate ?? DateTime(currentDate.year - 100);
+    final maxDate = widget.maxDate ?? DateTime(currentDate.year + 100);
+    // compare calendar days only, so bounds carrying a time-of-day
+    // (e.g. DateTime.now()) don't exclude their own day
+    _minDate = DateTime(minDate.year, minDate.month, minDate.day);
+    _maxDate = DateTime(maxDate.year, maxDate.month, maxDate.day);
     if (widget.selectedDate != null) {
       _selectedDate = widget.selectedDate!;
     } else if (!currentDate.isBefore(_minDate) &&
         !currentDate.isAfter(_maxDate)) {
       _selectedDate = currentDate;
     } else {
-      _selectedDate = _minDate;
+      _selectedDate = currentDate.isBefore(_minDate) ? _minDate : _maxDate;
     }
     _selectedDayIndex = _selectedDate.day - 1;
     _selectedMonthIndex = _selectedDate.month - 1;
     _selectedYearIndex = _selectedDate.year - _minDate.year;
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollList(_dayScrollController, _selectedDayIndex);
-      _scrollList(_monthScrollController, _selectedMonthIndex);
-      _scrollList(_yearScrollController, _selectedYearIndex);
-    });
   }
 
-  void _scrollList(FixedExtentScrollController controller, int index) {
-    unawaited(
-      controller.animateToItem(
-        index,
-        curve: Curves.easeIn,
-        duration: const Duration(milliseconds: 300),
-      ),
-    );
-  }
+  int _daysInMonth(int year, int month) => DateTime(year, month + 1, 0).day;
 
-  /// check if selected year is a leap year
-  bool _isLeapYear() {
-    final year = _minDate.year + _selectedYearIndex;
+  int _numberOfDays() =>
+      _daysInMonth(_minDate.year + _selectedYearIndex, _selectedMonthIndex + 1);
 
-    return year % 4 == 0 &&
-        (year % 100 != 0 || (year % 100 == 0 && year % 400 == 0));
-  }
+  /// date produced by moving the [type] wheel to [index], with the day
+  /// clamped to the target month's length so it never rolls over
+  DateTime _dateFor(int index, _SelectorType type) {
+    final year =
+        _minDate.year +
+        (type == _SelectorType.year ? index : _selectedYearIndex);
+    final month =
+        (type == _SelectorType.month ? index : _selectedMonthIndex) + 1;
+    final day = (type == _SelectorType.day ? index : _selectedDayIndex) + 1;
+    final dayCount = _daysInMonth(year, month);
 
-  /// get number of days for the selected month
-  int _numberOfDays() {
-    if (_selectedMonthIndex == 1) {
-      _days[1] = _isLeapYear() ? 29 : 28;
-    }
-
-    return _days[_selectedMonthIndex];
+    return DateTime(year, month, day > dayCount ? dayCount : day);
   }
 
   void _onSelectedItemChanged(int index, _SelectorType type) {
-    final temp = switch (type) {
-      _SelectorType.day => DateTime(
-        _minDate.year + _selectedYearIndex,
-        _selectedMonthIndex + 1,
-        index + 1,
-      ),
-      _SelectorType.month => DateTime(
-        _minDate.year + _selectedYearIndex,
-        index + 1,
-        _selectedDayIndex + 1,
-      ),
-      _SelectorType.year => DateTime(
-        _minDate.year + index,
-        _selectedMonthIndex + 1,
-        _selectedDayIndex + 1,
-      ),
-    };
+    final temp = _dateFor(index, type);
 
     // return if selected date is not the min - max date range
     // scroll selector back to the valid point
@@ -171,59 +152,32 @@ class _CustomizableCupertinoDatePickerState
     }
 
     _selectedDate = temp;
+    final previousDayIndex = _selectedDayIndex;
 
     switch (type) {
       case _SelectorType.day:
-        _selectedDayIndex = index;
+        break;
       case _SelectorType.month:
         _selectedMonthIndex = index;
-        // if month is changed to monthFebruary &
-        // selected day is greater than 29,
-        // set the selected day to monthFebruary 29 for leap year
-        // else to monthFebruary 28
-        if (_selectedMonthIndex == 1 && _selectedDayIndex > 27) {
-          _selectedDayIndex = _isLeapYear() ? 28 : 27;
-        }
-        // if selected day is 31 but current selected month has only
-        // 30 days, set selected day to 30
-        if (_selectedDayIndex == 30 && _days[_selectedMonthIndex] == 30) {
-          _selectedDayIndex = 29;
-        }
       case _SelectorType.year:
         _selectedYearIndex = index;
-        // if selected month is monthFebruary & selected day is 29
-        // But now year is changed to non-leap year
-        // set the day to monthFebruary 28
-        if (!_isLeapYear() &&
-            _selectedMonthIndex == 1 &&
-            _selectedDayIndex == 28) {
-          _selectedDayIndex = 27;
-        }
+    }
+    _selectedDayIndex = temp.day - 1;
+
+    // keep the day wheel in sync when the day was clamped by a
+    // month/year change (e.g. Jan 31 -> Feb 28)
+    if (type != _SelectorType.day && _selectedDayIndex != previousDayIndex) {
+      WidgetsBinding.instance.addPostFrameCallback(
+        (_) => _dayScrollController.jumpToItem(_selectedDayIndex),
+      );
     }
 
     setState(() {});
     widget.onSelectedItemChanged(_selectedDate);
   }
 
-  /// check if the given day, month or year index is disabled
   bool _isDisabled(int index, _SelectorType type) {
-    final temp = switch (type) {
-      _SelectorType.day => DateTime(
-        _minDate.year + _selectedYearIndex,
-        _selectedMonthIndex + 1,
-        index + 1,
-      ),
-      _SelectorType.month => DateTime(
-        _minDate.year + _selectedYearIndex,
-        index + 1,
-        _selectedDayIndex + 1,
-      ),
-      _SelectorType.year => DateTime(
-        _minDate.year + index,
-        _selectedMonthIndex + 1,
-        _selectedDayIndex + 1,
-      ),
-    };
+    final temp = _dateFor(index, type);
 
     return temp.isAfter(_maxDate) || temp.isBefore(_minDate);
   }

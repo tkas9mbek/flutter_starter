@@ -21,14 +21,16 @@ Custom lint rules for flutter_starter project.
 | `no_hardcoded_colors` | WARNING | No `Color(...)` / `Colors.X` outside theme/constants/tokens |
 | `avoid_build_context_field` | WARNING | Don't store `BuildContext` as a field |
 | `avoid_mutable_bloc_fields` | WARNING | BLoC/Cubit instance fields must be final (subscriptions/timers exempt) |
-| `prefer_map_or_null` | INFO | `mapOrNull`/`whenOrNull` over `maybeMap`/`maybeWhen` with empty `orElse` |
+| `prefer_map_or_null` | INFO | `mapOrNull`/`whenOrNull` over `maybeMap`/`maybeWhen` with empty `orElse` (legacy Freezed 2 code only) |
 | `prefer_bool_default` | INFO | Avoid `bool?` parameters — use a default value |
 | `avoid_naming_antipatterns` | INFO | No `Impl`/`Model`/`Helper`/`Manager`/`Data`/`Info`/`Util` name suffixes |
-| `bloc_listener_builder_usage` | INFO | `BlocListener` uses `mapOrNull`/`whenOrNull`; `BlocBuilder` uses `maybeMap`/`maybeWhen` |
+| `bloc_listener_builder_usage` | INFO | `BlocListener` uses `mapOrNull`/`whenOrNull`; `BlocBuilder` uses `maybeMap`/`maybeWhen` (legacy Freezed 2 code only) |
 | `class_size_warning` | INFO | Class exceeds 100 lines — consider splitting for SRP |
 | `max_widget_nesting` | INFO | `build()` widget nesting exceeds 8 levels — extract subtrees |
 | `multi_line_ternary` | INFO | Long/multi-line ternary — use if/else with early return |
 | `theme_in_build_only` | INFO | Don't store theme types as fields — read in `build()` |
+
+> **Note on legacy Freezed rules:** `prefer_map_or_null` and `bloc_listener_builder_usage` target the generated Freezed 2 pattern-matching methods (`when`/`map`/`maybeMap`/`mapOrNull` families). Freezed 3 removed those methods, so these rules only fire on legacy code. New code should use Dart `switch` expressions and `if-case` pattern matching on the sealed state classes.
 
 ## Usage
 
@@ -240,7 +242,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
 // Good — keep state in the Freezed class
 @freezed
-class UserState with _$UserState {
+abstract class UserState with _$UserState {
   const factory UserState({
     required int retries,
     required String query,
@@ -256,6 +258,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 ### prefer_map_or_null
 
 When `maybeMap` / `maybeWhen` carries an empty `orElse: () {}`, the call is doing nothing for the unhandled cases — `mapOrNull` / `whenOrNull` says that more directly.
+
+**Note:** this rule applies to legacy Freezed 2 code only. Freezed 3 removed the generated `maybeMap`/`maybeWhen`/`mapOrNull`/`whenOrNull` methods — new code should use Dart `if-case` / `switch` pattern matching on the sealed state classes.
 
 ```dart
 // Bad

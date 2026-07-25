@@ -63,28 +63,28 @@ class _RootScreenState extends State<RootScreen> {
           child: Row(
             children: [
               BottomNavItem(
-                iconPath: UiSvgIcons.calendar,
+                iconPath: UiSvgIcons.calendarDates,
                 package: UiConsts.package,
                 title: Localizer.of(context).calendar,
                 isActive: tabsRouter.activeIndex == 0,
                 onTap: () => tabsRouter.setActiveIndex(0),
               ),
               BottomNavItem(
-                iconPath: UiSvgIcons.check,
+                iconPath: UiSvgIcons.checkMark,
                 package: UiConsts.package,
                 title: Localizer.of(context).tasks,
                 isActive: tabsRouter.activeIndex == 1,
                 onTap: () => tabsRouter.setActiveIndex(1),
               ),
               BottomNavItem(
-                iconPath: UiSvgIcons.menu,
+                iconPath: UiSvgIcons.menuBars,
                 package: UiConsts.package,
                 title: Localizer.of(context).settings,
                 isActive: tabsRouter.activeIndex == 2,
                 onTap: () => tabsRouter.setActiveIndex(2),
               ),
               BottomNavItem(
-                iconPath: UiSvgIcons.person,
+                iconPath: UiSvgIcons.personProfile,
                 package: UiConsts.package,
                 title: Localizer.of(context).profile,
                 isActive: tabsRouter.activeIndex == 3,

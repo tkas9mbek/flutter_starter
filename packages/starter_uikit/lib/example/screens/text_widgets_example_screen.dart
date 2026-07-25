@@ -28,9 +28,9 @@ class TextWidgetsExampleScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const AutoFormattedText(
-              'This is *bold* text and this is _italic_ text. '
-              'You can also have **very bold** text.',
+              'This is *bold* text and *these words* are bold too.',
               tag: '*',
+              formatStyle: TextStyle(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
             Text(
@@ -53,10 +53,15 @@ class TextWidgetsExampleScreen extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             const AutoFormattedText(
-              'Visit our website at https://example.com or '
-              'call us at +7 (999) 123-45-67',
-              tag: 'https://',
+              'Visit our website at _example.com_ or '
+              'call us at _+7 (999) 123-45-67_',
+              tag: '_',
               style: TextStyle(fontSize: 14),
+              formatStyle: TextStyle(
+                fontSize: 14,
+                fontStyle: FontStyle.italic,
+                decoration: TextDecoration.underline,
+              ),
             ),
           ],
         ),

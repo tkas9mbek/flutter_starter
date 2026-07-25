@@ -1,28 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:starter/core/di/injection.dart';
+import 'package:starter/core/global/global_variables.dart';
 import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/application/environment/domain/environment_repository.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
-import 'package:starter/features/application/environment/ui/bloc/environment_cubit.dart';
+import 'package:starter/features/application/environment/ui/switcher/bloc/environment_cubit.dart';
 import 'package:starter/features/application/global/bloc/auth_bloc.dart';
-import 'package:starter/features/application/global/widget/application_wrapper.dart';
-import 'package:starter/features/application/global/widget/global_route_wrapper.dart';
+import 'package:starter/features/application/global/widget/themed_material_app.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/settings/domain/settings_repository.dart';
 import 'package:starter/features/settings/model/language_option.dart';
 import 'package:starter/features/settings/model/theme_mode_option.dart';
 import 'package:starter/features/settings/ui/language/bloc/language_cubit.dart';
 import 'package:starter/features/settings/ui/theme/bloc/theme_cubit.dart';
-import 'package:starter/features/settings/ui/theme/helpers/theme_mode_helper.dart';
-import 'package:starter/l10n/generated/l10n.dart';
-import 'package:starter_toolkit/l10n/generated/l10n.dart';
-import 'package:starter_uikit/l10n/generated/l10n.dart';
-import 'package:starter_uikit/theme/app_text_styles.dart';
-import 'package:starter_uikit/theme/app_theme.dart';
-import 'package:starter_uikit/theme/theme_data_from_theme.dart';
-import 'package:starter_uikit/theme/theme_provider.dart';
 
 final _router = AppRouter();
 
@@ -31,6 +21,12 @@ class Application extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // These app-shell blocs/cubits are deliberately constructed here rather
+    // than resolved from GetIt: EnvironmentCubit triggers DI reconfiguration
+    // and the language/theme cubits must survive it, so they cannot live in
+    // the modules being torn down; AuthBloc is keyed to the environment
+    // subtree below and the shell has no feature module. All feature blocs
+    // are DI-registered and resolved via getIt (docs/ai-context/bloc.md).
     return MultiBlocProvider(
       providers: [
         BlocProvider<EnvironmentCubit>(
@@ -56,46 +52,11 @@ class Application extends StatelessWidget {
           child: BlocBuilder<LanguageCubit, LanguageOption>(
             builder: (context, language) =>
                 BlocBuilder<ThemeCubit, ThemeModeOption>(
-                  builder: (context, themeOption) {
-                    final themeMode = ThemeModeHelper.getThemeMode(themeOption);
-                    final brightness = MediaQuery.platformBrightnessOf(context);
-                    final currentTheme = ThemeModeHelper.getCurrentTheme(
-                      themeOption,
-                      brightness,
-                    );
-
-                    return ThemeProvider(
-                      theme: currentTheme,
-                      child: MaterialApp.router(
-                        key: ValueKey('$language-$themeOption'),
-                        locale: language.locale,
-                        themeMode: themeMode,
-                        theme: themeDataFromTheme(
-                          theme: AppTheme.light(),
-                          textStyles: AppTextStyles(AppTheme.light()),
-                        ),
-                        darkTheme: themeDataFromTheme(
-                          theme: AppTheme.dark(),
-                          textStyles: AppTextStyles(AppTheme.dark()),
-                        ),
-                        routerDelegate: _router.delegate(),
-                        routeInformationParser: _router.defaultRouteParser(),
-                        localizationsDelegates: const [
-                          Localizer.delegate,
-                          UikitLocalizer.delegate,
-                          ToolkitLocalizer.delegate,
-                          GlobalMaterialLocalizations.delegate,
-                          GlobalWidgetsLocalizations.delegate,
-                          GlobalCupertinoLocalizations.delegate,
-                        ],
-                        supportedLocales: Localizer.delegate.supportedLocales,
-                        builder: (context, child) => GlobalRouteWrapper(
-                          router: _router,
-                          child: ApplicationWrapper(child: child!),
-                        ),
-                      ),
-                    );
-                  },
+                  builder: (context, themeOption) => ThemedMaterialApp(
+                    router: _router,
+                    language: language,
+                    themeOption: themeOption,
+                  ),
                 ),
           ),
         ),

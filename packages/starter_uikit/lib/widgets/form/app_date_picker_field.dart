@@ -11,6 +11,9 @@ import 'package:starter_uikit/widgets/form/app_text_field.dart';
 import 'package:starter_uikit/widgets/form/decoration/filled_text_field_decoration.dart';
 import 'package:starter_uikit/widgets/form/decoration/text_field_decoration.dart';
 
+/// FormBuilder-backed date field shown as a read-only [AppTextField];
+/// tapping opens a [DateTimePickerBottomSheet] limited to [minDate]/[maxDate]
+/// and displays the picked `DateTime` as `dd.MM.yyyy`.
 class AppDatePickerField extends StatefulWidget {
   const AppDatePickerField({
     required this.name,
@@ -114,11 +117,18 @@ class _AppDatePickerFieldState extends State<AppDatePickerField> {
             }),
           );
         },
+        onChanged: (value) {
+          if (value == null || value.isEmpty) {
+            form.didChange(null);
+            widget.onChanged?.call(null);
+          }
+        },
         color: widget.color,
         label: widget.label,
         hint: widget.hint,
         prefix: widget.prefix,
         decoration: widget.decoration,
+        enabled: widget.enabled,
         hideErrorText: widget.hideErrorText,
         hasClearButton: widget.hasClearButton,
         colorLabelOnError: widget.colorLabelOnError,

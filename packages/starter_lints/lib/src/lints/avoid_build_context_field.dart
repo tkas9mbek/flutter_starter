@@ -1,4 +1,4 @@
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -16,13 +16,13 @@ class AvoidBuildContextField extends DartLintRule {
     problemMessage: 'Do not store BuildContext as a field.',
     correctionMessage:
         'Pass BuildContext as a parameter to the methods that need it.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addFieldDeclaration((node) {

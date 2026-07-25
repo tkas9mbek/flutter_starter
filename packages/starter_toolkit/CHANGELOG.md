@@ -2,6 +2,28 @@
 
 All notable changes to starter_toolkit will be documented in this file.
 
+## [4.0.0] - 2026-07-25
+
+### Added
+- `RepositoryCache` collaborator interface and `InMemoryRepositoryCache` — keyed
+  TTL cache with lazy, sweep-on-write eviction; inject as an app-wide singleton
+
+### Removed
+- **Breaking**: `CachingExecutor` and the `withCaching()` extension — caching is
+  no longer a decorator. Use the `RepositoryCache` collaborator instead
+
+## [3.0.0] - 2026-07-08
+
+### Added
+- `RefreshableBloc` mixin (drives `MultiBlocRefreshIndicator`), `Debouncer`, `SemanticVersion`
+- `ValidatableTextEditingController` with `validateAll` for single-field screens
+- `saveAndValidateForm` — validates a FormBuilder form and scrolls to the first invalid field (replaces `focusOnInvalidStateField`)
+- Expanded form validators (required, url, email, password, phone) and phone input formatters
+
+### Changed
+- **Breaking**: SDK `^3.12.0`; models regenerated for Freezed 3
+- **Breaking**: `repository_executor.dart` no longer re-exports the executor files — import `raw_repository_executor.dart` and `repository_executor_extensions.dart` directly
+
 ## [2.1.0] - 2026-05-14
 
 ### Changed

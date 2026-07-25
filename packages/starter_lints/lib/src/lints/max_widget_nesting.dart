@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -14,7 +14,7 @@ class MaxWidgetNesting extends DartLintRule {
         'Widget nesting exceeds 8 levels. Extract inner widgets into '
         'separate classes.',
     correctionMessage: 'Break the widget tree into smaller widget classes.',
-    errorSeverity: ErrorSeverity.INFO,
+    errorSeverity: DiagnosticSeverity.INFO,
   );
 
   static const _maxDepth = 8;
@@ -22,7 +22,7 @@ class MaxWidgetNesting extends DartLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addMethodDeclaration((node) {
@@ -86,9 +86,8 @@ class _NestingVisitor extends RecursiveAstVisitor<void> {
 
   @override
   void visitInstanceCreationExpression(InstanceCreationExpression node) {
-    final typeName = node.constructorName.type.name2.lexeme;
+    final typeName = node.constructorName.type.name.lexeme;
 
-    // Skip non-widget constructors that don't represent widget nesting
     if (_skipTypes.contains(typeName)) {
       super.visitInstanceCreationExpression(node);
 

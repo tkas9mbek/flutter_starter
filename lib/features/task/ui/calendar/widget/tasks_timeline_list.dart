@@ -10,6 +10,7 @@ class TasksTimelineList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.all(16),
       itemCount: tasks.length,
       itemBuilder: (context, index) => TaskTimelineItemCard(task: tasks[index]),

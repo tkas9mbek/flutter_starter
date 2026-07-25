@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+/// Displays a left-aligned bulleted list: each entry of [texts] on its own
+/// line behind a bullet marker, styled with [textStyle].
 class BulletedTextList extends StatelessWidget {
   const BulletedTextList({required this.texts, this.textStyle, super.key});
 
@@ -11,15 +13,17 @@ class BulletedTextList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('•', style: textStyle),
-            const SizedBox(width: 8),
-            Expanded(child: Text(texts.first, style: textStyle)),
-          ],
-        ),
-        const SizedBox(height: 10),
+        for (final text in texts) ...[
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('•', style: textStyle),
+              const SizedBox(width: 8),
+              Expanded(child: Text(text, style: textStyle)),
+            ],
+          ),
+          const SizedBox(height: 10),
+        ],
       ],
     );
   }

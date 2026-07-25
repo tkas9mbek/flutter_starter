@@ -6,9 +6,18 @@ import 'package:starter_uikit/theme/app_theme.dart';
 class AppTextStyles {
   AppTextStyles(this.theme)
     : fontFamily = FontFamily.sfuitext,
+      regularTitle24 = _sfUiBase(
+        theme,
+      ).copyWith(fontSize: 24, height: 30 / 24, fontWeight: FontWeight.w400),
+      mediumTitle24 = _sfUiBase(
+        theme,
+      ).copyWith(fontSize: 24, height: 30 / 24, fontWeight: FontWeight.w500),
+      boldTitle24 = _sfUiBase(
+        theme,
+      ).copyWith(fontSize: 24, height: 30 / 24, fontWeight: FontWeight.w700),
       regularTitle20 = _sfUiBase(
         theme,
-      ).copyWith(fontSize: 20, height: 25 / 20, fontWeight: FontWeight.w400),
+      ).copyWith(fontSize: 20, height: 26 / 20, fontWeight: FontWeight.w400),
       mediumTitle20 = _sfUiBase(
         theme,
       ).copyWith(fontSize: 20, height: 26 / 20, fontWeight: FontWeight.w500),
@@ -72,6 +81,11 @@ class AppTextStyles {
 
   final String fontFamily;
   final AppTheme theme;
+
+  /// [ Title styles - Large (24) ]
+  final TextStyle regularTitle24;
+  final TextStyle mediumTitle24;
+  final TextStyle boldTitle24;
 
   /// [ Title styles - Medium (18-20) ]
   final TextStyle regularTitle20;

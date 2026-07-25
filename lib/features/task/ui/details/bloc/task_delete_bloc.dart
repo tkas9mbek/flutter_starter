@@ -6,25 +6,25 @@ import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 part 'task_delete_bloc.freezed.dart';
 
 @freezed
-class TaskDeleteEvent with _$TaskDeleteEvent {
+sealed class TaskDeleteEvent with _$TaskDeleteEvent {
   const factory TaskDeleteEvent.deleted(String taskId) =
       _DeletedTaskDeleteEvent;
 }
 
 @freezed
-class TaskDeleteState with _$TaskDeleteState {
-  const factory TaskDeleteState.initial() = _InitialTaskDeleteState;
+sealed class TaskDeleteState with _$TaskDeleteState {
+  const factory TaskDeleteState.initial() = InitialTaskDeleteState;
 
-  const factory TaskDeleteState.loading() = _LoadingTaskDeleteState;
+  const factory TaskDeleteState.loading() = LoadingTaskDeleteState;
 
-  const factory TaskDeleteState.success() = _SuccessTaskDeleteState;
+  const factory TaskDeleteState.success() = SuccessTaskDeleteState;
 
   const factory TaskDeleteState.failure(AppException exception) =
-      _FailureTaskDeleteState;
+      FailureTaskDeleteState;
 
   const TaskDeleteState._();
 
-  bool get isLoading => this is _LoadingTaskDeleteState;
+  bool get isLoading => this is LoadingTaskDeleteState;
 }
 
 class TaskDeleteBloc extends Bloc<TaskDeleteEvent, TaskDeleteState> {

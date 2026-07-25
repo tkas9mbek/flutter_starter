@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
+/// Flat app bar on the theme surface color with no elevation or shadow,
+/// sized to [height] and hosting an arbitrary [child] as its title area.
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
-  /// Base app bar bottom rounded corners, with white background,
-  /// small elevation and shadow.
   const BaseAppBar({
     required this.height,
     required this.child,
@@ -17,7 +16,8 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
 
   @override
-  Size get preferredSize => Size.fromHeight(height);
+  Size get preferredSize =>
+      Size.fromHeight(height + (bottom?.preferredSize.height ?? 0));
 
   @override
   Widget build(BuildContext context) {
@@ -28,14 +28,9 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: theme.surface,
       automaticallyImplyLeading: false,
       titleSpacing: 0,
-      elevation: 2,
+      elevation: 0,
+      scrolledUnderElevation: 0,
       centerTitle: false,
-      shadowColor: theme.themeMode == ThemeMode.dark
-          ? AppColors.blackText.withValues(alpha: 0.5)
-          : theme.background.withValues(alpha: 0.5),
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(bottom: Radius.circular(24)),
-      ),
       title: SizedBox(height: height, child: child),
       bottom: bottom,
     );

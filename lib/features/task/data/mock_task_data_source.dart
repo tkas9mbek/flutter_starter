@@ -2,6 +2,7 @@ import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/model/task_create_request.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/data/model/paginated_list_items.dart';
 
 class MockTaskDataSource implements TaskDataSource {
   final List<Task> _tasks = [
@@ -53,14 +54,14 @@ class MockTaskDataSource implements TaskDataSource {
 
   @override
   Future<List<Task>> getTasks() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(seconds: 2));
 
     return List.from(_tasks);
   }
 
   @override
   Future<List<Task>> getTasksByDate(DateTime date) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(seconds: 2));
 
     return _tasks
         .where(
@@ -72,9 +73,39 @@ class MockTaskDataSource implements TaskDataSource {
         .toList();
   }
 
+  static const _searchPageSize = 10;
+
+  @override
+  Future<PaginatedListItems<Task>> searchTasks(
+    String query, {
+    required int page,
+  }) async {
+    await Future.delayed(const Duration(seconds: 2));
+
+    final normalized = query.toLowerCase();
+    final matches = _tasks
+        .where(
+          (task) =>
+              task.title.toLowerCase().contains(normalized) ||
+              task.description.toLowerCase().contains(normalized),
+        )
+        .toList();
+    final start = (page - 1) * _searchPageSize;
+    final elements = start >= matches.length
+        ? <Task>[]
+        : matches.skip(start).take(_searchPageSize).toList();
+
+    return PaginatedListItems(
+      pageLimit: _searchPageSize,
+      countItems: matches.length,
+      countPages: (matches.length / _searchPageSize).ceil(),
+      elements: elements,
+    );
+  }
+
   @override
   Future<Task> createTask(TaskCreateRequest request) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(seconds: 2));
 
     final task = Task(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -93,7 +124,7 @@ class MockTaskDataSource implements TaskDataSource {
 
   @override
   Future<Task> updateTask(String id, TaskCreateRequest request) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(seconds: 2));
 
     final index = _tasks.indexWhere((task) => task.id == id);
 
@@ -118,7 +149,7 @@ class MockTaskDataSource implements TaskDataSource {
 
   @override
   Future<void> deleteTask(String id) async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(seconds: 2));
     _tasks.removeWhere((task) => task.id == id);
   }
 }

@@ -45,17 +45,19 @@
 |---|---|---|---|
 | BLOC-1 | Severe Violation 🔴 | Mutable instance variables in BLoC `[lint]` | Put all mutable data in the Freezed state |
 | BLOC-2 | Bug 🔴 | Handler missing `catch` for `AppException` | Add `on AppException catch (e) { return emit(MyState.failure(e)); }` |
-| BLOC-3 | Bug 🔴 | `failure` factory missing the `AppException` field | Failure must carry the exception so UI can render via `FailureWidgetLarge` |
-| BLOC-4 | Severe Violation 🔴 | Hand-rolled sealed event/state classes | Use `@freezed` factory constructors |
+| BLOC-3 | Bug 🔴 | `failure` factory missing the `AppException` field | Failure must carry the exception so UI can render via `FailureWidget.large` |
+| BLOC-4 | Severe Violation 🔴 | Hand-rolled sealed event/state classes | Use `@freezed sealed class` with factory constructors |
 | BLOC-5 | Severe Violation 🔴 | UI consumes a UI-model from BLoC state | BLoC stores domain models / `AppException`. Convert to UI model in the widget. |
-| BLOC-6 | Mild Violation 🟡 | `BlocListener` uses `maybeMap` with empty `orElse: () {}` `[lint]` | Use `mapOrNull` |
-| BLOC-7 | Mild Violation 🟡 | `BlocBuilder` uses `mapOrNull` (returns nullable Widget) `[lint]` | Use `maybeMap`/`maybeWhen` with an `orElse` |
+| BLOC-6 | Mild Violation 🟡 | `BlocListener` uses legacy Freezed 2 matching (`maybeMap`/`mapOrNull`) `[lint]`¹ | Use `if-case` / `is` checks on the sealed state |
+| BLOC-7 | Mild Violation 🟡 | `BlocBuilder` with non-exhaustive state handling (may return nullable Widget) `[lint]`¹ | Use an exhaustive `switch` over the sealed state |
 | BLOC-8 | Mild Violation 🟡 | Event names in imperative tense (`SubmitForm`) | Past tense: `Submitted`, `Refreshed` |
-| BLOC-9 | Mild Violation 🟡 | Short redirect target (`_Loading`) | Full name: `_LoadingLoginState` |
+| BLOC-9 | Mild Violation 🟡 | Short redirect target (`_Loading`) | Full name: `LoadingLoginState` (public for states, `_SubmittedLoginEvent` private for events) |
 | BLOC-10 | Mild Violation 🟡 | Variable named `s` for state | Use `successState`, `failureState`, etc. |
 | BLOC-11 | Mild Violation 🟡 | Final `emit(...)` without `return` | `return emit(state)` to make control flow explicit |
 | BLOC-12 | Formatting 🟢 | No blank line before `emit(...)` | Add blank line per project convention |
-| BLOC-13 | Formatting 🟢 | State helper using `maybeWhen` for a `bool` check | `bool get isLoading => this is _LoadingMyState;` |
+| BLOC-13 | Formatting 🟢 | State helper using a verbose pattern match for a `bool` check | `bool get isLoading => this is LoadingMyState;` |
+
+¹ The `prefer_map_or_null` / `bloc_listener_builder_usage` lints only fire on legacy Freezed 2 pattern-matching methods (`when`/`map` families), which were removed in Freezed 3. New code pattern-matches with Dart `switch` / `if-case` directly.
 
 ---
 
@@ -77,7 +79,7 @@
 |---|---|---|---|
 | UI-1 | Severe Violation 🔴 | Hardcoded user-facing string | `Localizer.of(context).{key}` |
 | UI-2 | Mild Violation 🟡 | Hardcoded color or `TextStyle` `[lint: no_hardcoded_colors]` | `ThemeProvider.of(context).theme` / `.textStyles` |
-| UI-3 | Severe Violation 🔴 | Reimplements a widget that exists in `starter_uikit` | Use `FailureWidgetLarge`, `EmptyInformationBody`, `AppElevatedButton`, `AppTextField`, etc. |
+| UI-3 | Severe Violation 🔴 | Reimplements a widget that exists in `starter_uikit` | Use `FailureWidget.large`, `EmptyInformationBody`, `AppElevatedButton`, `AppTextField`, etc. |
 | UI-4 | Severe Violation 🔴 | `Widget _buildFoo()` builder method | Extract to a `StatelessWidget`/`StatefulWidget` class |
 | UI-5 | Mild Violation 🟡 | Single widget added to a `children:` list as a literal element | Use spread: `if (cond) ...[Widget()]` even for one |
 | UI-6 | Mild Violation 🟡 | Block body where arrow body fits | Use `=>` (except `build()` and nested callbacks) |

@@ -8,17 +8,18 @@ import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/form/decoration/filled_text_field_decoration.dart';
 import 'package:starter_uikit/widgets/form/decoration/text_field_decoration.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
+import 'package:starter_uikit/widgets/misc/animated_visibility.dart';
 import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
 
+/// Themed text field wrapping [FormBuilderTextField] in a customizable
+/// [TextFieldDecoration], with optional clear/obscure/loading suffixes,
+/// character counter, and animated inline error text below the box.
 class AppTextField extends StatefulWidget {
-  /// Base text field widget that customizes [FormBuilderTextField].
-  ///
-  /// * [name] - name of the field in the form required for [FormBuilder].
-  /// * [hasClearButton] requires widget to have a parent [FormBuilder] to work.
-  /// * [colorLabelOnError] changes label color to error color if field is invalid.
-  /// * [loading] shows loading indicator instead of clear button.
-  /// * [hideErrorText] hides error text below the text field when field is invalid.
-  /// * [decoration] - concrete implementation of [TextFieldDecoration].
+  /// Non-obvious params:
+  /// * [hasClearButton] requires a parent [FormBuilder] to work.
+  /// * [loading] shows a loading indicator in place of the clear button.
+  /// * [prefixWidget] is always visible inside the field box before the input.
   const AppTextField({
     required this.name,
     this.decoration = const FilledTextFieldDecoration(),
@@ -37,6 +38,7 @@ class AppTextField extends StatefulWidget {
     this.label,
     this.hint,
     this.prefix,
+    this.prefixWidget,
     this.initialValue,
     this.inputFormatters,
     this.keyboardType,
@@ -56,6 +58,7 @@ class AppTextField extends StatefulWidget {
   final String? label;
   final String? hint;
   final Widget? prefix;
+  final Widget? prefixWidget;
   final String? initialValue;
   final List<TextInputFormatter>? inputFormatters;
   final TextInputType? keyboardType;
@@ -98,6 +101,10 @@ class _AppTextFieldState extends State<AppTextField> {
 
     obscureText = widget.canObscureText;
     WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) {
+        return;
+      }
+
       controller = FormBuilder.of(context)?.fields[widget.name];
       setState(() => value = controller?.value);
     });
@@ -135,6 +142,10 @@ class _AppTextFieldState extends State<AppTextField> {
             context,
             Row(
               children: [
+                if (widget.prefixWidget != null) ...[
+                  widget.prefixWidget!,
+                  const SizedBox(width: 10),
+                ],
                 Expanded(
                   child: FormBuilderTextField(
                     name: widget.name,
@@ -153,7 +164,12 @@ class _AppTextFieldState extends State<AppTextField> {
                         widget.textStyle ??
                         textStyles.regularBody14.copyWith(color: widget.color),
                     keyboardType: widget.keyboardType,
-                    inputFormatters: widget.inputFormatters,
+                    inputFormatters: [
+                      ...?widget.inputFormatters,
+                      if (widget.maxLength != null) ...[
+                        LengthLimitingTextInputFormatter(widget.maxLength),
+                      ],
+                    ],
                     validator: (value) {
                       final error = validateField(value);
                       setState(() => errorText = error);
@@ -168,8 +184,8 @@ class _AppTextFieldState extends State<AppTextField> {
                       labelText: widget.label,
                       prefix: widget.prefix,
                       errorStyle: const TextStyle(height: -10, fontSize: 0),
-                      floatingLabelStyle: textStyles.regularBody13.copyWith(
-                        fontSize: 12 * 1.4,
+                      floatingLabelStyle: textStyles.boldBody13.copyWith(
+                        fontSize: 14 * 1.4,
                         height: 1,
                         color:
                             (widget.colorLabelOnError &&
@@ -183,7 +199,7 @@ class _AppTextFieldState extends State<AppTextField> {
                 ),
                 if (widget.loading) ...[
                   const SizedBox(width: 12),
-                  const CustomCircularProgressIndicator(size: 24),
+                  const CustomCircularProgressIndicator.adaptive(size: 24),
                 ] else if (widget.suffix != null) ...[
                   const SizedBox(width: 12),
                   widget.suffix!,
@@ -194,7 +210,7 @@ class _AppTextFieldState extends State<AppTextField> {
                     behavior: HitTestBehavior.translucent,
                     onTap: () => controller?.didChange(null),
                     child: SvgPicture.asset(
-                      UiSvgIcons.cross,
+                      UiSvgIcons.closeMark,
                       package: UiConsts.package,
                     ),
                   ),
@@ -203,8 +219,8 @@ class _AppTextFieldState extends State<AppTextField> {
                   GestureDetector(
                     behavior: HitTestBehavior.translucent,
                     onTap: () => setState(() => obscureText = !obscureText),
-                    child: Icon(
-                      obscureText ? Icons.visibility_off : Icons.visibility,
+                    child: SvgIcon(
+                      obscureText ? UiSvgIcons.eyeSlash : UiSvgIcons.eyeOpen,
                       size: 20,
                       color: theme.textSecondary,
                     ),
@@ -224,13 +240,16 @@ class _AppTextFieldState extends State<AppTextField> {
               ],
             ),
           ),
-          if (errorText != null && !widget.hideErrorText) ...[
-            const SizedBox(height: 6),
-            Text(
-              '* $errorText',
-              style: textStyles.regularBody14.copyWith(color: theme.error),
+          AnimatedVisibility(
+            visible: errorText != null && !widget.hideErrorText,
+            child: Padding(
+              padding: const EdgeInsets.only(top: 6),
+              child: Text(
+                '* ${errorText ?? ''}',
+                style: textStyles.regularBody14.copyWith(color: theme.error),
+              ),
             ),
-          ],
+          ),
         ],
       ),
     );

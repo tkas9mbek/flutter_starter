@@ -1,7 +1,9 @@
 import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart';
 import 'package:starter/features/auth/model/auth_login_request_body.dart';
+import 'package:starter/features/auth/model/auth_otp_request_body.dart';
 import 'package:starter/features/auth/model/auth_register_request_body.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
+import 'package:starter/features/auth/model/auth_verify_otp_request_body.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
 
@@ -24,6 +26,22 @@ class RemoteAuthUnauthorizedDataSource implements AuthUnauthorizedDataSource {
       _client.requestJson<AuthToken>(
         method: HttpMethod.post,
         path: '/auth/register',
+        body: body.toJson(),
+        fromJson: AuthToken.fromJson,
+      );
+
+  @override
+  Future<void> requestOtp(AuthOtpRequestBody body) => _client.requestVoid(
+    method: HttpMethod.post,
+    path: '/auth/request-otp',
+    body: body.toJson(),
+  );
+
+  @override
+  Future<AuthToken> verifyOtp(AuthVerifyOtpRequestBody body) =>
+      _client.requestJson<AuthToken>(
+        method: HttpMethod.post,
+        path: '/auth/verify-otp',
         body: body.toJson(),
         fromJson: AuthToken.fromJson,
       );

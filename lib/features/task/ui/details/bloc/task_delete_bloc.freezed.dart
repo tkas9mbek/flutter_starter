@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,821 +9,633 @@ part of 'task_delete_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$TaskDeleteEvent {
-  String get taskId => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String taskId) deleted,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String taskId)? deleted,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String taskId)? deleted,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_DeletedTaskDeleteEvent value) deleted,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_DeletedTaskDeleteEvent value)? deleted,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_DeletedTaskDeleteEvent value)? deleted,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
 
-  /// Create a copy of TaskDeleteEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $TaskDeleteEventCopyWith<TaskDeleteEvent> get copyWith =>
-      throw _privateConstructorUsedError;
+ String get taskId;
+/// Create a copy of TaskDeleteEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$TaskDeleteEventCopyWith<TaskDeleteEvent> get copyWith => _$TaskDeleteEventCopyWithImpl<TaskDeleteEvent>(this as TaskDeleteEvent, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskDeleteEvent&&(identical(other.taskId, taskId) || other.taskId == taskId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,taskId);
+
+@override
+String toString() {
+  return 'TaskDeleteEvent(taskId: $taskId)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $TaskDeleteEventCopyWith<$Res> {
-  factory $TaskDeleteEventCopyWith(
-    TaskDeleteEvent value,
-    $Res Function(TaskDeleteEvent) then,
-  ) = _$TaskDeleteEventCopyWithImpl<$Res, TaskDeleteEvent>;
-  @useResult
-  $Res call({String taskId});
-}
+abstract mixin class $TaskDeleteEventCopyWith<$Res>  {
+  factory $TaskDeleteEventCopyWith(TaskDeleteEvent value, $Res Function(TaskDeleteEvent) _then) = _$TaskDeleteEventCopyWithImpl;
+@useResult
+$Res call({
+ String taskId
+});
 
+
+
+
+}
 /// @nodoc
-class _$TaskDeleteEventCopyWithImpl<$Res, $Val extends TaskDeleteEvent>
+class _$TaskDeleteEventCopyWithImpl<$Res>
     implements $TaskDeleteEventCopyWith<$Res> {
-  _$TaskDeleteEventCopyWithImpl(this._value, this._then);
+  _$TaskDeleteEventCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final TaskDeleteEvent _self;
+  final $Res Function(TaskDeleteEvent) _then;
 
-  /// Create a copy of TaskDeleteEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? taskId = null}) {
-    return _then(
-      _value.copyWith(
-            taskId: null == taskId
-                ? _value.taskId
-                : taskId // ignore: cast_nullable_to_non_nullable
-                      as String,
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of TaskDeleteEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? taskId = null,}) {
+  return _then(_self.copyWith(
+taskId: null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [TaskDeleteEvent].
+extension TaskDeleteEventPatterns on TaskDeleteEvent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _DeletedTaskDeleteEvent value)?  deleted,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DeletedTaskDeleteEvent() when deleted != null:
+return deleted(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _DeletedTaskDeleteEvent value)  deleted,}){
+final _that = this;
+switch (_that) {
+case _DeletedTaskDeleteEvent():
+return deleted(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _DeletedTaskDeleteEvent value)?  deleted,}){
+final _that = this;
+switch (_that) {
+case _DeletedTaskDeleteEvent() when deleted != null:
+return deleted(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String taskId)?  deleted,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DeletedTaskDeleteEvent() when deleted != null:
+return deleted(_that.taskId);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String taskId)  deleted,}) {final _that = this;
+switch (_that) {
+case _DeletedTaskDeleteEvent():
+return deleted(_that.taskId);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String taskId)?  deleted,}) {final _that = this;
+switch (_that) {
+case _DeletedTaskDeleteEvent() when deleted != null:
+return deleted(_that.taskId);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$DeletedTaskDeleteEventImplCopyWith<$Res>
-    implements $TaskDeleteEventCopyWith<$Res> {
-  factory _$$DeletedTaskDeleteEventImplCopyWith(
-    _$DeletedTaskDeleteEventImpl value,
-    $Res Function(_$DeletedTaskDeleteEventImpl) then,
-  ) = __$$DeletedTaskDeleteEventImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String taskId});
+
+
+class _DeletedTaskDeleteEvent implements TaskDeleteEvent {
+  const _DeletedTaskDeleteEvent(this.taskId);
+  
+
+@override final  String taskId;
+
+/// Create a copy of TaskDeleteEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DeletedTaskDeleteEventCopyWith<_DeletedTaskDeleteEvent> get copyWith => __$DeletedTaskDeleteEventCopyWithImpl<_DeletedTaskDeleteEvent>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DeletedTaskDeleteEvent&&(identical(other.taskId, taskId) || other.taskId == taskId));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,taskId);
+
+@override
+String toString() {
+  return 'TaskDeleteEvent.deleted(taskId: $taskId)';
+}
+
+
 }
 
 /// @nodoc
-class __$$DeletedTaskDeleteEventImplCopyWithImpl<$Res>
-    extends _$TaskDeleteEventCopyWithImpl<$Res, _$DeletedTaskDeleteEventImpl>
-    implements _$$DeletedTaskDeleteEventImplCopyWith<$Res> {
-  __$$DeletedTaskDeleteEventImplCopyWithImpl(
-    _$DeletedTaskDeleteEventImpl _value,
-    $Res Function(_$DeletedTaskDeleteEventImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$DeletedTaskDeleteEventCopyWith<$Res> implements $TaskDeleteEventCopyWith<$Res> {
+  factory _$DeletedTaskDeleteEventCopyWith(_DeletedTaskDeleteEvent value, $Res Function(_DeletedTaskDeleteEvent) _then) = __$DeletedTaskDeleteEventCopyWithImpl;
+@override @useResult
+$Res call({
+ String taskId
+});
 
-  /// Create a copy of TaskDeleteEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? taskId = null}) {
-    return _then(
-      _$DeletedTaskDeleteEventImpl(
-        null == taskId
-            ? _value.taskId
-            : taskId // ignore: cast_nullable_to_non_nullable
-                  as String,
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$DeletedTaskDeleteEventCopyWithImpl<$Res>
+    implements _$DeletedTaskDeleteEventCopyWith<$Res> {
+  __$DeletedTaskDeleteEventCopyWithImpl(this._self, this._then);
 
-class _$DeletedTaskDeleteEventImpl implements _DeletedTaskDeleteEvent {
-  const _$DeletedTaskDeleteEventImpl(this.taskId);
+  final _DeletedTaskDeleteEvent _self;
+  final $Res Function(_DeletedTaskDeleteEvent) _then;
 
-  @override
-  final String taskId;
-
-  @override
-  String toString() {
-    return 'TaskDeleteEvent.deleted(taskId: $taskId)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DeletedTaskDeleteEventImpl &&
-            (identical(other.taskId, taskId) || other.taskId == taskId));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, taskId);
-
-  /// Create a copy of TaskDeleteEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DeletedTaskDeleteEventImplCopyWith<_$DeletedTaskDeleteEventImpl>
-  get copyWith =>
-      __$$DeletedTaskDeleteEventImplCopyWithImpl<_$DeletedTaskDeleteEventImpl>(
-        this,
-        _$identity,
-      );
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(String taskId) deleted,
-  }) {
-    return deleted(taskId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(String taskId)? deleted,
-  }) {
-    return deleted?.call(taskId);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(String taskId)? deleted,
-    required TResult orElse(),
-  }) {
-    if (deleted != null) {
-      return deleted(taskId);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_DeletedTaskDeleteEvent value) deleted,
-  }) {
-    return deleted(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_DeletedTaskDeleteEvent value)? deleted,
-  }) {
-    return deleted?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_DeletedTaskDeleteEvent value)? deleted,
-    required TResult orElse(),
-  }) {
-    if (deleted != null) {
-      return deleted(this);
-    }
-    return orElse();
-  }
+/// Create a copy of TaskDeleteEvent
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? taskId = null,}) {
+  return _then(_DeletedTaskDeleteEvent(
+null == taskId ? _self.taskId : taskId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
 }
 
-abstract class _DeletedTaskDeleteEvent implements TaskDeleteEvent {
-  const factory _DeletedTaskDeleteEvent(final String taskId) =
-      _$DeletedTaskDeleteEventImpl;
 
-  @override
-  String get taskId;
-
-  /// Create a copy of TaskDeleteEvent
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DeletedTaskDeleteEventImplCopyWith<_$DeletedTaskDeleteEventImpl>
-  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$TaskDeleteState {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function() success,
-    required TResult Function(AppException exception) failure,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function()? success,
-    TResult? Function(AppException exception)? failure,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function()? success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTaskDeleteState value) initial,
-    required TResult Function(_LoadingTaskDeleteState value) loading,
-    required TResult Function(_SuccessTaskDeleteState value) success,
-    required TResult Function(_FailureTaskDeleteState value) failure,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTaskDeleteState value)? initial,
-    TResult? Function(_LoadingTaskDeleteState value)? loading,
-    TResult? Function(_SuccessTaskDeleteState value)? success,
-    TResult? Function(_FailureTaskDeleteState value)? failure,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTaskDeleteState value)? initial,
-    TResult Function(_LoadingTaskDeleteState value)? loading,
-    TResult Function(_SuccessTaskDeleteState value)? success,
-    TResult Function(_FailureTaskDeleteState value)? failure,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TaskDeleteState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TaskDeleteState()';
+}
+
+
 }
 
 /// @nodoc
-abstract class $TaskDeleteStateCopyWith<$Res> {
-  factory $TaskDeleteStateCopyWith(
-    TaskDeleteState value,
-    $Res Function(TaskDeleteState) then,
-  ) = _$TaskDeleteStateCopyWithImpl<$Res, TaskDeleteState>;
+class $TaskDeleteStateCopyWith<$Res>  {
+$TaskDeleteStateCopyWith(TaskDeleteState _, $Res Function(TaskDeleteState) __);
 }
 
-/// @nodoc
-class _$TaskDeleteStateCopyWithImpl<$Res, $Val extends TaskDeleteState>
-    implements $TaskDeleteStateCopyWith<$Res> {
-  _$TaskDeleteStateCopyWithImpl(this._value, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+/// Adds pattern-matching-related methods to [TaskDeleteState].
+extension TaskDeleteStatePatterns on TaskDeleteState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  /// Create a copy of TaskDeleteState
-  /// with the given fields replaced by the non-null parameter values.
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InitialTaskDeleteState value)?  initial,TResult Function( LoadingTaskDeleteState value)?  loading,TResult Function( SuccessTaskDeleteState value)?  success,TResult Function( FailureTaskDeleteState value)?  failure,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case InitialTaskDeleteState() when initial != null:
+return initial(_that);case LoadingTaskDeleteState() when loading != null:
+return loading(_that);case SuccessTaskDeleteState() when success != null:
+return success(_that);case FailureTaskDeleteState() when failure != null:
+return failure(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InitialTaskDeleteState value)  initial,required TResult Function( LoadingTaskDeleteState value)  loading,required TResult Function( SuccessTaskDeleteState value)  success,required TResult Function( FailureTaskDeleteState value)  failure,}){
+final _that = this;
+switch (_that) {
+case InitialTaskDeleteState():
+return initial(_that);case LoadingTaskDeleteState():
+return loading(_that);case SuccessTaskDeleteState():
+return success(_that);case FailureTaskDeleteState():
+return failure(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InitialTaskDeleteState value)?  initial,TResult? Function( LoadingTaskDeleteState value)?  loading,TResult? Function( SuccessTaskDeleteState value)?  success,TResult? Function( FailureTaskDeleteState value)?  failure,}){
+final _that = this;
+switch (_that) {
+case InitialTaskDeleteState() when initial != null:
+return initial(_that);case LoadingTaskDeleteState() when loading != null:
+return loading(_that);case SuccessTaskDeleteState() when success != null:
+return success(_that);case FailureTaskDeleteState() when failure != null:
+return failure(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function()?  success,TResult Function( AppException exception)?  failure,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case InitialTaskDeleteState() when initial != null:
+return initial();case LoadingTaskDeleteState() when loading != null:
+return loading();case SuccessTaskDeleteState() when success != null:
+return success();case FailureTaskDeleteState() when failure != null:
+return failure(_that.exception);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function()  success,required TResult Function( AppException exception)  failure,}) {final _that = this;
+switch (_that) {
+case InitialTaskDeleteState():
+return initial();case LoadingTaskDeleteState():
+return loading();case SuccessTaskDeleteState():
+return success();case FailureTaskDeleteState():
+return failure(_that.exception);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function()?  success,TResult? Function( AppException exception)?  failure,}) {final _that = this;
+switch (_that) {
+case InitialTaskDeleteState() when initial != null:
+return initial();case LoadingTaskDeleteState() when loading != null:
+return loading();case SuccessTaskDeleteState() when success != null:
+return success();case FailureTaskDeleteState() when failure != null:
+return failure(_that.exception);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-abstract class _$$InitialTaskDeleteStateImplCopyWith<$Res> {
-  factory _$$InitialTaskDeleteStateImplCopyWith(
-    _$InitialTaskDeleteStateImpl value,
-    $Res Function(_$InitialTaskDeleteStateImpl) then,
-  ) = __$$InitialTaskDeleteStateImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$InitialTaskDeleteStateImplCopyWithImpl<$Res>
-    extends _$TaskDeleteStateCopyWithImpl<$Res, _$InitialTaskDeleteStateImpl>
-    implements _$$InitialTaskDeleteStateImplCopyWith<$Res> {
-  __$$InitialTaskDeleteStateImplCopyWithImpl(
-    _$InitialTaskDeleteStateImpl _value,
-    $Res Function(_$InitialTaskDeleteStateImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of TaskDeleteState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$InitialTaskDeleteStateImpl extends _InitialTaskDeleteState {
-  const _$InitialTaskDeleteStateImpl() : super._();
-
-  @override
-  String toString() {
-    return 'TaskDeleteState.initial()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$InitialTaskDeleteStateImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function() success,
-    required TResult Function(AppException exception) failure,
-  }) {
-    return initial();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function()? success,
-    TResult? Function(AppException exception)? failure,
-  }) {
-    return initial?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function()? success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTaskDeleteState value) initial,
-    required TResult Function(_LoadingTaskDeleteState value) loading,
-    required TResult Function(_SuccessTaskDeleteState value) success,
-    required TResult Function(_FailureTaskDeleteState value) failure,
-  }) {
-    return initial(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTaskDeleteState value)? initial,
-    TResult? Function(_LoadingTaskDeleteState value)? loading,
-    TResult? Function(_SuccessTaskDeleteState value)? success,
-    TResult? Function(_FailureTaskDeleteState value)? failure,
-  }) {
-    return initial?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTaskDeleteState value)? initial,
-    TResult Function(_LoadingTaskDeleteState value)? loading,
-    TResult Function(_SuccessTaskDeleteState value)? success,
-    TResult Function(_FailureTaskDeleteState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _InitialTaskDeleteState extends TaskDeleteState {
-  const factory _InitialTaskDeleteState() = _$InitialTaskDeleteStateImpl;
-  const _InitialTaskDeleteState._() : super._();
-}
-
-/// @nodoc
-abstract class _$$LoadingTaskDeleteStateImplCopyWith<$Res> {
-  factory _$$LoadingTaskDeleteStateImplCopyWith(
-    _$LoadingTaskDeleteStateImpl value,
-    $Res Function(_$LoadingTaskDeleteStateImpl) then,
-  ) = __$$LoadingTaskDeleteStateImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LoadingTaskDeleteStateImplCopyWithImpl<$Res>
-    extends _$TaskDeleteStateCopyWithImpl<$Res, _$LoadingTaskDeleteStateImpl>
-    implements _$$LoadingTaskDeleteStateImplCopyWith<$Res> {
-  __$$LoadingTaskDeleteStateImplCopyWithImpl(
-    _$LoadingTaskDeleteStateImpl _value,
-    $Res Function(_$LoadingTaskDeleteStateImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of TaskDeleteState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _$LoadingTaskDeleteStateImpl extends _LoadingTaskDeleteState {
-  const _$LoadingTaskDeleteStateImpl() : super._();
 
-  @override
-  String toString() {
-    return 'TaskDeleteState.loading()';
-  }
+class InitialTaskDeleteState extends TaskDeleteState {
+  const InitialTaskDeleteState(): super._();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LoadingTaskDeleteStateImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function() success,
-    required TResult Function(AppException exception) failure,
-  }) {
-    return loading();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function()? success,
-    TResult? Function(AppException exception)? failure,
-  }) {
-    return loading?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function()? success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTaskDeleteState value) initial,
-    required TResult Function(_LoadingTaskDeleteState value) loading,
-    required TResult Function(_SuccessTaskDeleteState value) success,
-    required TResult Function(_FailureTaskDeleteState value) failure,
-  }) {
-    return loading(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTaskDeleteState value)? initial,
-    TResult? Function(_LoadingTaskDeleteState value)? loading,
-    TResult? Function(_SuccessTaskDeleteState value)? success,
-    TResult? Function(_FailureTaskDeleteState value)? failure,
-  }) {
-    return loading?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTaskDeleteState value)? initial,
-    TResult Function(_LoadingTaskDeleteState value)? loading,
-    TResult Function(_SuccessTaskDeleteState value)? success,
-    TResult Function(_FailureTaskDeleteState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitialTaskDeleteState);
 }
 
-abstract class _LoadingTaskDeleteState extends TaskDeleteState {
-  const factory _LoadingTaskDeleteState() = _$LoadingTaskDeleteStateImpl;
-  const _LoadingTaskDeleteState._() : super._();
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TaskDeleteState.initial()';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$SuccessTaskDeleteStateImplCopyWith<$Res> {
-  factory _$$SuccessTaskDeleteStateImplCopyWith(
-    _$SuccessTaskDeleteStateImpl value,
-    $Res Function(_$SuccessTaskDeleteStateImpl) then,
-  ) = __$$SuccessTaskDeleteStateImplCopyWithImpl<$Res>;
+class $InitialTaskDeleteStateCopyWith<$Res> implements $TaskDeleteStateCopyWith<$Res> {
+$InitialTaskDeleteStateCopyWith(InitialTaskDeleteState _, $Res Function(InitialTaskDeleteState) __);
 }
-
 /// @nodoc
-class __$$SuccessTaskDeleteStateImplCopyWithImpl<$Res>
-    extends _$TaskDeleteStateCopyWithImpl<$Res, _$SuccessTaskDeleteStateImpl>
-    implements _$$SuccessTaskDeleteStateImplCopyWith<$Res> {
-  __$$SuccessTaskDeleteStateImplCopyWithImpl(
-    _$SuccessTaskDeleteStateImpl _value,
-    $Res Function(_$SuccessTaskDeleteStateImpl) _then,
-  ) : super(_value, _then);
+class _$InitialTaskDeleteStateCopyWithImpl<$Res>
+    implements $InitialTaskDeleteStateCopyWith<$Res> {
+  _$InitialTaskDeleteStateCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of TaskDeleteState
-  /// with the given fields replaced by the non-null parameter values.
+  final InitialTaskDeleteState _self;
+  final $Res Function(InitialTaskDeleteState) _then;
+
+
+
+
 }
 
 /// @nodoc
 
-class _$SuccessTaskDeleteStateImpl extends _SuccessTaskDeleteState {
-  const _$SuccessTaskDeleteStateImpl() : super._();
 
-  @override
-  String toString() {
-    return 'TaskDeleteState.success()';
-  }
+class LoadingTaskDeleteState extends TaskDeleteState {
+  const LoadingTaskDeleteState(): super._();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SuccessTaskDeleteStateImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function() success,
-    required TResult Function(AppException exception) failure,
-  }) {
-    return success();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function()? success,
-    TResult? Function(AppException exception)? failure,
-  }) {
-    return success?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function()? success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTaskDeleteState value) initial,
-    required TResult Function(_LoadingTaskDeleteState value) loading,
-    required TResult Function(_SuccessTaskDeleteState value) success,
-    required TResult Function(_FailureTaskDeleteState value) failure,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTaskDeleteState value)? initial,
-    TResult? Function(_LoadingTaskDeleteState value)? loading,
-    TResult? Function(_SuccessTaskDeleteState value)? success,
-    TResult? Function(_FailureTaskDeleteState value)? failure,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTaskDeleteState value)? initial,
-    TResult Function(_LoadingTaskDeleteState value)? loading,
-    TResult Function(_SuccessTaskDeleteState value)? success,
-    TResult Function(_FailureTaskDeleteState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingTaskDeleteState);
 }
 
-abstract class _SuccessTaskDeleteState extends TaskDeleteState {
-  const factory _SuccessTaskDeleteState() = _$SuccessTaskDeleteStateImpl;
-  const _SuccessTaskDeleteState._() : super._();
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TaskDeleteState.loading()';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$FailureTaskDeleteStateImplCopyWith<$Res> {
-  factory _$$FailureTaskDeleteStateImplCopyWith(
-    _$FailureTaskDeleteStateImpl value,
-    $Res Function(_$FailureTaskDeleteStateImpl) then,
-  ) = __$$FailureTaskDeleteStateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({AppException exception});
+class $LoadingTaskDeleteStateCopyWith<$Res> implements $TaskDeleteStateCopyWith<$Res> {
+$LoadingTaskDeleteStateCopyWith(LoadingTaskDeleteState _, $Res Function(LoadingTaskDeleteState) __);
 }
-
 /// @nodoc
-class __$$FailureTaskDeleteStateImplCopyWithImpl<$Res>
-    extends _$TaskDeleteStateCopyWithImpl<$Res, _$FailureTaskDeleteStateImpl>
-    implements _$$FailureTaskDeleteStateImplCopyWith<$Res> {
-  __$$FailureTaskDeleteStateImplCopyWithImpl(
-    _$FailureTaskDeleteStateImpl _value,
-    $Res Function(_$FailureTaskDeleteStateImpl) _then,
-  ) : super(_value, _then);
+class _$LoadingTaskDeleteStateCopyWithImpl<$Res>
+    implements $LoadingTaskDeleteStateCopyWith<$Res> {
+  _$LoadingTaskDeleteStateCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of TaskDeleteState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? exception = null}) {
-    return _then(
-      _$FailureTaskDeleteStateImpl(
-        null == exception
-            ? _value.exception
-            : exception // ignore: cast_nullable_to_non_nullable
-                  as AppException,
-      ),
-    );
-  }
+  final LoadingTaskDeleteState _self;
+  final $Res Function(LoadingTaskDeleteState) _then;
+
+
+
+
 }
 
 /// @nodoc
 
-class _$FailureTaskDeleteStateImpl extends _FailureTaskDeleteState {
-  const _$FailureTaskDeleteStateImpl(this.exception) : super._();
 
-  @override
-  final AppException exception;
+class SuccessTaskDeleteState extends TaskDeleteState {
+  const SuccessTaskDeleteState(): super._();
+  
 
-  @override
-  String toString() {
-    return 'TaskDeleteState.failure(exception: $exception)';
-  }
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FailureTaskDeleteStateImpl &&
-            (identical(other.exception, exception) ||
-                other.exception == exception));
-  }
 
-  @override
-  int get hashCode => Object.hash(runtimeType, exception);
 
-  /// Create a copy of TaskDeleteState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$FailureTaskDeleteStateImplCopyWith<_$FailureTaskDeleteStateImpl>
-  get copyWith =>
-      __$$FailureTaskDeleteStateImplCopyWithImpl<_$FailureTaskDeleteStateImpl>(
-        this,
-        _$identity,
-      );
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function() success,
-    required TResult Function(AppException exception) failure,
-  }) {
-    return failure(exception);
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function()? success,
-    TResult? Function(AppException exception)? failure,
-  }) {
-    return failure?.call(exception);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function()? success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(exception);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTaskDeleteState value) initial,
-    required TResult Function(_LoadingTaskDeleteState value) loading,
-    required TResult Function(_SuccessTaskDeleteState value) success,
-    required TResult Function(_FailureTaskDeleteState value) failure,
-  }) {
-    return failure(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTaskDeleteState value)? initial,
-    TResult? Function(_LoadingTaskDeleteState value)? loading,
-    TResult? Function(_SuccessTaskDeleteState value)? success,
-    TResult? Function(_FailureTaskDeleteState value)? failure,
-  }) {
-    return failure?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTaskDeleteState value)? initial,
-    TResult Function(_LoadingTaskDeleteState value)? loading,
-    TResult Function(_SuccessTaskDeleteState value)? success,
-    TResult Function(_FailureTaskDeleteState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessTaskDeleteState);
 }
 
-abstract class _FailureTaskDeleteState extends TaskDeleteState {
-  const factory _FailureTaskDeleteState(final AppException exception) =
-      _$FailureTaskDeleteStateImpl;
-  const _FailureTaskDeleteState._() : super._();
 
-  AppException get exception;
+@override
+int get hashCode => runtimeType.hashCode;
 
-  /// Create a copy of TaskDeleteState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FailureTaskDeleteStateImplCopyWith<_$FailureTaskDeleteStateImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+String toString() {
+  return 'TaskDeleteState.success()';
 }
+
+
+}
+
+/// @nodoc
+class $SuccessTaskDeleteStateCopyWith<$Res> implements $TaskDeleteStateCopyWith<$Res> {
+$SuccessTaskDeleteStateCopyWith(SuccessTaskDeleteState _, $Res Function(SuccessTaskDeleteState) __);
+}
+/// @nodoc
+class _$SuccessTaskDeleteStateCopyWithImpl<$Res>
+    implements $SuccessTaskDeleteStateCopyWith<$Res> {
+  _$SuccessTaskDeleteStateCopyWithImpl(this._self, this._then);
+
+  final SuccessTaskDeleteState _self;
+  final $Res Function(SuccessTaskDeleteState) _then;
+
+
+
+
+}
+
+/// @nodoc
+
+
+class FailureTaskDeleteState extends TaskDeleteState {
+  const FailureTaskDeleteState(this.exception): super._();
+  
+
+ final  AppException exception;
+
+/// Create a copy of TaskDeleteState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$FailureTaskDeleteStateCopyWith<FailureTaskDeleteState> get copyWith => _$FailureTaskDeleteStateCopyWithImpl<FailureTaskDeleteState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FailureTaskDeleteState&&(identical(other.exception, exception) || other.exception == exception));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,exception);
+
+@override
+String toString() {
+  return 'TaskDeleteState.failure(exception: $exception)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $FailureTaskDeleteStateCopyWith<$Res> implements $TaskDeleteStateCopyWith<$Res> {
+  factory $FailureTaskDeleteStateCopyWith(FailureTaskDeleteState value, $Res Function(FailureTaskDeleteState) _then) = _$FailureTaskDeleteStateCopyWithImpl;
+@useResult
+$Res call({
+ AppException exception
+});
+
+
+
+
+}
+/// @nodoc
+class _$FailureTaskDeleteStateCopyWithImpl<$Res>
+    implements $FailureTaskDeleteStateCopyWith<$Res> {
+  _$FailureTaskDeleteStateCopyWithImpl(this._self, this._then);
+
+  final FailureTaskDeleteState _self;
+  final $Res Function(FailureTaskDeleteState) _then;
+
+/// Create a copy of TaskDeleteState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? exception = null,}) {
+  return _then(FailureTaskDeleteState(
+null == exception ? _self.exception : exception // ignore: cast_nullable_to_non_nullable
+as AppException,
+  ));
+}
+
+
+}
+
+// dart format on

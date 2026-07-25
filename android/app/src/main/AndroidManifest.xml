@@ -1,8 +1,16 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Release builds only merge permissions declared here (debug/profile
+         manifests are not included), so network access must be granted in
+         the main manifest. -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Required to show push notifications on Android 13+. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <application
-        android:label="flutter_starter"
+        android:label="Flutter Starter"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:allowBackup="false">
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -1,17 +1,17 @@
 import 'package:dio/dio.dart';
 import 'package:starter_toolkit/data/exceptions/annotations.dart';
 
-/// Domain exception containing minimal error data.
+/// Domain exception carrying minimal error data, with no UI dependencies.
 ///
-/// Pure data class with no UI dependencies.
-/// Use ExceptionUiMapper from starter_uikit to convert to UI model for display.
+/// Convert to a UI model via `ExceptionUiMapper` in
+/// `starter_uikit/lib/utils/mappers/exception_ui_mapper.dart`. Adding or renaming a subtype
+/// here, or changing its `@ExceptionUiConfig`, requires rerunning that mapper's generator.
 sealed class AppException implements Exception {
   const AppException();
 
-  /// Exception type identifier for logging
+  /// Exception type identifier used for logging.
   String get name;
 
-  /// Whether this exception can be retried
   bool get canRetry;
 
   /// Creates exception from Dio response.

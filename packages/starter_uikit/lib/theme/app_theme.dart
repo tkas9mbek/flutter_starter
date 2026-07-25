@@ -11,6 +11,7 @@ class AppTheme {
     required this.secondary,
     required this.surface,
     required this.background,
+    required this.surfaceMuted,
     required this.border,
     required this.error,
     required this.onPrimary,
@@ -26,6 +27,7 @@ class AppTheme {
     secondary: AppColors.brightAmber,
     surface: AppColors.pureWhite,
     background: AppColors.lightGrey,
+    surfaceMuted: AppColors.lightGrey,
     border: AppColors.lightBorder,
     error: AppColors.deepRed,
     success: AppColors.vibrantGreen,
@@ -41,6 +43,7 @@ class AppTheme {
     secondary: AppColors.brightAmber,
     surface: AppColors.darkSurface,
     background: AppColors.darkGrey,
+    surfaceMuted: AppColors.darkGrey,
     border: AppColors.darkBorder,
     error: AppColors.lightRed,
     success: AppColors.vibrantGreen,
@@ -56,6 +59,7 @@ class AppTheme {
   final Color secondary;
   final Color surface;
   final Color background;
+  final Color surfaceMuted;
   final Color border;
   final Color error;
   final Color success;

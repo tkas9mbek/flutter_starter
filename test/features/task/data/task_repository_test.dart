@@ -3,7 +3,8 @@ import 'package:mocktail/mocktail.dart';
 import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
 import 'package:starter/features/task/model/task_create_request.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
 import '../model/task_mock_models.dart';
 

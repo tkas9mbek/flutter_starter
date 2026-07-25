@@ -7,6 +7,7 @@ class PrimitiveTypeConverters {
   static Color colorFromJson(String json) {
     final buffer = StringBuffer();
 
+    // Prepend opaque alpha when the hex string is `RRGGBB` / `#RRGGBB` (no alpha channel).
     if (json.length == 6 || json.length == 7) {
       buffer.write('ff');
     }

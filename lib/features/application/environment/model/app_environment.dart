@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:starter/core/consts/core_consts.dart';
+import 'package:starter/core/global/core_consts.dart';
 
 class AppEnvironment extends Equatable {
   const AppEnvironment({

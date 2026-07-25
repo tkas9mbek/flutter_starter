@@ -13,4 +13,9 @@ class FormInputFormatters {
 
   /// Length limit matching the longest formatted phone (18 chars).
   static final phoneMaxLength = LengthLimitingTextInputFormatter(18);
+
+  /// Builds a formatter for a dynamic mask (e.g. from remote config),
+  /// where `#` marks a digit slot: `(###) ###-###`.
+  static TextInputFormatter phoneMask(String mask) =>
+      MaskTextInputFormatter(mask: mask);
 }

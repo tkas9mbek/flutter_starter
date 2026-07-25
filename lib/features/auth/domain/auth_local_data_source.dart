@@ -5,7 +5,9 @@ abstract class AuthLocalDataSource {
 
   Future<void> saveToken(AuthToken token);
 
-  Future<void> clearIfNotLaunchedBefore();
+  /// Clears secure storage on first launch. Returns whether the app
+  /// had been launched before.
+  Future<bool> clearIfNotLaunchedBefore();
 
   Future<AuthToken?> getToken();
 }

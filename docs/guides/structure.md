@@ -17,6 +17,15 @@ flutter_starter/
 └── test/                 # Tests
 ```
 
+### Generated Files
+
+Never hand-edit generated files — rerun the owning generator:
+
+- `*.gr.dart`, `*.freezed.dart`, `*.g.dart` — build_runner (routes, Freezed, JSON)
+- `lib/l10n/generated/`, `packages/*/lib/l10n/generated/` — intl_utils (after ARB changes)
+- Exception mapper + decorator — `dart run utils/generators/generate_exception_mapper.dart`
+- `packages/starter_uikit/lib/resources/` (`UiSvgIcons`, `Images`, fonts) — `spider build` in `packages/starter_uikit` (after adding/renaming assets; config in `spider.json`)
+
 ---
 
 ## Core Structure
@@ -169,7 +178,3 @@ Follow this order
 - [Naming](../rules/naming.md) - Naming standards
 - [Code Formatting](../rules/code_formatting.md) - Style guide
 - [Testing](./testing.md) - Test strategies
-
----
-
-**Last Updated**: January 18, 2025

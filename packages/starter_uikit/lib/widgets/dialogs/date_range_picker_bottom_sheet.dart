@@ -2,12 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/dialogs/date_time_picker_bottom_sheet.dart';
 
+/// A two-step bottom sheet for picking a date range: the user first confirms
+/// the start date, then an end date limited to not precede it.
+/// Pops with a `(DateTime, DateTime)` record of the selected range.
 class DateRangePickerBottomSheet extends StatefulWidget {
-  /// A bottom sheet that allows the user to select a date range.
-  /// First, the user selects the start date, then the end date.
-  ///
-  /// * [backText] is the text of the back button that moves to the first step.
-  /// * [confirmText] is the text of the confirm button that moves to the second step.
   const DateRangePickerBottomSheet({
     required this.title,
     required this.backText,
@@ -53,7 +51,7 @@ class _DateRangePickerBottomSheetState
       onDateSelected: fromNeedsSelect
           ? (_, date) => _onFromDateSelected(date)
           : _onToDateSelected,
-      initialDate: widget.initialDate,
+      initialDate: fromNeedsSelect ? widget.initialDate : _fromDate,
       minDate: fromNeedsSelect ? widget.minDate : _fromDate,
       maxDate: widget.maxDate,
       confirmText: fromNeedsSelect

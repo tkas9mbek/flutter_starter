@@ -5,7 +5,7 @@ part 'auth_login_request_body.freezed.dart';
 part 'auth_login_request_body.g.dart';
 
 @Freezed(fromJson: true, toJson: true)
-class AuthLoginRequestBody with _$AuthLoginRequestBody {
+abstract class AuthLoginRequestBody with _$AuthLoginRequestBody {
   const factory AuthLoginRequestBody({
     required String phone,
     required String password,

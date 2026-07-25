@@ -4,9 +4,11 @@ import 'package:starter/features/settings/model/theme_mode_option.dart';
 import 'package:starter/features/settings/ui/menu/widget/settings_tile.dart';
 import 'package:starter/features/settings/ui/theme/bloc/theme_cubit.dart';
 import 'package:starter/l10n/generated/l10n.dart';
+import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 import 'package:starter_uikit/widgets/dialogs/dropdown_bottom_sheet.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 class ThemeSettingsTile extends StatelessWidget {
   const ThemeSettingsTile({super.key});
@@ -50,10 +52,14 @@ class ThemeSettingsTile extends StatelessWidget {
         final themeLabel = _getThemeLabel(context, currentTheme);
 
         return SettingsTile(
-          icon: Icons.palette_outlined,
+          icon: UiSvgIcons.sunTheme,
           title: localizer.theme,
           subtitle: themeLabel,
-          trailing: Icon(Icons.chevron_right, color: theme.textSecondary),
+          trailing: SvgIcon(
+            UiSvgIcons.chevronRight,
+            size: 24,
+            color: theme.textSecondary,
+          ),
           onTap: () => _showThemeSelector(context),
         );
       },

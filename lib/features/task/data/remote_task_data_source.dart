@@ -3,6 +3,7 @@ import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/model/task_create_request.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
+import 'package:starter_toolkit/data/model/paginated_list_items.dart';
 
 class RemoteTaskDataSource implements TaskDataSource {
   const RemoteTaskDataSource(this._client);
@@ -23,6 +24,20 @@ class RemoteTaskDataSource implements TaskDataSource {
         path: '/tasks/date/${date.toIso8601String()}',
         fromJson: Task.fromJson,
       );
+
+  @override
+  Future<PaginatedListItems<Task>> searchTasks(
+    String query, {
+    required int page,
+  }) => _client.requestJson<PaginatedListItems<Task>>(
+    method: HttpMethod.get,
+    path: '/tasks/search',
+    queryParameters: {'query': query, 'page': page},
+    fromJson: (json) => PaginatedListItems.fromJson(
+      json,
+      (element) => Task.fromJson(element! as Map<String, dynamic>),
+    ),
+  );
 
   @override
   Future<Task> createTask(TaskCreateRequest request) =>

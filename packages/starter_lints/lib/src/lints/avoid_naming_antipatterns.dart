@@ -1,4 +1,4 @@
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -11,27 +11,27 @@ class AvoidNamingAntipatterns extends DartLintRule {
     name: 'avoid_naming_antipatterns',
     problemMessage: 'Avoid "Impl" suffix. Use concrete naming instead.',
     correctionMessage: 'Rename: TaskDataSourceImpl → RemoteTaskDataSource.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   static const _moduleCode = LintCode(
     name: 'avoid_naming_antipatterns',
     problemMessage: 'Avoid "Module" in class names.',
     correctionMessage: 'Rename: ModuleRepository → FeatureRepository.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   static const _modelCode = LintCode(
     name: 'avoid_naming_antipatterns',
     problemMessage: 'Avoid "Model" suffix in data model classes.',
     correctionMessage: 'Rename: PaymentCategoryModel → PaymentCategory.',
-    errorSeverity: ErrorSeverity.INFO,
+    errorSeverity: DiagnosticSeverity.INFO,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {

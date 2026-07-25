@@ -25,7 +25,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.0'
+          flutter-version: '3.44.5'
           cache: true
 
       - name: Install dependencies
@@ -49,7 +49,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.0'
+          flutter-version: '3.44.5'
           cache: true
 
       - name: Install dependencies
@@ -64,6 +64,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        # Every top-level directory under test/ must appear in exactly one
+        # shard, or its tests silently never run in CI.
         shard:
           - name: application
             paths: test/features/application
@@ -75,6 +77,8 @@ jobs:
             paths: test/features/profile
           - name: task
             paths: test/features/task
+          - name: core-uikit
+            paths: test/core test/uikit
 
     steps:
       - name: Checkout
@@ -83,7 +87,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.32.0'
+          flutter-version: '3.44.5'
           cache: true
 
       - name: Install dependencies

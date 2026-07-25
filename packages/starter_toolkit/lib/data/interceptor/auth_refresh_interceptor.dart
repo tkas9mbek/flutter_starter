@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 
+/// On a 401, refreshes the token once and replays the request; logs out if refresh fails or
+/// the retry still returns 401. Queued so concurrent 401s share a single refresh.
 class AuthRefreshInterceptor extends QueuedInterceptor {
   AuthRefreshInterceptor({
     required this.dio,

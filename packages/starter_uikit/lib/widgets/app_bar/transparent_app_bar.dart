@@ -5,11 +5,10 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/app_bar_content.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 
+/// App bar that stays transparent over a background gradient until the
+/// [scrollController] offset passes [transparentHeight], then switches to a
+/// solid [TitleAppBar] with an animated cross-fade.
 class TransparentAppBar extends StatefulWidget implements PreferredSizeWidget {
-  /// App bar that becomes transparent when the user scrolls down.
-  /// The app bar will be visible when the user scrolls up.
-  /// * [transparentHeight] is the height at which the app bar becomes transparent.
-  /// * [scrollController] is the controller that will be used to determine the scroll position.
   const TransparentAppBar({
     required this.title,
     required this.scrollController,
@@ -44,6 +43,20 @@ class _TransparentAppBarState extends State<TransparentAppBar> {
   void initState() {
     super.initState();
     widget.scrollController.addListener(_onScroll);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted && widget.scrollController.hasClients) {
+        _onScroll();
+      }
+    });
+  }
+
+  @override
+  void didUpdateWidget(TransparentAppBar oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.scrollController != oldWidget.scrollController) {
+      oldWidget.scrollController.removeListener(_onScroll);
+      widget.scrollController.addListener(_onScroll);
+    }
   }
 
   @override
@@ -102,7 +115,9 @@ class _TransparentAppBarState extends State<TransparentAppBar> {
               ),
               bottom: PreferredSize(
                 preferredSize: widget.bottom?.preferredSize ?? Size.zero,
-                child: Opacity(opacity: 0, child: widget.bottom),
+                child: IgnorePointer(
+                  child: Opacity(opacity: 0, child: widget.bottom),
+                ),
               ),
               title: SizedBox(
                 height: widget.height,

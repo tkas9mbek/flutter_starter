@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/core/router/app_router.dart';
@@ -16,11 +18,17 @@ class GlobalRouteWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
-      listener: (context, state) => state.mapOrNull(
-        unauthenticated: (_) => router.replaceAll([const LoginRoute()]),
-        authenticated: (state) =>
-            router.replaceAll([const AuthenticatedRouter()]),
-      ),
+      listener: (context, state) {
+        // New users land on login too; point this at an onboarding
+        // route when the project adds one.
+        if (state is UnauthenticatedAuthState || state is NewUserAuthState) {
+          unawaited(router.replaceAll([const LoginRoute()]));
+        }
+
+        if (state is AuthenticatedAuthState) {
+          unawaited(router.replaceAll([const AuthenticatedRouter()]));
+        }
+      },
       child: child,
     );
   }

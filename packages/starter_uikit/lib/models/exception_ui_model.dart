@@ -1,11 +1,6 @@
 import 'package:equatable/equatable.dart';
 
-/// UI model for displaying exceptions.
-///
-/// Contains all information needed for UI presentation:
-/// - Localized messages
-/// - Display flags
-/// - Action availability
+/// UI model carrying the localized messages and flags needed to present an exception.
 class ExceptionUiModel extends Equatable {
   const ExceptionUiModel({
     required this.description,

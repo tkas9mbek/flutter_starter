@@ -6,7 +6,7 @@ import 'package:mocktail/mocktail.dart';
 import 'package:starter/features/application/environment/domain/environment_data_source.dart';
 import 'package:starter/features/application/environment/domain/environment_repository.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
-import 'package:starter/features/application/environment/ui/bloc/environment_cubit.dart';
+import 'package:starter/features/application/environment/ui/switcher/bloc/environment_cubit.dart';
 
 class MockEnvironmentLocalDataSource extends Mock
     implements EnvironmentDataSource {}

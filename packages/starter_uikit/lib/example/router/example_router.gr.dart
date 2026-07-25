@@ -90,6 +90,16 @@ class FormFieldsExampleRouteArgs {
   String toString() {
     return 'FormFieldsExampleRouteArgs{key: $key}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! FormFieldsExampleRouteArgs) return false;
+    return key == other.key;
+  }
+
+  @override
+  int get hashCode => key.hashCode;
 }
 
 /// generated route for
@@ -104,6 +114,22 @@ class MiscWidgetsExampleRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const MiscWidgetsExampleScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [PaginationExampleScreen]
+class PaginationExampleRoute extends PageRouteInfo<void> {
+  const PaginationExampleRoute({List<PageRouteInfo>? children})
+    : super(PaginationExampleRoute.name, initialChildren: children);
+
+  static const String name = 'PaginationExampleRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const PaginationExampleScreen();
     },
   );
 }

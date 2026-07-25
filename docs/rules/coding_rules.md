@@ -68,7 +68,7 @@ Repositories are concrete classes. The abstraction lives on the `*DataSource` in
 
 ### Use repository executors for cross-cutting concerns
 
-Wrap repository operations with `RawRepositoryExecutor().withErrorHandling().withRetry().withCaching()` instead of writing manual `try/catch`/retry loops. `withErrorHandling()` must be the innermost (called first in the chain).
+Compose executors in the repository's DI module closure from a single local `base = const RawRepositoryExecutor().withErrorHandling()` and inject them via constructor params, instead of writing manual `try/catch`/retry loops. `withErrorHandling()` must be the innermost (called first in the chain). Caching is the `RepositoryCache` collaborator, not a decorator — see [repository_executor.md](../guides/repository_executor.md).
 
 ---
 
@@ -98,8 +98,8 @@ Classes follow `Feature + [Description] + Type`. Drop `Description` for single i
 const factory UserEvent.requested() = _RequestedUserEvent;
 const factory UserEvent.refreshed() = _RefreshedUserEvent;
 
-// ✅ States — nouns / adjectives
-const factory UserState.success(List<User> users) = _SuccessUserState;
+// ✅ States — nouns / adjectives, public case classes
+const factory UserState.success(List<User> users) = SuccessUserState;
 ```
 
 ### Concrete implementations: source prefix first
@@ -309,7 +309,7 @@ Bottom sheets and dialogs are `StatelessWidget` classes that expose a static `sh
 
 ### Reuse starter_uikit
 
-Before writing new UI, check `starter_uikit` for: `FailureWidgetLarge`, `EmptyInformationBody`, `CustomCircularProgressIndicator`, `NotificationSnackBar`, `AppTextField`, `AppDropdownField`, `AppDatePickerField`, `AppCheckbox`, `AppElevatedButton`, `AppOutlinedButton`, `TitleAppBar`, `BaseAppBar`, `TransparentAppBar`.
+Before writing new UI, check `starter_uikit` for: `FailureWidget.large`, `EmptyInformationBody`, `CustomCircularProgressIndicator`, `NotificationSnackBar`, `AppTextField`, `AppDropdownField`, `AppDatePickerField`, `AppCheckbox`, `AppElevatedButton`, `AppOutlinedButton`, `TitleAppBar`, `BaseAppBar`, `TransparentAppBar`.
 
 ### `mounted` after async
 
@@ -329,7 +329,7 @@ All mutable data lives in the Freezed state. Subscriptions, timers, cancel-token
 
 ### Use Freezed for events and states
 
-`@freezed` for every event and state class. Run `build_runner` after editing.
+`@freezed sealed class` for every event and state union (`abstract class` for single-constructor states). State case classes are public (`SuccessUserState`); event case classes stay private (`_RequestedUserEvent`). Run `build_runner` after editing.
 
 ### State pattern decision
 
@@ -350,18 +350,18 @@ All mutable data lives in the Freezed state. Subscriptions, timers, cancel-token
 ```dart
 const MyState._();          // required for getters
 
-bool get isLoading => this is _LoadingMyState;
+bool get isLoading => this is LoadingMyState;
 ```
 
-Don't inline `maybeWhen` for a `bool`.
+Don't repeat the same inline `is` check across widgets — add a getter.
 
-### `BlocBuilder` uses `maybeMap` / `maybeWhen`
+### `BlocBuilder` uses an exhaustive `switch`
 
-Builder must return a non-null `Widget`. `mapOrNull` returns `Widget?` — using it in a builder will throw.
+Builder must return a non-null `Widget`. Use an exhaustive `switch` expression/statement over the sealed state so the compiler proves every case returns a `Widget`.
 
-### `BlocListener` uses `mapOrNull` / `whenOrNull` `[lint: prefer_map_or_null]`
+### `BlocListener` uses `if-case` / `is` checks `[lint: prefer_map_or_null]`
 
-Side-effect handlers should not need an `orElse: () {}`. Use the null variants instead.
+Side-effect handlers pattern-match with `if (state case FailureMyState(:final exception))` or `state is SuccessMyState`. (The `prefer_map_or_null` lint applies only to legacy Freezed 2 `maybeMap`/`maybeWhen` code — those methods no longer exist in Freezed 3.)
 
 ### Past-tense events
 
@@ -404,10 +404,10 @@ Bare `catch (e)` is allowed only with an `// ignore: avoid_catches_without_on_cl
 ### Failure factory carries the exception
 
 ```dart
-const factory MyState.failure(AppException exception) = _FailureMyState;
+const factory MyState.failure(AppException exception) = FailureMyState;
 ```
 
-UI consumes via `FailureWidgetLarge(exception: state.exception, onRetry: …)`.
+UI consumes via `FailureWidget.large(exception: state.exception, onRetry: …)`.
 
 ### Adding a new exception
 
@@ -431,10 +431,9 @@ UI must consume the localized message via `ExceptionUiMapper` or `FailureWidget*
 ### Repository executor decorator order
 
 ```dart
-final exec = RawRepositoryExecutor()
+final base = const RawRepositoryExecutor()
   .withErrorHandling()  // innermost — converts raw throws to AppException
-  .withRetry()          // outer — sees AppException
-  .withCaching();       // outermost
+  .withRetry();         // outer — sees AppException
 ```
 
 ---
@@ -559,26 +558,30 @@ Capitalize first letter, no period, ≤ 72 chars, imperative mood.
 
 ## Lint Rules Reference
 
-All 13 lints enforced by [`starter_lints`](../../packages/starter_lints):
+All 19 lints enforced by [`starter_lints`](../../packages/starter_lints):
 
 | Lint | Severity | Section |
 |------|----------|---------|
 | `no_flutter_in_data_domain` | ERROR | [Architecture](#architecture) |
 | `bloc_no_bloc_dependency` | WARNING | [Architecture](#architecture) |
+| `avoid_naming_antipatterns` | WARNING / INFO | [Naming](#naming) |
+| `class_size_warning` | INFO | [Class Size & SRP](#class-size--srp) |
 | `avoid_widget_functions` | WARNING | [Widgets](#widgets) |
 | `avoid_build_context_field` | WARNING | [Widgets](#widgets) |
-| `avoid_mutable_bloc_fields` | WARNING | [BLoC](#bloc) |
+| `max_widget_nesting` | INFO | [Widgets](#widgets) |
 | `no_hardcoded_colors` | WARNING | [Theme](#theme) |
+| `theme_in_build_only` | WARNING | [Theme](#theme) |
+| `avoid_mutable_bloc_fields` | WARNING | [BLoC](#bloc) |
+| `prefer_map_or_null` | INFO | [BLoC](#bloc) |
+| `bloc_listener_builder_usage` | INFO | [BLoC](#bloc) |
 | `braces_in_flow_control` | WARNING | [Formatting](#formatting) |
 | `prefer_arrow_except_build` | WARNING / INFO | [Formatting](#formatting) |
 | `always_spread_in_collections` | INFO | [Formatting](#formatting) |
 | `blank_line_before_return` | INFO | [Formatting](#formatting) |
 | `sort_constructor_params` | INFO | [Formatting](#formatting) |
-| `prefer_map_or_null` | INFO | [BLoC](#bloc) |
+| `multi_line_ternary` | INFO | [Formatting](#formatting) |
 | `prefer_bool_default` | INFO | [Parameters](#parameters) |
 
 Lints run as part of `fvm dart run custom_lint` and during the analyzer pass (`fvm flutter analyze`).
 
----
-
-**Last Updated**: 2026-05-08
+> **Note:** `prefer_map_or_null` (and `bloc_listener_builder_usage` in `starter_lints`) target the legacy Freezed 2 pattern-matching methods (`maybeMap`/`maybeWhen`/`mapOrNull`/`whenOrNull`), which were removed in Freezed 3. They only fire on legacy code — new code uses Dart `switch` / `if-case` pattern matching on the sealed state classes.

@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,845 +9,656 @@ part of 'tasks_list_bloc.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$TasksListEvent {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() requested,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? requested,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? requested,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_RequestedTasksListEvent value) requested,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_RequestedTasksListEvent value)? requested,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_RequestedTasksListEvent value)? requested,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TasksListEvent);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TasksListEvent()';
+}
+
+
 }
 
 /// @nodoc
-abstract class $TasksListEventCopyWith<$Res> {
-  factory $TasksListEventCopyWith(
-    TasksListEvent value,
-    $Res Function(TasksListEvent) then,
-  ) = _$TasksListEventCopyWithImpl<$Res, TasksListEvent>;
+class $TasksListEventCopyWith<$Res>  {
+$TasksListEventCopyWith(TasksListEvent _, $Res Function(TasksListEvent) __);
+}
+
+
+/// Adds pattern-matching-related methods to [TasksListEvent].
+extension TasksListEventPatterns on TasksListEvent {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _RequestedTasksListEvent value)?  requested,TResult Function( _RefreshedTasksListEvent value)?  refreshed,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _RequestedTasksListEvent() when requested != null:
+return requested(_that);case _RefreshedTasksListEvent() when refreshed != null:
+return refreshed(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _RequestedTasksListEvent value)  requested,required TResult Function( _RefreshedTasksListEvent value)  refreshed,}){
+final _that = this;
+switch (_that) {
+case _RequestedTasksListEvent():
+return requested(_that);case _RefreshedTasksListEvent():
+return refreshed(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _RequestedTasksListEvent value)?  requested,TResult? Function( _RefreshedTasksListEvent value)?  refreshed,}){
+final _that = this;
+switch (_that) {
+case _RequestedTasksListEvent() when requested != null:
+return requested(_that);case _RefreshedTasksListEvent() when refreshed != null:
+return refreshed(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  requested,TResult Function()?  refreshed,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _RequestedTasksListEvent() when requested != null:
+return requested();case _RefreshedTasksListEvent() when refreshed != null:
+return refreshed();case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  requested,required TResult Function()  refreshed,}) {final _that = this;
+switch (_that) {
+case _RequestedTasksListEvent():
+return requested();case _RefreshedTasksListEvent():
+return refreshed();}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  requested,TResult? Function()?  refreshed,}) {final _that = this;
+switch (_that) {
+case _RequestedTasksListEvent() when requested != null:
+return requested();case _RefreshedTasksListEvent() when refreshed != null:
+return refreshed();case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-class _$TasksListEventCopyWithImpl<$Res, $Val extends TasksListEvent>
-    implements $TasksListEventCopyWith<$Res> {
-  _$TasksListEventCopyWithImpl(this._value, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
 
-  /// Create a copy of TasksListEvent
-  /// with the given fields replaced by the non-null parameter values.
+class _RequestedTasksListEvent implements TasksListEvent {
+  const _RequestedTasksListEvent();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RequestedTasksListEvent);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TasksListEvent.requested()';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$RequestedTasksListEventImplCopyWith<$Res> {
-  factory _$$RequestedTasksListEventImplCopyWith(
-    _$RequestedTasksListEventImpl value,
-    $Res Function(_$RequestedTasksListEventImpl) then,
-  ) = __$$RequestedTasksListEventImplCopyWithImpl<$Res>;
+class _$RequestedTasksListEventCopyWith<$Res> implements $TasksListEventCopyWith<$Res> {
+_$RequestedTasksListEventCopyWith(_RequestedTasksListEvent _, $Res Function(_RequestedTasksListEvent) __);
 }
-
 /// @nodoc
-class __$$RequestedTasksListEventImplCopyWithImpl<$Res>
-    extends _$TasksListEventCopyWithImpl<$Res, _$RequestedTasksListEventImpl>
-    implements _$$RequestedTasksListEventImplCopyWith<$Res> {
-  __$$RequestedTasksListEventImplCopyWithImpl(
-    _$RequestedTasksListEventImpl _value,
-    $Res Function(_$RequestedTasksListEventImpl) _then,
-  ) : super(_value, _then);
+class __$RequestedTasksListEventCopyWithImpl<$Res>
+    implements _$RequestedTasksListEventCopyWith<$Res> {
+  __$RequestedTasksListEventCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of TasksListEvent
-  /// with the given fields replaced by the non-null parameter values.
+  final _RequestedTasksListEvent _self;
+  final $Res Function(_RequestedTasksListEvent) _then;
+
+
+
+
 }
 
 /// @nodoc
 
-class _$RequestedTasksListEventImpl implements _RequestedTasksListEvent {
-  const _$RequestedTasksListEventImpl();
 
-  @override
-  String toString() {
-    return 'TasksListEvent.requested()';
-  }
+class _RefreshedTasksListEvent implements TasksListEvent {
+  const _RefreshedTasksListEvent();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$RequestedTasksListEventImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() requested,
-  }) {
-    return requested();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? requested,
-  }) {
-    return requested?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? requested,
-    required TResult orElse(),
-  }) {
-    if (requested != null) {
-      return requested();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_RequestedTasksListEvent value) requested,
-  }) {
-    return requested(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_RequestedTasksListEvent value)? requested,
-  }) {
-    return requested?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_RequestedTasksListEvent value)? requested,
-    required TResult orElse(),
-  }) {
-    if (requested != null) {
-      return requested(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RefreshedTasksListEvent);
 }
 
-abstract class _RequestedTasksListEvent implements TasksListEvent {
-  const factory _RequestedTasksListEvent() = _$RequestedTasksListEventImpl;
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TasksListEvent.refreshed()';
+}
+
+
+}
+
+/// @nodoc
+class _$RefreshedTasksListEventCopyWith<$Res> implements $TasksListEventCopyWith<$Res> {
+_$RefreshedTasksListEventCopyWith(_RefreshedTasksListEvent _, $Res Function(_RefreshedTasksListEvent) __);
+}
+/// @nodoc
+class __$RefreshedTasksListEventCopyWithImpl<$Res>
+    implements _$RefreshedTasksListEventCopyWith<$Res> {
+  __$RefreshedTasksListEventCopyWithImpl(this._self, this._then);
+
+  final _RefreshedTasksListEvent _self;
+  final $Res Function(_RefreshedTasksListEvent) _then;
+
+
+
+
 }
 
 /// @nodoc
 mixin _$TasksListState {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(
-      List<Task> tasks,
-      Map<DateTime, List<Task>> groupedTasks,
-    )
-    success,
-    required TResult Function(AppException exception) failure,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult? Function(AppException exception)? failure,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTasksListState value) initial,
-    required TResult Function(_LoadingTasksListState value) loading,
-    required TResult Function(_SuccessTasksListState value) success,
-    required TResult Function(_FailureTasksListState value) failure,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTasksListState value)? initial,
-    TResult? Function(_LoadingTasksListState value)? loading,
-    TResult? Function(_SuccessTasksListState value)? success,
-    TResult? Function(_FailureTasksListState value)? failure,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTasksListState value)? initial,
-    TResult Function(_LoadingTasksListState value)? loading,
-    TResult Function(_SuccessTasksListState value)? success,
-    TResult Function(_FailureTasksListState value)? failure,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is TasksListState);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TasksListState()';
+}
+
+
 }
 
 /// @nodoc
-abstract class $TasksListStateCopyWith<$Res> {
-  factory $TasksListStateCopyWith(
-    TasksListState value,
-    $Res Function(TasksListState) then,
-  ) = _$TasksListStateCopyWithImpl<$Res, TasksListState>;
+class $TasksListStateCopyWith<$Res>  {
+$TasksListStateCopyWith(TasksListState _, $Res Function(TasksListState) __);
 }
 
-/// @nodoc
-class _$TasksListStateCopyWithImpl<$Res, $Val extends TasksListState>
-    implements $TasksListStateCopyWith<$Res> {
-  _$TasksListStateCopyWithImpl(this._value, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+/// Adds pattern-matching-related methods to [TasksListState].
+extension TasksListStatePatterns on TasksListState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( InitialTasksListState value)?  initial,TResult Function( LoadingTasksListState value)?  loading,TResult Function( SuccessTasksListState value)?  success,TResult Function( FailureTasksListState value)?  failure,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case InitialTasksListState() when initial != null:
+return initial(_that);case LoadingTasksListState() when loading != null:
+return loading(_that);case SuccessTasksListState() when success != null:
+return success(_that);case FailureTasksListState() when failure != null:
+return failure(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( InitialTasksListState value)  initial,required TResult Function( LoadingTasksListState value)  loading,required TResult Function( SuccessTasksListState value)  success,required TResult Function( FailureTasksListState value)  failure,}){
+final _that = this;
+switch (_that) {
+case InitialTasksListState():
+return initial(_that);case LoadingTasksListState():
+return loading(_that);case SuccessTasksListState():
+return success(_that);case FailureTasksListState():
+return failure(_that);}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( InitialTasksListState value)?  initial,TResult? Function( LoadingTasksListState value)?  loading,TResult? Function( SuccessTasksListState value)?  success,TResult? Function( FailureTasksListState value)?  failure,}){
+final _that = this;
+switch (_that) {
+case InitialTasksListState() when initial != null:
+return initial(_that);case LoadingTasksListState() when loading != null:
+return loading(_that);case SuccessTasksListState() when success != null:
+return success(_that);case FailureTasksListState() when failure != null:
+return failure(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  initial,TResult Function()?  loading,TResult Function( List<Task> tasks,  Map<DateTime, List<Task>> groupedTasks)?  success,TResult Function( AppException exception)?  failure,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case InitialTasksListState() when initial != null:
+return initial();case LoadingTasksListState() when loading != null:
+return loading();case SuccessTasksListState() when success != null:
+return success(_that.tasks,_that.groupedTasks);case FailureTasksListState() when failure != null:
+return failure(_that.exception);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  initial,required TResult Function()  loading,required TResult Function( List<Task> tasks,  Map<DateTime, List<Task>> groupedTasks)  success,required TResult Function( AppException exception)  failure,}) {final _that = this;
+switch (_that) {
+case InitialTasksListState():
+return initial();case LoadingTasksListState():
+return loading();case SuccessTasksListState():
+return success(_that.tasks,_that.groupedTasks);case FailureTasksListState():
+return failure(_that.exception);}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  initial,TResult? Function()?  loading,TResult? Function( List<Task> tasks,  Map<DateTime, List<Task>> groupedTasks)?  success,TResult? Function( AppException exception)?  failure,}) {final _that = this;
+switch (_that) {
+case InitialTasksListState() when initial != null:
+return initial();case LoadingTasksListState() when loading != null:
+return loading();case SuccessTasksListState() when success != null:
+return success(_that.tasks,_that.groupedTasks);case FailureTasksListState() when failure != null:
+return failure(_that.exception);case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-abstract class _$$InitialTasksListStateImplCopyWith<$Res> {
-  factory _$$InitialTasksListStateImplCopyWith(
-    _$InitialTasksListStateImpl value,
-    $Res Function(_$InitialTasksListStateImpl) then,
-  ) = __$$InitialTasksListStateImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$InitialTasksListStateImplCopyWithImpl<$Res>
-    extends _$TasksListStateCopyWithImpl<$Res, _$InitialTasksListStateImpl>
-    implements _$$InitialTasksListStateImplCopyWith<$Res> {
-  __$$InitialTasksListStateImplCopyWithImpl(
-    _$InitialTasksListStateImpl _value,
-    $Res Function(_$InitialTasksListStateImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$InitialTasksListStateImpl extends _InitialTasksListState {
-  const _$InitialTasksListStateImpl() : super._();
-
-  @override
-  String toString() {
-    return 'TasksListState.initial()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$InitialTasksListStateImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(
-      List<Task> tasks,
-      Map<DateTime, List<Task>> groupedTasks,
-    )
-    success,
-    required TResult Function(AppException exception) failure,
-  }) {
-    return initial();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult? Function(AppException exception)? failure,
-  }) {
-    return initial?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTasksListState value) initial,
-    required TResult Function(_LoadingTasksListState value) loading,
-    required TResult Function(_SuccessTasksListState value) success,
-    required TResult Function(_FailureTasksListState value) failure,
-  }) {
-    return initial(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTasksListState value)? initial,
-    TResult? Function(_LoadingTasksListState value)? loading,
-    TResult? Function(_SuccessTasksListState value)? success,
-    TResult? Function(_FailureTasksListState value)? failure,
-  }) {
-    return initial?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTasksListState value)? initial,
-    TResult Function(_LoadingTasksListState value)? loading,
-    TResult Function(_SuccessTasksListState value)? success,
-    TResult Function(_FailureTasksListState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (initial != null) {
-      return initial(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _InitialTasksListState extends TasksListState {
-  const factory _InitialTasksListState() = _$InitialTasksListStateImpl;
-  const _InitialTasksListState._() : super._();
-}
-
-/// @nodoc
-abstract class _$$LoadingTasksListStateImplCopyWith<$Res> {
-  factory _$$LoadingTasksListStateImplCopyWith(
-    _$LoadingTasksListStateImpl value,
-    $Res Function(_$LoadingTasksListStateImpl) then,
-  ) = __$$LoadingTasksListStateImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$LoadingTasksListStateImplCopyWithImpl<$Res>
-    extends _$TasksListStateCopyWithImpl<$Res, _$LoadingTasksListStateImpl>
-    implements _$$LoadingTasksListStateImplCopyWith<$Res> {
-  __$$LoadingTasksListStateImplCopyWithImpl(
-    _$LoadingTasksListStateImpl _value,
-    $Res Function(_$LoadingTasksListStateImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _$LoadingTasksListStateImpl extends _LoadingTasksListState {
-  const _$LoadingTasksListStateImpl() : super._();
 
-  @override
-  String toString() {
-    return 'TasksListState.loading()';
-  }
+class InitialTasksListState extends TasksListState {
+  const InitialTasksListState(): super._();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$LoadingTasksListStateImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(
-      List<Task> tasks,
-      Map<DateTime, List<Task>> groupedTasks,
-    )
-    success,
-    required TResult Function(AppException exception) failure,
-  }) {
-    return loading();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult? Function(AppException exception)? failure,
-  }) {
-    return loading?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTasksListState value) initial,
-    required TResult Function(_LoadingTasksListState value) loading,
-    required TResult Function(_SuccessTasksListState value) success,
-    required TResult Function(_FailureTasksListState value) failure,
-  }) {
-    return loading(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTasksListState value)? initial,
-    TResult? Function(_LoadingTasksListState value)? loading,
-    TResult? Function(_SuccessTasksListState value)? success,
-    TResult? Function(_FailureTasksListState value)? failure,
-  }) {
-    return loading?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTasksListState value)? initial,
-    TResult Function(_LoadingTasksListState value)? loading,
-    TResult Function(_SuccessTasksListState value)? success,
-    TResult Function(_FailureTasksListState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (loading != null) {
-      return loading(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InitialTasksListState);
 }
 
-abstract class _LoadingTasksListState extends TasksListState {
-  const factory _LoadingTasksListState() = _$LoadingTasksListStateImpl;
-  const _LoadingTasksListState._() : super._();
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'TasksListState.initial()';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$SuccessTasksListStateImplCopyWith<$Res> {
-  factory _$$SuccessTasksListStateImplCopyWith(
-    _$SuccessTasksListStateImpl value,
-    $Res Function(_$SuccessTasksListStateImpl) then,
-  ) = __$$SuccessTasksListStateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({List<Task> tasks, Map<DateTime, List<Task>> groupedTasks});
+class $InitialTasksListStateCopyWith<$Res> implements $TasksListStateCopyWith<$Res> {
+$InitialTasksListStateCopyWith(InitialTasksListState _, $Res Function(InitialTasksListState) __);
 }
-
 /// @nodoc
-class __$$SuccessTasksListStateImplCopyWithImpl<$Res>
-    extends _$TasksListStateCopyWithImpl<$Res, _$SuccessTasksListStateImpl>
-    implements _$$SuccessTasksListStateImplCopyWith<$Res> {
-  __$$SuccessTasksListStateImplCopyWithImpl(
-    _$SuccessTasksListStateImpl _value,
-    $Res Function(_$SuccessTasksListStateImpl) _then,
-  ) : super(_value, _then);
+class _$InitialTasksListStateCopyWithImpl<$Res>
+    implements $InitialTasksListStateCopyWith<$Res> {
+  _$InitialTasksListStateCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? tasks = null, Object? groupedTasks = null}) {
-    return _then(
-      _$SuccessTasksListStateImpl(
-        tasks: null == tasks
-            ? _value.tasks
-            : tasks // ignore: cast_nullable_to_non_nullable
-                  as List<Task>,
-        groupedTasks: null == groupedTasks
-            ? _value.groupedTasks
-            : groupedTasks // ignore: cast_nullable_to_non_nullable
-                  as Map<DateTime, List<Task>>,
-      ),
-    );
-  }
+  final InitialTasksListState _self;
+  final $Res Function(InitialTasksListState) _then;
+
+
+
+
 }
 
 /// @nodoc
 
-class _$SuccessTasksListStateImpl extends _SuccessTasksListState {
-  const _$SuccessTasksListStateImpl({
-    required this.tasks,
-    required this.groupedTasks,
-  }) : super._();
 
-  @override
-  final List<Task> tasks;
-  @override
-  final Map<DateTime, List<Task>> groupedTasks;
+class LoadingTasksListState extends TasksListState {
+  const LoadingTasksListState(): super._();
+  
 
-  @override
-  String toString() {
-    return 'TasksListState.success(tasks: $tasks, groupedTasks: $groupedTasks)';
-  }
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$SuccessTasksListStateImpl &&
-            const DeepCollectionEquality().equals(other.tasks, tasks) &&
-            const DeepCollectionEquality().equals(
-              other.groupedTasks,
-              groupedTasks,
-            ));
-  }
 
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    const DeepCollectionEquality().hash(tasks),
-    const DeepCollectionEquality().hash(groupedTasks),
-  );
 
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$SuccessTasksListStateImplCopyWith<_$SuccessTasksListStateImpl>
-  get copyWith =>
-      __$$SuccessTasksListStateImplCopyWithImpl<_$SuccessTasksListStateImpl>(
-        this,
-        _$identity,
-      );
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(
-      List<Task> tasks,
-      Map<DateTime, List<Task>> groupedTasks,
-    )
-    success,
-    required TResult Function(AppException exception) failure,
-  }) {
-    return success(tasks, groupedTasks);
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult? Function(AppException exception)? failure,
-  }) {
-    return success?.call(tasks, groupedTasks);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(tasks, groupedTasks);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTasksListState value) initial,
-    required TResult Function(_LoadingTasksListState value) loading,
-    required TResult Function(_SuccessTasksListState value) success,
-    required TResult Function(_FailureTasksListState value) failure,
-  }) {
-    return success(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTasksListState value)? initial,
-    TResult? Function(_LoadingTasksListState value)? loading,
-    TResult? Function(_SuccessTasksListState value)? success,
-    TResult? Function(_FailureTasksListState value)? failure,
-  }) {
-    return success?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTasksListState value)? initial,
-    TResult Function(_LoadingTasksListState value)? loading,
-    TResult Function(_SuccessTasksListState value)? success,
-    TResult Function(_FailureTasksListState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (success != null) {
-      return success(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LoadingTasksListState);
 }
 
-abstract class _SuccessTasksListState extends TasksListState {
-  const factory _SuccessTasksListState({
-    required final List<Task> tasks,
-    required final Map<DateTime, List<Task>> groupedTasks,
-  }) = _$SuccessTasksListStateImpl;
-  const _SuccessTasksListState._() : super._();
 
-  List<Task> get tasks;
-  Map<DateTime, List<Task>> get groupedTasks;
+@override
+int get hashCode => runtimeType.hashCode;
 
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SuccessTasksListStateImplCopyWith<_$SuccessTasksListStateImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+String toString() {
+  return 'TasksListState.loading()';
+}
+
+
 }
 
 /// @nodoc
-abstract class _$$FailureTasksListStateImplCopyWith<$Res> {
-  factory _$$FailureTasksListStateImplCopyWith(
-    _$FailureTasksListStateImpl value,
-    $Res Function(_$FailureTasksListStateImpl) then,
-  ) = __$$FailureTasksListStateImplCopyWithImpl<$Res>;
-  @useResult
-  $Res call({AppException exception});
+class $LoadingTasksListStateCopyWith<$Res> implements $TasksListStateCopyWith<$Res> {
+$LoadingTasksListStateCopyWith(LoadingTasksListState _, $Res Function(LoadingTasksListState) __);
 }
-
 /// @nodoc
-class __$$FailureTasksListStateImplCopyWithImpl<$Res>
-    extends _$TasksListStateCopyWithImpl<$Res, _$FailureTasksListStateImpl>
-    implements _$$FailureTasksListStateImplCopyWith<$Res> {
-  __$$FailureTasksListStateImplCopyWithImpl(
-    _$FailureTasksListStateImpl _value,
-    $Res Function(_$FailureTasksListStateImpl) _then,
-  ) : super(_value, _then);
+class _$LoadingTasksListStateCopyWithImpl<$Res>
+    implements $LoadingTasksListStateCopyWith<$Res> {
+  _$LoadingTasksListStateCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({Object? exception = null}) {
-    return _then(
-      _$FailureTasksListStateImpl(
-        null == exception
-            ? _value.exception
-            : exception // ignore: cast_nullable_to_non_nullable
-                  as AppException,
-      ),
-    );
-  }
+  final LoadingTasksListState _self;
+  final $Res Function(LoadingTasksListState) _then;
+
+
+
+
 }
 
 /// @nodoc
 
-class _$FailureTasksListStateImpl extends _FailureTasksListState {
-  const _$FailureTasksListStateImpl(this.exception) : super._();
 
-  @override
-  final AppException exception;
+class SuccessTasksListState extends TasksListState {
+  const SuccessTasksListState({required this.tasks, required this.groupedTasks}): super._();
+  
 
-  @override
-  String toString() {
-    return 'TasksListState.failure(exception: $exception)';
-  }
+ final  List<Task> tasks;
+ final  Map<DateTime, List<Task>> groupedTasks;
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$FailureTasksListStateImpl &&
-            (identical(other.exception, exception) ||
-                other.exception == exception));
-  }
+/// Create a copy of TasksListState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SuccessTasksListStateCopyWith<SuccessTasksListState> get copyWith => _$SuccessTasksListStateCopyWithImpl<SuccessTasksListState>(this, _$identity);
 
-  @override
-  int get hashCode => Object.hash(runtimeType, exception);
 
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$FailureTasksListStateImplCopyWith<_$FailureTasksListStateImpl>
-  get copyWith =>
-      __$$FailureTasksListStateImplCopyWithImpl<_$FailureTasksListStateImpl>(
-        this,
-        _$identity,
-      );
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() initial,
-    required TResult Function() loading,
-    required TResult Function(
-      List<Task> tasks,
-      Map<DateTime, List<Task>> groupedTasks,
-    )
-    success,
-    required TResult Function(AppException exception) failure,
-  }) {
-    return failure(exception);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? initial,
-    TResult? Function()? loading,
-    TResult? Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult? Function(AppException exception)? failure,
-  }) {
-    return failure?.call(exception);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? initial,
-    TResult Function()? loading,
-    TResult Function(List<Task> tasks, Map<DateTime, List<Task>> groupedTasks)?
-    success,
-    TResult Function(AppException exception)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(exception);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_InitialTasksListState value) initial,
-    required TResult Function(_LoadingTasksListState value) loading,
-    required TResult Function(_SuccessTasksListState value) success,
-    required TResult Function(_FailureTasksListState value) failure,
-  }) {
-    return failure(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_InitialTasksListState value)? initial,
-    TResult? Function(_LoadingTasksListState value)? loading,
-    TResult? Function(_SuccessTasksListState value)? success,
-    TResult? Function(_FailureTasksListState value)? failure,
-  }) {
-    return failure?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_InitialTasksListState value)? initial,
-    TResult Function(_LoadingTasksListState value)? loading,
-    TResult Function(_SuccessTasksListState value)? success,
-    TResult Function(_FailureTasksListState value)? failure,
-    required TResult orElse(),
-  }) {
-    if (failure != null) {
-      return failure(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SuccessTasksListState&&const DeepCollectionEquality().equals(other.tasks, tasks)&&const DeepCollectionEquality().equals(other.groupedTasks, groupedTasks));
 }
 
-abstract class _FailureTasksListState extends TasksListState {
-  const factory _FailureTasksListState(final AppException exception) =
-      _$FailureTasksListStateImpl;
-  const _FailureTasksListState._() : super._();
 
-  AppException get exception;
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(tasks),const DeepCollectionEquality().hash(groupedTasks));
 
-  /// Create a copy of TasksListState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$FailureTasksListStateImplCopyWith<_$FailureTasksListStateImpl>
-  get copyWith => throw _privateConstructorUsedError;
+@override
+String toString() {
+  return 'TasksListState.success(tasks: $tasks, groupedTasks: $groupedTasks)';
 }
+
+
+}
+
+/// @nodoc
+abstract mixin class $SuccessTasksListStateCopyWith<$Res> implements $TasksListStateCopyWith<$Res> {
+  factory $SuccessTasksListStateCopyWith(SuccessTasksListState value, $Res Function(SuccessTasksListState) _then) = _$SuccessTasksListStateCopyWithImpl;
+@useResult
+$Res call({
+ List<Task> tasks, Map<DateTime, List<Task>> groupedTasks
+});
+
+
+
+
+}
+/// @nodoc
+class _$SuccessTasksListStateCopyWithImpl<$Res>
+    implements $SuccessTasksListStateCopyWith<$Res> {
+  _$SuccessTasksListStateCopyWithImpl(this._self, this._then);
+
+  final SuccessTasksListState _self;
+  final $Res Function(SuccessTasksListState) _then;
+
+/// Create a copy of TasksListState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? tasks = null,Object? groupedTasks = null,}) {
+  return _then(SuccessTasksListState(
+tasks: null == tasks ? _self.tasks : tasks // ignore: cast_nullable_to_non_nullable
+as List<Task>,groupedTasks: null == groupedTasks ? _self.groupedTasks : groupedTasks // ignore: cast_nullable_to_non_nullable
+as Map<DateTime, List<Task>>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class FailureTasksListState extends TasksListState {
+  const FailureTasksListState(this.exception): super._();
+  
+
+ final  AppException exception;
+
+/// Create a copy of TasksListState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$FailureTasksListStateCopyWith<FailureTasksListState> get copyWith => _$FailureTasksListStateCopyWithImpl<FailureTasksListState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is FailureTasksListState&&(identical(other.exception, exception) || other.exception == exception));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,exception);
+
+@override
+String toString() {
+  return 'TasksListState.failure(exception: $exception)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $FailureTasksListStateCopyWith<$Res> implements $TasksListStateCopyWith<$Res> {
+  factory $FailureTasksListStateCopyWith(FailureTasksListState value, $Res Function(FailureTasksListState) _then) = _$FailureTasksListStateCopyWithImpl;
+@useResult
+$Res call({
+ AppException exception
+});
+
+
+
+
+}
+/// @nodoc
+class _$FailureTasksListStateCopyWithImpl<$Res>
+    implements $FailureTasksListStateCopyWith<$Res> {
+  _$FailureTasksListStateCopyWithImpl(this._self, this._then);
+
+  final FailureTasksListState _self;
+  final $Res Function(FailureTasksListState) _then;
+
+/// Create a copy of TasksListState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? exception = null,}) {
+  return _then(FailureTasksListState(
+null == exception ? _self.exception : exception // ignore: cast_nullable_to_non_nullable
+as AppException,
+  ));
+}
+
+
+}
+
+// dart format on

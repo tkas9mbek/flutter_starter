@@ -15,11 +15,13 @@
 
 | Need | Freezed gives you |
 |------|-------------------|
-| Sealed unions for events / states | `@freezed` + factory constructors |
+| Sealed unions for events / states | `@freezed sealed class` + factory constructors |
 | `==` and `hashCode` so `BlocBuilder` works correctly | Auto-generated |
 | `copyWith` for compound states | Auto-generated |
-| Exhaustive pattern matching | `.when(...)` |
-| Partial pattern matching | `.maybeMap(...)`, `.mapOrNull(...)` |
+| Exhaustive pattern matching | `sealed` unions + Dart `switch` expressions |
+| Partial pattern matching | `if-case` / `is` checks on the public case classes |
+
+> **Freezed 3 note:** the generated `.when()` / `.map()` / `.maybeMap()` / `.mapOrNull()` families were removed. Union case classes are now public (`SuccessLoginState`, not `_SuccessLoginState`) so UI code pattern-matches with plain Dart.
 
 **Forbidden alternatives:**
 - ❌ Hand-rolled sealed classes — Freezed is the project standard.
@@ -38,15 +40,15 @@ Use when each status carries only its own payload (login flows, one-shot submits
 
 ```dart
 @freezed
-class LoginState with _$LoginState {
+sealed class LoginState with _$LoginState {
   const LoginState._();
 
-  const factory LoginState.initial() = _InitialLoginState;
-  const factory LoginState.loading() = _LoadingLoginState;
-  const factory LoginState.success() = _SuccessLoginState;
-  const factory LoginState.failure(AppException exception) = _FailureLoginState;
+  const factory LoginState.initial() = InitialLoginState;
+  const factory LoginState.loading() = LoadingLoginState;
+  const factory LoginState.success() = SuccessLoginState;
+  const factory LoginState.failure(AppException exception) = FailureLoginState;
 
-  bool get isLoading => this is _LoadingLoginState;
+  bool get isLoading => this is LoadingLoginState;
 }
 ```
 
@@ -56,15 +58,15 @@ Use when data outside the status survives status transitions (calendars, filters
 
 ```dart
 @freezed
-class CalendarStatus with _$CalendarStatus {
-  const factory CalendarStatus.initial() = _InitialCalendarStatus;
-  const factory CalendarStatus.loading() = _LoadingCalendarStatus;
-  const factory CalendarStatus.success({required List<Task> tasks}) = _SuccessCalendarStatus;
-  const factory CalendarStatus.failure({required AppException exception}) = _FailureCalendarStatus;
+sealed class CalendarStatus with _$CalendarStatus {
+  const factory CalendarStatus.initial() = InitialCalendarStatus;
+  const factory CalendarStatus.loading() = LoadingCalendarStatus;
+  const factory CalendarStatus.success({required List<Task> tasks}) = SuccessCalendarStatus;
+  const factory CalendarStatus.failure({required AppException exception}) = FailureCalendarStatus;
 }
 
 @freezed
-class CalendarState with _$CalendarState {
+abstract class CalendarState with _$CalendarState {
   const CalendarState._();
 
   const factory CalendarState({
@@ -77,7 +79,7 @@ class CalendarState with _$CalendarState {
     status: const CalendarStatus.initial(),
   );
 
-  bool get isLoading => status is _LoadingCalendarStatus;
+  bool get isLoading => status is LoadingCalendarStatus;
 }
 ```
 
@@ -114,7 +116,7 @@ Future<void> _onRequested(_RequestedFeatureEvent event, Emitter<FeatureState> em
 | `return emit(...)` for the final emit | Makes control-flow explicit; prevents accidental double emits |
 | Blank line before each `emit(...)` | Visual separation of state transitions |
 | Catch `AppException` only | Other errors should crash; wrap raw IO with `withErrorHandling()` |
-| Variable names: `successState`, `failureState` — never `s` | Readability in `maybeMap` / `mapOrNull` lambdas |
+| Variable names: `successState`, `failureState` — never `s` | Readability in pattern matches and casts |
 
 For nested-status BLoCs, mutate via `copyWith`:
 
@@ -155,7 +157,7 @@ Future<void> _onRefreshed(_RefreshedCalendarEvent event, Emitter<CalendarState> 
 UI:
 
 ```dart
-FailureWidgetLarge(
+FailureWidget.large(
   exception: failureState.exception,
   onRetry: () => context.read<CalendarBloc>().add(const CalendarEvent.refreshed()),
 )
@@ -163,39 +165,45 @@ FailureWidgetLarge(
 
 ### State helper getters
 
-Always add helpers for booleans the UI needs across multiple widgets — never inline `maybeWhen` for a `bool`.
+Always add helpers for booleans the UI needs across multiple widgets — never inline an `is` check for the same `bool` in several places.
 
 ```dart
-bool get isLoading => this is _LoadingFeatureState;
-bool get hasFailure => this is _FailureFeatureState;
+bool get isLoading => this is LoadingFeatureState;
+bool get hasFailure => this is FailureFeatureState;
 ```
 
 ### BlocListener vs BlocBuilder
 
 | Use | When |
 |-----|------|
-| `BlocBuilder` + `maybeMap(orElse: ...)` | Rendering UI per state |
-| `BlocListener` + `mapOrNull(...)` | Side effects (snackbars, navigation, focus) |
+| `BlocBuilder` + exhaustive `switch (state)` | Rendering UI per state |
+| `BlocListener` + `if-case` / `is` checks | Side effects (snackbars, navigation, focus) |
 | `BlocConsumer` | Both, when listener and builder share the same state branches |
 
 ```dart
 BlocListener<LoginBloc, LoginState>(
-  listener: (context, state) => state.mapOrNull(
-    failure: (s) => NotificationSnackBar.showExceptionMessage(context, exception: s.exception),
-    success: (_) => context.router.replace(const HomeRoute()),
-  ),
+  listener: (context, state) {
+    if (state case FailureLoginState(:final exception)) {
+      NotificationSnackBar.showExceptionMessage(context, exception: exception);
+    }
+
+    if (state is SuccessLoginState) {
+      context.router.replace(const HomeRoute());
+    }
+  },
   child: BlocBuilder<LoginBloc, LoginState>(
-    builder: (context, state) => state.maybeMap(
-      orElse: () => const LoginForm(),
-      loading: (_) => const CustomCircularProgressIndicator(),
-    ),
+    builder: (context, state) => switch (state) {
+      LoadingLoginState() => const CustomCircularProgressIndicator.adaptive(),
+      InitialLoginState() || SuccessLoginState() || FailureLoginState() =>
+        const LoginForm(),
+    },
   ),
 )
 ```
 
 **Don't:**
-- ❌ `BlocBuilder` with `mapOrNull` — returns `Widget?` and Flutter will throw.
-- ❌ `BlocListener` with `maybeMap(orElse: () {})` — use `mapOrNull` to express "ignore other states".
+- ❌ `BlocBuilder` with a non-exhaustive match — an exhaustive `switch` lets the compiler prove every state returns a `Widget`.
+- ❌ Legacy Freezed 2 methods (`when`, `maybeMap`, `mapOrNull`, `whenOrNull`) — removed in Freezed 3.
 - ❌ Side effects in `BlocBuilder` (snackbars, navigation, focus changes).
 
 ### Coordinating multiple BLoCs
@@ -205,9 +213,11 @@ BLoCs **never** depend on other BLoCs. Coordinate at the UI layer.
 ```dart
 // AuthBloc emits success → trigger ProfileBloc to load.
 BlocListener<AuthBloc, AuthState>(
-  listener: (context, state) => state.mapOrNull(
-    authenticated: (_) => context.read<ProfileBloc>().add(const ProfileEvent.requested()),
-  ),
+  listener: (context, state) {
+    if (state is AuthenticatedAuthState) {
+      context.read<ProfileBloc>().add(const ProfileEvent.requested());
+    }
+  },
   child: ...,
 )
 ```
@@ -220,7 +230,7 @@ Pagination is Shape B with a list and a "loading more" sub-status. The recommend
 
 ```dart
 @freezed
-class FeedState with _$FeedState {
+abstract class FeedState with _$FeedState {
   const FeedState._();
 
   const factory FeedState({
@@ -279,9 +289,9 @@ fvm flutter pub run build_runner watch --delete-conflicting-outputs
 | Anti-pattern | Replace with |
 |--------------|--------------|
 | Mutable instance variable on the BLoC class | Move to state |
-| `BlocBuilder` returning nullable Widget | `maybeMap` with `orElse` |
-| `BlocListener` with empty `orElse: () {}` | `mapOrNull` |
-| Inline `state.maybeWhen(...)` for a `bool` | State helper getter using `is` |
+| `BlocBuilder` returning nullable Widget | Exhaustive `switch` over the sealed state |
+| Legacy Freezed 2 matching (`when`, `maybeMap`, `mapOrNull`, `whenOrNull`) | Dart `switch` expressions / `if-case` |
+| Repeated inline `state is LoadingFeatureState` checks | State helper getter using `is` |
 | `s` as variable name in pattern matches | `successState`, `failureState`, etc. |
 | Catching bare `Exception` in handlers | `on AppException catch (e)` |
 | Storing UI-localized strings in state | Store `AppException` / domain models; localize in widget |

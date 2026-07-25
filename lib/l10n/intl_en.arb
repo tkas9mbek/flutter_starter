@@ -69,5 +69,40 @@
   "description": "Description",
   "completed": "Completed",
   "notCompleted": "Not Completed",
-  "status": "Status"
+  "status": "Status",
+  "toContinue": "Continue",
+  "otpTitle": "Enter verification code",
+  "otpSubtitle": "We sent the code to: {destination}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "otpResend": "Resend code",
+  "otpResendIn": "Resend code in {seconds} sec",
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpInvalid": "Code is invalid or expired. Try again.",
+  "search": "Search",
+  "searchTasksHint": "Search tasks",
+  "recentSearches": "Recent searches",
+  "clearAll": "Clear all",
+  "noResultsFound": "No results found",
+  "startTypingToSearch": "Start typing to search tasks",
+  "createTask": "Create Task",
+  "taskTitle": "Title",
+  "taskTitleHint": "Enter task title",
+  "taskDescriptionHint": "Enter task description",
+  "date": "Date",
+  "create": "Create",
+  "taskCreatedSuccessfully": "Task created successfully",
+  "confirm": "Confirm",
+  "signInWithCode": "Sign in with code"
 }

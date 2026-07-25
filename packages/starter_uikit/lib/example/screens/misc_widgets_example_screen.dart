@@ -1,11 +1,11 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
-import 'package:starter_uikit/starter_uikit.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
-import 'package:starter_uikit/widgets/misc/network_image_avatar.dart';
+import 'package:starter_uikit/widgets/media/network_image_avatar.dart';
 import 'package:starter_uikit/widgets/misc/thin_horizontal_divider.dart';
+import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
 
 /// **INTERNAL USE ONLY**: This screen is for UIKit testing and demonstration.
 @visibleForTesting
@@ -70,7 +70,7 @@ class MiscWidgetsExampleScreen extends StatelessWidget {
             const SizedBox(height: 12),
             const SizedBox(
               height: 100,
-              child: Center(child: CustomCircularProgressIndicator()),
+              child: CustomCircularProgressIndicator.adaptive(),
             ),
           ],
         ),

@@ -3,16 +3,14 @@ import 'package:starter_uikit/utils/form/option_label_builders.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 import 'package:starter_uikit/widgets/form/app_radio_group.dart';
 
+/// Sentinel type for dropdown options, letting a "no selection" entry be
+/// distinguished from a `null` result caused by dismissing the sheet.
 class NoValue {}
 
+/// A bottom sheet presenting [options] as a radio group for single selection.
+/// Pops with the tapped option as soon as it is chosen, or with `null`
+/// when the sheet is dismissed. Labels come from [optionLabelBuilder].
 class DropdownBottomSheet<T extends Object> extends StatelessWidget {
-  /// A bottom sheet that allows the user to select an option from a list.
-  /// The user can select only one option.
-  /// The selected option is returned when the bottom sheet is closed.
-  /// If the user cancels the selection, the bottom sheet returns `null`.
-  /// * [options] is a list of options to choose from.
-  /// * [optionLabelBuilder] is a function that converts an option to a string.
-  /// By default, it uses the `toString` method.
   const DropdownBottomSheet({
     required this.options,
     this.showCloseButton = true,
@@ -34,6 +32,8 @@ class DropdownBottomSheet<T extends Object> extends StatelessWidget {
   Widget build(BuildContext context) {
     return BottomSheetScreen(
       title: title,
+      showCloseButton: showCloseButton,
+      showResizeIndicator: showResizeIndicator,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

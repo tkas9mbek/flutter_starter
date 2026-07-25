@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -16,30 +16,28 @@ class BlocNoBlocDependency extends DartLintRule {
         'BLoCs should not depend on other BLoCs. Use UI layer for coordination.',
     correctionMessage:
         'Remove BLoC dependency and use MultiBlocListener in UI instead.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {
-      // Check if this class extends Bloc or Cubit
       final extendsClause = node.extendsClause;
 
       if (extendsClause == null) {
         return;
       }
 
-      final superclassName = extendsClause.superclass.name2.lexeme;
+      final superclassName = extendsClause.superclass.name.lexeme;
 
       if (superclassName != 'Bloc' && superclassName != 'Cubit') {
         return;
       }
 
-      // Check constructor parameters and fields for BLoC dependencies
       for (final member in node.members) {
         if (member is FieldDeclaration) {
           _checkField(member, reporter);
@@ -52,7 +50,7 @@ class BlocNoBlocDependency extends DartLintRule {
     });
   }
 
-  void _checkField(FieldDeclaration field, ErrorReporter reporter) {
+  void _checkField(FieldDeclaration field, DiagnosticReporter reporter) {
     final type = field.fields.type;
 
     if (type == null) {
@@ -68,7 +66,7 @@ class BlocNoBlocDependency extends DartLintRule {
 
   void _checkConstructor(
     ConstructorDeclaration constructor,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
   ) {
     for (final param in constructor.parameters.parameters) {
       String? typeName;

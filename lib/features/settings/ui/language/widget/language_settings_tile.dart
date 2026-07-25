@@ -4,9 +4,11 @@ import 'package:starter/features/settings/model/language_option.dart';
 import 'package:starter/features/settings/ui/language/bloc/language_cubit.dart';
 import 'package:starter/features/settings/ui/menu/widget/settings_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
+import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 import 'package:starter_uikit/widgets/dialogs/dropdown_bottom_sheet.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 class LanguageSettingsTile extends StatelessWidget {
   const LanguageSettingsTile({super.key});
@@ -37,10 +39,14 @@ class LanguageSettingsTile extends StatelessWidget {
 
     return BlocBuilder<LanguageCubit, LanguageOption>(
       builder: (context, currentLanguage) => SettingsTile(
-        icon: Icons.language_outlined,
+        icon: UiSvgIcons.globeLanguage,
         title: localizer.language,
         subtitle: currentLanguage.name,
-        trailing: Icon(Icons.chevron_right, color: theme.textSecondary),
+        trailing: SvgIcon(
+          UiSvgIcons.chevronRight,
+          size: 24,
+          color: theme.textSecondary,
+        ),
         onTap: () => _showLanguageSelector(context),
       ),
     );

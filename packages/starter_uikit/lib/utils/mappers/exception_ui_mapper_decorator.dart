@@ -1,10 +1,7 @@
 import 'package:starter_uikit/models/exception_ui_model.dart';
 import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 
-/// Base decorator for wrapping exception mappers.
-///
-/// Allows selective override of specific exception mappings
-/// while delegating others to the wrapped mapper.
+/// Base decorator for exception mappers: override specific mappings, delegate the rest.
 ///
 /// Delegations are auto-generated from @ExceptionUiConfig annotations.
 /// Run: dart run utils/generators/generate_exception_mapper.dart

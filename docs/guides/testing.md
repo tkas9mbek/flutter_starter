@@ -1,651 +1,414 @@
 # Testing Guide
 
-## Test Structure
+> **Philosophy:** test the layers that contain *logic*, and lean on the **no-mock vertical slice** for everything else. The app is **mock-first** — it ships `Mock*DataSource` implementations and makes no network calls today — so tests exercise the **mock path that actually runs**, not a remote/`ApiClient` path that doesn't. Prioritise by coverage-per-unit-of-effort, not by a coverage percentage.
 
-All tests organized under `test/features/{feature}/` directory
+**The single most coverage-dense test is the feature-flow slice (#4).** One run lights up the bloc, the executor, the repository's delegation, and the mock data source's happy path simultaneously — with nothing stubbed. It is therefore the **backbone alongside the bloc test (#2)**, and it is **mandatory per feature**, not reserved for critical ones. Most of the policy below follows from that reweighting: spend less on narrow, mock-heavy tests that mostly cover generated or mock-config code, and more on the slice that proves real wiring.
+
+## 1. The test types
+
+| # | Type | Tests a layer with… | What it covers | What it can't | Effort |
+|---|------|---------------------|----------------|---------------|--------|
+| 1 | **Model serialization** | mapping | real `fromJson`/`toJson` **exercised on the way** through the `Remote*DataSource` test (§5.1); standalone only for enum/`@JsonKey` defaults no DS reaches | vanity round-trips, logic, UI | XS |
+| 2 | **BLoC unit** *(backbone)* | logic | every event→state transition, repo calls, error→failure (with an *immediately-throwing* repo) | retry *timing* (that's #3), rendering, wiring | S |
+| 3 | **Repository executor** *(central)* | logic | error mapping, retry/backoff timing, cache TTL — once, for all repos | per-feature behaviour | S |
+| 4 | **Feature-flow** *(backbone, integration)* | thin glue | `BLoC → Repository → MockDataSource` end-to-end — **happy path + one error branch** | remote/API contracts, pixels | M |
+| 5 | **Widget smoke** *(data-driven)* | rendering | a table of `(widget, state)` pairs builds without throwing; l10n keys exist; nullable branches render | exact pixels, deep behaviour | S |
+| 6 | **DI graph smoke** | wiring | every registered type resolves from GetIt | logic, UI | XS |
+
+**Do NOT write per-repository unit tests.** A concrete repository is a thin facade (`getX() => _executor.execute(_ds.getX)`); a unit test for it only re-asserts that delegation delegates. The delegation is proven *transitively* by the **feature-flow test (#4)** — which is why #4 is now mandatory — and the only real repo-layer logic, the executor decorators, is tested **once, centrally (#3)**. Add a repository unit test back **only** when a repo gains real logic (coordinates multiple data sources, merges/transforms results, owns cache keys).
+
+## 2. What each feature must have (the policy)
+
+Replace "aim for 100%" with a per-feature checklist:
+
+- ✅ **One feature-flow test per feature (#4)** — real BLoC → real Repo → real `Mock*DataSource`, **happy path + one error assertion** (`state.exception != null`). This is the backbone; it closes the delegation blind spot for *every* feature, not just critical ones.
+- ✅ **One BLoC unit test per bloc/cubit (#2)** — success, empty, failure for every event. Drop scattered mocked-repo edge cases that #4 now covers with real wiring.
+- ✅ **A data-driven widget smoke (#5)** covering each reused widget and param-only screen in its key states.
+- ✅ The feature's blocs **appear in the DI graph smoke test (#6)**.
+- ✅ **Model test (#1) only** for non-trivial mapping (enums, `@JsonKey` defaults, non-obvious nested) — skip plain round-trips entirely.
+
+Central, once for the whole app: the **executor tests (#3)** and the **DI graph smoke test (#6)** — both already at the efficient frontier; leave them as-is.
+
+> **Net effect:** test *count* can drop while coverage *rises* — you trade narrow mocked-repo bloc cases and model round-trips for one real vertical slice per feature, and collapse the widget layer into a table.
+
+## 3. Layout
 
 ```
 test/features/{feature}/
-├── assets/          # JSON test data files
-├── model/           # Mock model helpers (use fromJson)
-├── data/            # Repository and DataSource unit tests
-├── bloc/            # BLoC unit tests
-└── integration/     # Full-stack integration tests
+├── assets/        # feature-local JSON fixtures
+├── model/         # *MockModels fixture builder (rawX + built X via fromJson)
+├── data/          # remote-DS unit tests (real fromJson/toJson on the way)
+├── bloc/          # bloc unit tests
+├── widget/        # data-driven widget smoke tests
+└── integration/   # feature-flow tests (mandatory per feature)
+test/core/di_graph_test.dart   # DI smoke (app-wide)
+test/support/
+├── pump.dart      # wrapApp() / wrapWidget() for widget smokes
+├── fixtures.dart  # fixtureMap/List(feature, file)  +  sharedFixtureMap/List(file)
+└── assets/        # shared cross-feature fixtures (cart, address, order, restaurant, promotion)
 ```
 
-## Core Testing Strategy
+**Fixtures have two homes:** a fixture used by **one** feature lives in `test/features/<feature>/assets/` (load via `fixtureMap('<feature>', 'x.json')`); a fixture used by **several** features lives in `test/support/assets/` (load via `sharedFixtureMap('x.json')` — no feature, so there's no cross-feature path coupling). Never hand-roll a `_rawJson`/`File(...).readAsStringSync()` loader — always go through `test/support/fixtures.dart`.
 
-Three types of tests - unit tests for data/repositories, BLoC tests, and integration tests
+## 4. Shared conventions
 
-### 1. Data Layer Unit Tests (Required for Repositories)
+- **Build models from JSON + `fromJson`**, never construct domain models inline in assertions. Keep fixtures in `assets/` and the built models in a per-feature `*MockModels` builder (e.g. `ProfileMockModels.user` / `.rawUser`) so DS, bloc, and integration tests share one source of truth.
+- **Exercise real `fromJson`/`toJson` on the way** through the `Remote*DataSource` test — invoke the captured `fromJson` on a raw fixture, capture the request `body` for `toJson` (§5.1). Don't stub `fromJson: any(named:)` and return a hand-built model.
+- **`registerFallbackValue`** for every custom type used inside an `any(named:)`/`any()` matcher (mocktail), in `setUpAll` — including `HttpMethod` and the `T Function(Map<String,dynamic>)` `fromJson` type when those are matched with `any(named:)`.
+- **No `state.toString()` assertions** — compare states via Freezed's generated equality.
+- **No sleep-based waits.** Use `blocTest`'s `wait:` only for **debounce** windows; **never** to sit through retry backoff — assert the failure state with a repo that throws immediately and let the executor test (#3) own retry timing.
 
-Test Repository and DataSource classes with mocked dependencies
+## 5. Patterns
 
-```
-Repository (Real) → DataSource (Mock)
-DataSource (Real) → ApiClient (Mock)
-```
+### 5.1 Model serialization (#1) — exercise real `fromJson`/`toJson` *on the way*
 
-**Always write unit tests for:**
-- **Repositories**: Test all CRUD methods (create, read, update, delete)
-- **DataSources**: Test API calls and fromJson deserialization
-- **Request Models**: Test toJson serialization
+A standalone `fromJson`/`toJson` round-trip tests the **generator** (already tested upstream) and only inflates line coverage on `*.g.dart`/`*.freezed.dart`. **Don't write round-trips.** Instead, exercise the model's *real* (de)serialization **on the production path** — through the `Remote*DataSource` test that already has to exist, where the data source passes `fromJson:`/`body: model.toJson()` to `ApiClient.requestJson`. One test then covers the DS wiring **and** the serialization, with no duplicated model literals.
 
-### 2. BLoC Unit Tests (Required)
+#### Step 1 — a fixture builder per feature (no duplication)
 
-Test BLoC with mocked Repository
-
-```
-BLoC (Real) → Repository (Mock)
-```
-
-**Test coverage:**
-- Initial state
-- All events with success scenarios
-- All events with empty scenarios
-- All events with failure scenarios
-- State helper methods
-
-### 3. Integration Tests (Recommended)
-
-Test entire stack with only ApiClient mocked
-
-```
-BLoC (Real) → Repository (Real) → DataSource (Real) → ApiClient (Mock)
-```
-
-**Purpose**: Verify full feature flow works end-to-end
-
----
-
-## Test Quality Requirements
-
-All tests must meet these standards
-
-- **Fast**: < 1 second per test class
-- **Independent**: No real network/database/backend
-- **Reliable**: No flaky tests
-- **High Coverage**: Aim for 100% for BLoC, Service, logic classes
-
----
-
-## Required Packages
-
-```yaml
-dev_dependencies:
-  flutter_test:
-    sdk: flutter
-  bloc_test: ^9.1.5
-  mocktail: ^1.0.1
-  http_mock_adapter: ^0.6.1
-```
-
----
-
-## Testing Patterns
-
-### Pattern 1: JSON Assets and Mock Models
-
-ALWAYS use JSON assets instead of creating models in code
-
-#### Step 1: Create JSON Test Data
+Keep the raw JSON and the built models in one place, so every test (DS, bloc, integration) shares a single source of truth:
 
 ```dart
-// test/features/task/assets/task1.json
-{
-  "id": "1",
-  "title": "Buy groceries",
-  "description": "Milk, eggs, bread",
-  "date": "2025-01-15T00:00:00.000Z",
-  "startTime": "2025-01-15T09:00:00.000Z",
-  "endTime": "2025-01-15T10:00:00.000Z",
-  "isCompleted": false
+// test/features/profile/model/profile_mock_models.dart
+class ProfileMockModels {
+  static dynamic _json(String f) =>
+      jsonDecode(File('test/features/profile/assets/$f').readAsStringSync());
+
+  static final Map<String, dynamic> _rawUser = _json('user.json') as Map<String, dynamic>;
+
+  static Map<String, dynamic> get rawUser => Map<String, dynamic>.from(_rawUser);
+  static final User user = User.fromJson(_rawUser);          // built once, via the real fromJson
 }
 ```
 
-#### Step 2: Create Mock Model Helper
+#### Step 2 — run the *real* `fromJson` (don't stub it away)
+
+`requestJson<T>` takes a `fromJson:` callback. Stubbing it with `fromJson: any(named: 'fromJson')` and returning a hand-built model **bypasses deserialization entirely**. Instead, reach into the recorded invocation, pull out the **real** callback the DS passed, and apply it to the raw fixture — so `T.fromJson` actually runs:
 
 ```dart
-// test/features/task/model/task_mock_models.dart
-import 'dart:convert';
-import 'dart:io';
-import 'package:starter/features/task/model/task.dart';
-
-class TaskMockModels {
-  static dynamic getJsonFromFile(String fileName) {
-    const basePath = 'test/features/task/assets';
-    final jsonString = File('$basePath/$fileName').readAsStringSync();
-    return json.decode(jsonString);
-  }
-
-  static Map<String, dynamic> get rawTask1 =>
-      getJsonFromFile('task1.json') as Map<String, dynamic>;
-
-  static Task get task1 => Task.fromJson(rawTask1);
-
-  static List<Task> get allTasks => [task1, task2, task3];
-}
-```
-
-### Pattern 2: Repository Unit Tests
-
-Test all Repository methods with mocked DataSource
-
-```dart
-// test/features/task/data/task_repository_test.dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/task/domain/task_data_source.dart';
-import 'package:starter/features/task/domain/task_repository.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
-
-import '../model/task_mock_models.dart';
-
-class MockTaskDataSource extends Mock implements TaskDataSource {}
-
-void main() {
-  late TaskRepository repository;
-  late MockTaskDataSource mockDataSource;
-
-  setUp(() {
-    mockDataSource = MockTaskDataSource();
-    repository = TaskRepository(
-      const RawRepositoryExecutor().withErrorHandling(),
-      mockDataSource,
-    );
-  });
-
-  group('getTasks', () {
-    test('returns list of tasks from data source', () async {
-      when(() => mockDataSource.getTasks())
-          .thenAnswer((_) async => TaskMockModels.allTasks);
-
-      final result = await repository.getTasks();
-
-      expect(result, equals(TaskMockModels.allTasks));
-      verify(() => mockDataSource.getTasks()).called(1);
-    });
-  });
-
-  group('createTask', () {
-    test('returns created task from data source', () async {
-      final request = TaskCreateRequest(...);
-
-      when(() => mockDataSource.createTask(any()))
-          .thenAnswer((_) async => TaskMockModels.task1);
-
-      final result = await repository.createTask(request);
-
-      expect(result, equals(TaskMockModels.task1));
-      verify(() => mockDataSource.createTask(request)).called(1);
-    });
-  });
-}
-```
-
-### Pattern 3: DataSource Tests with fromJson
-
-Test DataSource API calls AND fromJson deserialization
-
-```dart
-// test/features/task/data/remote_task_data_source_test.dart
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/task/data/remote_task_data_source.dart';
-import 'package:starter/features/task/model/task.dart';
-import 'package:starter_toolkit/data/client/api_client.dart';
-
-import '../model/task_mock_models.dart';
-
-class MockApiClient extends Mock implements ApiClient {}
-
-void main() {
-  late RemoteTaskDataSource dataSource;
-  late MockApiClient mockApiClient;
-
-  setUp(() {
-    mockApiClient = MockApiClient();
-    dataSource = RemoteTaskDataSource(mockApiClient);
-  });
-
-  group('getTasks', () {
-    test('returns list of tasks when API call is successful', () async {
-      // Mock API call to use fromJson with raw JSON
-      when(
-        () => mockApiClient.requestJsonList<Task>(
-          method: any(named: 'method'),
-          path: '/tasks',
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).thenAnswer((invocation) async {
-        final fromJson =
-            invocation.namedArguments[#fromJson] as Task Function(Map<String, dynamic>);
-        return [
-          fromJson(TaskMockModels.rawTask1),
-          fromJson(TaskMockModels.rawTask2),
-        ];
-      });
-
-      final result = await dataSource.getTasks();
-
-      expect(result.length, equals(2));
-      expect(result[0].id, equals(TaskMockModels.task1.id));
-      verify(
-        () => mockApiClient.requestJsonList<Task>(
-          method: any(named: 'method'),
-          path: '/tasks',
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(1);
-    });
-  });
-}
-```
-
-### Pattern 4: BLoC Unit Tests
-
-Test all scenarios for each event: success, empty, failure
-
-```dart
-// test/features/task/bloc/tasks_list_bloc_test.dart
-import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/task/domain/task_repository.dart';
-import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
-import 'package:starter_toolkit/data/exceptions/app_exception.dart';
-
-import '../model/task_mock_models.dart';
-
-class MockTaskRepository extends Mock implements TaskRepository {}
-
-void main() {
-  late TasksListBloc bloc;
-  late MockTaskRepository mockRepository;
-
-  setUp(() {
-    mockRepository = MockTaskRepository();
-    bloc = TasksListBloc(mockRepository);
-  });
-
-  test('initial state is initial()', () {
-    expect(bloc.state, const TasksListState.initial());
-  });
-
-  group('on requested() event', () {
-    blocTest<TasksListBloc, TasksListState>(
-      'emits [loading, success] when getTasks is successful',
-      build: () {
-        when(() => mockRepository.getTasks())
-            .thenAnswer((_) async => TaskMockModels.allTasks);
-        return bloc;
-      },
-      act: (bloc) => bloc.add(const TasksListEvent.requested()),
-      expect: () => [
-        const TasksListState.loading(),
-        TasksListState.success(
-          tasks: TaskMockModels.allTasks,
-          groupedTasks: {...},  // Expected grouped result
-        ),
-      ],
-    );
-
-    blocTest<TasksListBloc, TasksListState>(
-      'emits [loading, success] with empty task list',
-      build: () {
-        when(() => mockRepository.getTasks())
-            .thenAnswer((_) async => []);
-        return bloc;
-      },
-      act: (bloc) => bloc.add(const TasksListEvent.requested()),
-      expect: () => [
-        const TasksListState.loading(),
-        const TasksListState.success(tasks: [], groupedTasks: {}),
-      ],
-    );
-
-    blocTest<TasksListBloc, TasksListState>(
-      'emits [loading, failure] when getTasks fails',
-      build: () {
-        when(() => mockRepository.getTasks())
-            .thenThrow(const NoInternetException());
-        return bloc;
-      },
-      act: (bloc) => bloc.add(const TasksListEvent.requested()),
-      expect: () => [
-        const TasksListState.loading(),
-        const TasksListState.failure(NoInternetException()),
-      ],
-    );
-  });
-
-  group('state helper methods', () {
-    test('isLoading returns true for loading state', () {
-      const state = TasksListState.loading();
-      expect(state.isLoading, true);
-    });
-
-    test('isLoading returns false for non-loading states', () {
-      const initialState = TasksListState.initial();
-      const successState = TasksListState.success(tasks: [], groupedTasks: {});
-
-      expect(initialState.isLoading, false);
-      expect(successState.isLoading, false);
-    });
-  });
-}
-```
-
-### Pattern 5: Integration Tests
-
-Test full stack with only ApiClient/SharedPreferences mocked
-
-```dart
-// test/features/auth/integration/integration_test.dart
-import 'package:bloc_test/bloc_test.dart';
-import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/auth/data/remote_auth_unauthorized_data_source.dart';
-import 'package:starter/features/auth/domain/auth_repository.dart';
-import 'package:starter/features/auth/ui/login/bloc/login_bloc.dart';
-import 'package:starter_toolkit/data/client/api_client.dart';
-import 'package:starter_toolkit/data/client/http_method.dart';
-
-class MockApiClient extends Mock implements ApiClient {}
-
-AuthToken _fakeFromJson(Map<String, dynamic> json) => AuthToken.fromJson(json);
-
-void main() {
-  late LoginBloc loginBloc;
-  late AuthRepository authRepository;
-  late MockApiClient mockApiClient;
-
-  setUpAll(() {
-    // Required for any(named:) matchers
-    registerFallbackValue(HttpMethod.post);
-    registerFallbackValue(_fakeFromJson);
-  });
-
-  setUp(() {
-    mockApiClient = MockApiClient();
-    final unauthorizedDataSource = RemoteAuthUnauthorizedDataSource(mockApiClient);
-    authRepository = AuthRepository(
-      const RawRepositoryExecutor()
-          .withErrorHandling()
-          .withRetry(maxRetries: 3, retryDelay: const Duration(seconds: 2)),
-      unauthorizedDataSource,
-      mockLocalDataSource,
-    );
-    loginBloc = LoginBloc(authRepository);
-  });
-
-  blocTest<LoginBloc, LoginState>(
-    'completes full successful flow: BLoC → Repository → DataSource → ApiClient',
-    build: () {
-      when(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: any(named: 'method'),
-          path: '/auth/login',
-          body: any(named: 'body'),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).thenAnswer((_) async => AuthMockModels.authToken);
-
-      return loginBloc;
-    },
-    act: (bloc) => bloc.add(LoginEvent.submitted(loginForm)),
-    expect: () => [
-      const LoginState.loading(),
-      const LoginState.success(),
-    ],
-  );
-
-  blocTest<LoginBloc, LoginState>(
-    'handles network error through full stack with retry',
-    build: () {
-      when(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: any(named: 'method'),
-          path: '/auth/login',
-          body: any(named: 'body'),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).thenThrow(const NoInternetException());
-
-      return loginBloc;
-    },
-    act: (bloc) => bloc.add(LoginEvent.submitted(loginForm)),
-    wait: const Duration(seconds: 15),  // Allow time for retry attempts
-    expect: () => [
-      const LoginState.loading(),
-      const LoginState.failure(NoInternetException()),
-    ],
-    verify: (_) {
-      // Verify retry logic worked (3 retries = 4 total attempts)
-      verify(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: any(named: 'method'),
-          path: '/auth/login',
-          body: any(named: 'body'),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(greaterThan(1));
-    },
-  );
-}
-```
-
-**Key Points:**
-- Use real Repository and DataSource implementations
-- Only mock ApiClient (or SharedPreferences for local storage)
-- Register fallback values for HttpMethod and function types
-- Add `wait` parameter for tests with retry logic
-- Verify full stack behavior including retry attempts
-
-### Pattern 6: Testing toJson Serialization
-
-Test toJson methods for request models
-
-```dart
-// test/features/auth/data/remote_auth_unauthorized_data_source_test.dart
-group('AuthLoginRequestBody', () {
-  test('toJson serializes correctly', () {
-    final body = AuthLoginRequestBody(
-      phone: '+79991234567',
-      password: 'password123',
-    );
-
-    final json = body.toJson();
-
-    expect(json['phone'], equals('+79991234567'));
-    expect(json['password'], equals('password123'));
-    expect(json.length, equals(2));
-  });
-});
-
-group('TaskCreateRequest', () {
-  test('toJson serializes correctly', () {
-    final date = DateTime(2025, 1, 20);
-    final startTime = DateTime(2025, 1, 20, 9, 0);
-    final endTime = DateTime(2025, 1, 20, 10, 30);
-
-    final request = TaskCreateRequest(
-      title: 'New Task',
-      description: 'Task Description',
-      date: date,
-      startTime: startTime,
-      endTime: endTime,
-    );
-
-    final json = request.toJson();
-
-    expect(json['title'], equals('New Task'));
-    expect(json['description'], equals('Task Description'));
-    expect(json['date'], equals(date.toIso8601String()));
-    expect(json['startTime'], equals(startTime.toIso8601String()));
-    expect(json['endTime'], equals(endTime.toIso8601String()));
-    expect(json.length, equals(5));
-  });
-});
-```
-
----
-
-## Coverage Measurement
-
-Always verify coverage for all classes
-
-### Generate Coverage Report
-
-```bash
-# Run tests with coverage
-fvm flutter test --coverage --concurrency 4
-
-# Generate HTML report
-genhtml coverage/lcov.info -o coverage/html
-
-# View report
-open coverage/html/index.html
-```
-
-### Current Status (May 2026)
-
-**Test Summary:**
-- **145 tests passing** (100% pass rate)
-- **Unit Tests**: 111 tests (BLoC, repositories, data sources)
-- **Integration Tests**: 34 tests (full-stack flows)
-
-**Integration Test Coverage:**
-- ✅ Auth (LoginBloc, RegistrationBloc) - 10 tests
-- ✅ Task (CalendarBloc, TasksListBloc, TaskDeleteBloc) - 8 tests
-- ✅ Profile (UserBloc) - 1 test
-- ✅ Settings (LanguageCubit, ThemeCubit) - 12 tests
-- ✅ Application (EnvironmentCubit) - 9 tests
-
-**All BLoCs/Cubits have comprehensive unit and integration test coverage.**
-
-### Test Distribution by Feature
-
-| Feature | Unit Tests | Integration Tests | Total |
-|---------|------------|-------------------|-------|
-| Task | 19 + 6 (delete) | 2 | 27 |
-| Auth | 22 | 10 | 32 |
-| Profile | 10 | 1 | 11 |
-| Settings | 8 | 12 | 20 |
-| Application | 46 | 9 | 55 |
-| **TOTAL** | **111** | **34** | **145** |
-
----
-
-## Testing Checklist
-
-Use this checklist for every feature
-
-### JSON Assets & Mock Models
-- [ ] JSON files created in `test/features/{feature}/assets/`
-- [ ] Mock model helper created with `getJsonFromFile()`
-- [ ] Both `raw{Model}` and `{model}` getters provided
-
-### Repository Tests
-- [ ] Test file created: `test/features/{feature}/data/{feature}_repository_test.dart`
-- [ ] All CRUD methods tested (create, read, update, delete)
-- [ ] Verification of data source calls
-- [ ] Coverage verified (100%)
-
-### DataSource Tests
-- [ ] Test file created: `test/features/{feature}/data/remote_{feature}_data_source_test.dart`
-- [ ] All API methods tested
-- [ ] fromJson deserialization exercised
-- [ ] toJson serialization tested for request models
-- [ ] Coverage verified (80%+)
-
-### BLoC Tests
-- [ ] Test file created: `test/features/{feature}/bloc/{bloc}_test.dart`
-- [ ] Initial state tested
-- [ ] All events tested with success scenario
-- [ ] All events tested with empty scenario
-- [ ] All events tested with failure scenario
-- [ ] All state helper methods tested
-- [ ] Coverage verified (100%)
-
-### Integration Tests (Optional)
-- [ ] Test file created: `test/features/{feature}/integration/integration_test.dart`
-- [ ] Full stack tested (BLoC → Repository → DataSource → ApiClient)
-- [ ] End-to-end scenarios validated
-
-### Test Quality
-- [ ] All tests pass consistently
-- [ ] No real network/database dependencies
-- [ ] No flaky tests
-- [ ] Tests run quickly (< 5 seconds total per feature)
-
----
-
-## Common Testing Patterns
-
-### Testing with Fallback Values
-
-```dart
-// For complex objects in any() matcher
-class FakeUserCreateRequest extends Fake implements UserCreateRequest {}
-
-void main() {
-  setUpAll(() {
-    registerFallbackValue(FakeUserCreateRequest());
-  });
-
-  test('example', () {
-    when(() => mock.createUser(any())).thenAnswer((_) async => mockUser);
-  });
-}
-```
-
-### Testing State Predicates
-
-```dart
-// When you need to check state properties, not exact equality
-expect: () => [
-  const UserListState.loading(),
-  predicate<UserListState>(
-    (state) => state.maybeWhen(
-      success: (users) => users.length == 2,
-      orElse: () => false,
+// A reusable answer: applies the real fromJson the DS passed to a raw fixture.
+Future<User> Function(Invocation) deserialize(Map<String, dynamic> raw) =>
+    (invocation) async {
+      final fromJson =
+          invocation.namedArguments[#fromJson] as User Function(Map<String, dynamic>);
+
+      return fromJson(raw);
+    };
+
+test('GETs /profile and deserializes via the real User.fromJson', () async {
+  when(
+    () => mockApiClient.requestJson<User>(
+      method: HttpMethod.get,
+      path: '/profile',
+      fromJson: any(named: 'fromJson'),
     ),
-  ),
-],
+  ).thenAnswer(deserialize(ProfileMockModels.rawUser));      // ← real fromJson runs here
+
+  final result = await dataSource.getUserProfile();
+
+  expect(result, ProfileMockModels.user);                    // equal to the fixture-built model
+});
 ```
 
-### Testing Error Types
+The exact methods: `invocation.namedArguments[#fromJson]` (the `#fromJson` symbol keys the named arg) → cast to `T Function(Map<String, dynamic>)` → call it on the raw map.
+
+#### Step 3 — run the *real* `toJson` (capture the request body)
+
+For write endpoints the DS sends `body: model.toJson()`. Capture it with `captureAny(named: 'body')` and assert **concrete serialized values** (not just equality to `model.toJson()`, which is circular) — that proves `toJson` produced the right wire shape, e.g. a `DateTime` rendered as ISO:
 
 ```dart
-blocTest<UserListBloc, UserListState>(
-  'emits failure with NetworkException',
+test('PUTs the User serialized via the real toJson, then deserializes the reply', () async {
+  when(
+    () => mockApiClient.requestJson<User>(
+      method: HttpMethod.put,
+      path: '/profile',
+      body: any(named: 'body'),
+      fromJson: any(named: 'fromJson'),
+    ),
+  ).thenAnswer(deserialize(ProfileMockModels.rawUpdatedUser));
+
+  final result = await dataSource.updateUserProfile(ProfileMockModels.user);
+
+  expect(result, ProfileMockModels.updatedUser);
+
+  final body = verify(
+    () => mockApiClient.requestJson<User>(
+      method: HttpMethod.put,
+      path: '/profile',
+      body: captureAny(named: 'body'),                       // ← capture what toJson produced
+      fromJson: any(named: 'fromJson'),
+    ),
+  ).captured.single as Map<String, dynamic>;
+
+  expect(body['birthday'], '1990-01-01T00:00:00.000');       // real toJson: DateTime → ISO
+  expect(body, ProfileMockModels.user.toJson());             // DS forwards the serialized model
+});
+```
+
+#### Fallbacks & matchers
+
+- If the `when` matcher uses `any(named: 'method')` / `any(named: 'fromJson')`, register fallbacks **once** in `setUpAll`: `registerFallbackValue(HttpMethod.get);` and a fallback for the function type (`registerFallbackValue(User.fromJson);`). If instead you match the **literal** `method: HttpMethod.get` / `path: '/profile'` (preferred — it also asserts the wiring), no `HttpMethod` fallback is needed.
+- **Void endpoints** (`requestVoid`, e.g. `logout`) carry no model — assert the wiring only:
+  ```dart
+  test('logout POSTs /auth/logout', () async {
+    when(() => mockApiClient.requestVoid(method: HttpMethod.post, path: '/auth/logout'))
+        .thenAnswer((_) async {});
+    await dataSource.logout();
+    verify(() => mockApiClient.requestVoid(method: HttpMethod.post, path: '/auth/logout')).called(1);
+  });
+  ```
+
+#### The only standalone #1 test left
+
+Write a separate model test **only** when a non-obvious mapping is reached by *no* DS test — an enum fallback or `@JsonKey(defaultValue:)`:
+
+```dart
+test('OrderStatus falls back to pending on an unknown wire string', () {
+  expect(Order.fromJson(rawJson('order_unknown_status.json')).status, OrderStatus.pending);
+});
+```
+
+### 5.2 BLoC unit (#2) — the backbone
+
+Mock the repository, drive every event, assert the state sequence. Cover **success, empty, failure** per event.
+
+```dart
+class MockOrderRepository extends Mock implements OrderRepository {}
+
+blocTest<OrderDetailsBloc, OrderDetailsState>(
+  'emits [loading, success] on requested',
   build: () {
-    when(() => helper.service.getUsers())
-        .thenThrow(NetworkException('No connection'));
-    return bloc;
+    when(() => repository.getOrder(any())).thenAnswer((_) async => order);
+    return OrderDetailsBloc(repository);
   },
-  act: (bloc) => bloc.add(const UserListEvent.requested()),
+  act: (bloc) => bloc.add(const OrderDetailsEvent.requested('#1')),
   expect: () => [
-    const UserListState.loading(),
-    predicate<UserListState>(
-      (state) => state.maybeWhen(
-        failure: (exception) => exception is NetworkException,
-        orElse: () => false,
-      ),
-    ),
+    const OrderDetailsState.loading(),
+    OrderDetailsState.success(order),
   ],
 );
 ```
 
+- **Nested-status blocs** (e.g. `FoodHomeBloc`, `SearchBloc`): drive the bloc and assert against the computed getter (`state.visibleRestaurants`) rather than the raw status — that's the contract the UI consumes.
+- **Failure path:** make the mocked repo **throw immediately** and assert the bloc reaches its failure state — `expect` it directly, no `wait:`. Retry *behaviour* (that the executor retries N times with backoff) is **not** the bloc's concern; it is proven once in the executor test (#3). Never pay an `8s` `wait:` to sit through real backoff in a bloc test.
+
+
+### 5.3 Repository executor (#3) — central, in `starter_toolkit` *(leave as-is)*
+
+The only real repo-layer logic, shared by every repository, and the **single owner of retry/backoff timing**. Test it **once**. This tier is already at the efficient frontier — don't expand or duplicate it per feature.
+
+```dart
+test('withErrorHandling passes an AppException through, maps DioException', () {
+  final executor = const RawRepositoryExecutor().withErrorHandling();
+  expect(
+    () => executor.execute<void>(() async => throw const NoInternetException()),
+    throwsA(isA<NoInternetException>()),
+  );
+  // a DioException is mapped by status code via AppException.fromDioResponse
+});
+
+test('withRetry retries a retryable failure up to maxRetries attempts', () async {
+  var calls = 0;
+  final executor = const RawRepositoryExecutor()
+      .withErrorHandling()
+      .withRetry(maxRetries: 3, retryDelay: const Duration(milliseconds: 1));
+  await expectLater(
+    executor.execute<void>(() async { calls++; throw const NoInternetException(); }),
+    throwsA(isA<NoInternetException>()),
+  );
+  expect(calls, 3); // maxRetries total attempts; non-retryable → 1
+});
+```
+
+### 5.4 Feature-flow / integration (#4) — the backbone, mandatory per feature
+
+Wire the **real** bloc, **real** repository, and the **real `Mock*DataSource`** — stub nothing else. This is the most coverage-dense test in the suite: one run proves the whole shipping path (delegation included) and exercises real behaviour, which is why it **replaces** per-repository unit tests and scattered mocked-repo bloc edge cases.
+
+**Assert two paths, not one** — the happy path *and* one error branch. The error assertion roughly doubles the slice's vertical coverage for one extra `expect`: it exercises the executor's error *mapping*, the repo's error delegation, and the bloc's failure state together. Highest marginal ROI in the suite.
+
+```dart
+// test/features/cart/integration/integration_test.dart
+void main() {
+  CheckoutBloc buildBloc(MockOrderDataSource orderDs) {
+    final orderRepo = OrderRepository(
+      const RawRepositoryExecutor().withErrorHandling(),
+      orderDs,                               // ← the data source that ships
+    );
+    final cartRepo = CartRepository(
+      const RawRepositoryExecutor().withErrorHandling(),
+      MockCartDataSource(),
+    );
+    // …address + references repos the same way
+    return CheckoutBloc(cartRepo, addressRepo, orderRepo, referencesRepo);
+  }
+
+  test('place-order flow reaches a placed order', () async {
+    final bloc = buildBloc(MockOrderDataSource());
+    bloc.add(const CheckoutEvent.requested());
+    await bloc.stream.firstWhere((s) => s.cart != null);
+    bloc.add(const CheckoutEvent.submitted());
+    await bloc.stream.firstWhere((s) => s.order != null || s.exception != null);
+    expect(bloc.state.order, isNotNull);
+  });
+
+  test('place-order flow surfaces a failure end-to-end', () async {
+    final bloc = buildBloc(MockOrderDataSource.failing()); // DS configured to throw on placeOrder
+    bloc.add(const CheckoutEvent.requested());
+    await bloc.stream.firstWhere((s) => s.cart != null);
+    bloc.add(const CheckoutEvent.submitted());
+    await bloc.stream.firstWhere((s) => s.order != null || s.exception != null);
+    expect(bloc.state.exception, isNotNull); // ← executor mapping + repo + bloc failure, one expect
+  });
+}
+```
+
+> **Remote contract path:** when a remote data source exists or is being added, keep its `*_remote_test.dart`
+> separate from mock-first flow tests. Wire `Remote*DataSource` + a mocked `ApiClient` to lock method/path/body
+> shape, then run the captured `fromJson`/`toJson` on fixtures.
+
+### 5.5 Widget smoke (#5) — data-driven
+
+One helper, then a **table loop** over `(widget, state)` pairs — pump each, assert it builds. This collapses what used to be S×N hand-written `testWidgets` into roughly one `S` per widget with identical crash / l10n / nullable-branch coverage. This is the **only** layer that catches a `build()` crash, a **deleted l10n key**, a missing provider, or a broken nullable branch.
+
+```dart
+// test/support/pump.dart
+Widget wrapApp(Widget child) => MaterialApp(
+  locale: const Locale('ru'),
+  localizationsDelegates: const [
+    Localizer.delegate, UikitLocalizer.delegate, ToolkitLocalizer.delegate,
+    GlobalMaterialLocalizations.delegate, GlobalWidgetsLocalizations.delegate,
+    GlobalCupertinoLocalizations.delegate, // so `ru` is supported by all delegates
+  ],
+  supportedLocales: Localizer.delegate.supportedLocales,
+  home: ThemeProvider(child: child),
+);
+Widget wrapWidget(Widget child) => wrapApp(Scaffold(body: child)); // leaf widgets
+```
+
+```dart
+// One loop replaces N near-identical testWidgets blocks.
+final smokeCases = <String, Widget Function()>{
+  'RestaurantCard': () => RestaurantCard(restaurant: masa),
+  'OrderSummaryCard / no promo': () => OrderSummaryCard(cart: cartNoPromo),
+  'OrderSummaryCard / with promo': () => OrderSummaryCard(cart: cartWithPromo),
+  'PromoBanner / null percentOff': () => PromoBanner(promo: promoNoPercent),
+  'OrderPlacedScreen': () => const OrderPlacedScreen(),
+  'PaymentFailedScreen': () => const PaymentFailedScreen(),
+};
+
+smokeCases.forEach((name, build) {
+  testWidgets('$name builds without throwing', (tester) async {
+    await tester.pumpWidget(wrapApp(build()));
+    await tester.pumpAndSettle();              // let localization load
+    expect(tester.takeException(), isNull);    // ← the assertion that matters
+  });
+});
+
+// Keep a bespoke finder ONLY where the *content* (not just absence of a crash) is the contract.
+testWidgets('OrderSummaryCard hides promo row when discount is 0', (tester) async {
+  await tester.pumpWidget(wrapApp(OrderSummaryCard(cart: cartNoPromo)));
+  await tester.pumpAndSettle();
+  expect(find.text('Промокод'), findsNothing);
+});
+```
+
+**Cover these reused widgets and param-only screens** (each guards several screens). Add each as a row in the `smokeCases` table; reserve a separate bespoke-finder test only for the "branch to cover" cases where content matters:
+
+| Widget | Guards | Branch to cover (bespoke finder only if content matters) |
+|--------|--------|-----------------------------------------------------------|
+| `RestaurantCard` | home, food, search | rating/cuisine format |
+| `OrderSummaryCard` | card + QR payment | promo shown only if `> 0` *(content)* |
+| `PromoBanner` | home + food | `percentOff == null` |
+| `CourierCard` | tracking + order details | — |
+| `ProfileMenuTile` | profile menu | `danger` toggles chevron |
+| `RatingInput` | review | value `0` vs `5` |
+| `CuisineCarousel` | food home | selected vs none |
+| Reviews/Info/Promotions tabs | restaurant detail | empty list → empty state |
+| `OrderPlacedScreen` / `PaymentFailedScreen` / `OrderCancelledScreen` | result screens (no bloc) | renders |
+
+> Don't pump **bloc-driven full screens** (they create their bloc via `getIt`); that needs DI setup for little gain. Their child widgets are covered by the table above, their logic by the bloc test. If you must, register a stub bloc in `getIt` for that test.
+
+### 5.6 DI graph smoke (#6) — one test, biggest safety/line *(leave as-is)*
+
+Configure every module, resolve every feature type. Catches a missing/broken registration (the `factory` vs `lazySingleton` bug class) instantly instead of at runtime. Already efficient — don't touch it.
+
+```dart
+// test/core/di_graph_test.dart
+void main() {
+  setUp(() async {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    SharedPreferences.setMockInitialValues({});        // platform channels…
+    // …mock secure storage / path_provider as the core modules require
+    await getIt.reset();
+    getIt.registerSingleton<AppEnvironment>(AppEnvironment.dev()); // useMock: true
+    await AppConfigurator.configure();
+  });
+
+  test('every feature bloc resolves', () {
+    expect(getIt<CheckoutBloc>(), isA<CheckoutBloc>());
+    expect(getIt<FoodHomeBloc>(), isA<FoodHomeBloc>());
+    expect(getIt<SearchBloc>(), isA<SearchBloc>());
+    expect(getIt<OrderDetailsBloc>(), isA<OrderDetailsBloc>());
+    expect(getIt<CourierChatBloc>(), isA<CourierChatBloc>());
+    expect(getIt<OrderReviewBloc>(), isA<OrderReviewBloc>());
+    expect(getIt<EditProfileBloc>(), isA<EditProfileBloc>());
+    expect(getIt<AddressOnboardingBloc>(), isA<AddressOnboardingBloc>());
+    expect(getIt<RestaurantDetailBloc>(), isA<RestaurantDetailBloc>());
+    // …one line per feature bloc
+  });
+}
+```
+
+> Core/Data modules touch platform plugins (shared_preferences, secure storage). Stub those channels in `setUp` (as above). The goal is only "the graph resolves," so the stubs can be empty.
+
 ---
 
-## Related Documentation
+## 6. Running & coverage
 
-- [Architecture](./architecture.md) - Layer structure
-- [BLoC & Freezed](./bloc) - BLoC patterns
-- [Code Formatting](./code_formatting.md) - Style guide
+```bash
+fvm flutter test --concurrency 4              # all tests
+fvm flutter test --coverage --concurrency 4   # with coverage
+fvm flutter test test/features/cart           # one feature
+```
+
+**Use a coverage *filter*, not a coverage *target*.** Exclude generated and wiring-only files so the number means **logic coverage** — otherwise you're tempted to write a vanity test to fill a generated line, and the "map of gaps" is unreadable. Two equivalent ways:
+
+- Annotate generated/entry files with `// coverage:ignore-file` (top of `main.dart`, DI registration files), or
+- Filter the lcov report before reading it:
+
+```bash
+fvm flutter test --coverage --concurrency 4
+lcov --remove coverage/lcov.info \
+  '*.g.dart' '*.freezed.dart' '*/main.dart' '*/configs/*_module.dart' '*/di/*' \
+  -o coverage/lcov.cleaned.info
+```
+
+Or just run **`utils/coverage.sh`** — it runs the suite, applies the filter, prints a per-layer breakdown (BLoC / data / domain / executor vs UI), and writes `coverage/html/index.html`.
+
+Coverage is a *map of gaps*, not a target — read the **filtered** report to find untested *logic* branches; don't chase a number. As a reference point, the logic layers (BLoC ≈ 90%, domain ≈ 70%) sit well above the all-in filtered number, which the large untested UI-screen surface drags down — that's expected, since full bloc-driven screens aren't pumped (§5.5).
+
+## 7. Anti-patterns
+
+| Don't | Do |
+|-------|----|
+| Round-trip every model through JSON | Exercise `fromJson`/`toJson` **on the way** through the remote-DS test (§5.1); standalone only for enum/`@JsonKey` defaults (#1) |
+| Stub `fromJson: any(named:)` and return a hand-built model | Invoke the **captured** `fromJson` (`invocation.namedArguments[#fromJson]`) on a raw fixture; build the expected model from the same fixture |
+| Assert `body == model.toJson()` and call it a toJson test | `captureAny(named: 'body')` then assert **concrete serialized values** (e.g. `body['birthday'] == '…ISO…'`) |
+| Add a standalone test for a mock's fault-injection trigger | Don't unit-test the mock DS at all — cover its happy + error path via the feature-flow test (#4) |
+| Pay `wait: 8s` to sit through retry backoff in a bloc test | Assert failure with an **immediately-throwing** repo; retry timing is the executor's (#3) |
+| Unit-test a thin repository (`verify(ds.getX).called(1)`) | Cover it via the mandatory feature-flow test (#4) |
+| Ship a feature-flow test with only a happy path | Add **one error assertion** (`state.exception != null`) (#4) |
+| Hand-write N near-identical widget smokes | Loop a `(widget, state)` table; bespoke finders only where content matters (#5) |
+| Integration-test the remote `ApiClient` path | Integration-test the **mock** path that ships (#4) |
+| Re-test error/retry per repository | Test the executor once, centrally (#3) |
+| Chase 100% coverage everywhere | Follow the per-feature policy (§2); read the **filtered** coverage report |
+| `sleep()` / real delays | `blocTest` `wait:` (debounce only) or `fakeAsync` |
+| Construct domain models inline in tests | Build from JSON fixtures via `fromJson` |
 
 ---
 
-**Last Updated**: November 20, 2025
+## See also
+
+- [../ai-context/testing.md](../ai-context/testing.md) — condensed cheat-sheet.
+- [bloc.md](../rules/bloc.md) — bloc state shapes the bloc tests assert against.
+- [exception_handling.md](./exception_handling.md) — what the executor tests (#3) verify.

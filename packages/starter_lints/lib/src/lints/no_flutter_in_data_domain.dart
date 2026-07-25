@@ -1,4 +1,4 @@
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -17,7 +17,7 @@ class NoFlutterInDataDomain extends DartLintRule {
     correctionMessage:
         'Move Flutter-dependent code to the presentation layer, or use '
         'package:meta / dart:developer instead.',
-    errorSeverity: ErrorSeverity.ERROR,
+    errorSeverity: DiagnosticSeverity.ERROR,
   );
 
   static const _forbiddenImportPrefixes = <String>[
@@ -28,7 +28,7 @@ class NoFlutterInDataDomain extends DartLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     final path = resolver.path;

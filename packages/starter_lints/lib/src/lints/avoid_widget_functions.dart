@@ -1,4 +1,4 @@
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -14,13 +14,13 @@ class AvoidWidgetFunctions extends DartLintRule {
     problemMessage:
         'Avoid functions that return Widget. Extract to a widget class instead.',
     correctionMessage: 'Create a StatelessWidget or StatefulWidget class.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addMethodDeclaration((node) {
@@ -30,7 +30,6 @@ class AvoidWidgetFunctions extends DartLintRule {
         return;
       }
 
-      // Check if return type is Widget or extends Widget
       final typeName = returnType.getDisplayString();
 
       if (_isWidgetType(typeName) && node.name.lexeme.startsWith('_build')) {

@@ -5,7 +5,7 @@ part 'task_create_request.freezed.dart';
 part 'task_create_request.g.dart';
 
 @Freezed(fromJson: true, toJson: true)
-class TaskCreateRequest with _$TaskCreateRequest {
+abstract class TaskCreateRequest with _$TaskCreateRequest {
   const factory TaskCreateRequest({
     required String title,
     required String description,

@@ -308,12 +308,12 @@ Future<void> _onRequested(event, emit) async {
 // 3-5. Repository → DataSource → ApiClient → API
 // (Behind the scenes using dependency inversion)
 
-// 6. Widget rebuilds
+// 6. Widget rebuilds — pattern-match on the sealed state
 BlocBuilder<UserListBloc, UserListState>(
-  builder: (context, state) => state.when(
-    loading: () => CircularProgressIndicator(),
-    success: (users) => UserList(users: users),
-  ),
+  builder: (context, state) => switch (state) {
+    SuccessUserListState(:final users) => UserList(users: users),
+    _ => CircularProgressIndicator(),
+  },
 )
 ```
 
@@ -487,16 +487,15 @@ Future<void> _onRequested(event, emit) async {
 ### Usage in UI
 
 ```dart
-// Map to UI model in widget
-state.when(
-  failure: (exception) {
-    final uiModel = ExceptionUiMapper(context).map(exception);
-    return FailureWidgetLarge(
-      uiModel: uiModel,
-      onRetry: _retry,
-    );
-  },
-)
+// Map to UI model in widget via if-case on the sealed state
+if (state case FailureMyState(:final exception)) {
+  final uiModel = ExceptionUiMapper(context).map(exception);
+
+  return FailureWidget.large(
+    uiModel: uiModel,
+    onRetry: _retry,
+  );
+}
 ```
 
 **Benefits:**
@@ -505,7 +504,7 @@ state.when(
 - Extensible via decorator pattern
 - Code generation reduces boilerplate
 
-See [Exception Handling & Repository Executors Guide](./exception_handling.md) for step-by-step instructions on adding new exceptions.
+See [Exception Handling Guide](./exception_handling.md) for step-by-step instructions on adding new exceptions.
 
 ---
 
@@ -513,20 +512,22 @@ See [Exception Handling & Repository Executors Guide](./exception_handling.md) f
 
 Use decorator pattern for cross-cutting concerns.
 
-Repository executors add functionality through composition:
+Repository executors add functionality through composition, built in the DI
+module closure from a single local `base` and injected via constructor params:
 
 ```dart
-final executor = RawRepositoryExecutor()
-  .withErrorHandling()   // Converts exceptions to AppException
-  .withRetry()           // Adds retry logic with backoff
-  .withCaching();        // Adds time-based caching
+final base = const RawRepositoryExecutor()
+  .withErrorHandling()   // Converts exceptions to AppException (innermost)
+  .withRetry();          // Adds retry logic with backoff
 ```
 
 **Built-in executors:**
 - `RawRepositoryExecutor` - Base executor
 - `ErrorHandlingExecutor` - Normalizes errors to AppException
 - `RetryExecutor` - Automatic retry with exponential backoff
-- `CachingExecutor` - Time-based caching with cleanup
+
+Caching is the `RepositoryCache` collaborator (`InMemoryRepositoryCache`), a
+sibling dependency rather than a decorator.
 
 **Usage in Repository:**
 ```dart
@@ -540,7 +541,7 @@ class UserRepository {
 }
 ```
 
-See [Exception Handling & Repository Executors Guide](./exception_handling.md) for step-by-step instructions on creating custom executors.
+See [Repository Executors Guide](./repository_executor.md) for step-by-step instructions on creating custom executors.
 
 ---
 
@@ -568,10 +569,6 @@ See [Testing Guide](./testing.md) for detailed examples.
 
 - [Project Structure](./structure.md) - File organization
 - [Testing Guide](./testing.md) - Testing strategies
-- [BLoC & Freezed](./bloc) - BLoC patterns
-- [Code Formatting](./code_formatting.md) - Code style guide
-- [Naming Conventions](./naming.md) - Naming standards
-
----
-
-**Last Updated**: November 18, 2025
+- [BLoC & Freezed](./freezed_bloc.md) - BLoC patterns
+- [Code Formatting](../rules/code_formatting.md) - Code style guide
+- [Naming Conventions](../rules/naming.md) - Naming standards

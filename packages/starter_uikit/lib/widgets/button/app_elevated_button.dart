@@ -87,8 +87,8 @@ class AppElevatedButton extends StatelessWidget {
     final textStyles = ThemeProvider.of(context).textStyles;
 
     return AppElevatedButton(
-      height: 48,
-      textStyle: textStyles.regularBody16,
+      height: 40,
+      textStyle: textStyles.regularBody14,
       text: text,
       onPressed: onPressed,
       icon: icon,

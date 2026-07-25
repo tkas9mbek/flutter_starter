@@ -8,7 +8,8 @@ import 'package:starter/features/auth/model/auth_login_request_body.dart';
 import 'package:starter/features/auth/model/auth_register_request_body.dart';
 import 'package:starter/features/auth/model/auth_status.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
 class MockAuthAuthorizedDataSource extends Mock
     implements AuthAuthorizedDataSource {}
@@ -55,7 +56,7 @@ void main() {
     () => test('delegates to local data source', () async {
       when(
         () => mockLocalDataSource.clearIfNotLaunchedBefore(),
-      ).thenAnswer((_) async => {});
+      ).thenAnswer((_) async => true);
 
       await repository.clearIfNotLaunchedBefore();
 

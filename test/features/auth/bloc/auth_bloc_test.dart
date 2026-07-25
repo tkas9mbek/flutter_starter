@@ -6,7 +6,9 @@ import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
 import '../model/auth_mock_models.dart';
 
@@ -54,7 +56,7 @@ void main() {
       build: () {
         when(
           () => localDataSource.clearIfNotLaunchedBefore(),
-        ).thenAnswer((_) async {});
+        ).thenAnswer((_) async => true);
         when(
           () => localDataSource.getToken(),
         ).thenAnswer((_) async => AuthMockModels.authToken);
@@ -74,7 +76,7 @@ void main() {
       build: () {
         when(
           () => localDataSource.clearIfNotLaunchedBefore(),
-        ).thenAnswer((_) async {});
+        ).thenAnswer((_) async => true);
         when(() => localDataSource.getToken()).thenAnswer((_) async => null);
 
         return authBloc;
@@ -88,12 +90,14 @@ void main() {
     );
 
     blocTest<AuthBloc, AuthState>(
-      'emits [loading, unauthenticated] when hasToken throws an exception.',
+      'emits [unauthenticated] when the token check throws an AppException.',
       build: () {
         when(
           () => localDataSource.clearIfNotLaunchedBefore(),
-        ).thenAnswer((_) async {});
-        when(() => localDataSource.getToken()).thenThrow(Exception('Error'));
+        ).thenAnswer((_) async => true);
+        when(
+          () => localDataSource.getToken(),
+        ).thenThrow(const DevelopmentException());
 
         return authBloc;
       },
@@ -103,6 +107,27 @@ void main() {
         verify(() => localDataSource.clearIfNotLaunchedBefore()).called(1);
         verify(() => localDataSource.getToken()).called(1);
       },
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'propagates raw (non-AppException) errors instead of swallowing them.',
+      build: () {
+        when(
+          () => localDataSource.clearIfNotLaunchedBefore(),
+        ).thenAnswer((_) async => true);
+        when(() => localDataSource.getToken()).thenThrow(Exception('Error'));
+
+        // Constructed here (not reused from the outer setUp) so bloc_test's
+        // observer swap is in place before AuthBloc captures Bloc.observer —
+        // otherwise `errors:` below never sees anything (the bloc's observer
+        // reference would be frozen to whatever was active before this
+        // build() ran).
+        return AuthBloc(authRepository);
+      },
+      act: (bloc) => bloc.add(event),
+      wait: const Duration(milliseconds: 120),
+      expect: () => <AuthState>[],
+      errors: () => [isA<Exception>()],
     );
   });
 

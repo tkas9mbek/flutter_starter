@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/external/customizable_cupertino_date_picker.dart';
 
+/// A Cupertino-style day/month/year wheel picker styled with the app theme:
+/// magnified selected row, bordered selection overlay, and themed text styles.
+/// Reports every change through [onSelectedItemChanged].
 class AppCupertinoDatePicker extends StatelessWidget {
   const AppCupertinoDatePicker({
     required this.onSelectedItemChanged,

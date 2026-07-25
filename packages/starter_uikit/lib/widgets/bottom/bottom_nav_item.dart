@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
-import 'package:starter_uikit/widgets/misc/safe_vertical_box.dart';
+import 'package:starter_uikit/widgets/size/safe_vertical_box.dart';
 
+/// A single bottom navigation destination showing an SVG icon above its
+/// [title], tinted with the theme primary color while [isActive].
 class BottomNavItem extends StatelessWidget {
   const BottomNavItem({
     required this.iconPath,

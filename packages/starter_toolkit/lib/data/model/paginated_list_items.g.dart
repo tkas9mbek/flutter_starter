@@ -6,18 +6,18 @@ part of 'paginated_list_items.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$PaginatedListItemsImpl<T> _$$PaginatedListItemsImplFromJson<T>(
+_PaginatedListItems<T> _$PaginatedListItemsFromJson<T>(
   Map<String, dynamic> json,
   T Function(Object? json) fromJsonT,
-) => _$PaginatedListItemsImpl<T>(
+) => _PaginatedListItems<T>(
   pageLimit: (json['pageLimit'] as num).toInt(),
   countItems: (json['countItems'] as num).toInt(),
   countPages: (json['countPages'] as num).toInt(),
   elements: (json['elements'] as List<dynamic>).map(fromJsonT).toList(),
 );
 
-Map<String, dynamic> _$$PaginatedListItemsImplToJson<T>(
-  _$PaginatedListItemsImpl<T> instance,
+Map<String, dynamic> _$PaginatedListItemsToJson<T>(
+  _PaginatedListItems<T> instance,
   Object? Function(T value) toJsonT,
 ) => <String, dynamic>{
   'pageLimit': instance.pageLimit,

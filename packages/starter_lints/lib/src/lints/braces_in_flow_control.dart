@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -15,13 +15,13 @@ class BracesInFlowControl extends DartLintRule {
     name: 'braces_in_flow_control',
     problemMessage: 'Flow-control statements should use braces.',
     correctionMessage: 'Wrap the body in `{ ... }`.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addForStatement(
@@ -43,7 +43,7 @@ class BracesInFlowControl extends DartLintRule {
     Statement body,
     int keywordOffset,
     AstNode root,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
   ) {
     if (body is Block) {
       return;
@@ -52,7 +52,7 @@ class BracesInFlowControl extends DartLintRule {
     reporter.atNode(body, _code);
   }
 
-  void _checkIf(IfStatement node, ErrorReporter reporter) {
+  void _checkIf(IfStatement node, DiagnosticReporter reporter) {
     final unit = node.root as CompilationUnit;
     final lineInfo = unit.lineInfo;
 

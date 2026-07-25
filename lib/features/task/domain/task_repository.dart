@@ -1,8 +1,8 @@
 import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/model/task_create_request.dart';
+import 'package:starter_toolkit/data/model/paginated_list_items.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
-
 class TaskRepository {
   const TaskRepository(this._executor, this._dataSource);
 
@@ -13,6 +13,9 @@ class TaskRepository {
 
   Future<List<Task>> getTasksByDate(DateTime date) =>
       _executor.execute(() => _dataSource.getTasksByDate(date));
+
+  Future<PaginatedListItems<Task>> searchTasks(String query, {required int page}) =>
+      _executor.execute(() => _dataSource.searchTasks(query, page: page));
 
   Future<Task> createTask(TaskCreateRequest request) =>
       _executor.execute(() => _dataSource.createTask(request));

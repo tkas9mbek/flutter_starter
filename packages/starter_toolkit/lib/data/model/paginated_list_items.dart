@@ -5,7 +5,7 @@ part 'paginated_list_items.freezed.dart';
 part 'paginated_list_items.g.dart';
 
 @Freezed(genericArgumentFactories: true)
-class PaginatedListItems<T> with _$PaginatedListItems<T> {
+abstract class PaginatedListItems<T> with _$PaginatedListItems<T> {
   factory PaginatedListItems({
     required int pageLimit,
     required int countItems,

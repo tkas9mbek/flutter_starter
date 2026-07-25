@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -19,7 +19,7 @@ class NoHardcodedColors extends DartLintRule {
     correctionMessage:
         'Use ThemeProvider.of(context).theme or a token from the design '
         'system instead.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   static const _allowedPathSegments = <String>[
@@ -32,7 +32,7 @@ class NoHardcodedColors extends DartLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     final path = resolver.path.replaceAll(r'\', '/');
@@ -71,7 +71,7 @@ class NoHardcodedColors extends DartLintRule {
 extension on NamedType {
   String get qualifiedName {
     final importPrefix = this.importPrefix?.name.lexeme;
-    final name = name2.lexeme;
+    final name = this.name.lexeme;
 
     return importPrefix == null ? name : '$importPrefix.$name';
   }

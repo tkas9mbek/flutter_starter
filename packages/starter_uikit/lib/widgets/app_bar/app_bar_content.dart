@@ -4,8 +4,10 @@ import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
+/// Lays out the inner content shared by most app bars: a centered [title]
+/// with optional [subtitle], trailing [actions], and a back chevron implied
+/// automatically when the route can pop.
 class AppBarContent extends StatelessWidget {
-  /// Represents the content of the AppBar, base widget for most appbars.
   const AppBarContent({
     required this.title,
     this.automaticallyImplyLeading = true,
@@ -21,6 +23,7 @@ class AppBarContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
 
     return Stack(
@@ -37,6 +40,10 @@ class AppBarContent extends StatelessWidget {
                 child: SvgPicture.asset(
                   UiSvgIcons.chevronLeft,
                   package: UiConsts.package,
+                  colorFilter: ColorFilter.mode(
+                    theme.textPrimary,
+                    BlendMode.srcIn,
+                  ),
                 ),
               ),
             ),

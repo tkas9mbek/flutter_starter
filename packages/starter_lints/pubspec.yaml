@@ -3,13 +3,13 @@ description: Custom lint rules for flutter_starter project
 
 publish_to: 'none'
 
-version: 2.1.0
+version: 3.0.0
 
 resolution: workspace
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.12.0
 
 dependencies:
-  analyzer: ^7.0.0
-  custom_lint_builder: ^0.7.3
+  analyzer:
+  custom_lint_builder:

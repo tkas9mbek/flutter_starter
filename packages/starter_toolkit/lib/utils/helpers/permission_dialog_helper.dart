@@ -64,14 +64,12 @@ class PermissionDialogHelper {
       return false;
     }
 
-    // On iOS, skip custom dialog and request permission directly
     if (Platform.isIOS) {
       final result = await Permission.camera.request();
 
       return result.isGranted;
     }
 
-    // Android: show custom dialog first
     if (!context.mounted) {
       return false;
     }
@@ -107,7 +105,6 @@ class PermissionDialogHelper {
       return false;
     }
 
-    // On iOS, skip custom dialog and request permission directly
     if (Platform.isIOS) {
       final result = await permission.request();
 
@@ -115,7 +112,6 @@ class PermissionDialogHelper {
       return result.isGranted || result.isLimited;
     }
 
-    // Android: show custom dialog first
     if (!context.mounted) {
       return false;
     }
@@ -148,14 +144,12 @@ class PermissionDialogHelper {
       return false;
     }
 
-    // On iOS, skip custom dialog and request permission directly
     if (Platform.isIOS) {
       final result = await Permission.location.request();
 
       return result.isGranted;
     }
 
-    // Android: show custom dialog first
     if (!context.mounted) {
       return false;
     }

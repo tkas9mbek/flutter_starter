@@ -89,6 +89,13 @@ class UikitMenuScreen extends StatelessWidget {
               icon: Icons.widgets,
               onTap: () => context.router.push(const MiscWidgetsExampleRoute()),
             ),
+            const SizedBox(height: 8),
+            ExampleTile(
+              title: localizer.paginationWidgets,
+              subtitle: localizer.paginationWidgetsDescription,
+              icon: Icons.list_alt,
+              onTap: () => context.router.push(const PaginationExampleRoute()),
+            ),
             const Divider(height: 48),
             Text(localizer.aboutUIKit, style: textStyles.mediumTitle18),
             const SizedBox(height: 16),

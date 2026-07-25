@@ -7,7 +7,7 @@ Pure Dart utilities and common functionality for Flutter applications. This pack
 ### Data Layer
 - **API Client**: Abstract HTTP client interface with response type-based methods
 - **Exception Handling**: Sealed class exception system with UI configuration annotations
-- **Repository Executors**: Decorator pattern for cross-cutting concerns (caching, retry, error handling)
+- **Repository Executors**: Decorator pattern for cross-cutting concerns (retry, error handling); `RepositoryCache` collaborator for keyed TTL caching
 - **Interceptors**: Authentication refresh and error handling for Dio
 
 ### Utilities
@@ -73,40 +73,62 @@ final exception = AppException.fromDioResponse(
 
 ### Repository Executors
 
-Chain decorators for cross-cutting concerns:
+Repositories declare their resilience needs as `RepositoryExecutor`
+constructor params (one per distinct behavior). Executor chains are composed
+**only** in the repository's DI registration closure, from a single local
+`base` — repositories never import the extensions or call `withX()`.
 
 ```dart
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+class TaskRepository {
+  const TaskRepository({
+    required RepositoryExecutor executor,
+    required RepositoryExecutor creationExecutor,
+    required TaskDataSource dataSource,
+  })  : _executor = executor,
+        _creationExecutor = creationExecutor,
+        _dataSource = dataSource;
 
-class UserRepository {
-  UserRepository(this._dataSource) {
-    _executor = const RawRepositoryExecutor()
-      .withErrorHandling()  // Converts exceptions to AppException
-      .withRetry(maxRetries: 3, retryDelay: Duration(seconds: 2))
-      .withCaching();       // Time-based caching
-  }
+  final RepositoryExecutor _executor;          // baseline
+  final RepositoryExecutor _creationExecutor;  // retry-heavy writes
+  final TaskDataSource _dataSource;
 
-  late final RepositoryExecutor _executor;
-  final UserDataSource _dataSource;
+  Future<List<Task>> getTasks() =>
+      _executor.execute(_dataSource.getTasks);
 
-  Future<List<User>> getUsers() {
-    return _executor.execute(() => _dataSource.getUsers());
-  }
-
-  Future<User> getUserById(String id) {
-    return _executor.cached(
-      key: 'user_$id',
-      function: () => _dataSource.getUserById(id),
-    );
-  }
+  Future<Task> createTask(TaskCreateRequest request) =>
+      _creationExecutor.execute(() => _dataSource.createTask(request));
 }
 ```
 
+```dart
+// task_module.dart — still ONE registration; one local base.
+..registerFactory(() {
+  final base = const RawRepositoryExecutor().withErrorHandling();
+
+  return TaskRepository(
+    executor: base,
+    creationExecutor: base.withRetry(
+      maxRetries: 5,
+      retryDelay: const Duration(seconds: 1),
+    ),
+    dataSource: getIt<TaskDataSource>(),
+  );
+})
+```
+
+Single-executor repositories keep a plain positional signature — only switch
+to named params when a second behavior appears. See the full walkthrough
+(usage, adding executors, testing) in
+[docs/guides/repository_executor.md](../../docs/guides/repository_executor.md).
+
 **Available executors:**
 - `RawRepositoryExecutor` - Base executor, no additional behavior
-- `ErrorHandlingExecutor` - Converts all exceptions to AppException
+- `ErrorHandlingExecutor` - Converts all exceptions to AppException; always innermost
 - `RetryExecutor` - Automatic retry with exponential backoff
-- `CachingExecutor` - Time-based in-memory caching
+
+**Available collaborators:**
+- `RepositoryCache` / `InMemoryRepositoryCache` - Keyed TTL cache; injected as a
+  sibling dependency (not a decorator), registered as an app-wide singleton
 
 **Retry configuration:**
 - Default: 3 attempts with 2-second exponential backoff
@@ -376,26 +398,25 @@ final class NoInternetException extends AppException {
 
 ### Repository Executor Pattern
 
-Decorator pattern for composable cross-cutting concerns:
+Decorator pattern for composable cross-cutting concerns, composed in DI
+modules from a single local `base`:
 
 ```dart
 // Base executor
-final executor = RawRepositoryExecutor();
+final base = const RawRepositoryExecutor();
 
-// Add error handling
-final withErrors = executor.withErrorHandling();
+// Add error handling (always innermost)
+final withErrors = base.withErrorHandling();
 
 // Add retry logic
 final withRetry = withErrors.withRetry(
   maxRetries: 3,
-  retryDelay: Duration(seconds: 2),
-);
-
-// Add caching
-final withCaching = withRetry.withCaching(
-  duration: Duration(minutes: 5),
+  retryDelay: const Duration(seconds: 2),
 );
 ```
+
+Caching is a separate collaborator (`RepositoryCache`), not a decorator — see
+[docs/guides/repository_executor.md](../../docs/guides/repository_executor.md).
 
 ### API Client Pattern
 

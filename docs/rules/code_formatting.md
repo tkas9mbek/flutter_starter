@@ -26,9 +26,9 @@ One public class per file. File name matches class name.
 // ✓ Correct
 // File: user_bloc.dart
 @freezed
-class UserEvent with _$UserEvent { ... }
+sealed class UserEvent with _$UserEvent { ... }
 @freezed
-class UserState with _$UserState { ... }
+sealed class UserState with _$UserState { ... }
 class UserBloc extends Bloc<UserEvent, UserState> { ... }
 
 // ✗ Wrong
@@ -145,11 +145,13 @@ class ItemsScreen extends StatelessWidget {
     return MultiBlocListener(
       listeners: [
         BlocListener<ItemDeletionBloc, ItemDeletionState>(
-          listener: (context, state) => state.whenOrNull(
-            success: () => context.read<ItemsListBloc>().add(
-              const ItemsListEvent.refreshed(),
-            ),
-          ),
+          listener: (context, state) {
+            if (state is SuccessItemDeletionState) {
+              context.read<ItemsListBloc>().add(
+                const ItemsListEvent.refreshed(),
+              );
+            }
+          },
         ),
       ],
       child: BlocBuilder<ItemsListBloc, ItemsListState>(...),
@@ -362,9 +364,10 @@ class _CounterWidgetState extends State<CounterWidget> {
 
 ### 3. Arrow Expressions
 
-Always use arrow `=>` for callbacks, with two exceptions:
+Always use arrow `=>` for callbacks, with three exceptions:
 1. `build()` method - always uses block body `{}`
 2. Nested callbacks - avoid `() => setState(() {})` pattern
+3. Listeners with `if-case` statements - statements need a block body
 
 ```dart
 // ✓ Correct - Arrow for callbacks
@@ -378,11 +381,13 @@ BlocBuilder<Bloc, State>(
   builder: (context, state) => AnimatedSwitcher(...),
 )
 
-// ✓ Correct - Arrow for listeners
+// ✓ Correct - Listeners use if-case pattern matching (block body)
 BlocListener<Bloc, State>(
-  listener: (context, state) => state.whenOrNull(
-    failure: (e) => showError(e),
-  ),
+  listener: (context, state) {
+    if (state case FailureState(:final exception)) {
+      showError(exception);
+    }
+  },
 )
 
 // ✓ Correct - build() ALWAYS uses block body
@@ -404,30 +409,23 @@ Widget build(BuildContext context) => Container();
 
 // ✗ Wrong - Nested arrow callbacks (hard to read)
 onPressed: () => setState(() => _counter++),
-
-// ✗ Wrong - Unnecessary braces in simple callback
-BlocListener<Bloc, State>(
-  listener: (context, state) {
-    state.whenOrNull(
-      failure: (e) => showError(e),
-    );
-  },
-)
 ```
 
-**Summary**: Always use `=>` except for `build()` method and nested callbacks like `setState`.
+**Summary**: Always use `=>` except for `build()` method, nested callbacks like `setState`, and listeners that use `if-case` statements.
 
-### 4. Use whenOrNull Instead of maybeWhen
+### 4. Use if-case Pattern Matching in Listeners
 
-For listeners with single case, use `whenOrNull` not `maybeWhen`:
+For listeners, pattern-match on the sealed state with `if-case` (or plain `is` checks). Freezed 3 removed the generated `whenOrNull` / `maybeWhen` methods.
 
 ```dart
 // ✓ Correct
-listener: (context, state) => state.whenOrNull(
-  failure: (exception) => showError(exception),
-),
+listener: (context, state) {
+  if (state case FailureLoginState(:final exception)) {
+    showError(exception);
+  }
+},
 
-// ✗ Wrong - Empty orElse
+// ✗ Wrong - Legacy Freezed 2 methods (removed in Freezed 3)
 listener: (context, state) {
   state.maybeWhen(
     failure: (exception) => showError(exception),
@@ -436,32 +434,37 @@ listener: (context, state) {
 },
 ```
 
-### 4a. BlocBuilder Uses maybeMap / maybeWhen, Not mapOrNull
+### 4a. BlocBuilder Uses an Exhaustive switch
 
-`BlocBuilder` must always return a non-null `Widget`. Use `maybeMap` / `maybeWhen` so `orElse` provides a fallback. Never use `mapOrNull` / `whenOrNull` inside `BlocBuilder` — they return `Widget?` and Flutter will throw at runtime.
+`BlocBuilder` must always return a non-null `Widget`. Use an exhaustive `switch` expression (or statement) over the sealed state so the compiler guarantees every case returns a Widget.
 
 The pairing is:
 
 | Widget | Use | Why |
 |--------|-----|-----|
-| `BlocBuilder` | `maybeMap` / `maybeWhen` (with `orElse`) | must return a Widget |
-| `BlocListener` | `mapOrNull` / `whenOrNull` | side-effects only, no return |
+| `BlocBuilder` | exhaustive `switch` on the sealed state | must return a Widget for every state |
+| `BlocListener` | `if-case` / `is` checks | side-effects only, no return |
 
 ```dart
 // ✓ Correct
 BlocBuilder<MyBloc, MyState>(
-  builder: (context, state) => state.maybeMap(
-    success: (s) => SuccessView(data: s.data),
-    failure: (s) => FailureWidgetLarge(exception: s.exception, onRetry: _retry),
-    orElse: () => const CustomCircularProgressIndicator(),
-  ),
+  builder: (context, state) => switch (state) {
+    SuccessMyState(:final data) => SuccessView(data: data),
+    FailureMyState(:final exception) => FailureWidget.large(
+      exception: exception,
+      onRetry: _retry,
+    ),
+    InitialMyState() || LoadingMyState() =>
+      const CustomCircularProgressIndicator.adaptive(),
+  },
 )
 
-// ✗ Wrong - mapOrNull returns Widget?
+// ✗ Wrong - Legacy Freezed 2 maybeMap (removed in Freezed 3)
 BlocBuilder<MyBloc, MyState>(
-  builder: (context, state) => state.mapOrNull(
+  builder: (context, state) => state.maybeMap(
     success: (s) => SuccessView(data: s.data),
-  )!, // crashes for any unhandled state
+    orElse: () => const CustomCircularProgressIndicator.adaptive(),
+  ),
 )
 ```
 
@@ -661,7 +664,3 @@ log('Failed to fetch payments: $error', name: 'PaymentRepository');
 - [Structure](../guides/structure.md) - File organization
 - [Naming](./naming.md) - Naming conventions
 - [Git Workflow](./git_workflow.md) - Branch & commit rules
-
----
-
-**Last Updated**: February 1, 2026

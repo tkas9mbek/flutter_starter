@@ -3,13 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:starter/features/application/root/screen/authenticated_wrapper.dart';
 import 'package:starter/features/application/root/screen/root_screen.dart';
 import 'package:starter/features/auth/ui/login/screen/login_screen.dart';
+import 'package:starter/features/auth/ui/otp/screen/otp_screen.dart';
 import 'package:starter/features/auth/ui/register/screen/registration_screen.dart';
-import 'package:starter/features/profile/ui/screen/profile_screen.dart';
+import 'package:starter/features/profile/ui/overview/screen/profile_screen.dart';
 import 'package:starter/features/settings/ui/menu/screen/settings_screen.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/calendar/screen/calendar_screen.dart';
+import 'package:starter/features/task/ui/create/screen/task_create_screen.dart';
 import 'package:starter/features/task/ui/details/screen/task_details_screen.dart';
 import 'package:starter/features/task/ui/list/screen/tasks_list_screen.dart';
+import 'package:starter/features/task/ui/search/screen/tasks_search_screen.dart';
 
 part 'app_router.gr.dart';
 
@@ -22,6 +25,7 @@ class AppRouter extends RootStackRouter {
   final List<AutoRoute> routes = [
     AutoRoute(page: LoginRoute.page, initial: true),
     AutoRoute(page: RegistrationRoute.page, path: '/register'),
+    AutoRoute(page: OtpRoute.page, path: '/otp'),
     AutoRoute(
       page: AuthenticatedRouter.page,
       path: '/authenticated',
@@ -36,7 +40,9 @@ class AppRouter extends RootStackRouter {
             AutoRoute(page: ProfileRoute.page, path: 'profile'),
           ],
         ),
+        AutoRoute(page: TaskCreateRoute.page, path: 'task/create'),
         AutoRoute(page: TaskDetailsRoute.page, path: 'task/:taskId'),
+        AutoRoute(page: TasksSearchRoute.page, path: 'search'),
       ],
     ),
   ];

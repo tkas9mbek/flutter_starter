@@ -7,7 +7,7 @@ import 'package:starter/features/application/environment/data/local_environment_
 import 'package:starter/features/application/environment/domain/environment_data_source.dart';
 import 'package:starter/features/application/environment/domain/environment_repository.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
-import 'package:starter/features/application/environment/ui/bloc/environment_cubit.dart';
+import 'package:starter/features/application/environment/ui/switcher/bloc/environment_cubit.dart';
 
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
 

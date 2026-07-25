@@ -88,5 +88,16 @@
   "thinDivider": "Thin Divider",
   "progressIndicator": "Progress Indicator",
   "aboutUIKit": "About UI Kit",
-  "uiKitDescription": "This UIKit package contains reusable widgets and components:\n\n• Custom app bars\n• Styled buttons with loading states\n• Form fields with validation\n• Status widgets for different scenarios\n• Notifications via snackbar\n• Theme system support\n\nUse these examples as a reference when building production features."
+  "uiKitDescription": "This UIKit package contains reusable widgets and components:\n\n• Custom app bars\n• Styled buttons with loading states\n• Form fields with validation\n• Status widgets for different scenarios\n• Notifications via snackbar\n• Theme system support\n\nUse these examples as a reference when building production features.",
+  "paginationWidgets": "Pagination",
+  "paginationWidgetsDescription": "Paginated list with pull-to-refresh",
+  "paginationItem": "Item {index}",
+  "@paginationItem": {
+    "placeholders": {
+      "index": {
+        "type": "int"
+      }
+    }
+  },
+  "endReached": "You reached the end"
 }

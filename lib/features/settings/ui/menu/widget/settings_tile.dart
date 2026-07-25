@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 class SettingsTile extends StatelessWidget {
   const SettingsTile({
@@ -11,7 +12,8 @@ class SettingsTile extends StatelessWidget {
     super.key,
   });
 
-  final IconData icon;
+  /// Asset path from `UiSvgIcons`.
+  final String icon;
   final String title;
   final String? subtitle;
   final Widget? trailing;
@@ -29,7 +31,7 @@ class SettingsTile extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         child: Row(
           children: [
-            Icon(icon, color: theme.primary, size: 24),
+            SvgIcon(icon, size: 24, color: theme.primary),
             const SizedBox(width: 16),
             Expanded(
               child: Column(

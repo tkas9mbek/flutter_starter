@@ -59,6 +59,50 @@ class LoginRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [OtpScreen]
+class OtpRoute extends PageRouteInfo<OtpRouteArgs> {
+  OtpRoute({required String phone, Key? key, List<PageRouteInfo>? children})
+    : super(
+        OtpRoute.name,
+        args: OtpRouteArgs(phone: phone, key: key),
+        initialChildren: children,
+      );
+
+  static const String name = 'OtpRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      final args = data.argsAs<OtpRouteArgs>();
+      return OtpScreen(phone: args.phone, key: args.key);
+    },
+  );
+}
+
+class OtpRouteArgs {
+  const OtpRouteArgs({required this.phone, this.key});
+
+  final String phone;
+
+  final Key? key;
+
+  @override
+  String toString() {
+    return 'OtpRouteArgs{phone: $phone, key: $key}';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! OtpRouteArgs) return false;
+    return phone == other.phone && key == other.key;
+  }
+
+  @override
+  int get hashCode => phone.hashCode ^ key.hashCode;
+}
+
+/// generated route for
 /// [ProfileScreen]
 class ProfileRoute extends PageRouteInfo<void> {
   const ProfileRoute({List<PageRouteInfo>? children})
@@ -123,6 +167,22 @@ class SettingsRoute extends PageRouteInfo<void> {
 }
 
 /// generated route for
+/// [TaskCreateScreen]
+class TaskCreateRoute extends PageRouteInfo<void> {
+  const TaskCreateRoute({List<PageRouteInfo>? children})
+    : super(TaskCreateRoute.name, initialChildren: children);
+
+  static const String name = 'TaskCreateRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const TaskCreateScreen();
+    },
+  );
+}
+
+/// generated route for
 /// [TaskDetailsScreen]
 class TaskDetailsRoute extends PageRouteInfo<TaskDetailsRouteArgs> {
   TaskDetailsRoute({
@@ -157,6 +217,16 @@ class TaskDetailsRouteArgs {
   String toString() {
     return 'TaskDetailsRouteArgs{task: $task, key: $key}';
   }
+
+  @override
+  bool operator ==(Object other) {
+    if (identical(this, other)) return true;
+    if (other is! TaskDetailsRouteArgs) return false;
+    return task == other.task && key == other.key;
+  }
+
+  @override
+  int get hashCode => task.hashCode ^ key.hashCode;
 }
 
 /// generated route for
@@ -171,6 +241,22 @@ class TasksListRoute extends PageRouteInfo<void> {
     name,
     builder: (data) {
       return const TasksListScreen();
+    },
+  );
+}
+
+/// generated route for
+/// [TasksSearchScreen]
+class TasksSearchRoute extends PageRouteInfo<void> {
+  const TasksSearchRoute({List<PageRouteInfo>? children})
+    : super(TasksSearchRoute.name, initialChildren: children);
+
+  static const String name = 'TasksSearchRoute';
+
+  static PageInfo page = PageInfo(
+    name,
+    builder: (data) {
+      return const TasksSearchScreen();
     },
   );
 }

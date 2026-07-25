@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -15,7 +15,7 @@ class MultiLineTernary extends DartLintRule {
     problemMessage:
         'Ternary expression is too long. Use if/else with early return.',
     correctionMessage: 'Replace with if/else block for readability.',
-    errorSeverity: ErrorSeverity.INFO,
+    errorSeverity: DiagnosticSeverity.INFO,
   );
 
   static const _maxLinesSingle = 10;
@@ -24,7 +24,7 @@ class MultiLineTernary extends DartLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addConditionalExpression((node) {

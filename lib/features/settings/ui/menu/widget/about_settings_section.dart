@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:starter/core/consts/core_consts.dart';
+import 'package:starter/core/global/core_consts.dart';
 import 'package:starter/features/settings/ui/menu/widget/settings_card.dart';
 import 'package:starter/features/settings/ui/menu/widget/settings_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
+import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
-import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
+import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 
 class AboutSettingsSection extends StatelessWidget {
   const AboutSettingsSection({super.key});
@@ -17,30 +19,36 @@ class AboutSettingsSection extends StatelessWidget {
     return SettingsCard(
       children: [
         SettingsTile(
-          icon: Icons.info_outline,
+          icon: UiSvgIcons.infoCircle,
           title: localizer.version,
           subtitle: CoreConsts.appVersion,
         ),
         const Divider(height: 1),
         SettingsTile(
-          icon: Icons.description_outlined,
+          icon: UiSvgIcons.documentGlyph,
           title: localizer.termsAndConditions,
-          trailing: Icon(Icons.chevron_right, color: theme.textSecondary),
-          onTap: () => NotificationSnackBar.showMessage(
+          trailing: SvgIcon(
+            UiSvgIcons.chevronRight,
+            size: 24,
+            color: theme.textSecondary,
+          ),
+          onTap: () => NotificationSnackBar.show(
             context,
-            isSuccess: false,
-            message: localizer.termsComingSoon,
+            NotificationSnackBar.error(text: localizer.termsComingSoon),
           ),
         ),
         const Divider(height: 1),
         SettingsTile(
-          icon: Icons.privacy_tip_outlined,
+          icon: UiSvgIcons.shieldDone,
           title: localizer.privacyPolicy,
-          trailing: Icon(Icons.chevron_right, color: theme.textSecondary),
-          onTap: () => NotificationSnackBar.showMessage(
+          trailing: SvgIcon(
+            UiSvgIcons.chevronRight,
+            size: 24,
+            color: theme.textSecondary,
+          ),
+          onTap: () => NotificationSnackBar.show(
             context,
-            isSuccess: false,
-            message: localizer.privacyPolicyComingSoon,
+            NotificationSnackBar.error(text: localizer.privacyPolicyComingSoon),
           ),
         ),
       ],

@@ -33,16 +33,16 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | BLOC-1 | 🔴 `[lint]` | No mutable instance fields on Bloc/Cubit |
 | BLOC-2 | 🔴 | Handler catches `AppException` |
 | BLOC-3 | 🔴 | Failure factory carries `AppException` |
-| BLOC-4 | 🔴 | Events + states are `@freezed` |
+| BLOC-4 | 🔴 | Events + states are `@freezed sealed class` |
 | BLOC-5 | 🔴 | BLoC stores domain models / `AppException`, not UI models |
-| BLOC-6 | 🟡 `[lint]` | `BlocListener` uses `mapOrNull` / `whenOrNull` |
-| BLOC-7 | 🟡 | `BlocBuilder` uses `maybeMap` / `maybeWhen` (returns Widget) |
+| BLOC-6 | 🟡 `[lint]` | `BlocListener` uses `if-case` / `is` checks (lint fires only on legacy Freezed 2 `maybeMap`/`mapOrNull` code) |
+| BLOC-7 | 🟡 | `BlocBuilder` uses an exhaustive `switch` over the sealed state (always returns Widget) |
 | BLOC-8 | 🟡 | Events are past-tense (`Submitted`, `Refreshed`) |
-| BLOC-9 | 🟡 | Full Freezed redirect targets (`_LoadingMyState`, not `_Loading`) |
+| BLOC-9 | 🟡 | Full Freezed redirect targets (`LoadingMyState`, not `_Loading`; states public, events private) |
 | BLOC-10 | 🟡 | Variable names: `successState`, `failureState` — never `s` |
 | BLOC-11 | 🟡 | Final emit uses `return emit(...)` |
 | BLOC-12 | 🟢 `[lint]` | Blank line before every `emit(...)` |
-| BLOC-13 | 🟢 | `bool get isLoading => this is _LoadingMyState` |
+| BLOC-13 | 🟢 | `bool get isLoading => this is LoadingMyState` |
 
 ## EXC (exceptions)
 

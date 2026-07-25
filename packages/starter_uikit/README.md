@@ -10,7 +10,7 @@ This package provides:
 - **App Bars**: Title app bar, base app bar, transparent app bar
 - **Buttons**: Elevated buttons, outlined buttons with loading states
 - **Form Components**: Text fields, dropdown fields, checkbox, date picker fields
-- **Notifications**: Snackbar notifications (success, error, info, warning)
+- **Notifications**: Snackbar notifications (success, error, information)
 - **Theme System**: Light/dark theme support with `ThemeProvider` and `AppTextStyles`
 - **Exception UI Models**: Localized error messages with `ExceptionUiModel` and `ExceptionUiMapper`
 - **Example App**: Interactive demo showcasing all components
@@ -29,23 +29,13 @@ dependencies:
 
 ### Import Strategy
 
-**Recommended**: Import specific files for better compilation performance:
+There is no barrel export — every import is file-specific:
 
 ```dart
-// Specific imports
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
-import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
+import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
-```
-
-**Barrel export** (for status widgets used together):
-
-```dart
-// Status widgets only
-import 'package:starter_uikit/starter_uikit.dart';
-// Provides: CustomCircularProgressIndicator, EmptyInformationBody,
-//           FailureWidgetLarge, FailureWidgetSmall
 ```
 
 ### Theme Setup
@@ -74,7 +64,9 @@ Container(color: theme.primary)
 ### Status Widgets
 
 ```dart
-import 'package:starter_uikit/starter_uikit.dart';
+import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
+import 'package:starter_uikit/widgets/status/empty_information_body.dart';
+import 'package:starter_uikit/widgets/status/failure_widget.dart';
 
 // Loading
 const CustomCircularProgressIndicator()
@@ -83,14 +75,14 @@ const CustomCircularProgressIndicator()
 EmptyInformationBody(text: 'No data available')
 
 // Failure - Large (for full screens)
-FailureWidgetLarge(
-  uiModel: exceptionUiModel,
+FailureWidget.large(
+  exception: exception,
   onRetry: _retry,
 )
 
 // Failure - Small (for inline errors)
-FailureWidgetSmall(
-  uiModel: exceptionUiModel,
+FailureWidget.small(
+  exception: exception,
   onRetry: _retry,
 )
 ```
@@ -194,20 +186,24 @@ AppDatePickerField(
 ### Notifications
 
 ```dart
-import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
+import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 
 // Success notification
-NotificationSnackBar.showMessage(
+NotificationSnackBar.show(
   context,
-  isSuccess: true,
-  message: 'Operation completed',
+  NotificationSnackBar.success(text: 'Operation completed'),
 )
 
 // Error notification
-NotificationSnackBar.showMessage(
+NotificationSnackBar.show(
   context,
-  isSuccess: false,
-  message: 'Operation failed',
+  NotificationSnackBar.error(text: 'Operation failed'),
+)
+
+// Neutral/informational
+NotificationSnackBar.show(
+  context,
+  NotificationSnackBar.information(text: 'Heads up'),
 )
 ```
 
@@ -225,14 +221,11 @@ try {
   return emit(State.failure(e));
 }
 
-// In UI - map to localized model
-failure: (failureState) {
-  final uiModel = ExceptionUiMapper(context).map(failureState.exception);
-  return FailureWidgetLarge(
-    uiModel: uiModel,
-    onRetry: _retry,
-  );
-}
+// In UI - FailureWidget maps to a localized model internally
+failure: (failureState) => FailureWidget.large(
+  exception: failureState.exception,
+  onRetry: _retry,
+),
 ```
 
 ### Dialogs

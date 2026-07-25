@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
+import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 /// A widget that displays empty state with icon, text, and optional retry button.
 class EmptyInformationBody extends StatelessWidget {
@@ -30,18 +30,13 @@ class EmptyInformationBody extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (iconPath != null) ...[
-              SvgPicture.asset(
-                iconPath!,
-                package: UiConsts.package,
-                width: 64,
-                height: 64,
-                colorFilter: ColorFilter.mode(
-                  theme.textSecondary,
-                  BlendMode.srcIn,
-                ),
-              ),
+              SvgIcon(iconPath!, size: 64, color: theme.textSecondary),
             ] else ...[
-              Icon(Icons.inbox_outlined, size: 64, color: theme.textSecondary),
+              SvgIcon(
+                UiSvgIcons.inboxTray,
+                size: 64,
+                color: theme.textSecondary,
+              ),
             ],
             const SizedBox(height: 16),
             Text(

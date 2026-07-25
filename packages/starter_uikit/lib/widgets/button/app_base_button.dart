@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
 
+/// Foundation for the uikit buttons: an elevated button with configurable
+/// colors, border, and optional [icon] that swaps its label for a progress
+/// indicator while [loading] and applies disabled styling when not [enabled].
 class AppBaseButton extends StatelessWidget {
-  /// Elevated button with custom background color, text color, and optional
-  /// icon. The button can be disabled, loading, or have a border.
   const AppBaseButton({
     required this.text,
     required this.backgroundColor,
@@ -54,14 +55,16 @@ class AppBaseButton extends StatelessWidget {
           ? textColor
           : disabledTextColor,
     );
-    final childSize = effectiveTextStyle.fontSize! * effectiveTextStyle.height!;
+    final childSize =
+        effectiveTextStyle.fontSize! * (effectiveTextStyle.height ?? 1);
+    final inactivePressed = loading ? () {} : onDisabledPressed ?? () {};
 
     return SizedBox(
       width: width,
       height: height,
       child: ElevatedButton(
-        onPressed: active ? onPressed : onDisabledPressed ?? () {},
-        onLongPress: active ? onLongPressed : onDisabledPressed ?? () {},
+        onPressed: active ? onPressed : inactivePressed,
+        onLongPress: active ? onLongPressed : inactivePressed,
         style: ButtonStyle(
           tapTargetSize: MaterialTapTargetSize.shrinkWrap,
           overlayColor: WidgetStateProperty.all<Color>(AppColors.transparent),
@@ -87,7 +90,10 @@ class AppBaseButton extends StatelessWidget {
           ),
         ),
         child: loading
-            ? CustomCircularProgressIndicator(color: textColor, size: childSize)
+            ? CustomCircularProgressIndicator.adaptive(
+                color: textColor,
+                size: childSize,
+              )
             : Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,

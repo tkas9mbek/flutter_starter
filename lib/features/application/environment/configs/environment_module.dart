@@ -2,7 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:starter/core/di/app_configurator.dart';
 import 'package:starter/core/di/app_module.dart';
-import 'package:starter/core/di/injection.dart';
+import 'package:starter/core/global/global_variables.dart';
 import 'package:starter/features/application/environment/data/local_environment_data_source.dart';
 import 'package:starter/features/application/environment/domain/environment_data_source.dart';
 import 'package:starter/features/application/environment/domain/environment_repository.dart';
@@ -10,7 +10,7 @@ import 'package:starter/features/application/environment/model/app_environment.d
 
 class EnvironmentModule extends AppModule {
   @override
-  void registerDependencies() {
+  void register() {
     getIt
       ..registerLazySingleton<EnvironmentDataSource>(
         () => LocalEnvironmentDataSource(

@@ -6,11 +6,9 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/form/option_label_builders.dart';
 import 'package:starter_uikit/widgets/misc/thin_horizontal_divider.dart';
 
+/// FormBuilder-backed single-select list of radio rows separated by thin
+/// dividers, storing the chosen option of [options] as the form value.
 class AppRadioGroup<T extends Object> extends StatelessWidget {
-  /// A radio group that allows the user to select one option.
-  /// The selected option is returned when the form is submitted.
-  /// * [options] is a list of options to choose from.
-  /// * [optionLabelBuilder] is a function that converts an option to a string.
   const AppRadioGroup({
     required this.name,
     required this.options,

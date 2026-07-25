@@ -5,6 +5,7 @@ import 'package:starter_uikit/example/screens/buttons_example_screen.dart';
 import 'package:starter_uikit/example/screens/dialogs_example_screen.dart';
 import 'package:starter_uikit/example/screens/form_fields_example_screen.dart';
 import 'package:starter_uikit/example/screens/misc_widgets_example_screen.dart';
+import 'package:starter_uikit/example/screens/pagination_example_screen.dart';
 import 'package:starter_uikit/example/screens/status_widgets_example_screen.dart';
 import 'package:starter_uikit/example/screens/text_widgets_example_screen.dart';
 import 'package:starter_uikit/example/screens/uikit_menu_screen.dart';
@@ -28,5 +29,6 @@ class ExampleRouter extends RootStackRouter {
     AutoRoute(page: DialogsExampleRoute.page, path: '/dialogs'),
     AutoRoute(page: TextWidgetsExampleRoute.page, path: '/text'),
     AutoRoute(page: MiscWidgetsExampleRoute.page, path: '/misc'),
+    AutoRoute(page: PaginationExampleRoute.page, path: '/pagination'),
   ];
 }

@@ -5,14 +5,27 @@ allprojects {
     }
 }
 
-rootProject.buildDir = "../build"
+rootProject.layout.buildDirectory = file("../build")
 subprojects {
-    project.buildDir = "${rootProject.buildDir}/${project.name}"
+    project.layout.buildDirectory = rootProject.layout.buildDirectory.dir(project.name)
 }
+
+// Some plugin dependencies (e.g. flutter_keyboard_visibility) still compile
+// against an old Android SDK, which AGP rejects when AndroidX libraries
+// require API 34+. Force library subprojects up to the app's compileSdk.
+// Must be registered before evaluationDependsOn(":app") triggers evaluation.
+subprojects {
+    afterEvaluate { project ->
+        if (project.plugins.hasPlugin("com.android.library")) {
+            project.android.compileSdk = 36
+        }
+    }
+}
+
 subprojects {
     project.evaluationDependsOn(":app")
 }
 
 tasks.register("clean", Delete) {
-    delete rootProject.buildDir
+    delete rootProject.layout.buildDirectory
 }

@@ -7,51 +7,52 @@ import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 part 'registration_bloc.freezed.dart';
 
 @freezed
-class RegistrationEvent with _$RegistrationEvent {
+sealed class RegistrationEvent with _$RegistrationEvent {
   const factory RegistrationEvent.submitted(RegistrationForm form) =
       _SubmittedRegistrationEvent;
 }
 
 @freezed
-class RegistrationState with _$RegistrationState {
+sealed class RegistrationState with _$RegistrationState {
   const RegistrationState._();
 
-  const factory RegistrationState.initial() = _InitialRegistrationState;
+  const factory RegistrationState.initial() = InitialRegistrationState;
 
-  const factory RegistrationState.loading() = _LoadingRegistrationState;
+  const factory RegistrationState.loading() = LoadingRegistrationState;
 
-  const factory RegistrationState.success() = _SuccessRegistrationState;
+  const factory RegistrationState.success() = SuccessRegistrationState;
 
   const factory RegistrationState.failure(AppException exception) =
-      _FailureRegistrationState;
+      FailureRegistrationState;
 
-  bool get isLoading => this is _LoadingRegistrationState;
+  bool get isLoading => this is LoadingRegistrationState;
 }
 
 class RegistrationBloc extends Bloc<RegistrationEvent, RegistrationState> {
   RegistrationBloc(this.authRepository)
     : super(const RegistrationState.initial()) {
-    on<RegistrationEvent>(
-      (event, emit) => event.when(
-        submitted: (form) async {
-          emit(const RegistrationState.loading());
-
-          try {
-            await authRepository.register(
-              name: form.name,
-              phone: form.phone,
-              password: form.password,
-              birthday: form.birthday,
-            );
-
-            return emit(const RegistrationState.success());
-          } on AppException catch (e) {
-            return emit(RegistrationState.failure(e));
-          }
-        },
-      ),
-    );
+    on<_SubmittedRegistrationEvent>(_onSubmitted);
   }
 
   final AuthRepository authRepository;
+
+  Future<void> _onSubmitted(
+    _SubmittedRegistrationEvent event,
+    Emitter<RegistrationState> emit,
+  ) async {
+    emit(const RegistrationState.loading());
+
+    try {
+      await authRepository.register(
+        name: event.form.name,
+        phone: event.form.phone,
+        password: event.form.password,
+        birthday: event.form.birthday,
+      );
+
+      return emit(const RegistrationState.success());
+    } on AppException catch (e) {
+      return emit(RegistrationState.failure(e));
+    }
+  }
 }

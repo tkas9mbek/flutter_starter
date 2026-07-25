@@ -7,11 +7,39 @@ import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
 
-class FailureWidgetLarge extends StatelessWidget {
-  const FailureWidgetLarge({required this.exception, this.onRetry, super.key});
+/// Displays a localized failure message for an [AppException] with an
+/// optional retry action.
+///
+/// Use [FailureWidget.large] for full-screen failure states and
+/// [FailureWidget.small] for compact inline failure rows.
+abstract class FailureWidget extends StatelessWidget {
+  const FailureWidget._({required this.exception, this.onRetry, super.key});
+
+  /// Full-screen failure body with a description and a retry button.
+  const factory FailureWidget.large({
+    required AppException exception,
+    VoidCallback? onRetry,
+    Key? key,
+  }) = _FailureWidgetLarge;
+
+  /// Compact single-row failure message with an optional retry icon.
+  const factory FailureWidget.small({
+    required AppException exception,
+    VoidCallback? onRetry,
+    Color? textColor,
+    Key? key,
+  }) = _FailureWidgetSmall;
 
   final AppException exception;
   final VoidCallback? onRetry;
+}
+
+class _FailureWidgetLarge extends FailureWidget {
+  const _FailureWidgetLarge({
+    required super.exception,
+    super.onRetry,
+    super.key,
+  }) : super._();
 
   @override
   Widget build(BuildContext context) {
@@ -47,7 +75,7 @@ class FailureWidgetLarge extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SvgPicture.asset(
-                      UiSvgIcons.refresh,
+                      UiSvgIcons.refreshArrow,
                       package: UiConsts.package,
                       colorFilter: ColorFilter.mode(
                         theme.primary,
@@ -65,8 +93,8 @@ class FailureWidgetLarge extends StatelessWidget {
                   ],
                 ),
               ),
-              const Spacer(),
             ],
+            const Spacer(),
           ],
         ),
       ),
@@ -74,16 +102,14 @@ class FailureWidgetLarge extends StatelessWidget {
   }
 }
 
-class FailureWidgetSmall extends StatelessWidget {
-  const FailureWidgetSmall({
-    required this.exception,
-    this.onRetry,
+class _FailureWidgetSmall extends FailureWidget {
+  const _FailureWidgetSmall({
+    required super.exception,
     this.textColor,
+    super.onRetry,
     super.key,
-  });
+  }) : super._();
 
-  final AppException exception;
-  final VoidCallback? onRetry;
   final Color? textColor;
 
   @override
@@ -113,7 +139,7 @@ class FailureWidgetSmall extends StatelessWidget {
                   behavior: HitTestBehavior.translucent,
                   onTap: onRetry,
                   child: SvgPicture.asset(
-                    UiSvgIcons.refresh,
+                    UiSvgIcons.refreshArrow,
                     package: UiConsts.package,
                     colorFilter: ColorFilter.mode(
                       textColor ?? theme.textPrimary,

@@ -3,7 +3,9 @@ import 'dart:async';
 import 'package:starter/core/di/app_module.dart';
 import 'package:starter/core/di/core_module.dart';
 import 'package:starter/core/di/data_module.dart';
-import 'package:starter/core/di/injection.dart';
+import 'package:starter/core/global/global_variables.dart';
+import 'package:starter/core/notifications/configs/notifications_module.dart';
+import 'package:starter/core/remote_config/configs/remote_config_module.dart';
 import 'package:starter/features/application/environment/configs/environment_module.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/auth/configs/auth_module.dart';
@@ -18,6 +20,8 @@ class AppConfigurator {
     CoreModule(),
     EnvironmentModule(),
     DataModule(),
+    RemoteConfigModule(),
+    NotificationsModule(),
     AuthModule(),
     SettingsModule(),
     ProfileModule(),

@@ -2,6 +2,11 @@
 
 All notable changes to starter_lints will be documented in this file.
 
+## [3.0.0] - 2026-07-08
+
+### Changed
+- **Breaking**: SDK `^3.12.0`; migrated to analyzer 8 / custom_lint_builder 0.8 APIs
+
 ## [2.1.0] - 2026-05-14
 
 ### Added

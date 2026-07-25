@@ -1,16 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/form/option_label_builders.dart';
 import 'package:starter_uikit/widgets/form/app_checkbox.dart';
+import 'package:starter_uikit/widgets/misc/animated_visibility.dart';
 import 'package:starter_uikit/widgets/misc/thin_horizontal_divider.dart';
 
+/// FormBuilder-backed multi-select list of [AppCheckBox] rows separated by
+/// thin dividers, storing the chosen [options] as a `Set<T>` form value.
 class AppCheckboxGroup<T extends Object> extends StatelessWidget {
-  /// A checkbox group that allows the user to select multiple options.
-  /// The selected options are returned as a list when the form is submitted.
-  /// * [options] is a list of options to choose from.
-  /// * [optionLabelBuilder] is a function that converts an option to a string.
-  /// By default, it uses the `toString` method.
   const AppCheckboxGroup({
     required this.name,
     required this.options,
@@ -36,6 +35,9 @@ class AppCheckboxGroup<T extends Object> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
+    final textStyles = ThemeProvider.of(context).textStyles;
+
     return FormBuilderField<Set<T>>(
       name: name,
       initialValue: selected,
@@ -87,6 +89,18 @@ class AppCheckboxGroup<T extends Object> extends StatelessWidget {
           if (showLastDivider) ...[
             const SizedBox(height: 12),
             const ThinHorizontalDivider(),
+          ],
+          if (!hideErrorText) ...[
+            AnimatedVisibility(
+              visible: field.errorText != null,
+              child: Padding(
+                padding: const EdgeInsets.only(top: 6),
+                child: Text(
+                  '* ${field.errorText ?? ''}',
+                  style: textStyles.regularBody14.copyWith(color: theme.error),
+                ),
+              ),
+            ),
           ],
         ],
       ),

@@ -65,6 +65,7 @@ class ImagePickerHelper {
     bool requestFullMetadata = true,
     bool onlyGalleryOnIosDebug = true,
   }) async {
+    // The iOS simulator has no camera, so debug builds fall back to the gallery.
     final realSource = kDebugMode && Platform.isIOS && onlyGalleryOnIosDebug
         ? ImageSource.gallery
         : source;

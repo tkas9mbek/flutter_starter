@@ -1,6 +1,6 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:starter/core/consts/storage_keys.dart';
+import 'package:starter/core/global/storage_keys.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
 
@@ -26,7 +26,7 @@ class SecureAuthLocalDataSource implements AuthLocalDataSource {
   }
 
   @override
-  Future<void> clearIfNotLaunchedBefore() async {
+  Future<bool> clearIfNotLaunchedBefore() async {
     final launchedBefore =
         _sharedPreferences.getBool(SharedPreferencesKeys.launchedBefore) ??
         false;
@@ -38,6 +38,8 @@ class SecureAuthLocalDataSource implements AuthLocalDataSource {
       );
       await _secureStorage.deleteAll();
     }
+
+    return launchedBefore;
   }
 
   @override

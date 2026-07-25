@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:starter/core/consts/core_consts.dart';
+import 'package:starter/core/global/core_consts.dart';
 import 'package:starter_toolkit/data/interceptor/app_error_interceptor.dart';
 import 'package:starter_toolkit/data/interceptor/auth_refresh_interceptor.dart';
 

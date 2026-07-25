@@ -69,5 +69,40 @@
   "description": "Описание",
   "completed": "Завершена",
   "notCompleted": "Не завершена",
-  "status": "Статус"
+  "status": "Статус",
+  "toContinue": "Продолжить",
+  "otpTitle": "Введите код подтверждения",
+  "otpSubtitle": "Мы отправили код на: {destination}",
+  "@otpSubtitle": {
+    "placeholders": {
+      "destination": {
+        "type": "String"
+      }
+    }
+  },
+  "otpResend": "Отправить код ещё раз",
+  "otpResendIn": "Отправить код через {seconds} сек",
+  "@otpResendIn": {
+    "placeholders": {
+      "seconds": {
+        "type": "int"
+      }
+    }
+  },
+  "otpInvalid": "Код неверен или истёк. Попробуйте ещё раз.",
+  "search": "Поиск",
+  "searchTasksHint": "Поиск задач",
+  "recentSearches": "Недавние запросы",
+  "clearAll": "Очистить всё",
+  "noResultsFound": "Ничего не найдено",
+  "startTypingToSearch": "Начните вводить запрос для поиска задач",
+  "createTask": "Создать задачу",
+  "taskTitle": "Название",
+  "taskTitleHint": "Введите название задачи",
+  "taskDescriptionHint": "Введите описание задачи",
+  "date": "Дата",
+  "create": "Создать",
+  "taskCreatedSuccessfully": "Задача успешно создана",
+  "confirm": "Подтвердить",
+  "signInWithCode": "Войти по коду"
 }

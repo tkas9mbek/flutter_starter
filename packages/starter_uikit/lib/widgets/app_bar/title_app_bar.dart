@@ -2,10 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:starter_uikit/widgets/app_bar/app_bar_content.dart';
 import 'package:starter_uikit/widgets/app_bar/base_app_bar.dart';
 
+/// Standard flat app bar with a centered [title], optionally accompanied by
+/// a [subtitle], trailing [actions], and a [bottom] widget.
 class TitleAppBar extends StatelessWidget implements PreferredSizeWidget {
-  /// App bar with white background, small elevation and shadow, and a title.
-  /// The title can be accompanied by a subtitle and actions.
-  /// * [bottom] is an optional widget that can be placed at the bottom of the app bar.
   const TitleAppBar({
     required this.title,
     this.automaticallyImplyLeading = true,

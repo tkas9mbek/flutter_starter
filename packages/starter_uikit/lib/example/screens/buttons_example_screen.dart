@@ -4,7 +4,7 @@ import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
 import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
-import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
+import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 
 /// **INTERNAL USE ONLY**: This screen is for UIKit testing and demonstration.
 @visibleForTesting
@@ -30,10 +30,9 @@ class _ButtonsExampleScreenState extends State<ButtonsExampleScreen> {
   }
 
   void _showNotification(String message) {
-    NotificationSnackBar.showMessage(
+    NotificationSnackBar.show(
       context,
-      isSuccess: true,
-      message: message,
+      NotificationSnackBar.success(text: message),
     );
   }
 

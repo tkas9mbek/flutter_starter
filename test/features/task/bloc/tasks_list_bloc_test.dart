@@ -5,7 +5,8 @@ import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
 import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
 import '../model/task_mock_models.dart';
 
@@ -88,16 +89,15 @@ void main() {
         return tasksListBloc;
       },
       act: (bloc) => bloc.add(const TasksListEvent.requested()),
-      verify: (bloc) => bloc.state.whenOrNull(
-        success: (tasks, groupedTasks) {
-          final date1 = DateTime(2025, 1, 15);
-          final date1OnlyDay = DateTime(date1.year, date1.month, date1.day);
-          final groupedList = groupedTasks[date1OnlyDay]!;
+      verify: (bloc) {
+        final successState = bloc.state as SuccessTasksListState;
+        final date1 = DateTime(2025, 1, 15);
+        final date1OnlyDay = DateTime(date1.year, date1.month, date1.day);
+        final groupedList = successState.groupedTasks[date1OnlyDay]!;
 
-          expect(groupedList[0].startTime.hour, equals(9));
-          expect(groupedList[1].startTime.hour, equals(14));
-        },
-      ),
+        expect(groupedList[0].startTime.hour, equals(9));
+        expect(groupedList[1].startTime.hour, equals(14));
+      },
     );
 
     blocTest<TasksListBloc, TasksListState>(
@@ -131,10 +131,8 @@ void main() {
         const TasksListState.loading(),
         predicate<TasksListState>(
           (state) =>
-              state.whenOrNull(
-                failure: (exception) => exception is ServerException,
-              ) ??
-              false,
+              state is FailureTasksListState &&
+              state.exception is ServerException,
         ),
       ],
       verify: (_) => verify(() => mockDataSource.getTasks()).called(1),

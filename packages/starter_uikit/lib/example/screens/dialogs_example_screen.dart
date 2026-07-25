@@ -7,7 +7,7 @@ import 'package:starter_uikit/widgets/dialogs/confirmation_bottom_sheet.dart';
 import 'package:starter_uikit/widgets/dialogs/date_range_picker_bottom_sheet.dart';
 import 'package:starter_uikit/widgets/dialogs/date_time_picker_bottom_sheet.dart';
 import 'package:starter_uikit/widgets/dialogs/dropdown_bottom_sheet.dart';
-import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
+import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 
 /// **INTERNAL USE ONLY**: This screen is for UIKit testing and demonstration.
 @visibleForTesting
@@ -28,10 +28,11 @@ class DialogsExampleScreen extends StatelessWidget {
       ),
     );
     if (result != null && context.mounted) {
-      NotificationSnackBar.showMessage(
+      NotificationSnackBar.show(
         context,
-        isSuccess: true,
-        message: 'Selected: ${result.toString().split('.')[0]}',
+        NotificationSnackBar.success(
+          text: 'Selected: ${result.toString().split('.')[0]}',
+        ),
       );
     }
   }
@@ -49,11 +50,12 @@ class DialogsExampleScreen extends StatelessWidget {
       ),
     );
     if (result != null && context.mounted) {
-      NotificationSnackBar.showMessage(
+      NotificationSnackBar.show(
         context,
-        isSuccess: true,
-        message:
-            'Range: ${result.$1.toString().split(' ')[0]} - ${result.$2.toString().split(' ')[0]}',
+        NotificationSnackBar.success(
+          text:
+              'Range: ${result.$1.toString().split(' ')[0]} - ${result.$2.toString().split(' ')[0]}',
+        ),
       );
     }
   }
@@ -70,10 +72,9 @@ class DialogsExampleScreen extends StatelessWidget {
       ),
     );
     if ((result ?? false) && context.mounted) {
-      NotificationSnackBar.showMessage(
+      NotificationSnackBar.show(
         context,
-        isSuccess: true,
-        message: 'Confirmed!',
+        NotificationSnackBar.success(text: 'Confirmed!'),
       );
     }
   }
@@ -101,10 +102,9 @@ class DialogsExampleScreen extends StatelessWidget {
       ),
     );
     if (result != null && context.mounted) {
-      NotificationSnackBar.showMessage(
+      NotificationSnackBar.show(
         context,
-        isSuccess: true,
-        message: 'Selected: $result',
+        NotificationSnackBar.success(text: 'Selected: $result'),
       );
     }
   }

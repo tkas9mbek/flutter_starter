@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 
+/// Renders [text] as rich text, applying [formatStyle] to segments wrapped
+/// in [tag] markers (e.g. `**bold**`) while the rest keeps [style].
 class AutoFormattedText extends StatelessWidget {
-  /// Allows you to format text using tags in the text.
-  /// Tags are used in the following format: <tag>text</tag>.
-  ///
-  /// * [text] - the text to be formatted.
-  /// * [tag] - the tag used to format the text.
-  /// * [style] - the style of the text.
-  /// * [formatStyle] - the style of the text between the tags.
   const AutoFormattedText(
     this.text, {
     required this.tag,
@@ -26,7 +21,8 @@ class AutoFormattedText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final textSpans = <InlineSpan>[];
-    final exp = RegExp('$tag(.*?)$tag');
+    final escapedTag = RegExp.escape(tag);
+    final exp = RegExp('$escapedTag(.*?)$escapedTag');
     final matches = exp.allMatches(text);
     var currentStart = 0;
 
@@ -45,9 +41,9 @@ class AutoFormattedText extends StatelessWidget {
       textSpans.add(TextSpan(text: remainingText));
     }
 
-    return RichText(
+    return Text.rich(
+      TextSpan(style: style, children: textSpans),
       textAlign: textAlign,
-      text: TextSpan(style: style, children: textSpans),
     );
   }
 }

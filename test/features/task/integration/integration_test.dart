@@ -10,7 +10,8 @@ import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
 import '../model/task_mock_models.dart';
 

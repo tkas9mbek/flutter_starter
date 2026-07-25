@@ -1,23 +1,17 @@
 # Flutter Starter Template
 
-> **Version 2.1.0** - [View Changelog](CHANGELOG.md)
+> **Version 3.0.0** - [View Changelog](CHANGELOG.md)
 
-A production-ready Flutter template for building small to medium-sized applications, refined through years of real-world client projects.
-
-## Background
-
-Working in outsource companies and developing apps for various clients, I needed a reliable, flexible template that could be quickly adapted to different project requirements. After developing each app, I continuously updated and refined this template, incorporating best practices and lessons learned from production deployments.
-
-**Special Thanks:** This template builds upon the excellent foundation created by my former colleague **Andrey Kaschenko**. His original architecture and engineering approach continue to inspire and influence significant portions of this template.
+A production-ready Flutter template for building small to medium-sized applications.
 
 ### Why Separate UIKit and Toolkit?
 
-In client projects, it's common to have **multiple apps sharing the same backend or design system** (e.g., customer app + admin app). By separating the UIKit and Toolkit into independent packages:
+It's common for a template like this to grow into **multiple apps sharing the same backend or design system** (e.g., customer app + admin app). By separating the UIKit and Toolkit into independent packages:
 
 - **Toolkit** (shared utilities package): Share business logic, API clients, and utilities across apps
 - **UIKit** (Flutter widgets): Reuse UI components while allowing customization per app
 
-This modular approach has proven invaluable when building app families for clients, dramatically reducing development time and improving code consistency.
+This modular approach reduces development time and improves code consistency when building an app family from this template.
 
 ---
 
@@ -43,7 +37,7 @@ This template provides a complete, production-ready foundation with:
 - **Environment configuration** (mock, dev, prod)
 
 ### Code Quality
-- **145 tests passing** (100% pass rate)
+- **170+ tests passing** (100% pass rate)
 - **Comprehensive BLoC and integration tests**
 - **Full-stack integration testing** for all features
 - **Zero analyzer warnings**
@@ -71,8 +65,8 @@ fvm flutter run
 
 ### First 10-Minute Bootstrap Checklist
 
-1. Update API base URLs in `lib/core/consts/core_consts.dart`
-2. Update store URLs in `lib/core/consts/core_consts.dart`
+1. Update API base URLs in `lib/core/global/core_consts.dart` (a debug-only assert blocks a non-mock environment from running against the placeholder `example.com` hosts)
+2. Update store URLs in `lib/core/global/core_consts.dart`
 3. Confirm environment defaults (`mock`, `dev`, `prod`) in `lib/features/application/environment/model/app_environment.dart`
 4. Set your app version in `pubspec.yaml` and keep `CoreConsts.appVersion` in sync
 5. Run code generation if you changed models/routes/localization:
@@ -100,10 +94,10 @@ Optional strict lint gate:
 flutter_starter/
 ├── lib/
 │   ├── core/              # App-wide configuration
-│   │   ├── consts/        # Constants (API URLs, etc.)
+│   │   ├── global/        # Constants (API URLs, etc.), DI globals
 │   │   ├── di/            # Dependency injection modules
 │   │   ├── router/        # Navigation (auto_route)
-│   │   └── data/          # Core data layer
+│   │   └── notifications/ # Push notifications, remote config
 │   │
 │   ├── features/          # Feature modules
 │   │   ├── auth/          # Authentication (login, registration)
@@ -117,7 +111,7 @@ flutter_starter/
 │
 ├── packages/
 │   ├── starter_toolkit/   # Shared utilities and data infrastructure
-│   │   ├── data/          # API client, exceptions, executors
+│   │   ├── data/          # API client, exceptions, executors, cache
 │   │   ├── utils/         # Helpers, validators, formatters
 │   │   └── README.md
 │   │
@@ -131,9 +125,10 @@ flutter_starter/
 │       ├── lib/src/lints/ # Lint implementations
 │       └── README.md
 │
-├── test/                  # Tests (145 tests, 100% pass rate)
+├── test/                  # Tests (170+ tests across the app and packages)
 ├── docs/                  # Documentation
-├── CLAUDE.md              # AI assistant guide (14.5KB)
+├── AGENTS.md              # AI assistant guide (canonical rules, tool-agnostic)
+├── CLAUDE.md              # Claude Code-specific pointer to AGENTS.md
 └── README.md              # This file
 ```
 
@@ -199,25 +194,29 @@ return emit(State.success(data));
 return emit(State.failure(e));
 }
 
-// In UI - map to localized model
-final uiModel = ExceptionUiMapper(context).map(exception);
-FailureWidgetLarge(exception: exception, onRetry: _retry);
+// In UI - FailureWidget maps to a localized model internally
+FailureWidget.large(exception: exception, onRetry: _retry);
 ```
 
 ### 3. Repository Executors
 
-Decorator pattern for cross-cutting concerns:
+Decorator pattern for cross-cutting concerns, composed in DI modules from a
+single local `base` and injected into repositories via constructor params:
 
 ```dart
-final executor = RawRepositoryExecutor()
-        .withErrorHandling()  // Convert exceptions
-        .withRetry()          // Exponential backoff
-        .withCaching();       // Time-based cache
+// In the repository's registration closure:
+final base = const RawRepositoryExecutor()
+        .withErrorHandling()  // Convert exceptions (innermost)
+        .withRetry();         // Exponential backoff
 
+// In the repository:
 Future<List<User>> getUsers() {
    return _executor.execute(() => _dataSource.getUsers());
 }
 ```
+
+Caching is a `RepositoryCache` collaborator, not a decorator. See
+[docs/guides/repository_executor.md](docs/guides/repository_executor.md).
 
 ### 4. Theme System (UIKit)
 
@@ -265,9 +264,8 @@ open coverage/html/index.html
 ```
 
 **Test Summary:**
-- **145 tests passing** (100% pass rate)
-- **Unit Tests**: 111 tests (BLoC, repositories, data sources)
-- **Integration Tests**: 34 tests (full-stack flows)
+- **170+ tests passing** (100% pass rate) across the app and `starter_toolkit`
+- Unit tests (BLoC, repositories, data sources) and full-stack integration tests per feature
 
 **Integration Test Coverage:**
 - ✅ Auth (LoginBloc, RegistrationBloc)
@@ -292,15 +290,13 @@ dart run utils/generators/generate_exception_mapper.dart
 # Localization files
 fvm flutter --no-color pub global run intl_utils:generate
 
-# Asset references
-fvm flutter pub run spider build
-
-# App icons
-fvm flutter pub run flutter_launcher_icons
-
-# Splash screen
-fvm flutter pub run flutter_native_splash:create
+# Asset references (run inside packages/starter_uikit — spider.json is package-scoped)
+cd packages/starter_uikit && spider build
 ```
+
+App icons and the native splash screen are generated manually from
+`assets/external/logo.png` — `flutter_launcher_icons`/`flutter_native_splash`
+are not dependencies of this template.
 
 ---
 
@@ -311,7 +307,7 @@ fvm flutter pub run flutter_native_splash:create
 **What it provides:**
 - API client with type-safe methods
 - Exception system with sealed classes
-- Repository executors (retry, caching, error handling)
+- Repository executors (retry, error handling) + `RepositoryCache` collaborator for keyed TTL caching
 - Date/time helpers and extensions
 - Form validators and formatters
 - BLoC utilities
@@ -338,13 +334,10 @@ fvm flutter pub run flutter_native_splash:create
 
 ### Starter Lints (Custom Lint Rules)
 
-**What it provides:**
-- `avoid_widget_functions` - Prohibit `_build*` functions returning Widget
-- `prefer_arrow_except_build` - Arrow for callbacks, block for `build()` only
-- `always_spread_in_collections` - Require spread operator in collections
-- `bloc_no_bloc_dependency` - BLoCs cannot inject other BLoCs
-- `blank_line_before_return` - Require blank line before return
-- `sort_constructor_params` - Order: required → defaults → optional → super
+**What it provides:** 19 custom `custom_lint` rules covering widget structure,
+BLoC discipline, naming, formatting, and theming — see
+[packages/starter_lints/README.md](packages/starter_lints/README.md) for the
+full list with examples.
 
 **Use it for:** Enforcing consistent code style across the project
 
@@ -436,31 +429,31 @@ Edit theme files in `packages/starter_uikit/lib/theme/`:
 ## Tech Stack
 
 **Core:**
-- Flutter 3.32.0 (managed via FVM)
-- Dart 3.0.0+
+- Flutter 3.44.5 (managed via FVM)
+- Dart SDK ^3.12.0
 
 **State Management:**
 - flutter_bloc 9.1.1
-- freezed 2.5.8
+- freezed 3.2.3
 
 **Navigation:**
-- auto_route 9.2.2
+- auto_route 11.1.0
 
 **Dependency Injection:**
-- get_it 8.2.0
+- get_it 9.2.1
 
 **Networking:**
-- dio 5.9.0
+- dio 5.10.0
 
 **Storage:**
-- flutter_secure_storage 9.2.4
+- flutter_secure_storage 10.3.1
 
 **Forms:**
-- flutter_form_builder 10.1.0
+- flutter_form_builder 10.3.0
 
 **Localization:**
 - intl 0.20.2
-- intl_utils 2.8.8
+- intl_utils 2.8.14
 
 **Testing:**
 - bloc_test
@@ -471,12 +464,6 @@ Edit theme files in `packages/starter_uikit/lib/theme/`:
 
 ## License
 
-Private template for internal use. Feel free to fork and adapt for your projects.
-
----
-
-## Credits
-
-- **Original Architecture:** Andrey Kaschenko - The foundation and engineering principles
-- **Template Evolution:** Refined through multiple client projects
-- **Inspiration:** Real-world production requirements and challenges
+No license file is currently included — treat this repository as all-rights-reserved
+until one is added. Add a `LICENSE` file matching your intended terms (e.g. MIT)
+before relying on others being able to freely use or fork this template.

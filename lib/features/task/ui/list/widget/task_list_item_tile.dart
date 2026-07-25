@@ -5,7 +5,9 @@ import 'package:intl/intl.dart';
 import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
+import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 class TaskListItemTile extends StatelessWidget {
   const TaskListItemTile({required this.task, super.key});
@@ -31,7 +33,7 @@ class TaskListItemTile extends StatelessWidget {
           color: theme.error,
           borderRadius: BorderRadius.circular(12),
         ),
-        child: Icon(Icons.delete_outline, color: theme.onStatus, size: 28),
+        child: SvgIcon(UiSvgIcons.trashDelete, size: 28, color: theme.onStatus),
       ),
       onDismissed: (_) =>
           context.read<TaskDeleteBloc>().add(TaskDeleteEvent.deleted(task.id)),
@@ -69,8 +71,8 @@ class TaskListItemTile extends StatelessWidget {
                     const SizedBox(height: 4),
                     Row(
                       children: [
-                        Icon(
-                          Icons.access_time,
+                        SvgIcon(
+                          UiSvgIcons.clockTime,
                           size: 14,
                           color: theme.textSecondary,
                         ),

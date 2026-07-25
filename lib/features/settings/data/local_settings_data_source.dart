@@ -1,5 +1,5 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:starter/core/consts/storage_keys.dart';
+import 'package:starter/core/global/storage_keys.dart';
 import 'package:starter/features/settings/data/settings_data_source.dart';
 
 class LocalSettingsDataSource implements SettingsDataSource {

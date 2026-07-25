@@ -5,11 +5,12 @@ import 'package:starter/features/profile/data/remote_profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_repository.dart';
 import 'package:starter/features/profile/model/user.dart';
-import 'package:starter/features/profile/ui/bloc/user_bloc.dart';
+import 'package:starter/features/profile/ui/overview/bloc/user_bloc.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
-import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
+import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
 import '../model/profile_mock_models.dart';
 
@@ -124,10 +125,7 @@ void main() {
         const UserState.loading(),
         predicate<UserState>(
           (state) =>
-              state.whenOrNull(
-                failure: (exception) => exception is ServerException,
-              ) ??
-              false,
+              state is FailureUserState && state.exception is ServerException,
         ),
       ],
       verify: (_) => verify(

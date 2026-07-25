@@ -6,9 +6,8 @@ class MockProfileDataSource implements ProfileDataSource {
 
   @override
   Future<User> getUserProfile() async {
-    await Future.delayed(const Duration(milliseconds: 800));
+    await Future.delayed(const Duration(seconds: 2));
 
-    // Return mock user profile
     return User(
       id: 'mock_user_id_12345',
       name: 'John Doe',

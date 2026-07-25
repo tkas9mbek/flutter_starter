@@ -1,0 +1,170 @@
+[
+  {
+    "phone_code": "996",
+    "regex": "^[0-9]{9}$",
+    "country_code": "kg",
+    "name": {
+      "en": "Kyrgyzstan",
+      "ky": "Кыргызстан",
+      "ru": "Кыргызстан"
+    },
+    "mask": "(###) ###-###",
+    "icon": "🇰🇬"
+  },
+  {
+    "phone_code": "7",
+    "regex": "^[0-9]{10}$",
+    "country_code": "kz",
+    "name": {
+      "en": "Kazakhstan",
+      "ky": "Казакстан",
+      "ru": "Казахстан"
+    },
+    "mask": "(###) ###-##-##",
+    "icon": "🇰🇿"
+  },
+  {
+    "phone_code": "7",
+    "regex": "^[0-9]{10}$",
+    "country_code": "ru",
+    "name": {
+      "en": "Russia",
+      "ky": "Орусия",
+      "ru": "Россия"
+    },
+    "mask": "(###) ###-##-##",
+    "icon": "🇷🇺"
+  },
+  {
+    "phone_code": "1",
+    "regex": "^[0-9]{10}$",
+    "country_code": "us",
+    "name": {
+      "en": "USA",
+      "ky": "АКШ",
+      "ru": "США"
+    },
+    "mask": "(###) ###-####",
+    "icon": "🇺🇸"
+  },
+  {
+    "phone_code": "1",
+    "regex": "^[0-9]{10}$",
+    "country_code": "ca",
+    "name": {
+      "en": "Canada",
+      "ky": "Канада",
+      "ru": "Канада"
+    },
+    "mask": "(###) ###-####",
+    "icon": "🇨🇦"
+  },
+  {
+    "phone_code": "49",
+    "regex": "^[0-9]{10,11}$",
+    "country_code": "de",
+    "name": {
+      "en": "Germany",
+      "ky": "Германия",
+      "ru": "Германия"
+    },
+    "mask": "#### ###-####",
+    "icon": "🇩🇪"
+  },
+  {
+    "phone_code": "90",
+    "regex": "^[0-9]{10}$",
+    "country_code": "tr",
+    "name": {
+      "en": "Turkey",
+      "ky": "Түркия",
+      "ru": "Турция"
+    },
+    "mask": "(###) ###-##-##",
+    "icon": "🇹🇷"
+  },
+  {
+    "phone_code": "998",
+    "regex": "^[0-9]{9}$",
+    "country_code": "uz",
+    "name": {
+      "en": "Uzbekistan",
+      "ky": "Өзбекистан",
+      "ru": "Узбекистан"
+    },
+    "mask": "(##) ###-##-##",
+    "icon": "🇺🇿"
+  },
+  {
+    "phone_code": "993",
+    "regex": "^[0-9]{8}$",
+    "country_code": "tm",
+    "name": {
+      "en": "Turkmenistan",
+      "ky": "Түркмөнстан",
+      "ru": "Туркменистан"
+    },
+    "mask": "##-##-##-##",
+    "icon": "🇹🇲"
+  },
+  {
+    "phone_code": "992",
+    "regex": "^[0-9]{9}$",
+    "country_code": "tj",
+    "name": {
+      "en": "Tajikistan",
+      "ky": "Тажикистан",
+      "ru": "Таджикистан"
+    },
+    "mask": "(##) ###-##-##",
+    "icon": "🇹🇯"
+  },
+  {
+    "phone_code": "39",
+    "regex": "^[0-9]{9,10}$",
+    "country_code": "it",
+    "name": {
+      "en": "Italy",
+      "ky": "Италия",
+      "ru": "Италия"
+    },
+    "mask": "### ###-####",
+    "icon": "🇮🇹"
+  },
+  {
+    "phone_code": "86",
+    "regex": "^[0-9]{11}$",
+    "country_code": "cn",
+    "name": {
+      "en": "China",
+      "ky": "Кытай",
+      "ru": "Китай"
+    },
+    "mask": "### #### ####",
+    "icon": "🇨🇳"
+  },
+  {
+    "phone_code": "995",
+    "regex": "^[0-9]{9}$",
+    "country_code": "ge",
+    "name": {
+      "en": "Georgia",
+      "ky": "Грузия",
+      "ru": "Грузия"
+    },
+    "mask": "(###) ##-##-##",
+    "icon": "🇬🇪"
+  },
+  {
+    "phone_code": "82",
+    "regex": "^[0-9]{9,10}$",
+    "country_code": "kr",
+    "name": {
+      "en": "South Korea",
+      "ky": "Түштүк Корея",
+      "ru": "Южная Корея"
+    },
+    "mask": "##-###-####",
+    "icon": "🇰🇷"
+  }
+]

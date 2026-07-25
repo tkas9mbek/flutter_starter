@@ -1,8 +1,6 @@
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
 
-/// Raw executor that directly executes functions without any decoration.
-///
-/// This is the base implementation that other decorators wrap.
+/// Innermost executor that runs the function directly; all decorators wrap this.
 class RawRepositoryExecutor extends RepositoryExecutor {
   const RawRepositoryExecutor();
 

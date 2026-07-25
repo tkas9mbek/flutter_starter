@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -14,7 +14,7 @@ class ThemeInBuildOnly extends DartLintRule {
         'Do not store theme in state fields. '
         'Get theme in build() as a local variable.',
     correctionMessage: 'Move ThemeProvider.of(context) into build().',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   static const _paramCode = LintCode(
@@ -24,7 +24,7 @@ class ThemeInBuildOnly extends DartLintRule {
         'Each widget should get theme from context.',
     correctionMessage:
         'Remove theme parameter and use ThemeProvider.of(context) in build().',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   static const _themeTypes = {'AppTheme', 'AppTextStyles', 'ThemeData'};
@@ -32,7 +32,7 @@ class ThemeInBuildOnly extends DartLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     final path = resolver.source.uri.path;

@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/l10n/generated/l10n.dart';
+import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 class TaskDetailsContent extends StatelessWidget {
   const TaskDetailsContent({required this.task, super.key});
@@ -21,25 +23,25 @@ class TaskDetailsContent extends StatelessWidget {
         Text(task.title, style: textStyles.boldBody16),
         const SizedBox(height: 24),
         _DetailRow(
-          icon: Icons.calendar_today,
+          icon: UiSvgIcons.calendarDates,
           label: localizer.calendar,
           value: DateFormat('dd MMMM yyyy', 'ru').format(task.date),
         ),
         const SizedBox(height: 16),
         _DetailRow(
-          icon: Icons.access_time,
+          icon: UiSvgIcons.clockTime,
           label: localizer.startTime,
           value: DateFormat('HH:mm').format(task.startTime),
         ),
         const SizedBox(height: 16),
         _DetailRow(
-          icon: Icons.access_time_filled,
+          icon: UiSvgIcons.clockTime,
           label: localizer.endTime,
           value: DateFormat('HH:mm').format(task.endTime),
         ),
         const SizedBox(height: 16),
         _DetailRow(
-          icon: Icons.check_circle_outline,
+          icon: UiSvgIcons.checkMark,
           label: localizer.status,
           value: task.isCompleted
               ? localizer.completed
@@ -64,7 +66,8 @@ class _DetailRow extends StatelessWidget {
     required this.value,
   });
 
-  final IconData icon;
+  /// Asset path from `UiSvgIcons`.
+  final String icon;
   final String label;
   final String value;
 
@@ -75,7 +78,7 @@ class _DetailRow extends StatelessWidget {
 
     return Row(
       children: [
-        Icon(icon, size: 20, color: theme.textSecondary),
+        SvgIcon(icon, size: 20, color: theme.textSecondary),
         const SizedBox(width: 12),
         Expanded(
           child: Column(

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/form/decoration/text_field_decoration.dart';
 
+/// Default [TextFieldDecoration]: wraps the field in a rounded, filled
+/// container (theme surface unless [color] is set) with an optional border.
 class FilledTextFieldDecoration with TextFieldDecoration {
   const FilledTextFieldDecoration({this.hasBorder = false, this.color});
 
@@ -16,7 +18,7 @@ class FilledTextFieldDecoration with TextFieldDecoration {
       constraints: const BoxConstraints(minHeight: 52),
       padding: const EdgeInsets.fromLTRB(12, 7, 12, 8),
       decoration: BoxDecoration(
-        color: color ?? theme.background,
+        color: color ?? theme.surface,
         borderRadius: BorderRadius.circular(12),
         border: hasBorder ? Border.all(color: theme.border, width: 1) : null,
       ),

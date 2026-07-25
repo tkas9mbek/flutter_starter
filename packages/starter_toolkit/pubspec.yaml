@@ -4,37 +4,37 @@ description: "Mobile application for starter"
 
 publish_to: 'none'
 
-version: 2.1.0
+version: 4.0.0
 
 resolution: workspace
 
 environment:
-  sdk: ^3.8.0
+  sdk: ^3.12.0
 
 dependencies:
   flutter:
     sdk: flutter
-  auto_route: ^9.2.2
-  collection: ^1.19.1
-  dio: ^5.9.0
-  equatable: ^2.0.7
-  flutter_bloc: ^9.1.1
-  flutter_form_builder: ^10.1.0
+  auto_route:
+  collection:
+  dio:
+  equatable:
+  flutter_bloc:
+  flutter_form_builder:
   freezed_annotation:
-  http_parser: ^4.1.2
-  image_picker: ^1.2.0
-  intl: ^0.20.2
-  intl_utils: ^2.8.8
-  mask_text_input_formatter: ^2.9.0
-  permission_handler: ^12.0.1
-  url_launcher: ^6.3.2
+  http_parser:
+  image_picker:
+  intl:
+  intl_utils:
+  mask_text_input_formatter:
+  permission_handler:
+  url_launcher:
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: ^2.4.0
+  build_runner:
   freezed:
-  json_serializable: ^6.9.5
+  json_serializable:
 
 flutter:
   uses-material-design: true

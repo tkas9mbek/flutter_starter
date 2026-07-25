@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart' show ErrorSeverity;
+import 'package:analyzer/error/error.dart' show DiagnosticSeverity;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
@@ -19,7 +19,7 @@ class AvoidMutableBlocFields extends DartLintRule {
     correctionMessage:
         'Move mutable data into the Freezed state class. Mark this field '
         'final, or expose it through a state property.',
-    errorSeverity: ErrorSeverity.WARNING,
+    errorSeverity: DiagnosticSeverity.WARNING,
   );
 
   static const _exemptTypeSuffixes = <String>[
@@ -32,7 +32,7 @@ class AvoidMutableBlocFields extends DartLintRule {
   @override
   void run(
     CustomLintResolver resolver,
-    ErrorReporter reporter,
+    DiagnosticReporter reporter,
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {
@@ -42,7 +42,7 @@ class AvoidMutableBlocFields extends DartLintRule {
         return;
       }
 
-      final superclassName = extendsClause.superclass.name2.lexeme;
+      final superclassName = extendsClause.superclass.name.lexeme;
 
       if (superclassName != 'Bloc' && superclassName != 'Cubit') {
         return;

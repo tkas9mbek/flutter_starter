@@ -3,34 +3,39 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/utils/bloc/refreshable_bloc.dart';
 import 'package:starter_toolkit/utils/date/date_time_extension.dart';
 
 part 'tasks_list_bloc.freezed.dart';
 
 @freezed
-class TasksListEvent with _$TasksListEvent {
+sealed class TasksListEvent with _$TasksListEvent {
   const factory TasksListEvent.requested() = _RequestedTasksListEvent;
+
+  const factory TasksListEvent.refreshed() = _RefreshedTasksListEvent;
 }
 
 @freezed
-class TasksListState with _$TasksListState {
+sealed class TasksListState with _$TasksListState {
   const TasksListState._();
 
-  const factory TasksListState.initial() = _InitialTasksListState;
-  const factory TasksListState.loading() = _LoadingTasksListState;
+  const factory TasksListState.initial() = InitialTasksListState;
+  const factory TasksListState.loading() = LoadingTasksListState;
   const factory TasksListState.success({
     required List<Task> tasks,
     required Map<DateTime, List<Task>> groupedTasks,
-  }) = _SuccessTasksListState;
+  }) = SuccessTasksListState;
   const factory TasksListState.failure(AppException exception) =
-      _FailureTasksListState;
+      FailureTasksListState;
 
-  bool get isLoading => this is _LoadingTasksListState;
+  bool get isLoading => this is LoadingTasksListState;
 }
 
-class TasksListBloc extends Bloc<TasksListEvent, TasksListState> {
+class TasksListBloc extends Bloc<TasksListEvent, TasksListState>
+    with RefreshableBloc {
   TasksListBloc(this._repository) : super(const TasksListState.initial()) {
     on<_RequestedTasksListEvent>(_onRequested);
+    on<_RefreshedTasksListEvent>(_onRefreshed);
   }
 
   final TaskRepository _repository;
@@ -41,6 +46,23 @@ class TasksListBloc extends Bloc<TasksListEvent, TasksListState> {
   ) async {
     emit(const TasksListState.loading());
 
+    return _load(emit);
+  }
+
+  /// Reload without the loading state — the pull-to-refresh indicator is
+  /// already visible.
+  Future<void> _onRefreshed(
+    _RefreshedTasksListEvent event,
+    Emitter<TasksListState> emit,
+  ) async {
+    try {
+      return await _load(emit);
+    } finally {
+      refreshing = false;
+    }
+  }
+
+  Future<void> _load(Emitter<TasksListState> emit) async {
     try {
       final tasks = await _repository.getTasks();
       final groupedTasks = _groupTasksByDate(tasks);
@@ -51,6 +73,13 @@ class TasksListBloc extends Bloc<TasksListEvent, TasksListState> {
     } on AppException catch (e) {
       return emit(TasksListState.failure(e));
     }
+  }
+
+  @override
+  Future<void> close() {
+    dispose();
+
+    return super.close();
   }
 
   Map<DateTime, List<Task>> _groupTasksByDate(List<Task> tasks) {

@@ -7,46 +7,47 @@ import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 part 'login_bloc.freezed.dart';
 
 @freezed
-class LoginEvent with _$LoginEvent {
+sealed class LoginEvent with _$LoginEvent {
   const factory LoginEvent.submitted(LoginForm form) = _SubmittedLoginEvent;
 }
 
 @freezed
-class LoginState with _$LoginState {
+sealed class LoginState with _$LoginState {
   const LoginState._();
 
-  const factory LoginState.initial() = _InitialLoginState;
+  const factory LoginState.initial() = InitialLoginState;
 
-  const factory LoginState.loading() = _LoadingLoginState;
+  const factory LoginState.loading() = LoadingLoginState;
 
-  const factory LoginState.success() = _SuccessLoginState;
+  const factory LoginState.success() = SuccessLoginState;
 
-  const factory LoginState.failure(AppException exception) = _FailureLoginState;
+  const factory LoginState.failure(AppException exception) = FailureLoginState;
 
-  bool get isLoading => this is _LoadingLoginState;
+  bool get isLoading => this is LoadingLoginState;
 }
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc(this.authRepository) : super(const LoginState.initial()) {
-    on<LoginEvent>(
-      (event, emit) => event.when(
-        submitted: (form) async {
-          emit(const LoginState.loading());
-
-          try {
-            await authRepository.login(
-              phone: form.phone,
-              password: form.password,
-            );
-
-            return emit(const LoginState.success());
-          } on AppException catch (e) {
-            return emit(LoginState.failure(e));
-          }
-        },
-      ),
-    );
+    on<_SubmittedLoginEvent>(_onSubmitted);
   }
 
   final AuthRepository authRepository;
+
+  Future<void> _onSubmitted(
+    _SubmittedLoginEvent event,
+    Emitter<LoginState> emit,
+  ) async {
+    emit(const LoginState.loading());
+
+    try {
+      await authRepository.login(
+        phone: event.form.phone,
+        password: event.form.password,
+      );
+
+      return emit(const LoginState.success());
+    } on AppException catch (e) {
+      return emit(LoginState.failure(e));
+    }
+  }
 }

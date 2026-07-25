@@ -4,10 +4,7 @@ import 'dart:ui' as ui;
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
-/// Service for capturing screenshots of Flutter widgets.
-///
-/// Provides functionality to capture screenshots of widgets marked with GlobalKey
-/// with optimized quality settings.
+/// Captures PNG screenshots of widgets wrapped in a [RepaintBoundary], addressed by [GlobalKey].
 class AppScreenshotHelper {
   /// Captures a screenshot of a widget identified by [key].
   ///

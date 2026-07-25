@@ -1,102 +1,82 @@
 # AGENTS.md
 
-> **AI Context**: This file provides guidance to Codex (Codex.ai/code) when working with this repository. Follow these instructions precisely.
+> **AI Context**: Canonical rules for any AI coding agent (Claude Code, Codex, Cursor, …) working in this repository. This is the single source of truth — tool-specific files (e.g. `CLAUDE.md`) layer on top of it, they don't repeat it.
 
 ## Read This First
 
-1. Start with this file for operational rules.
-2. Use `docs/ai-context/` for concise per-topic references.
-3. Use `docs/guides/` + `docs/rules/` as source-of-truth details when conflicts arise.
+1. Start here for operational rules, commands, and structure.
+2. `docs/ai-context/` — per-topic rule-ID references (architecture, bloc, exception, repository-executor, testing, style/naming, code review, git, estimation). Read the relevant one before touching that area; rule IDs below (`A1`, `BLOC-1`, `S1`, `T1`, …) are keys into those files.
+3. `docs/guides/` + `docs/rules/` — full prose. Source of truth if anything here conflicts.
 
 ## Project Overview
 
-Flutter starter template using:
-- **Flutter 3.32.0** (managed via FVM)
-- **State Management**: BLoC pattern
-- **Navigation**: auto_route
-- **DI**: GetIt
-- **Architecture**: Three-layer with strict dependency rules
+Flutter starter template:
+- **Flutter 3.44.5** (managed via FVM) · **State**: BLoC · **Navigation**: auto_route · **DI**: GetIt
+- **Architecture**: three-layer (Presentation → Domain → Data) with strict dependency rules
 
-**Local Packages:**
-- `starter_toolkit`: Common utilities and configurations
-- `starter_uikit`: Reusable UI components and theme system
-- `starter_lints`: Custom lint rules for code consistency
+**Local packages** (`packages/`): `starter_toolkit` (utilities, exceptions), `starter_uikit` (widgets, theme), `starter_lints` (custom lint rules).
 
 ---
 
-## Quick Reference
+## Essential Commands
 
-### Essential Commands
-
-**Development:**
 ```bash
-fvm flutter pub get                                              # Install dependencies
-fvm flutter run                                                   # Run app
-fvm flutter pub run build_runner build --delete-conflicting-outputs  # Generate code
-fvm flutter analyze                                              # Run analyzer
-fvm dart run custom_lint --no-fatal-infos --no-fatal-warnings   # Run custom lints
-fvm dart run custom_lint                                         # Strict custom lints (fatal warnings/infos)
+fvm flutter pub get                                                   # Install deps
+fvm flutter run                                                       # Run app
+fvm flutter analyze                                                   # Analyzer
+fvm dart run custom_lint --no-fatal-infos --no-fatal-warnings         # Custom lints (soft)
+fvm dart run custom_lint                                              # Custom lints (fatal warnings/infos)
+fvm flutter test --concurrency 4                                      # Tests
+fvm flutter test --coverage --concurrency 4                           # Tests + coverage
+fvm flutter pub run build_runner build --delete-conflicting-outputs   # Routes / JSON / Freezed
+dart run utils/generators/generate_exception_mapper.dart              # Exception mapper
+fvm flutter --no-color pub global run intl_utils:generate             # Localization
+cd packages/starter_uikit && spider build                             # Asset refs (UiSvgIcons, Images, fonts)
 ```
 
-**Testing:**
-```bash
-fvm flutter test --concurrency 4                                 # Run all tests (stable local concurrency)
-fvm flutter test --coverage --concurrency 4                      # Run with coverage
-```
+**Codegen triggers**: build_runner after router/JSON/Freezed model changes (incl. BLoC events/states) · exception mapper after `AppException` changes · intl_utils after ARB edits · spider after assets change in `packages/starter_uikit` (config: `spider.json`; NEVER hand-edit `lib/resources/`).
 
-**Code Generation:**
-```bash
-fvm flutter pub run build_runner build --delete-conflicting-outputs  # Routes, JSON, Freezed
-dart run utils/generators/generate_exception_mapper.dart                     # Exception mapper methods
-fvm flutter --no-color pub global run intl_utils:generate        # Localization
-```
-
-### Localization
-
-- **Tool**: `intl_utils` (flutter_intl)
-- **Main locale**: English (`en`)
-- **Class name**: `Localizer` (main app), `ToolkitLocalizer` (toolkit), `UikitLocalizer` (uikit)
-- **ARB location**: `lib/l10n/intl_en.arb` (main), `intl_ru.arb` (optional)
-- **Generate**: `fvm flutter --no-color pub global run intl_utils:generate` after modifying ARB files
-
-**AI Instruction**: ALL user-facing strings must use `Localizer.of(context)` - no hardcoded strings.
-
-### Code Generation Triggers
-
-- **build_runner**: After modifying router configs, JSON models, Freezed models (including BLoC events/states)
-- **generate_exception_mapper.dart**: After adding/modifying AppException classes
-- **intl_utils**: After modifying ARB files
-
-**Note**: BLoC events and states use Freezed with `@freezed` annotation. Run `build_runner` after modifying any BLoC event/state classes.
+**Localization**: `intl_utils`, English base (`intl_en.arb`), optional `intl_ru.arb`. Classes: `Localizer` (app), `ToolkitLocalizer`, `UikitLocalizer`. ALL user-facing strings go through `Localizer.of(context)` — no hardcoded strings (rule `A7`).
 
 ---
 
-## Architecture Summary
-
-### Layer Structure
+## Architecture — `docs/ai-context/architecture.md`
 
 ```
-Presentation (UI, BLoC) → Domain (Repository, Abstract DS) → Data (DS Impl, ApiClient)
+Presentation (Flutter, BLoC) → Domain (Repo, AbstractDS, Model) ← Data (DS impl, ApiClient)
 ```
 
-### Key Principles
+| ID | Rule |
+|---|---|
+| A1 | Repositories are concrete facades over abstract DataSources — never make a repository abstract. |
+| A2 | Abstract DataSource in `domain/`; implementations (remote/local/mock) in `data/`. |
+| A3 | BLoCs never depend on other BLoCs — coordinate at UI layer (`BlocListener`, route extras). |
+| A4 | Repositories never depend on other repositories. |
+| A5 | All deps wired via GetIt modules (`extends AppModule`) under `configs/`. |
+| A6 | Errors crossing data → presentation are `AppException` (sealed, Freezed). |
+| A7 | User-facing strings via `Localizer.of(context)`. |
+| A8 | Colors/typography via `ThemeProvider.of(context)`. |
 
-1. **Dependency Inversion**: Abstract DataSources enable flexible implementations
-2. **Concrete Repositories**: Repositories are concrete (not abstract) - just facades
-3. **No Flutter in Data/Domain**: Only Presentation layer imports Flutter
-4. **Dependency Injection**: All dependencies via GetIt modules
-5. **Two-Layer Exceptions**: Domain exceptions + UI models (with localization)
-6. **Decorator Pattern**: Repository executors and exception mappers use decorators
+Cross-cutting repo concerns: modules compose one executor per distinct behavior from a single local `base = const RawRepositoryExecutor().withErrorHandling()` (`withErrorHandling()` innermost) and inject via constructor params; repositories never compose. Caching is the `RepositoryCache` collaborator, not a decorator — see [docs/ai-context/repository_executor.md](docs/ai-context/repository_executor.md). New shared widget/util → check `starter_uikit`/`starter_toolkit` first.
 
-### Exception Handling
+**Feature folder:**
+```
+lib/features/{feature}/
+├── data/        # DS impl (remote/local/mock)
+├── domain/      # AbstractDS + Repository
+├── model/       # domain models
+├── configs/     # GetIt module
+└── ui/          # subfeature folders ONLY — no flat bloc/screen/widget
+```
+`ui/{subfeature}/` holds `bloc/`, `screen/`, `widget/` (+ `model/` for forms), ≥2 files (bloc+screen, or screen+extracted widgets). Cross-subfeature widgets → `starter_uikit` or the owning subfeature. Example: `lib/features/task/ui/{list,details,calendar,search,create}/`.
 
-**Two-layer architecture:**
-- **Data Layer**: `AppException` - Sealed classes with `@ExceptionUiConfig`
-- **UI Layer**: `ExceptionUiModel` - Equatable with localized messages
+---
 
-**Usage:**
+## Exceptions — `docs/ai-context/exception.md`
+
+Two layers: `AppException` (sealed Freezed, data/domain — BLoC stores **this**) → `ExceptionUiModel` (Equatable, localized, UI converts at render via `ExceptionUiMapper(context)`).
+
 ```dart
-// BLoC stores domain exception
 try {
   final data = await _repository.getData();
 
@@ -105,462 +85,130 @@ try {
   return emit(MyState.failure(e));
 }
 
-// UI handles failure state with Freezed pattern matching
-BlocBuilder<MyBloc, MyState>(
-  builder: (context, state) => state.maybeMap(
-    success: (successState) => SuccessView(data: successState.data),
-    failure: (failureState) => FailureWidgetLarge(
-      exception: failureState.exception,
-      onRetry: _retry,
-    ),
-    orElse: () => const CustomCircularProgressIndicator(),
-  ),
-)
-```
-
-**Adding new exceptions:**
-1. Add sealed class extending `AppException` with `@ExceptionUiConfig`
-2. Run `dart run utils/generators/generate_exception_mapper.dart`
-3. Generator updates mapper and decorator automatically
-
-### Repository Executors
-
-**Decorator pattern for cross-cutting concerns:**
-```dart
-final executor = RawRepositoryExecutor()
-  .withErrorHandling()  // Converts exceptions to AppException
-  .withRetry()          // Automatic retry with exponential backoff
-  .withCaching();       // Time-based caching with cleanup
-```
-
----
-
-## Project Structure
-
-### Feature Layout
-
-```
-lib/features/{feature}/
-├── data/           # DataSource implementations (remote, local, mock)
-├── domain/         # Repository (concrete) + abstract DataSource interface
-├── model/          # Domain models
-├── configs/        # DI module (extends AppModule)
-└── ui/             # BLoC, screens, widgets
-```
-
-### UI Organization
-
-**Simple features**: Flat `bloc/`, `screen/`, `widget/`
-
-**Complex features**: Subdivided by flow (list/, details/, operation/)
-
----
-
-## Testing Requirements
-
-### Current Status (May 2026)
-
-- **145 tests passing** (100% pass rate)
-- **Unit Tests**: 111 tests (BLoC, repositories, data sources)
-- **Integration Tests**: 34 tests (full-stack flows for all features)
-
-### Test Structure
-
-**AI Instruction**: All tests organized under `test/features/{feature}/`
-
-```
-test/features/{feature}/
-├── assets/          # JSON test data files
-├── model/           # Mock model helpers (use fromJson)
-├── data/            # Repository and DataSource unit tests
-├── bloc/            # BLoC unit tests
-└── integration/     # Full-stack integration tests
-```
-
-### Testing Strategy
-
-1. **Data Layer Unit Tests** - Repository + DataSource with mocked dependencies
-2. **BLoC Unit Tests** - Test all events (success, empty, failure)
-3. **Integration Tests** - Full flow with only ApiClient mocked
-
-**AI Instruction**: ALWAYS use JSON files with fromJson instead of creating mocks in code.
-
-### Mocktail Fallback Values
-
-**AI Instruction**: Integration tests require fallback value registration for types used in `any(named:)` matchers:
-
-```dart
-// Required for ApiClient mocking
-setUpAll(() {
-  registerFallbackValue(HttpMethod.get);
-  registerFallbackValue(_fakeFromJson);  // Function matching signature
-});
-
-User _fakeFromJson(Map<String, dynamic> json) => User.fromJson(json);
-```
-
-**Common issue**: `MissingStubError` when using `any(named: 'method')` or `any(named: 'fromJson')` without registering fallbacks.
-
-### Tests with Retry Logic
-
-**AI Instruction**: Match `wait` to the retry configuration used in that test.
-
-- If using production-like retries (`retryDelay: 2s`, `maxRetries: 3`), use longer waits (around 8s).
-- If using test retries (`retryDelay: 10ms`), keep waits short (around 300ms).
-
----
-
-## Code Style
-
-### Key Rules
-
-- **Trailing commas**: Required
-- **Quotes**: Single quotes preferred
-- **Imports**: Package imports only (no relative imports in lib/)
-- **Widgets**: Never use functions that return widgets - extract to widget classes
-- **Class Size**: Keep < 100 lines; split if > 200 lines
-- **BLoC Separation**: BLoCs must NOT depend on other BLoCs - use UI layer for coordination
-- **Arrow Syntax**: Always use `=>`, except: `build()` method and nested callbacks like `() => setState(() {})`
-- **Spread in Collections**: Always use `if (cond) ...[Widget()]` even for single widget
-
-### BLoC Formatting Rules
-
-**AI Instruction**: ALL BLoC event handlers must follow these rules:
-
-1. **Return emit pattern**: Always `return emit(state)` for final emit
-2. **Whitespace separation**: Add blank line before every `emit()` call
-3. **Variable naming**: Use descriptive names (`successState`) not `s`
-4. **Helper methods**: Add `isLoading` getters using `this is _LoadingMyState`
-5. **Freezed for BLoC**: Use `@freezed` annotation for all BLoC events and states
-
-**Correct Example:**
-```dart
-Future<void> _onRequested(
-  _RequestedMyEvent event,
-  Emitter<MyState> emit,
-) async {
-  emit(const MyState.loading());
-
-  try {
-    final data = await _repository.getData();
-
-    return emit(MyState.success(data));
-  } on AppException catch (e) {
-    return emit(MyState.failure(e));
-  }
+// UI
+builder: (context, state) => switch (state) {
+  SuccessMyState(:final data) => SuccessView(data: data),
+  FailureMyState(:final exception) => FailureWidget.large(exception: exception, onRetry: _retry),
+  InitialMyState() || LoadingMyState() => const CustomCircularProgressIndicator.adaptive(),
 }
-
-// State helper (inside Freezed class with const MyState._();)
-bool get isLoading => this is _LoadingMyState;
 ```
 
-### Comments and Documentation
-
-**IMPORTANT**: Write self-documenting code. Minimize inline comments.
-
-- ✅ Public classes in shared modules: 1-3 line `///` summary
-- ✅ Public methods if needed: Brief description
-- ❌ Do NOT comment obvious code
+New exception: sealed factory + `@ExceptionUiConfig` in `starter_toolkit` → add ARB key → run the exception-mapper generator + intl_utils. Never hand-edit `ExceptionUiMapper*`. Snackbars: `NotificationSnackBar.showExceptionMessage(context, exception: ...)`.
 
 ---
 
-## Reusing Toolkit and UIKit
+## BLoC — `docs/ai-context/bloc.md`
 
-**AI Instruction**: ALWAYS check toolkit/uikit before implementing new functionality.
-
-### starter_toolkit
-
-**Available:**
-- `DateTimeHelpers` extension: `isToday`, `isTomorrow`, `isSameDay`
-- Date formatting: `getLocalizedDateLabel()`, `getFormattedTimeRange()`
-- Validators: Phone, email, password, URL
-- Exception handling: `AppException` hierarchy
-
-### starter_uikit
-
-**Available:**
-- **Status Widgets**: `EmptyInformationBody`, `FailureWidgetLarge`, `FailureWidgetSmall`, `CustomCircularProgressIndicator`
-- **Notifications**: `NotificationSnackBar`
-- **Theme**: `AppTheme`, `AppTextStyles`, `ThemeProvider`
-- **AppBars**: `TitleAppBar`, `BaseAppBar`, `TransparentAppBar`
-- **Forms**: `AppTextField`, `AppDropdownField`, `AppCheckbox`, `AppDatePickerField`
-- **Buttons**: `AppElevatedButton`, `AppOutlinedButton`
-
-**AI Instruction - Import Strategy:**
-- **Recommended**: Import specific files (e.g., `widgets/app_bar/title_app_bar.dart`)
-- **Barrel export** (`starter_uikit.dart`): Only for status widgets used together
-- Specific imports reduce compilation time and make dependencies explicit
-
-**Import Examples:**
-```dart
-// Status widgets (barrel export)
-import 'package:starter_uikit/starter_uikit.dart';
-
-// Other widgets - explicit imports (recommended)
-import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
-import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
-import 'package:starter_uikit/widgets/notification/notification_snack_bar.dart';
-import 'package:starter_uikit/theme/theme_provider.dart';
-```
-
-**Usage:**
-```dart
-// ✓ Correct - Use uikit widgets with Freezed pattern matching
-BlocBuilder<MyBloc, MyState>(
-  builder: (context, state) => state.maybeMap(
-    success: (successState) {
-      if (successState.data.isEmpty) {
-        return EmptyInformationBody(text: Localizer.of(context).noData);
-      }
-      return SuccessView(data: successState.data);
-    },
-    failure: (failureState) => FailureWidgetLarge(
-      exception: failureState.exception,
-      onRetry: _retry,
-    ),
-    orElse: () => const CustomCircularProgressIndicator(),
-  ),
-)
-
-// ✗ Wrong - Manual implementation
-orElse: () => const Center(child: CircularProgressIndicator()),
-```
-
-**Theme Usage:**
-```dart
-// ✓ Correct - Use ThemeProvider
-final theme = ThemeProvider.of(context).theme;
-final textStyles = ThemeProvider.of(context).textStyles;
-
-Text('Hello', style: textStyles.mediumBody14)
-
-// ✗ Wrong - Hard-coded styles
-Text('Hello', style: TextStyle(fontSize: 14))
-```
-
----
-
-## Important Instructions
-
-**AI Instruction**: Follow these rules strictly:
-
-1. **Read Documentation First**: Check docs for AI Instructions before coding
-2. **Reuse Before Creating**: Check toolkit/uikit before implementing new widgets
-3. **Localization Required**: ALL user-facing strings use `Localizer.of(context)`
-4. **Theme Awareness**: ALL colors/styles use `ThemeProvider`
-5. **Form Widgets**: Use uikit widgets, never FormBuilder directly
-6. **Single Responsibility**: Extract widgets when class > 100 lines
-7. **No Useless Comments**: Only `///` doc comments for public APIs
-8. **Descriptive Names**: Never use `s` for state - use `successState`, `failureState`
-9. **State Helpers**: Add getters instead of verbose pattern matching in multiple places
-10. **Async Context**: Use `if (!mounted) return` after async operations
-11. **Dependency Sorting**: SDK dependencies first, then alphabetical
-12. **BLoC Independence**: BLoCs must NOT inject other BLoCs - coordinate via UI layer
-13. **Arrow vs Block**: Always use `=>`, except `build()` and nested callbacks `() => setState(() {})`
-14. **Always Spread**: Use `if (cond) ...[Widget()]` in collections, even for single widget
-15. **Freezed for BLoC**: Use `@freezed` for all BLoC events and states with factory constructors
-16. **Freezed Pattern Matching**: Use `.when()`, `.maybeMap()`, or `.mapOrNull()` for state handling in UI
-
-**File Creation:**
-- **NEVER** create files unless absolutely necessary
-- **ALWAYS** prefer editing existing files
-- **NEVER** proactively create documentation files unless requested
-
----
-
-## BLoC State Patterns
-
-**AI Instruction**: Follow these patterns for better state management. Use Freezed for all BLoC events and states.
-
-### Why Freezed for BLoC?
-
-- **Automatic equality**: Freezed generates `==` and `hashCode` for proper state comparison
-- **Pattern matching**: Use `.when()`, `.maybeMap()`, `.mapOrNull()` for exhaustive/partial matching
-- **copyWith**: Auto-generated for states with multiple fields
-- **Consistent codebase**: All BLoCs follow the same Freezed pattern
-
-### Standard State Pattern
-
-For simple states without persistent data:
+`@freezed sealed class` for all events/states. States: case classes **public** (`SuccessLoginState`). Events: case classes **private** (`_SubmittedLoginEvent`). Freezed 3 removed `.when()`/`.maybeMap()` — use `switch`/`if-case`/`is` on the sealed classes. Run build_runner after editing events/states.
 
 ```dart
-// Events - Freezed with factory constructors
 @freezed
-class LoginEvent with _$LoginEvent {
-  const factory LoginEvent.submitted(LoginForm form) = _SubmittedLoginEvent;
+sealed class LoginState with _$LoginState {
+  const LoginState._();
+
+  const factory LoginState.initial() = InitialLoginState;
+  const factory LoginState.loading() = LoadingLoginState;
+  const factory LoginState.success() = SuccessLoginState;
+  const factory LoginState.failure(AppException exception) = FailureLoginState;
+
+  bool get isLoading => this is LoadingLoginState;
 }
-
-// States - Freezed with factory constructors
-@freezed
-class LoginState with _$LoginState {
-  const LoginState._();  // Required for custom getters
-
-  const factory LoginState.initial() = _InitialLoginState;
-  const factory LoginState.loading() = _LoadingLoginState;
-  const factory LoginState.success() = _SuccessLoginState;
-  const factory LoginState.failure(AppException exception) = _FailureLoginState;
-
-  bool get isLoading => this is _LoadingLoginState;
-}
-
-// Usage in UI with Freezed pattern matching
-BlocListener<LoginBloc, LoginState>(
-  listener: (context, state) => state.mapOrNull(
-    failure: (state) => NotificationSnackBar.showExceptionMessage(
-      context,
-      exception: state.exception,
-    ),
-  ),
-  // ...
-)
-
-// In BlocBuilder with maybeMap
-builder: (context, state) => state.maybeMap(
-  success: (_) => const SuccessView(),
-  failure: (failureState) => FailureView(failureState.exception),
-  orElse: () => const LoadingView(),
-)
 ```
 
-### Nested Status Pattern
-
-For states with persistent data across status changes:
-
-```dart
-// Status (nested Freezed for calendar content)
-@freezed
-class CalendarStatus with _$CalendarStatus {
-  const factory CalendarStatus.initial() = _InitialCalendarStatus;
-  const factory CalendarStatus.loading() = _LoadingCalendarStatus;
-  const factory CalendarStatus.success({required List<Task> tasks}) = _SuccessCalendarStatus;
-  const factory CalendarStatus.failure({required AppException exception}) = _FailureCalendarStatus;
-}
-
-// State with Freezed (auto copyWith)
-@freezed
-class CalendarState with _$CalendarState {
-  const CalendarState._();
-
-  const factory CalendarState({
-    required DateTime selectedDate,
-    required CalendarStatus status,
-  }) = _CalendarState;
-
-  factory CalendarState.initial() => CalendarState(
-    selectedDate: DateTime.now(),
-    status: const CalendarStatus.initial(),
-  );
-
-  bool get isLoading => status is _LoadingCalendarStatus;
-}
-
-// Usage in UI with Freezed .when()
-Widget _buildStatusContent(CalendarStatus status, Localizer localizer) =>
-  status.when(
-    initial: () => EmptyInformationBody(text: localizer.selectDate),
-    loading: () => const CustomCircularProgressIndicator(),
-    success: (tasks) {
-      if (tasks.isEmpty) {
-        return EmptyInformationBody(text: localizer.noTasksForDate);
-      }
-      return TasksTimelineList(tasks: tasks);
-    },
-    failure: (exception) => FailureWidgetLarge(
-      exception: exception,
-      onRetry: _retry,
-    ),
-  );
-
-// Access persistent data (copyWith auto-generated by Freezed)
-CalendarPicker(selectedDate: state.selectedDate)
-```
-
-### Refreshed Event Pattern
-
-Add `.refreshed()` event to avoid extracting state data for reload:
-
-```dart
-// Events with Freezed
-@freezed
-class CalendarEvent with _$CalendarEvent {
-  const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
-  const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;  // ✓ Add this
-}
-
-// ✓ Clean usage
-context.read<CalendarBloc>().add(const CalendarEvent.refreshed());
-
-// ✗ Wrong - extracting state
-final date = state.selectedDate;
-context.read<CalendarBloc>().add(CalendarEvent.dateSelected(date));
-```
+Handler rules (`BLOC-*`, see `code_review.md`): `return emit(state)` on the final emit · blank line before every `emit()` · descriptive names (`successState`, never `s`) · `isLoading`-style getters over repeated pattern matching · events past-tense (`.submitted()`, `.refreshed()`). For state with data that must persist across statuses, nest a `CalendarStatus`-style sealed union inside a `@freezed abstract class CalendarState` (full example in `bloc.md`). Add a `.refreshed()` event instead of re-extracting state to re-dispatch.
 
 ---
 
-## Common Issues & Solutions
+## Testing — `docs/ai-context/testing.md`
 
-**AI Instruction**: Reference this section when encountering these issues.
+Mock-first: test the `Mock*DataSource` path that ships. Optimize coverage-per-effort, not %.
 
-### Analyzer Errors
+| ID | Rule |
+|---|---|
+| T1 | No per-repository unit test — delegation is proven by the mandatory feature-flow test. |
+| T2 | Feature-flow test (BLoC → Repo → `Mock*DataSource`) is **mandatory per feature**: happy path + one `state.exception != null` case. |
+| T3 | Repository executor (error/retry/cache) tested once, centrally — never per-repo. |
+| T4 | Build expected models via a per-feature `*MockModels` builder from `assets/*.json`, never inline. |
+| T5 | `registerFallbackValue` in `setUpAll` for every custom type used in `any(named:)` (incl. `HttpMethod`, the `fromJson` function type). |
+| T6 | `blocTest` `wait:` matches the retry config used (`~8s` for `2s×3`, `~300ms` for `10ms×3`) — never sit through retry backoff to assert a failure. |
+| T7 | Widget smoke: `(widget, state)` table → loop, not N hand-written `testWidgets`. |
+| T8 | Coverage excludes `*.g.dart`, `*.freezed.dart`, `main.dart`, DI module files. |
 
-1. **"Dependencies not sorted alphabetically"**
-   - Sort pubspec.yaml: SDK dependencies first, then alphabetical
-
-2. **"use_build_context_synchronously"**
-   - Add `if (!mounted) return` after async operations
-
-3. **"omit_local_variable_types"**
-   - Use `var` instead of explicit types for locals
-
-### Testing Issues
-
-1. **MissingStubError in integration tests**
-   - Register fallback values for custom types in `setUpAll()`
-   - Required for `HttpMethod` and function types used in `any(named:)`
-
-2. **Tests timeout with retry logic**
-   - Set `wait` based on retry settings used in the test
-   - Example: `2s × 3 retries` needs around `8s`; `10ms × 3` needs around `300ms`
-
-### Import Issues
-
-- Status widgets: `import 'package:starter_uikit/starter_uikit.dart'`
-- Other widgets: Import specific files directly
-- Always import `NotificationSnackBar` explicitly
-
-### Repository Executor Issues
-
-1. **Old executor imports**
-   - ✗ `DefaultRepositoryExecutor`, `RetriableRepositoryExecutor` deprecated
-   - ✓ Use: `RawRepositoryExecutor().withErrorHandling().withRetry()`
-
-2. **Missing error handling**
-   - Always include `.withErrorHandling()` as first decorator
+Layout: `test/features/{feature}/{assets,model,data,bloc,widget,integration}/`, shared helpers in `test/support/`.
 
 ---
 
-## Documentation
+## Code Style — `docs/ai-context/rules.md`
 
-For detailed information, see:
+| ID | Rule |
+|---|---|
+| S1 | Trailing commas everywhere they'd improve formatting. |
+| S2 | Single quotes. |
+| S3 | Package imports only in `lib/` — no relative imports. |
+| S4 | Arrow `=>` always, except `build()` and nested callbacks (`() => setState(() {})`). |
+| S5 | Spread in collections: `if (cond) ...[Widget()]`, even for one widget. |
+| S6 | `var` for locals where the type is inferable. |
+| S7 | `if (!context.mounted) return;` after every `await` that uses `BuildContext`. |
 
-**AI-tailored short references:** [docs/ai-context/](./docs/ai-context/)
-
-**Full guides:**
-- [Architecture Guide](./docs/guides/architecture.md) - Layered architecture, dependency inversion
-- [BLoC & Freezed Guide](./docs/guides/freezed_bloc.md) - BLoC patterns
-- [Code Review Guide](./docs/guides/code_review.md) - Severity-based review checklist
-- [Estimation Guide](./docs/guides/estimation.md) - Story-point estimation method
-- [Exception Handling](./docs/guides/exception_handling.md) - Custom exceptions, mappers, executors
-- [Structure Guide](./docs/guides/structure.md) - File organization
-- [Testing Guide](./docs/guides/testing.md) - Testing strategies
-
-**Rules:**
-- [Coding Rules](./docs/rules/coding_rules.md) - Consolidated rule set with lint mapping
-- [BLoC File Rules](./docs/rules/bloc.md) - File layout & basic flow
-- [Code Formatting](./docs/rules/code_formatting.md) - Code style rules
-- [Git Workflow](./docs/rules/git_workflow.md) - Branch / commit / PR naming
-- [Naming Conventions](./docs/rules/naming.md) - Naming patterns
+Class size: target <100 lines, split at >200. Never `Widget _buildFoo()` — extract to a class. Comments: none unless the *why* is non-obvious; `///` only for public APIs in `starter_*` packages (1-3 lines). Naming: no `Impl`/`Model`/`Helper`/`Manager`/`Data`/`Info`/`Util` suffixes; BLoCs are nouns; file name == class name.
 
 ---
 
-**Last Updated**: May 2026
+## Reusing Toolkit & UIKit
+
+Check before writing anything new.
+
+- **starter_toolkit**: `DateTimeHelpers` (`isToday`, `isTomorrow`, `isSameDay`), date formatting (`getLocalizedDateLabel`, `getFormattedTimeRange`), validators (phone/email/password/URL), `AppException` hierarchy.
+- **starter_uikit**: status (`EmptyInformationBody`, `FailureWidget.large/.small`, `CustomCircularProgressIndicator.adaptive`), `NotificationSnackBar`, theme (`AppTheme`, `AppTextStyles`, `ThemeProvider`), app bars (`TitleAppBar`, `BaseAppBar`, `TransparentAppBar`), forms (`AppTextField`, `AppDropdownField`, `AppCheckbox`, `AppDatePickerField`), buttons (`AppElevatedButton`, `AppOutlinedButton`).
+- **Imports**: always the specific file (e.g. `package:starter_uikit/widgets/app_bar/title_app_bar.dart`) — no barrel exports.
+- **Forms**: never bare `FormBuilder*` fields directly. Multi-field screens → `FormBuilder` + `AppTextField`/`App*PickerField`. Single-field (e.g. search) → `ControllerTextField` + `ValidatableTextEditingController`.
+
+---
+
+## Git — `docs/ai-context/git.md`
+
+Branches: `<category>/[<TICKET-ID>_]<kebab-case>` where category ∈ `feature/fix/refactor/research/release`. Ticketed work always uses `feature/`.
+Commits: `TICKET-ID: Capitalized imperative` or `type: Capitalized imperative` — ≤72 chars, no trailing period, one logical change per commit.
+
+---
+
+## Hard Rules Checklist
+
+1. Check `docs/ai-context/` before coding in an unfamiliar area.
+2. Reuse `starter_toolkit`/`starter_uikit` before writing new widgets/utilities.
+3. Never create files unless necessary; never proactively create docs unless asked.
+4. Sort `pubspec.yaml` deps: SDK first, then alphabetical.
+5. Use Dart pattern matching (`switch`/`if-case`/`is`) on sealed states — Freezed 3 has no `.when()`.
+
+---
+
+## Common Issues
+
+| Symptom | Fix |
+|---|---|
+| "Dependencies not sorted alphabetically" | SDK deps first, then alphabetical in `pubspec.yaml`. |
+| `use_build_context_synchronously` | Add `if (!mounted) return` after the `await`. |
+| `omit_local_variable_types` | Use `var` for locals. |
+| `MissingStubError` in integration tests | Register fallback values in `setUpAll` (`T5`). |
+| Retry test timeout / flaky | Match `wait:` to the retry config (`T6`). |
+| Old executor imports (`DefaultRepositoryExecutor`, `RetriableRepositoryExecutor`) | Deprecated — use `RawRepositoryExecutor().withErrorHandling().withRetry()`. |
+
+---
+
+## Documentation Map
+
+| File | Topic |
+|---|---|
+| [docs/ai-context/architecture.md](docs/ai-context/architecture.md) | Layers, DI, codegen |
+| [docs/ai-context/bloc.md](docs/ai-context/bloc.md) | BLoC + Freezed patterns |
+| [docs/ai-context/exception.md](docs/ai-context/exception.md) | Exception model + codegen |
+| [docs/ai-context/repository_executor.md](docs/ai-context/repository_executor.md) | Executor composition, caching, testing |
+| [docs/ai-context/rules.md](docs/ai-context/rules.md) | Style, naming, forbidden patterns |
+| [docs/ai-context/testing.md](docs/ai-context/testing.md) | Test layout + mocktail rules |
+| [docs/ai-context/code_review.md](docs/ai-context/code_review.md) | Full severity-tagged rule-ID checklist (ARCH/BLOC/EXC/UI/NAME/FILE/TEST/STYLE) |
+| [docs/ai-context/git.md](docs/ai-context/git.md) | Branch / commit / PR format |
+| [docs/ai-context/estimation.md](docs/ai-context/estimation.md) | Story-point model |
+
+Full prose guides: `docs/guides/`. Full rule prose: `docs/rules/`. If a rule here conflicts with a full guide, the guide wins — flag it.
+
+When starting a new app from this starter, fill in the context templates under `docs/project/` (`product-context.md`, `engineering-context.md`).

@@ -34,21 +34,19 @@ BLoC state holds the **`AppException`**, never the UI model. UI converts at rend
 ## UI consumption
 
 ```dart
-state.maybeMap(
-  failure: (s) => FailureWidgetLarge(exception: s.exception, onRetry: _retry),
-  orElse: () => const CustomCircularProgressIndicator(),
-)
+switch (state) {
+  FailureMyState(:final exception) => FailureWidget.large(
+    exception: exception,
+    onRetry: _retry,
+  ),
+  _ => const CustomCircularProgressIndicator.adaptive(),
+}
 ```
 
 For snackbars use `NotificationSnackBar.showExceptionMessage(context, exception: ...)`.
 
 ## Repository executor decorators
 
-```dart
-final exec = RawRepositoryExecutor()
-  .withErrorHandling()  // first — converts any throw to AppException
-  .withRetry()          // exponential backoff
-  .withCaching();       // optional time-based cache
-```
-
-Order matters: `withErrorHandling()` must be the innermost decorator.
+`withErrorHandling()` converts any throw to an `AppException` and must be the
+innermost decorator. Everything else about executor composition, caching, and
+testing → [repository_executor.md](repository_executor.md).

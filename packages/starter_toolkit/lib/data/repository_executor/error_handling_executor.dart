@@ -2,10 +2,10 @@ import 'package:dio/dio.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_decorator.dart';
 
-/// Decorator that handles and normalizes errors to AppException.
+/// Normalizes any thrown error into an [AppException].
 ///
-/// This decorator should be the first in the chain (closest to raw executor)
-/// to ensure all errors are properly handled.
+/// Must sit innermost (closest to the raw executor) so outer decorators such as
+/// the retry executor see already-normalized [AppException]s.
 class ErrorHandlingExecutor extends RepositoryExecutorDecorator {
   const ErrorHandlingExecutor(super.wrapped);
 
@@ -32,11 +32,11 @@ class ErrorHandlingExecutor extends RepositoryExecutorDecorator {
         return true;
       }());
 
+      // Surface unexpected errors in debug; hide them behind a generic exception in release.
       if (isDebugMode) {
         rethrow;
       }
 
-      // In production, wrap as development error
       throw const DevelopmentException();
     }
   }

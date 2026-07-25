@@ -42,7 +42,8 @@ Hard rules for code generation. Full sources: [../rules/code_formatting.md](../r
 - ❌ `print` outside generators.
 - ❌ Hardcoded strings in widgets — use `Localizer.of(context)`.
 - ❌ Hardcoded colors / text sizes — use `ThemeProvider.of(context)`.
-- ❌ `FormBuilder*` widgets directly — use `starter_uikit` form widgets.
+- ❌ `FormBuilder*` field widgets directly — use `starter_uikit` form widgets.
+- ❌ `ControllerTextField` on multi-field screens — `FormBuilder` + `App*Field` there; `ControllerTextField` + `ValidatableTextEditingController` only for single-field screens (search, chat, OTP).
 - ❌ Re-implementing widgets that exist in `starter_uikit` (status widgets, snackbars, app bars, buttons, fields).
 - ❌ Re-implementing helpers that exist in `starter_toolkit` (`DateTimeHelpers`, validators, `AppException`).
 
