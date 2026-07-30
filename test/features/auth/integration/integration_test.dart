@@ -1,350 +1,211 @@
-// ignore_for_file: avoid_implementing_value_types
-
-import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/auth/data/api_auth_authorized_data_source.dart';
-import 'package:starter/features/auth/data/api_auth_unauthorized_data_source.dart';
-import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
+import 'package:starter/features/auth/data/mock_auth_authorized_data_source.dart';
+import 'package:starter/features/auth/data/mock_auth_unauthorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart';
 import 'package:starter/features/auth/model/auth_login_request_body.dart';
+import 'package:starter/features/auth/model/auth_otp_request_body.dart';
 import 'package:starter/features/auth/model/auth_register_request_body.dart';
+import 'package:starter/features/auth/model/auth_status.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
+import 'package:starter/features/auth/model/auth_verify_otp_request_body.dart';
 import 'package:starter/features/auth/ui/login/bloc/login_bloc.dart';
 import 'package:starter/features/auth/ui/login/model/login_form.dart';
+import 'package:starter/features/auth/ui/otp/bloc/otp_bloc.dart';
 import 'package:starter/features/auth/ui/register/bloc/registration_bloc.dart';
 import 'package:starter/features/auth/ui/register/model/registration_form.dart';
-import 'package:starter_toolkit/data/client/api_client.dart';
-import 'package:starter_toolkit/data/client/http_method.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
-import '../model/auth_mock_models.dart';
+/// Feature-flow tests: real bloc → real [AuthRepository] → the `Mock*DataSource`
+/// implementations that ship behind `useMock`. Only the local data source is
+/// substituted — the shipping one talks to the platform keychain, which is
+/// unavailable in a unit test.
+class _InMemoryAuthLocalDataSource implements AuthLocalDataSource {
+  AuthToken? _token;
+  bool _launchedBefore = false;
 
-class MockApiClient extends Mock implements ApiClient {}
+  @override
+  Future<void> clearStorage() async => _token = null;
 
-class MockAuthLocalDataSource extends Mock implements AuthLocalDataSource {}
+  @override
+  Future<void> saveToken(AuthToken token) async => _token = token;
 
-class FakeAuthToken extends Fake implements AuthToken {}
+  @override
+  Future<bool> clearIfNotLaunchedBefore() async {
+    final launchedBefore = _launchedBefore;
 
-class FakeAuthLoginRequestBody extends Fake implements AuthLoginRequestBody {}
+    if (!launchedBefore) {
+      _launchedBefore = true;
+      _token = null;
+    }
 
-class FakeAuthRegisterRequestBody extends Fake
-    implements AuthRegisterRequestBody {}
+    return launchedBefore;
+  }
 
-AuthToken _fakeFromJson(Map<String, dynamic> json) => AuthToken.fromJson(json);
+  @override
+  Future<AuthToken?> getToken() async => _token;
+}
 
-/// Integration tests: BLoC → AuthRepository → RemoteDataSources → ApiClient (mocked)
-/// LocalDataSource is also mocked as it depends on flutter_secure_storage
-///
-/// Tests the full flow from BLoC through Repository and DataSource with ApiClient mocked.
+class _ThrowingAuthUnauthorizedDataSource implements AuthUnauthorizedDataSource {
+  const _ThrowingAuthUnauthorizedDataSource();
+
+  @override
+  Future<AuthToken> login(AuthLoginRequestBody body) async =>
+      throw const NoInternetException();
+
+  @override
+  Future<AuthToken> register(AuthRegisterRequestBody body) async =>
+      throw const NoInternetException();
+
+  @override
+  Future<void> requestOtp(AuthOtpRequestBody body) async =>
+      throw const NoInternetException();
+
+  @override
+  Future<AuthToken> verifyOtp(AuthVerifyOtpRequestBody body) async =>
+      throw const NoInternetException();
+}
+
+const _loginForm = LoginForm(phone: '+79991234567', password: 'password123');
+
+final _registrationForm = RegistrationForm(
+  name: 'Test User',
+  phone: '+79991234567',
+  password: 'password123',
+  birthday: DateTime(1990),
+);
+
 void main() {
-  late MockApiClient mockApiClient;
-  late MockAuthLocalDataSource mockLocalDataSource;
-  late AuthAuthorizedDataSource authorizedDataSource;
-  late AuthUnauthorizedDataSource unauthorizedDataSource;
-  late AuthRepository authRepository;
+  late _InMemoryAuthLocalDataSource localDataSource;
 
-  setUpAll(() {
-    registerFallbackValue(HttpMethod.post);
-    registerFallbackValue(_fakeFromJson);
-    registerFallbackValue(FakeAuthToken());
-    registerFallbackValue(FakeAuthLoginRequestBody());
-    registerFallbackValue(FakeAuthRegisterRequestBody());
-  });
+  setUp(() => localDataSource = _InMemoryAuthLocalDataSource());
 
-  setUp(() {
-    mockApiClient = MockApiClient();
-    mockLocalDataSource = MockAuthLocalDataSource();
-    authorizedDataSource = RemoteAuthAuthorizedDataSource(mockApiClient);
-    unauthorizedDataSource = RemoteAuthUnauthorizedDataSource(mockApiClient);
-    authRepository = AuthRepository(
+  AuthRepository buildRepository([
+    AuthUnauthorizedDataSource unauthorizedDataSource =
+        const MockAuthUnauthorizedDataSource(),
+  ]) {
+    final repository = AuthRepository(
       const RawRepositoryExecutor().withErrorHandling(),
-      authorizedDataSource,
+      const MockAuthAuthorizedDataSource(),
       unauthorizedDataSource,
-      mockLocalDataSource,
+      localDataSource,
     );
+    addTearDown(repository.dispose);
+
+    return repository;
+  }
+
+  group('login flow', () {
+    LoginBloc buildBloc([
+      AuthUnauthorizedDataSource unauthorizedDataSource =
+          const MockAuthUnauthorizedDataSource(),
+    ]) {
+      final bloc = LoginBloc(buildRepository(unauthorizedDataSource));
+      addTearDown(bloc.close);
+
+      return bloc;
+    }
+
+    test('reaches success, stores the token and authenticates', () async {
+      final bloc = buildBloc();
+
+      bloc.add(const LoginEvent.submitted(_loginForm));
+      await bloc.stream.firstWhere(
+        (state) => state is SuccessLoginState || state is FailureLoginState,
+      );
+
+      expect(bloc.state, isA<SuccessLoginState>());
+      expect(await localDataSource.getToken(), isNotNull);
+      expect(bloc.authRepository.status.value, AuthStatus.authenticated);
+    });
+
+    test('surfaces a failure end-to-end', () async {
+      final bloc = buildBloc(const _ThrowingAuthUnauthorizedDataSource());
+
+      bloc.add(const LoginEvent.submitted(_loginForm));
+      await bloc.stream.firstWhere(
+        (state) => state is SuccessLoginState || state is FailureLoginState,
+      );
+
+      expect(bloc.state, isA<FailureLoginState>());
+      expect(await localDataSource.getToken(), isNull);
+    });
   });
 
-  group('LoginBloc integration', () {
-    late LoginBloc loginBloc;
+  group('registration flow', () {
+    RegistrationBloc buildBloc([
+      AuthUnauthorizedDataSource unauthorizedDataSource =
+          const MockAuthUnauthorizedDataSource(),
+    ]) {
+      final bloc = RegistrationBloc(buildRepository(unauthorizedDataSource));
+      addTearDown(bloc.close);
 
-    setUp(() => loginBloc = LoginBloc(authRepository));
+      return bloc;
+    }
 
-    test(
-      'initial state is initial()',
-      () => expect(loginBloc.state, const LoginState.initial()),
-    );
+    test('reaches success and stores the token', () async {
+      final bloc = buildBloc();
 
-    const loginForm = LoginForm(phone: '+79991234567', password: 'password123');
+      bloc.add(RegistrationEvent.submitted(_registrationForm));
+      await bloc.stream.firstWhere(
+        (state) =>
+            state is SuccessRegistrationState ||
+            state is FailureRegistrationState,
+      );
 
-    blocTest<LoginBloc, LoginState>(
-      'completes full successful flow: BLoC → Repository → DataSource → ApiClient',
-      build: () {
-        when(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/login',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenAnswer((_) async => AuthMockModels.authToken);
+      expect(bloc.state, isA<SuccessRegistrationState>());
+      expect(await localDataSource.getToken(), isNotNull);
+    });
 
-        when(
-          () => mockLocalDataSource.saveToken(any()),
-        ).thenAnswer((_) async {});
+    test('surfaces a failure end-to-end', () async {
+      final bloc = buildBloc(const _ThrowingAuthUnauthorizedDataSource());
 
-        return loginBloc;
-      },
-      act: (bloc) => bloc.add(const LoginEvent.submitted(loginForm)),
-      expect: () => [const LoginState.loading(), const LoginState.success()],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/login',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-        verify(() => mockLocalDataSource.saveToken(any())).called(1);
-      },
-    );
+      bloc.add(RegistrationEvent.submitted(_registrationForm));
+      await bloc.stream.firstWhere(
+        (state) =>
+            state is SuccessRegistrationState ||
+            state is FailureRegistrationState,
+      );
 
-    blocTest<LoginBloc, LoginState>(
-      'handles network error through full stack',
-      build: () {
-        when(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/login',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenThrow(const NoInternetException());
-
-        return loginBloc;
-      },
-      act: (bloc) => bloc.add(const LoginEvent.submitted(loginForm)),
-      expect: () => [
-        const LoginState.loading(),
-        const LoginState.failure(NoInternetException()),
-      ],
-      verify: (_) => verify(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: any(named: 'method'),
-          path: '/auth/login',
-          body: any(named: 'body'),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(1),
-    );
-
-    blocTest<LoginBloc, LoginState>(
-      'handles unauthorized error (401)',
-      build: () {
-        when(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/login',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenThrow(const UnauthorizedException());
-
-        return loginBloc;
-      },
-      act: (bloc) => bloc.add(const LoginEvent.submitted(loginForm)),
-      expect: () => [
-        const LoginState.loading(),
-        const LoginState.failure(UnauthorizedException()),
-      ],
-    );
-
-    blocTest<LoginBloc, LoginState>(
-      'handles saveToken failure',
-      build: () {
-        when(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/login',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenAnswer((_) async => AuthMockModels.authToken);
-
-        when(
-          () => mockLocalDataSource.saveToken(any()),
-        ).thenThrow(const DevelopmentException());
-
-        return loginBloc;
-      },
-      act: (bloc) => bloc.add(const LoginEvent.submitted(loginForm)),
-      expect: () => [
-        const LoginState.loading(),
-        const LoginState.failure(DevelopmentException()),
-      ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/login',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-        verify(() => mockLocalDataSource.saveToken(any())).called(1);
-      },
-    );
+      expect(bloc.state, isA<FailureRegistrationState>());
+      expect(await localDataSource.getToken(), isNull);
+    });
   });
 
-  group('RegistrationBloc integration', () {
-    late RegistrationBloc registrationBloc;
+  group('otp flow', () {
+    OtpBloc buildBloc() {
+      final bloc = OtpBloc(buildRepository());
+      addTearDown(bloc.close);
 
-    setUp(() => registrationBloc = RegistrationBloc(authRepository));
+      return bloc;
+    }
 
-    test(
-      'initial state is initial()',
-      () => expect(registrationBloc.state, const RegistrationState.initial()),
-    );
+    test('reaches success and stores the token', () async {
+      final bloc = buildBloc();
 
-    final registrationForm = RegistrationForm(
-      name: 'Test User',
-      phone: '+79991234567',
-      password: 'password123',
-      birthday: DateTime(1990),
-    );
+      bloc.add(const OtpEvent.submitted(phone: '+79991234567', otp: '1234'));
+      await bloc.stream.firstWhere(
+        (state) => state is SuccessOtpState || state is FailureOtpState,
+      );
 
-    blocTest<RegistrationBloc, RegistrationState>(
-      'completes full successful flow: BLoC → Repository → DataSource → ApiClient',
-      build: () {
-        when(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/register',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenAnswer((_) async => AuthMockModels.authToken);
+      expect(bloc.state, isA<SuccessOtpState>());
+      expect(await localDataSource.getToken(), isNotNull);
+    });
 
-        when(
-          () => mockLocalDataSource.saveToken(any()),
-        ).thenAnswer((_) async {});
+    // '0000' is the mock data source's wrong-code fault injection.
+    test('surfaces a rejected code end-to-end', () async {
+      final bloc = buildBloc();
 
-        return registrationBloc;
-      },
-      act: (bloc) => bloc.add(RegistrationEvent.submitted(registrationForm)),
-      expect: () => [
-        const RegistrationState.loading(),
-        const RegistrationState.success(),
-      ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/register',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-        verify(() => mockLocalDataSource.saveToken(any())).called(1);
-      },
-    );
+      bloc.add(const OtpEvent.submitted(phone: '+79991234567', otp: '0000'));
+      await bloc.stream.firstWhere(
+        (state) => state is SuccessOtpState || state is FailureOtpState,
+      );
 
-    blocTest<RegistrationBloc, RegistrationState>(
-      'handles network error through full stack',
-      build: () {
-        when(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/register',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenThrow(const NoInternetException());
-
-        return registrationBloc;
-      },
-      act: (bloc) => bloc.add(RegistrationEvent.submitted(registrationForm)),
-      expect: () => [
-        const RegistrationState.loading(),
-        const RegistrationState.failure(NoInternetException()),
-      ],
-      verify: (_) => verify(
-        () => mockApiClient.requestJson<AuthToken>(
-          method: any(named: 'method'),
-          path: '/auth/register',
-          body: any(named: 'body'),
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(1),
-    );
-
-    blocTest<RegistrationBloc, RegistrationState>(
-      'handles validation error (400)',
-      build: () {
-        when(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/register',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenThrow(
-          const ServerException(
-            statusCode: 400,
-            message: 'Phone already exists',
-          ),
-        );
-
-        return registrationBloc;
-      },
-      act: (bloc) => bloc.add(RegistrationEvent.submitted(registrationForm)),
-      expect: () => [
-        const RegistrationState.loading(),
-        const RegistrationState.failure(
-          ServerException(statusCode: 400, message: 'Phone already exists'),
-        ),
-      ],
-    );
-
-    blocTest<RegistrationBloc, RegistrationState>(
-      'handles saveToken failure',
-      build: () {
-        when(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/register',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenAnswer((_) async => AuthMockModels.authToken);
-
-        when(
-          () => mockLocalDataSource.saveToken(any()),
-        ).thenThrow(const DevelopmentException());
-
-        return registrationBloc;
-      },
-      act: (bloc) => bloc.add(RegistrationEvent.submitted(registrationForm)),
-      expect: () => [
-        const RegistrationState.loading(),
-        const RegistrationState.failure(DevelopmentException()),
-      ],
-      verify: (_) {
-        verify(
-          () => mockApiClient.requestJson<AuthToken>(
-            method: any(named: 'method'),
-            path: '/auth/register',
-            body: any(named: 'body'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).called(1);
-        verify(() => mockLocalDataSource.saveToken(any())).called(1);
-      },
-    );
+      expect(bloc.state, isA<FailureOtpState>());
+      expect(await localDataSource.getToken(), isNull);
+    });
   });
 }
