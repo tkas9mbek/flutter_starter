@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/profile/data/remote_profile_data_source.dart';
+import 'package:starter/features/profile/data/api_profile_data_source.dart';
 import 'package:starter/features/profile/model/user.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';

@@ -1,7 +1,7 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/profile/data/remote_profile_data_source.dart';
+import 'package:starter/features/profile/data/api_profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_repository.dart';
 import 'package:starter/features/profile/model/user.dart';

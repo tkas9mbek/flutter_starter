@@ -3,8 +3,8 @@
 import 'package:bloc_test/bloc_test.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/auth/data/remote_auth_authorized_data_source.dart';
-import 'package:starter/features/auth/data/remote_auth_unauthorized_data_source.dart';
+import 'package:starter/features/auth/data/api_auth_authorized_data_source.dart';
+import 'package:starter/features/auth/data/api_auth_unauthorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';

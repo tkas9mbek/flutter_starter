@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/auth/data/remote_auth_unauthorized_data_source.dart';
+import 'package:starter/features/auth/data/api_auth_unauthorized_data_source.dart';
 import 'package:starter/features/auth/model/auth_login_request_body.dart';
 import 'package:starter/features/auth/model/auth_register_request_body.dart';
 import 'package:starter/features/auth/model/auth_token.dart';
