@@ -58,7 +58,9 @@ class UserRepository {
 
 ### GetIt.I access rules
 
-`GetIt.I` (or the project alias `getIt`) is allowed only in widgets, screens, and routes. **Never** in data, domain, or BLoC code — those layers receive dependencies via constructor injection.
+`GetIt.I` (or the project alias `getIt`) is allowed only in widgets, screens, routes, and DI-module
+registration closures (`configs/*_module.dart`). **Never** in data, domain, or BLoC code — those
+layers receive dependencies via constructor injection.
 
 ### Per-feature DI module
 
@@ -110,7 +112,7 @@ const factory UserState.success(List<User> users) = SuccessUserState;
 
 ### No naming anti-patterns
 
-Forbid `Impl`, `Module`, `Manager`, `Helper` (in non-helper files), `Data`, `Info`, `Container` (outside Flutter `Container`), `Widget` (outside actual widget classes), and `Model` on domain types. Full Bad → Good table in [naming.md § Anti-Patterns](./naming.md#anti-patterns-bad--good).
+Forbid `Impl`, `Manager`, `Helper` (in non-helper files), `Data`, `Info`, `Container` (outside Flutter `Container`), `Widget` (outside actual widget classes), and `Model` on domain types. `Module` is forbidden **except** on DI config classes — `configs/{feature}_module.dart extends AppModule` is required and keeps the suffix. Full Bad → Good table in [naming.md § Anti-Patterns](./naming.md#anti-patterns-bad--good).
 
 ---
 
@@ -206,9 +208,9 @@ Single-condition ternary > 10 lines, or nested (2+) ternary ≥ 5 lines, must be
 
 `required → with default → optional → super.key`.
 
-### Arrow except build / nested callbacks `[lint: prefer_arrow_except_build_and_nested]`
+### Arrow except build / nested callbacks / if-case listeners `[lint: prefer_arrow_except_build]`
 
-`=>` for everything except `build()` and nested callbacks like `() => setState(() {})`.
+`=>` for everything except `build()`, nested callbacks (write `onPressed: () { setState(() {...}); }`, never arrow-in-arrow), and listener bodies that use `if-case` statements.
 
 ### Extract complex expressions
 
@@ -314,7 +316,7 @@ Pass `BuildContext` to methods. Never store it on a class.
 class _MyScreenState extends State<MyScreen> {
   @override
   void initState() { ... }     // public
-
+  
   void onSubmit() { ... }      // public — `_` only on instance vars
 }
 ```
@@ -429,8 +431,8 @@ onRetry: () => context.read<MyBloc>().add(const MyEvent.refreshed())
 
 | Layer | Type | Purpose |
 |-------|------|---------|
-| Data / Domain | `AppException` (sealed Freezed) | Pure domain error |
-| UI | `ExceptionUiModel` (Equatable) | Localized message + icon |
+| Data / Domain | `AppException` (sealed class hierarchy) | Pure domain error |
+| UI | `ExceptionUiModel` (Equatable) | Localized messages + retry flag |
 
 BLoC state holds `AppException`. UI converts at render time via `ExceptionUiMapper(context)`.
 
@@ -457,7 +459,7 @@ UI consumes via `FailureWidget.large(exception: state.exception, onRetry: …)`.
 
 ### Adding a new exception
 
-1. Add a sealed factory under `packages/starter_toolkit/lib/data/exceptions/app_exception.dart` with `@ExceptionUiConfig(...)`.
+1. Add a `final class` subtype of `AppException` under `packages/starter_toolkit/lib/data/exceptions/app_exception.dart`, annotated with `@ExceptionUiConfig(...)` (params: `descriptionKey` required, `titleKey`/`snackbarKey` optional).
 2. Add the localization key to `packages/starter_uikit/lib/l10n/intl_en.arb`.
 3. Run codegen:
 
@@ -528,7 +530,9 @@ configure(host: 'localhost', port: 8080, secure: true, retries: 3, timeout: 5);
 
 ### Use the typed `ApiClient`
 
-Repositories call `getIt<ApiClient>()`. Never construct a Dio instance ad-hoc.
+Data sources receive the typed `ApiClient` via constructor injection (wired in the feature's DI
+module). Never construct a Dio instance ad-hoc, and repositories never call GetIt or touch the
+`ApiClient` directly — they see only the abstract data source.
 
 ### No `print()` in production code
 
@@ -536,12 +540,13 @@ Repositories call `getIt<ApiClient>()`. Never construct a Dio instance ad-hoc.
 // ❌ Bad
 print('error: $e');
 
-// ✅ Good
-debugPrint('error: $e');
+// ✅ Good — dart:developer works in every layer (data/domain included)
 log('Failed to fetch payments: $e', name: 'PaymentRepository');
 ```
 
-`print` is allowed only in `utils/generators/` (developer scripts, excluded from analyzer).
+`debugPrint` is a Flutter symbol — fine in presentation code, but forbidden in `data/`/`domain/` by
+`no_flutter_in_data_domain`; use `dart:developer`'s `log()` there. `print` is allowed only in
+`utils/generators/` (developer scripts, excluded from analyzer).
 
 ### Throw typed `AppException` subclasses, not bare `Exception`
 
@@ -557,20 +562,22 @@ throw const ServerException(statusCode: 404, message: 'Task not found');
 
 ## Testing
 
+Mock-first doctrine — full guide: [../guides/testing.md](../guides/testing.md).
+
 | Layer | Strategy | Mocks |
 |-------|----------|-------|
-| BLoC | Unit / `blocTest` | Repository |
-| Repository + DataSource | Unit | `ApiClient` |
-| Integration | Full stack `blocTest` | `ApiClient` only |
+| BLoC | Unit / `blocTest` | Repository (throws immediately for failure paths) |
+| API data source | Unit — lock the `ApiClient` contract, run real `fromJson`/`toJson` | `ApiClient` only |
+| Feature-flow (integration) | Real BLoC → real Repo → real `Mock*DataSource` | Nothing |
+| Repository executor | Once, centrally in `starter_toolkit` | Data source |
 
 ### Required practices
 
 - Build mocks via JSON fixture + `fromJson` — never construct domain models inline.
 - Cover success, empty, and failure for every BLoC event.
 - `registerFallbackValue` for every custom type used in `any(named:)`.
-- `blocTest` under retry decorators must match `wait` to retry settings (for example `8s` for `2s × 3 retries`, or `300ms` for `10ms × 3`).
-
-Full guide: [../guides/testing.md](../guides/testing.md).
+- **No per-repository unit tests** — delegation is proven by the feature-flow test. (Existing `*_repository_test.dart` files are grandfathered.)
+- `blocTest` `wait:` is for debounce only. Never size it to sit through retry backoff — assert failures with an immediately-throwing repo; retry timing is tested once in the central executor test.
 
 ---
 
@@ -593,7 +600,7 @@ All generated files are produced by tools — never edit them by hand.
 | Tool | Command | Run after changing | Generates |
 |------|---------|--------------------|-----------|
 | build_runner | `fvm flutter pub run build_runner build --delete-conflicting-outputs` | Routes, JSON models, Freezed BLoC events/states | `*.freezed.dart`, `*.g.dart`, `*.gr.dart` |
-| Exception mapper | `dart run utils/generators/generate_exception_mapper.dart` | `AppException` factories / `@ExceptionUiConfig` | `exception_ui_mapper.dart`, `exception_ui_mapper_decorator.dart` |
+| Exception mapper | `dart run utils/generators/generate_exception_mapper.dart` | `AppException` subtypes / `@ExceptionUiConfig` | `exception_ui_mapper.dart`, `exception_ui_mapper_decorator.dart` |
 | intl_utils | `fvm flutter --no-color pub global run intl_utils:generate` | ARB files (`en`, `ru`) | `l10n/generated/` localizers |
 | Spider | `(cd packages/starter_uikit && spider build)` | SVG/image assets in `starter_uikit` | `lib/resources/ui_svg_icons.dart` from `spider.json` |
 
@@ -622,7 +629,8 @@ Full guide: [git_workflow.md](./git_workflow.md). Quick reference:
 | Branch with ticket | `feature/PROJ-152_payment-redesign` |
 | Branch without | `fix/crash-on-login`, `refactor/clean-auth` |
 | Commit with ticket | `PROJ-152: Refactor payment module` |
-| Commit without | `fix: Resolve null pointer in handler` |
+| Commit without | `fix: Resolve null pointer in handler`, `docs: Sync guides` |
+| Commit with scope | `feat(starter_lints): Port advisory rules` |
 | PR title | Same as commit format |
 
 Capitalize first letter, no period, ≤ 72 chars, imperative mood.

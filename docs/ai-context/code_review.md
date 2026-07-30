@@ -9,6 +9,7 @@ Concise checklist. Full rules: [../guides/code_review.md](../guides/code_review.
 | 🔴 Blocking | Must fix before merge |
 | 🟡 Mild | TODO acceptable |
 | 🟢 Suggestion | Nice to have (incl. low-stakes formatting nits) |
+| 💬 Comment | Cannot be changed retroactively — naming of commits/branches, prior decisions |
 
 Rules tagged `[lint]` are auto-enforced — skip in manual review.
 
@@ -19,7 +20,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | ARCH-1 | 🔴 `[lint]` | No Flutter / `dart:ui` in data or domain |
 | ARCH-2 | 🔴 `[lint]` | No BLoC depends on another BLoC |
 | ARCH-3 | 🔴 | Repository depends on **abstract** DataSource |
-| ARCH-4 | 🔴 | `getIt`/`GetIt.I` only in widgets / screens / routes |
+| ARCH-4 | 🔴 | `getIt`/`GetIt.I` only in widgets / screens / routes / DI-module registration closures |
 | ARCH-5 | 🔴 | UI never calls DataSource directly |
 | ARCH-6 | 🔴 | New feature has `configs/{feature}_module.dart extends AppModule` |
 | ARCH-7 | 🔴 | Repositories are concrete; the abstract is the DataSource |
@@ -48,7 +49,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 
 | ID | Severity | Rule |
 |---|---|---|
-| EXC-1 | 🔴 | New `AppException` factory has `@ExceptionUiConfig` |
+| EXC-1 | 🔴 | New `AppException` subtype has `@ExceptionUiConfig` |
 | EXC-2 | 🔴 | Don't edit `exception_ui_mapper*.dart` by hand — run generator |
 | EXC-3 | 🔴 | Catch `AppException`, never bare `Exception` (in BLoC) |
 | EXC-4 | 🟡 | Decorator order — `withErrorHandling()` is innermost |
@@ -63,7 +64,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | UI-3 | 🔴 | Reuse `starter_uikit` widgets before writing your own |
 | UI-4 | 🔴 `[lint]` | No `Widget _buildFoo()` — extract to a class |
 | UI-5 | 🟡 `[lint]` | Spread `if (cond) ...[Widget()]` even for one |
-| UI-6 | 🟡 `[lint]` | `=>` except `build()` and nested callbacks |
+| UI-6 | 🟡 `[lint]` | `=>` except `build()`, nested callbacks, and `if-case` listener bodies |
 | UI-7 | 🟡 | `if (!context.mounted) return;` after every `await` that uses context |
 | UI-8 | 🟡 | Use `starter_uikit` form widgets, not bare `FormBuilder*` |
 | UI-9 | 🟡 `[lint]` | `build()` widget nesting ≤ 10 levels — extract deep subtrees |
@@ -95,9 +96,9 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 |---|---|---|
 | TEST-1 | 🔴 | Build mocks via JSON + `fromJson` |
 | TEST-2 | 🔴 | Register fallback values for custom types in `any(named:)` |
-| TEST-3 | 🟡 | `blocTest` with retry must set `wait` based on retry delay/retries (e.g. `8s` for `2s × 3`, `300ms` for `10ms × 3`) |
+| TEST-3 | 🟡 | `blocTest` never sits through retry backoff — assert failure with an immediately-throwing repo; `wait:` only for debounce (retry timing is the central executor test's job) |
 | TEST-4 | 🟡 | Cover success / empty / failure per event |
-| TEST-5 | 🟡 | Integration mocks only `ApiClient` |
+| TEST-5 | 🟡 | Feature-flow (integration) test wires real BLoC → real Repo → real `Mock*DataSource`, stubbing nothing; the `ApiClient` contract is locked separately in the API-DS test |
 
 ## STYLE
 

@@ -121,7 +121,8 @@ If the estimate is above 21, split into independently deliverable phases.
 
 1. Counting tasks by file count instead of behavior.
 2. Ignoring state-management complexity in the UI.
-3. Underestimating cross-package changes (`starter_*` updates always trigger a publish step).
+3. Underestimating cross-package changes (`starter_*` are pub-workspace members, not published —
+   but they still cost codegen, cross-package review, and a consuming-app rebuild).
 4. Not rounding to Fibonacci — gives false precision.
 
 ---

@@ -156,11 +156,12 @@ class ProfileDetailsBloc extends Bloc<ProfileDetailsEvent, ProfileDetailsState> 
 
 ### Events
 
-Use **past tense** (events represent actions that already occurred)
+Use **past tense** (events represent actions that already occurred). Event case classes stay
+**private**, named `_{Verb}{Feature}Event`:
 
 ```dart
 @freezed
-class UserListEvent with _$UserListEvent {
+sealed class UserListEvent with _$UserListEvent {
   const factory UserListEvent.requested() = _RequestedUserListEvent;
   const factory UserListEvent.refreshed() = _RefreshedUserListEvent;
   const factory UserListEvent.itemSelected(String id) = _ItemSelectedUserListEvent;
@@ -172,19 +173,21 @@ class UserListEvent with _$UserListEvent {
 
 ### States
 
-Use **nouns** (states represent snapshots)
+Use the **canonical four state names**: `initial`, `loading`, `success`, `failure` (plus
+`submitting` for operation blocs). State case classes are **public** (`SuccessUserListState`) so
+UI code can pattern-match on them — Freezed 3 removed the generated `when`/`map` helpers:
 
 ```dart
 @freezed
-class UserListState with _$UserListState {
-  const factory UserListState.initial() = _InitialUserListState;
-  const factory UserListState.loading() = _LoadingUserListState;
-  const factory UserListState.success(List<User> users) = _SuccessUserListState;
-  const factory UserListState.failure(AppException exception) = _FailureUserListState;
+sealed class UserListState with _$UserListState {
+  const factory UserListState.initial() = InitialUserListState;
+  const factory UserListState.loading() = LoadingUserListState;
+  const factory UserListState.success(List<User> users) = SuccessUserListState;
+  const factory UserListState.failure(AppException exception) = FailureUserListState;
 }
 
 // ✓ Correct: initial, loading, success, failure
-// ✗ Wrong: initializing, loaded, succeeded, failed
+// ✗ Wrong: initializing, loaded, succeeded, failed — stick to the canonical set
 ```
 
 ### Common BLoC Names
@@ -269,27 +272,29 @@ class MockAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
 
 ---
 
-## Service Naming
+## API Access Naming
 
-API services use `Feature + Service`
+There is no separate "service" layer: all HTTP access goes through the shared typed `ApiClient`
+(from `starter_toolkit`), called only by `Api*DataSource` implementations. Name the pieces
+accordingly:
 
 ```dart
-// ✓ Correct - Retrofit services
-@RestApi()
-abstract class UserService {
-  factory UserService(Dio dio) = _UserService;
+// ✓ Correct — the data source is the only API-facing class
+class ApiTaskDataSource implements TaskDataSource {
+  const ApiTaskDataSource(this._client);
 
-  @GET('/users')
-  Future<List<User>> getUsers();
+  final ApiClient _client;
+
+  Future<List<Task>> getTasks() => _client.requestJsonList<Task>(
+        method: HttpMethod.get,
+        path: '/tasks',
+        fromJson: Task.fromJson,
+      );
 }
 
-@RestApi()
-abstract class TaskService {
-  factory TaskService(Dio dio) = _TaskService;
-
-  @GET('/tasks')
-  Future<List<Task>> getTasks();
-}
+// ✗ Wrong — a `FeatureService` / Retrofit-style service class bypasses the
+// DataSource contract and adds a layer the architecture doesn't have
+abstract class TaskService { ... }
 ```
 
 ---
@@ -337,18 +342,18 @@ BLoC managing the list of tax debts.
 - **Feature**: Login
 - **Type**: Bloc
 
-**Events**:
+**Events** (private case classes):
 ```dart
 const factory LoginEvent.submitted(String phone, String password) = _SubmittedLoginEvent;
 const factory LoginEvent.passwordVisibilityToggled() = _PasswordVisibilityToggledLoginEvent;
 ```
 
-**States**:
+**States** (public case classes):
 ```dart
-const factory LoginState.initial() = _InitialLoginState;
-const factory LoginState.loading() = _LoadingLoginState;
-const factory LoginState.success() = _SuccessLoginState;
-const factory LoginState.failure(AppException exception) = _FailureLoginState;
+const factory LoginState.initial() = InitialLoginState;
+const factory LoginState.loading() = LoadingLoginState;
+const factory LoginState.success() = SuccessLoginState;
+const factory LoginState.failure(AppException exception) = FailureLoginState;
 ```
 
 ---
@@ -364,7 +369,7 @@ Concrete corrections for the most common naming mistakes seen in review.
 | `TitleValueTile` | `TaxPropertyTitleValueTile` | Missing feature prefix — collides across modules |
 | `ImageContainer` | `UserAvatarCard` | `Container` is a Flutter widget; pick a specific UI type (Card / Panel / Tile) |
 | `AddUserBloc` | `UserCreationBloc` | BLoCs are named with nouns, not verbs |
-| `UserFetchEvent` | `UserRequestedEvent` | Events must be past tense |
+| `UserFetchEvent` factory `.fetch()` | `.requested()` → `_RequestedUserEvent` | Events must be past tense, case classes private: `_{Verb}{Feature}Event` |
 | `UserLocalDataSource` | `LocalUserDataSource` | Source prefix (Api / Local / Mock) comes first |
 | `AddUserWidget` | `UserCreationButton` | `Widget` is vague; use a concrete UI type |
 | `MainScreen` | `HomeDashboardScreen` | Avoid `Main` / `Default` — say what the screen actually is |
@@ -383,9 +388,10 @@ Concrete corrections for the most common naming mistakes seen in review.
 | BLoC | `FeatureDescriptionBloc` | `UserListBloc` |
 | Screen | `FeatureDescriptionScreen` | `LoginScreen` |
 | Widget | `DescriptiveWidget` | `UserProfileCard` |
-| Service | `FeatureService` | `UserService` |
 | Model | `DomainName` | `User`, `Task` |
 | Request | `FeatureActionRequest` | `LoginRequest` |
+| State case class (public) | `{Status}{Feature}State` | `SuccessUserListState` |
+| Event case class (private) | `_{Verb}{Feature}Event` | `_RequestedUserListEvent` |
 
 ---
 

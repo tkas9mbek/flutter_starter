@@ -23,9 +23,10 @@ Concise format reference. Full guide: [../rules/git_workflow.md](../rules/git_wo
 ```
 TICKET-ID: Capitalized imperative description       # with ticket
 type: Capitalized imperative description            # without ticket
+type(scope): Capitalized imperative description     # optional scope, e.g. a package
 ```
 
-`type` ∈ `{feature, fix, refactor, research, release}`.
+`type` ∈ `{feature|feat, fix, refactor, research, release, docs, style, test, chore}`.
 
 | Rule | Note |
 |------|------|
@@ -50,6 +51,8 @@ refactor/clean-auth-repository
 # Commit
 PROJ-152: Refactor payment module
 fix: Resolve null pointer in notification handler
+docs: Sync guides with current architecture
+feat(starter_lints): Port advisory rules
 ```
 
 ## Adapt the prefix

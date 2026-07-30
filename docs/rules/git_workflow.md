@@ -54,7 +54,7 @@ release/2.1.0
 | `fix/PROJ-160_crash` | Ticketed work must use `feature/` | `feature/PROJ-160_crash` |
 | `kasymbek/home-design` | Personal-name prefix | `feature/PROJ-XXX_home-design` |
 | `PROJ-142` | No category prefix | `feature/PROJ-142_description` |
-| `feat/PROJ-220` | Abbreviated category | `feature/PROJ-220_description` |
+| `feat/PROJ-220` | Abbreviated category — branch categories are never abbreviated | `feature/PROJ-220_description` |
 | `PROJ-221-fix-routing` | Hyphen instead of underscore between ticket and description | `feature/PROJ-221_fix-routing` |
 | `updated-service` | No category, vague description | `refactor/update-payment-service` |
 
@@ -74,9 +74,13 @@ TICKET-ID: Capitalized imperative description
 
 ```
 type: Capitalized imperative description
+type(scope): Capitalized imperative description    # optional scope, e.g. a package
 ```
 
-`type` mirrors the branch categories: `feature`, `fix`, `refactor`, `research`, `release`.
+`type` ∈ `{feature|feat, fix, refactor, research, release, docs, style, test, chore}`. The first
+five mirror the branch categories; `docs`/`style`/`test`/`chore` cover changes those categories
+don't (documentation, formatting-only passes, test-only changes, housekeeping). An optional
+parenthesized scope narrows the change (`feat(starter_lints): …`).
 
 ## Rules
 
@@ -93,8 +97,11 @@ type: Capitalized imperative description
 ```bash
 PROJ-156: Add OTP error message display
 feature: Add dark mode support
+feat(starter_lints): Port advisory rules
 fix: Resolve null pointer in notification handler
 refactor: Extract common form validation logic
+docs: Sync guides with current architecture
+style: Deep-format pass on task feature
 research: Test WebSocket integration
 release: Prepare version 2.1.0
 ```
@@ -107,7 +114,7 @@ release: Prepare version 2.1.0
 | `feature/PROJ-156: Add OTP` | Branch category leaked into commit | `PROJ-156: Add OTP` |
 | `PROJ-156: add OTP` | Lowercase first letter | `PROJ-156: Add OTP` |
 | `PROJ-156: Fix bug` | Too vague | `PROJ-156: Fix login crash on empty input` |
-| `feat: Add dark mode` | Abbreviated type | `feature: Add dark mode` |
+| `cleanup: Remove dead code` | Unknown type | `chore: Remove dead code` |
 
 ---
 

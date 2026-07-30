@@ -30,7 +30,7 @@
 | ARCH-1 | Severe Violation 🔴 | `package:flutter/*` import in Data or Domain layer `[lint]` | Move Flutter-dependent code to Presentation, or use `package:meta`/`dart:developer` |
 | ARCH-2 | Severe Violation 🔴 | BLoC depends on another BLoC (constructor injection) `[lint]` | Coordinate via `BlocListener` / `MultiBlocListener` in UI, or via route extras |
 | ARCH-3 | Severe Violation 🔴 | Repository depends on a concrete DataSource | Depend on the abstract `*DataSource` interface in `domain/` |
-| ARCH-4 | Severe Violation 🔴 | `GetIt.I` referenced inside Data, Domain, or BLoC | Constructor inject. `GetIt.I` is allowed only in widgets/screens/routes |
+| ARCH-4 | Severe Violation 🔴 | `GetIt.I` referenced inside Data, Domain, or BLoC | Constructor inject. `GetIt.I`/`getIt` is allowed only in widgets/screens/routes and DI-module registration closures |
 | ARCH-5 | Severe Violation 🔴 | UI calls a DataSource directly, skipping Repository | Route through Repository → AbstractDataSource |
 | ARCH-6 | Severe Violation 🔴 | New feature has no `configs/{feature}_module.dart extends AppModule` | Add the GetIt module and register it in the root injector |
 | ARCH-7 | Severe Violation 🔴 | Repository made `abstract` | Repositories are concrete facades. The `abstract` belongs on the DataSource. |
@@ -65,7 +65,7 @@
 
 | ID | Type | Description | Suggested Fix |
 |---|---|---|---|
-| EXC-1 | Severe Violation 🔴 | New `AppException` factory without `@ExceptionUiConfig` | Add the annotation, then run the generator |
+| EXC-1 | Severe Violation 🔴 | New `AppException` subtype without `@ExceptionUiConfig` | Add the annotation, then run the generator |
 | EXC-2 | Severe Violation 🔴 | Manual edits to `exception_ui_mapper.dart` or `exception_ui_mapper_decorator.dart` | These are generated. Run `dart run utils/generators/generate_exception_mapper.dart` |
 | EXC-3 | Severe Violation 🔴 | Catching bare `Exception` in BLoC | Catch `AppException` and let other errors crash; wrap data calls with `withErrorHandling()` |
 | EXC-4 | Mild Violation 🟡 | `withRetry()` placed inside `withErrorHandling()` | `withErrorHandling()` must be the innermost decorator |
@@ -82,7 +82,7 @@
 | UI-3 | Severe Violation 🔴 | Reimplements a widget that exists in `starter_uikit` | Use `FailureWidget.large`, `EmptyInformationBody`, `AppElevatedButton`, `AppTextField`, etc. |
 | UI-4 | Severe Violation 🔴 | `Widget _buildFoo()` builder method | Extract to a `StatelessWidget`/`StatefulWidget` class |
 | UI-5 | Mild Violation 🟡 | Single widget added to a `children:` list as a literal element | Use spread: `if (cond) ...[Widget()]` even for one |
-| UI-6 | Mild Violation 🟡 | Block body where arrow body fits | Use `=>` (except `build()` and nested callbacks) |
+| UI-6 | Mild Violation 🟡 | Block body where arrow body fits | Use `=>` (except `build()`, nested callbacks, and `if-case` listener bodies) |
 | UI-7 | Mild Violation 🟡 | `BuildContext` used after `await` without `mounted` check | `if (!mounted) return;` after the await |
 | UI-8 | Mild Violation 🟡 | `FormBuilder*` used directly | Use `starter_uikit` form widgets (`AppTextField`, `AppDropdownField`, …) |
 | UI-9 | Mild Violation 🟡 | `build()` widget tree is too deeply nested | Extract deep subtrees into their own widget classes |
@@ -120,9 +120,9 @@
 |---|---|---|---|
 | TEST-1 | Severe Violation 🔴 | Domain models constructed inline in tests | Build via JSON fixture + `fromJson` in `test/features/{feature}/assets/` |
 | TEST-2 | Severe Violation 🔴 | `MissingStubError` because `any(named: ...)` lacks fallback | `registerFallbackValue` for every custom type used inside `any(named:)` |
-| TEST-3 | Mild Violation 🟡 | `blocTest` under retry decorator without retry-aware `wait:` | Set `wait` to match retry settings (for example `8s` for `2s × 3`, `300ms` for `10ms × 3`) |
+| TEST-3 | Mild Violation 🟡 | `blocTest` sized to sit through retry backoff (e.g. `wait: 8s`) | Assert failure with an immediately-throwing repo; `wait:` is for debounce only — retry timing belongs to the central executor test |
 | TEST-4 | Mild Violation 🟡 | BLoC test missing failure-path coverage | Cover success, empty, and failure for every event |
-| TEST-5 | Mild Violation 🟡 | Integration test mocking the Repository | Mock only `ApiClient`. Everything else stays real. |
+| TEST-5 | Mild Violation 🟡 | Feature-flow (integration) test stubbing the repository or executor | Wire real BLoC → real Repo → real `Mock*DataSource`; stub nothing. Lock the `ApiClient` contract separately in the API-DS test. |
 
 ---
 

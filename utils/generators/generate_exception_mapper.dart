@@ -85,7 +85,7 @@ class ExceptionUiConfigData {
   });
 }
 
-/// Analyzes AppException Freezed class
+/// Analyzes AppException sealed class hierarchy
 class ExceptionAnalyzer extends SimpleAstVisitor<void> {
   final List<ExceptionFactory> factories = [];
 

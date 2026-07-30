@@ -9,7 +9,7 @@ Hard rules for code generation. Full sources: [../rules/code_formatting.md](../r
 | S1 | Trailing commas everywhere they'd improve formatting. |
 | S2 | Single quotes for strings. |
 | S3 | Package imports only inside `lib/` and `packages/*/lib/`. No relative imports. |
-| S4 | Always use arrow `=>` syntax, except `build()` and nested callbacks like `() => setState(() {})`. |
+| S4 | Always use arrow `=>` syntax, except `build()`, nested callbacks, and `if-case` listener bodies — write `onPressed: () { setState(() {...}); }`, never arrow-in-arrow. |
 | S5 | Spread syntax in collections — `if (cond) ...[Widget()]` even for a single widget. |
 | S6 | Use `final` for locals by default; `var` only when the local is genuinely reassigned. |
 | S7 | After every `await` followed by `BuildContext` use, `if (!mounted) return;`. |
@@ -34,7 +34,8 @@ Hard rules for code generation. Full sources: [../rules/code_formatting.md](../r
 | Class | `PascalCase` | `UserRepository` |
 | File | `snake_case` | `user_repository.dart` |
 | Const | `lowerCamelCase` | `defaultTimeout` |
-| Private state class | `_${Status}${Feature}State` | `_LoadingLoginState` |
+| State case class (public) | `${Status}${Feature}State` | `LoadingLoginState` |
+| Event case class (private) | `_${Verb}${Feature}Event` | `_SubmittedLoginEvent` |
 | BLoC event factory | `.{verb}()` | `.submitted(form)`, `.refreshed()` |
 | Async data fetch | `fetch*` / `get*` | `fetchUsers`, `getUserById` |
 | Mutating | `create*` / `update*` / `delete*` | `createTask` |

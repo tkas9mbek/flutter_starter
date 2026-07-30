@@ -112,13 +112,20 @@ them; cross-subfeature imports within a feature are fine.
 
 Extract to packages only when used in 3+ features
 
-### starter_toolkit (Shared Utilities)
+### starter_toolkit (Shared Utilities & Data Infrastructure)
 
 ```
 packages/starter_toolkit/lib/
-├── extensions/        # Dart extensions
-├── utils/            # Utilities
-└── validators/       # Input validators
+├── configs/              # Shared constants
+├── data/
+│   ├── client/           # ApiClient, DioApiClient, HttpMethod
+│   ├── exceptions/       # AppException hierarchy + @ExceptionUiConfig
+│   ├── interceptor/      # Dio interceptors (errors, auth refresh)
+│   ├── model/            # Shared data models (pagination, …)
+│   ├── repository_cache/ # RepositoryCache + InMemoryRepositoryCache
+│   └── repository_executor/  # Raw/ErrorHandling/Retry executors + extensions
+├── l10n/                 # ToolkitLocalizer (generated)
+└── utils/                # bloc/, converters/, date/, form/, functions/, helpers/, version/
 ```
 
 **Use when**: Cross-feature helpers, data/client abstractions, reusable infrastructure
@@ -127,8 +134,14 @@ packages/starter_toolkit/lib/
 
 ```
 packages/starter_uikit/lib/
-├── theme/            # Theming
-└── widgets/          # Generic widgets (buttons, inputs, cards)
+├── configs/          # UI constants
+├── example/          # In-package example/demo screens
+├── l10n/             # UikitLocalizer + ARB files (exception messages live here)
+├── models/           # UI models (ExceptionUiModel, …)
+├── resources/        # Spider-generated asset refs (UiSvgIcons, Images, fonts)
+├── theme/            # AppTheme, AppTextStyles, ThemeProvider
+├── utils/            # ExceptionUiMapper (+ decorator), form/image helpers
+└── widgets/          # app_bar/, button/, dialogs/, form/, media/, misc/, screen/, size/, status/, text/
 ```
 
 **Use when**: Used in 3+ features, generic, no feature logic

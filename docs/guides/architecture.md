@@ -160,24 +160,26 @@ feature (e.g. `profile/ui/overview/`).
 - **Screens**: Full screen views
 
 ```dart
-// BLoC (depends on Domain)
+// BLoC (depends on Domain). Event case classes are private, states public.
 class UserListBloc extends Bloc<UserListEvent, UserListState> {
   final UserRepository _repository;
 
   UserListBloc(this._repository) : super(const UserListState.initial()) {
-    on<UserListRequested>(_onRequested);
+    on<_RequestedUserListEvent>(_onRequested);
   }
 
   Future<void> _onRequested(
-    UserListRequested event,
+    _RequestedUserListEvent event,
     Emitter<UserListState> emit,
   ) async {
     emit(const UserListState.loading());
+
     try {
       final users = await _repository.getUsers();
-      emit(UserListState.success(users));
+
+      return emit(UserListState.success(users));
     } on AppException catch (e) {
-      emit(UserListState.failure(e));
+      return emit(UserListState.failure(e));
     }
   }
 }
@@ -289,7 +291,7 @@ Repository → dataSource.fetch()  ← Abstract interface
     ↓
 DataSource (Impl) → apiClient.request()  ← HTTP client
     ↓
-API Response → Domain Model (via Freezed @JsonSerializable)
+API Response → Domain Model (Freezed + json_serializable `fromJson`)
     ↓
 BLoC → emit(State)
     ↓
@@ -309,8 +311,10 @@ ElevatedButton(
 // 2. BLoC handler
 Future<void> _onRequested(event, emit) async {
   emit(const UserListState.loading());
+
   final users = await _repository.getUsers();  // 3. Call Repository
-  emit(UserListState.success(users));          // 6. Emit state
+
+  return emit(UserListState.success(users));   // 6. Emit state
 }
 
 // 3-5. Repository → DataSource → ApiClient → API
@@ -397,7 +401,7 @@ Use two-layer exception architecture:
 **Purpose:** Pure Dart exceptions without UI dependencies
 
 ```dart
-// Domain exceptions use sealed class hierarchy
+// Domain exceptions use a sealed class hierarchy (not Freezed)
 sealed class AppException implements Exception {
   const AppException();
 
@@ -406,8 +410,9 @@ sealed class AppException implements Exception {
 }
 
 @ExceptionUiConfig(
-  descriptionKey: 'noInternetConnection',
-  canRetry: true,
+  titleKey: 'errorMessageNoConnection',
+  descriptionKey: 'errorMessageCouldNotConnectServer',
+  snackbarKey: 'errorMessageNoConnection',
 )
 final class NoInternetException extends AppException {
   const NoInternetException();
@@ -420,8 +425,8 @@ final class NoInternetException extends AppException {
 }
 
 @ExceptionUiConfig(
-  descriptionKey: 'serverError',
-  canRetry: true,
+  titleKey: 'errorMessageErrorWhileRequesting',
+  descriptionKey: 'errorMessageDefaultRequestError',
 )
 final class ServerException extends AppException {
   const ServerException({
@@ -447,27 +452,31 @@ final class ServerException extends AppException {
 **Purpose:** UI presentation with localized messages
 
 ```dart
-// UI model with BuildContext-dependent localization
+// UI model consumed by FailureWidget / NotificationSnackBar
 class ExceptionUiModel extends Equatable {
   final String? title;
   final String description;
-  final String? snackbarDescription;
-  final bool canRefresh;
+  final String snackbarDescription;
   final bool canRetry;
 }
 
 // Mapper converts domain exceptions to UI models using switch expressions
 class ExceptionUiMapper {
-  final BuildContext context;
+  ExceptionUiMapper(BuildContext context)
+    : _localizer = UikitLocalizer.of(context);
+
+  final UikitLocalizer _localizer;
 
   ExceptionUiModel map(AppException exception) {
     return switch (exception) {
       NoInternetException() => ExceptionUiModel(
-        description: Localizer.of(context).noInternetConnection,
+        description: _localizer.errorMessageCouldNotConnectServer,
+        snackbarDescription: _localizer.errorMessageNoConnection,
         canRetry: true,
       ),
       ServerException(:final statusCode, :final message) => ExceptionUiModel(
-        description: message ?? Localizer.of(context).serverError,
+        description: message ?? _localizer.errorMessageDefaultRequestError,
+        snackbarDescription: message ?? _localizer.errorMessageDefaultRequestError,
         canRetry: true,
       ),
       // ... other cases
@@ -495,12 +504,10 @@ Future<void> _onRequested(event, emit) async {
 ### Usage in UI
 
 ```dart
-// Map to UI model in widget via if-case on the sealed state
+// FailureWidget maps the exception internally — pass the AppException itself
 if (state case FailureMyState(:final exception)) {
-  final uiModel = ExceptionUiMapper(context).map(exception);
-
   return FailureWidget.large(
-    uiModel: uiModel,
+    exception: exception,
     onRetry: _retry,
   );
 }
@@ -555,21 +562,25 @@ See [Repository Executors Guide](./repository_executor.md) for step-by-step inst
 
 ## Testing Strategy
 
-### Three Testing Layers
+Testing is mock-first: the feature-flow slice over the shipping `Mock*DataSource` is the
+backbone. See the [Testing Guide](./testing.md) for the full policy; in summary:
 
-1. **Data Layer Unit Tests** (Required for Repositories)
-   - Repository (Real) → DataSource (Mock)
-   - DataSource (Real) → ApiClient (Mock)
-
-2. **BLoC Unit Tests** (Required)
+1. **BLoC Unit Tests** (required per bloc)
    - BLoC (Real) → Repository (Mock)
-   - Test all events: success, empty, failure scenarios
+   - Cover success, empty, and failure per event; failures via an immediately-throwing repo
 
-3. **Integration Tests** (Recommended)
-   - BLoC (Real) → Repository (Real) → DataSource (Real) → ApiClient (Mock)
-   - Verify full feature flow works end-to-end
+2. **Feature-Flow / Integration Tests** (mandatory per feature)
+   - BLoC (Real) → Repository (Real) → `Mock*DataSource` (Real) — nothing stubbed
+   - Happy path plus one failure-state assertion
 
-See [Testing Guide](./testing.md) for detailed examples.
+3. **Central tests** (once, app-wide)
+   - Repository executor (error mapping / retry / cache) in `starter_toolkit`
+   - DI graph smoke test (`test/core/di_graph_test.dart`)
+   - API-DS contract tests with a mocked `ApiClient`, exercising the real `fromJson`/`toJson`
+
+**No per-repository unit tests** — a repo is a thin facade, and its delegation is proven by the
+feature-flow test. (The existing `test/features/*/data/*_repository_test.dart` files predate this
+doctrine and are grandfathered; don't add new ones.)
 
 ---
 

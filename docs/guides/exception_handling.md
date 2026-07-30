@@ -6,7 +6,7 @@ Cross-cutting call behavior (retry, caching, custom decorators) is covered in
 ## Architecture
 
 Two-layer exception system:
-- **Data Layer** (`starter_toolkit`): Pure Dart `AppException` sealed classes with `@ExceptionUiConfig` annotations
+- **Data Layer** (`starter_toolkit`): Pure Dart `AppException` sealed class hierarchy with `@ExceptionUiConfig` annotations
 - **UI Layer** (`starter_uikit`): `ExceptionUiModel` with localized messages
 
 **Benefits**: No BuildContext in data layer, type-safe exhaustive pattern matching, decorator extensibility, code generation.
@@ -53,43 +53,54 @@ final class ServerException extends AppException {
 }
 ```
 
+`@ExceptionUiConfig` accepts exactly three parameters: `descriptionKey` (required), `titleKey`
+(optional), and `snackbarKey` (optional; falls back to `descriptionKey`). Whether the UI shows a
+retry action comes from the exception's own `canRetry` getter, not from the annotation.
+
 ### UI Layer: ExceptionUiModel
+
+Actual model in `packages/starter_uikit/lib/models/exception_ui_model.dart`:
 
 ```dart
 class ExceptionUiModel extends Equatable {
-  final String? title;
-  final String description;
-  final String? snackbarDescription;
-  final bool canRetry;
-  final bool canRefresh;
-
   const ExceptionUiModel({
-    this.title,
     required this.description,
-    this.snackbarDescription,
-    this.canRetry = false,
-    this.canRefresh = false,
+    required this.snackbarDescription,
+    this.canRetry = true,
+    this.title,
   });
 
-  factory ExceptionUiModel.simple({
+  /// For "no retry" scenarios.
+  const ExceptionUiModel.noRetry({
     required String description,
-    bool canRetry = false,
-  }) => ExceptionUiModel(description: description, canRetry: canRetry);
+    String? title,
+    String? snackbarDescription,
+  }) : ...;
+
+  /// All defaults: snackbar text mirrors the description, canRetry stays true.
+  const ExceptionUiModel.simple({
+    required String description,
+    bool canRetry = true,
+  }) : ...;
+
+  final String? title;
+  final String description;
+  final String snackbarDescription;
+  final bool canRetry;
 }
 ```
 
 ### Mapper: ExceptionUiMapper
 
-Auto-generated using switch expressions for exhaustive pattern matching:
+Auto-generated using switch expressions for exhaustive pattern matching
+(`packages/starter_uikit/lib/utils/mappers/exception_ui_mapper.dart`):
 
 ```dart
 class ExceptionUiMapper {
-  final BuildContext context;
-  late final UiLocalizer _localizer;
+  ExceptionUiMapper(BuildContext context)
+    : _localizer = UikitLocalizer.of(context);
 
-  ExceptionUiMapper(this.context) {
-    _localizer = UiLocalizer.of(context);
-  }
+  final UikitLocalizer _localizer;
 
   ExceptionUiModel map(AppException exception) {
     return switch (exception) {
@@ -97,6 +108,7 @@ class ExceptionUiMapper {
       ServerException(statusCode: final statusCode, message: final message) =>
         mapServer(statusCode, message),
       UnauthorizedException(message: final message) => mapUnauthorized(message),
+      // ... one case per AppException subtype
     };
   }
 
@@ -114,6 +126,7 @@ class ExceptionUiMapper {
   ExceptionUiModel mapServer(int? statusCode, String? message) {
     return ExceptionUiModel(
       description: message ?? _localizer.errorMessageDefaultRequestError,
+      snackbarDescription: message ?? _localizer.errorMessageDefaultRequestError,
       title: _localizer.errorMessageErrorWhileRequesting,
       canRetry: true,
     );
@@ -145,7 +158,7 @@ class ExceptionUiMapper {
 
 ```dart
 // packages/starter_toolkit/lib/data/exceptions/app_exception.dart
-@ExceptionUiConfig(descriptionKey: 'paymentFailed', canRetry: true)
+@ExceptionUiConfig(descriptionKey: 'paymentFailed')
 final class PaymentFailedException extends AppException {
   const PaymentFailedException({this.paymentMethod, this.errorCode});
 
@@ -162,12 +175,15 @@ final class PaymentFailedException extends AppException {
 
 **Step 2: Add localization**
 
+The exception keys are consumed by `UikitLocalizer`, so they live in the **uikit** package's ARB
+files. English is the base locale; add the Russian translation in `intl_ru.arb` alongside it.
+
 ```json
-// lib/l10n/intl_ru.arb
+// packages/starter_uikit/lib/l10n/intl_en.arb
 {
-  "paymentFailed": "Ошибка при обработке платежа. Попробуйте другой способ оплаты.",
-  "insufficientFunds": "Недостаточно средств",
-  "cardDeclined": "Карта отклонена"
+  "paymentFailed": "Payment could not be processed. Try another payment method.",
+  "insufficientFunds": "Insufficient funds",
+  "cardDeclined": "Card declined"
 }
 ```
 
@@ -206,24 +222,24 @@ class ApiPaymentDataSource implements PaymentDataSource {
 
 **Step 5: Display in UI**
 
+`FailureWidget` maps the exception to the localized UI model internally — pass the
+`AppException` itself:
+
 ```dart
 BlocBuilder<PaymentBloc, PaymentState>(
   builder: (context, state) => switch (state) {
-    PaymentProcessingState() => const CircularProgressIndicator(),
-    PaymentFailureState(:final exception) => Builder(
-      builder: (context) {
-        final uiModel = ExceptionUiMapper(context).map(exception);
-        return FailureWidget.large(
-          uiModel: uiModel,
-          onRetry: () => context.read<PaymentBloc>().add(const PaymentEvent.retry()),
-        );
-      },
+    PaymentProcessingState() => const CustomCircularProgressIndicator.adaptive(),
+    PaymentFailureState(:final exception) => FailureWidget.large(
+      exception: exception,
+      onRetry: () => context.read<PaymentBloc>().add(const PaymentEvent.retried()),
     ),
     PaymentSuccessState(:final payment) => PaymentSuccessView(payment),
     _ => const SizedBox.shrink(),
   },
 )
 ```
+
+For snackbars use `NotificationSnackBar.showExceptionMessage(context, exception: exception)`.
 
 ---
 
@@ -232,7 +248,7 @@ BlocBuilder<PaymentBloc, PaymentState>(
 ### Exception with Context
 
 ```dart
-@ExceptionUiConfig(descriptionKey: 'fileUploadFailed', canRetry: true)
+@ExceptionUiConfig(descriptionKey: 'fileUploadFailed')
 final class FileUploadFailedException extends AppException {
   const FileUploadFailedException({
     required this.fileName,
@@ -255,7 +271,7 @@ final class FileUploadFailedException extends AppException {
 ### Exception with Validation
 
 ```dart
-@ExceptionUiConfig(descriptionKey: 'validationFailed', canRetry: false)
+@ExceptionUiConfig(descriptionKey: 'validationFailed')
 final class ValidationFailedException extends AppException {
   const ValidationFailedException({required this.fieldErrors});
 
@@ -272,7 +288,7 @@ final class ValidationFailedException extends AppException {
 ### Exception with Retry Strategy
 
 ```dart
-@ExceptionUiConfig(descriptionKey: 'rateLimitExceeded', canRetry: true)
+@ExceptionUiConfig(descriptionKey: 'rateLimitExceeded')
 final class RateLimitExceededException extends AppException {
   const RateLimitExceededException({required this.retryAfter});
 
@@ -290,7 +306,8 @@ final class RateLimitExceededException extends AppException {
 
 ## Feature-Specific Mappers
 
-Extend `ExceptionUiMapperDecorator` for custom messages:
+Extend `ExceptionUiMapperDecorator` for custom messages. The decorator's delegation methods
+(`mapPaymentFailed`, …) are generated from the `@ExceptionUiConfig` annotations:
 
 ```dart
 class PaymentExceptionMapper extends ExceptionUiMapperDecorator {
@@ -300,7 +317,7 @@ class PaymentExceptionMapper extends ExceptionUiMapperDecorator {
   ExceptionUiModel mapPaymentFailed(String? paymentMethod, String? errorCode) {
     if (errorCode == 'insufficient_funds') {
       return ExceptionUiModel.simple(
-        description: UiLocalizer.of(context).insufficientFunds,
+        description: UikitLocalizer.of(context).insufficientFunds,
         canRetry: false,
       );
     }
@@ -332,15 +349,28 @@ void main() {
 
 ### Test Mapper
 
+`ExceptionUiMapper` resolves `UikitLocalizer` from the `BuildContext` in its constructor, so a
+bare mock context won't work — pump a widget with the localization delegate and use its real
+context:
+
 ```dart
 void main() {
-  late ExceptionUiMapper mapper;
+  testWidgets('maps exception with error code', (tester) async {
+    late final ExceptionUiModel uiModel;
 
-  setUp(() => mapper = ExceptionUiMapper(MockBuildContext()));
+    await tester.pumpWidget(
+      MaterialApp(
+        localizationsDelegates: const [UikitLocalizer.delegate],
+        home: Builder(
+          builder: (context) {
+            uiModel = ExceptionUiMapper(context)
+                .map(const PaymentFailedException(errorCode: 'card_declined'));
 
-  test('maps exception with error code', () {
-    const exception = PaymentFailedException(errorCode: 'card_declined');
-    final uiModel = mapper.map(exception);
+            return const SizedBox.shrink();
+          },
+        ),
+      ),
+    );
 
     expect(uiModel.description, isNotEmpty);
     expect(uiModel.canRetry, isTrue);

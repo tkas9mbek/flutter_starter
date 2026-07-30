@@ -74,17 +74,17 @@ Use class size as SRP heuristic:
 **1. Can I describe it in one sentence without "and"?**
 
 ```dart
-// ✗ Wrong
-class ItemManager {
-  Future<List<Item>> fetch() { ... }
-  Future<void> delete(String id) { ... }
-  Future<List<Item>> search(String query) { ... }
+// ✗ Wrong — data access AND validation AND formatting in one class
+class TaskManager {
+  Future<List<Task>> fetchTasks() { ... }
+  String? validateTitle(String? value) { ... }
+  String formatDueDate(DateTime date) { ... }
 }
 
-// ✓ Correct - Split by responsibility
-class ItemRepository { Future<List<Item>> getItems() { ... } }
-class ItemDeletionService { Future<void> delete(String id) { ... } }
-class ItemSearchService { Future<List<Item>> search(String query) { ... } }
+// ✓ Correct - Split by responsibility, along the layers the project already has
+class TaskRepository { Future<List<Task>> getTasks() => _dataSource.getTasks(); }
+// validation → the form UI model (TaskForm.fromForm / FormValidators in starter_toolkit)
+// date formatting → DateTimeHelpers / date functions in starter_toolkit
 ```
 
 **2. How many reasons does it have to change?**
@@ -349,7 +349,9 @@ Widget _buildAvatar() => CircleAvatar(...);
 class UserAvatar extends StatelessWidget { ... }
 ```
 
-**Why?** Better performance, cleaner code, easier testing.
+**Why?** A widget class gets its own `Element`, so Flutter can rebuild it independently, skip it
+via `const`, and show it in DevTools; a helper function re-runs on every parent build and hides
+the subtree. Classes are also individually testable.
 
 ### 2. StatefulWidget State
 
@@ -587,10 +589,10 @@ Document public APIs in shared modules (toolkit, uikit):
 - ❌ No obvious comments
 
 ```dart
-/// Repository executor with automatic retry logic.
+/// Decorator retrying failed repository operations.
 ///
-/// Retries failed operations up to [maxRetries] times.
-class RetriableRepositoryExecutor extends RepositoryExecutor { ... }
+/// Retries retryable failures up to [maxRetries] times with linear backoff.
+class RetryExecutor extends RepositoryExecutorDecorator { ... }
 ```
 
 **When to document:**
@@ -629,16 +631,17 @@ Hard-wrapping a single expression mid-argument is the worst option — extract f
 // ❌ BAD — strips no metadata, lands in production logs
 print(error);
 
-// ✅ FIX — use Flutter's debug-aware logger or dart:developer
-debugPrint('$error');
+// ✅ FIX — dart:developer's log() works in every layer, data/domain included
 log('Failed to fetch payments: $error', name: 'PaymentRepository');
 ```
 
-`print` is allowed only inside `utils/generators/` (developer scripts).
+`debugPrint` is a Flutter (`foundation`) symbol — acceptable in presentation code, but forbidden in
+`data/`/`domain/` by `no_flutter_in_data_domain`; use `log()` there. `print` is allowed only inside
+`utils/generators/` (developer scripts).
 
 ### Generated mappers are read-only
 
-`exception_ui_mapper.dart` and `exception_ui_mapper_decorator.dart` are produced by `dart run utils/generators/generate_exception_mapper.dart`. Never edit them by hand — the next codegen run will overwrite your changes. Add new mappings by adding `@ExceptionUiConfig` factories to `AppException` and re-running the generator.
+`exception_ui_mapper.dart` and `exception_ui_mapper_decorator.dart` are produced by `dart run utils/generators/generate_exception_mapper.dart`. Never edit them by hand — the next codegen run will overwrite your changes. Add new mappings by adding `@ExceptionUiConfig` subtypes to `AppException` and re-running the generator.
 
 ---
 
@@ -665,10 +668,10 @@ log('Failed to fetch payments: $error', name: 'PaymentRepository');
 | **Brackets** | Always brackets for control structures • Always `if (cond) ...[Widget()]` in collections |
 | **Ordering** | Constructors → final fields → methods → `build()` → `==`/`hashCode`/`toString` |
 | **Params** | required → defaults → optional → `super.key` |
-| **Arrows** | Always `=>` except: `build()` method, nested callbacks `setState` |
+| **Arrows** | Always `=>` except: `build()` method, nested callbacks like `setState`, `if-case` listener bodies |
 | **Widgets** | No widget functions • Private state class • `super.init` first, `super.dispose` last |
 | **Comments** | Concise but sufficient • comment/doc lines ≤ 120 chars • no obvious comments |
-| **Logging** | `debugPrint` / `log` only • Never `print` outside `utils/generators/` |
+| **Logging** | `log()` (any layer) / `debugPrint` (presentation only) • Never `print` outside `utils/generators/` |
 | **Cleanup** | No back-compat aliases • No empty stubs • Prefer `ignore_for_file:` with justification |
 
 ---

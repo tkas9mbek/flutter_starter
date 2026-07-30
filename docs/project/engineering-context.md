@@ -8,7 +8,7 @@
 ## Stack
 
 - Flutter app, package `<name>`, version `<x.y.z+n>`. <!-- from pubspec.yaml -->
-- Flutter 3.44.5 via FVM; state: BLoC + Freezed sealed unions.
+- Flutter via FVM (version pinned in `.fvmrc`); state: BLoC + Freezed sealed unions.
 - Routing: `auto_route`; DI: GetIt modules extending `AppModule`.
 - Networking: `DioApiClient` from `starter_toolkit`.
 - Localization: `intl_utils`, generated `Localizer`, ARB files in `lib/l10n/`.

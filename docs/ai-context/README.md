@@ -10,7 +10,6 @@ be fixed.
   [`../project/product-context.md`](../project/product-context.md) and
   [`../project/engineering-context.md`](../project/engineering-context.md). Fill them in when starting a new
   app from the starter.
-- Supplemental overview, when present: [`../../work/project-overview.md`](../../work/project-overview.md).
 - Older `work/` API/planning docs may be absent or stale; prefer `docs/project/` unless a task
   explicitly targets `work/`.
 

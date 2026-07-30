@@ -11,7 +11,7 @@
 ## Project Overview
 
 Flutter starter template:
-- **Flutter 3.44.5** (managed via FVM) · **State**: BLoC · **Navigation**: auto_route · **DI**: GetIt
+- **Flutter 3.44.5** (pinned in `.fvmrc`, managed via FVM) · **State**: BLoC · **Navigation**: auto_route · **DI**: GetIt
 - **Architecture**: three-layer (Presentation → Domain → Data) with strict dependency rules
 
 **Local packages** (`packages/`): `starter_toolkit` (utilities, exceptions), `starter_uikit` (widgets, theme), `starter_lints` (custom lint rules).
@@ -53,7 +53,7 @@ Presentation (Flutter, BLoC) → Domain (Repo, AbstractDS, Model) ← Data (DS i
 | A3 | BLoCs never depend on other BLoCs — coordinate at UI layer (`BlocListener`, route extras). |
 | A4 | Repositories never depend on other repositories. |
 | A5 | All deps wired via GetIt modules (`extends AppModule`) under `configs/`. |
-| A6 | Errors crossing data → presentation are `AppException` (sealed, Freezed). |
+| A6 | Errors crossing data → presentation are `AppException` (sealed class hierarchy). |
 | A7 | User-facing strings via `Localizer.of(context)`. |
 | A8 | Colors/typography via `ThemeProvider.of(context)`. |
 
@@ -74,7 +74,7 @@ lib/features/{feature}/
 
 ## Exceptions — `docs/ai-context/exception.md`
 
-Two layers: `AppException` (sealed Freezed, data/domain — BLoC stores **this**) → `ExceptionUiModel` (Equatable, localized, UI converts at render via `ExceptionUiMapper(context)`).
+Two layers: `AppException` (sealed class hierarchy, data/domain — BLoC stores **this**) → `ExceptionUiModel` (Equatable, localized, UI converts at render via `ExceptionUiMapper(context)`).
 
 ```dart
 try {
@@ -93,7 +93,7 @@ builder: (context, state) => switch (state) {
 }
 ```
 
-New exception: sealed factory + `@ExceptionUiConfig` in `starter_toolkit` → add ARB key → run the exception-mapper generator + intl_utils. Never hand-edit `ExceptionUiMapper*`. Snackbars: `NotificationSnackBar.showExceptionMessage(context, exception: ...)`.
+New exception: `final class` subtype of `AppException` (overriding `name` + `canRetry`) with `@ExceptionUiConfig` in `starter_toolkit` → add ARB key → run the exception-mapper generator + intl_utils. Never hand-edit `ExceptionUiMapper*`. Snackbars: `NotificationSnackBar.showExceptionMessage(context, exception: ...)`.
 
 ---
 
@@ -125,16 +125,16 @@ Mock-first: test the `Mock*DataSource` path that ships. Optimize coverage-per-ef
 
 | ID | Rule |
 |---|---|
-| T1 | No per-repository unit test — delegation is proven by the mandatory feature-flow test. |
+| T1 | No per-repository unit test — delegation is proven by the mandatory feature-flow test. (Existing `*_repository_test.dart` files predate this doctrine and are grandfathered; don't add new ones.) |
 | T2 | Feature-flow test (BLoC → Repo → `Mock*DataSource`) is **mandatory per feature**: happy path + one `state.exception != null` case. |
-| T3 | Repository executor (error/retry/cache) tested once, centrally — never per-repo. |
+| T3 | Repository executor (error/retry/cache) tested once, centrally — never per-repo. Retry timing lives here. |
 | T4 | Build expected models via a per-feature `*MockModels` builder from `assets/*.json`, never inline. |
 | T5 | `registerFallbackValue` in `setUpAll` for every custom type used in `any(named:)` (incl. `HttpMethod`, the `fromJson` function type). |
-| T6 | `blocTest` `wait:` matches the retry config used (`~8s` for `2s×3`, `~300ms` for `10ms×3`) — never sit through retry backoff to assert a failure. |
+| T6 | `blocTest` `wait:` is for debounce only — assert failures with an immediately-throwing repo; never size `wait:` to sit through retry backoff (retry timing is `T3`'s job). |
 | T7 | Widget smoke: `(widget, state)` table → loop, not N hand-written `testWidgets`. |
 | T8 | Coverage excludes `*.g.dart`, `*.freezed.dart`, `main.dart`, DI module files. |
 
-Layout: `test/features/{feature}/{assets,model,data,bloc,widget,integration}/`, shared helpers in `test/support/`.
+Layout: `test/features/{feature}/{assets,model,data,bloc,integration}/`, shared helpers in `test/support/`; widget smokes currently live app-wide in `test/uikit/uikit_widgets_smoke_test.dart`.
 
 ---
 
@@ -145,9 +145,9 @@ Layout: `test/features/{feature}/{assets,model,data,bloc,widget,integration}/`, 
 | S1 | Trailing commas everywhere they'd improve formatting. |
 | S2 | Single quotes. |
 | S3 | Package imports only in `lib/` — no relative imports. |
-| S4 | Arrow `=>` always, except `build()` and nested callbacks (`() => setState(() {})`). |
+| S4 | Arrow `=>` always, except `build()`, nested callbacks, and `if-case` listener bodies — write `onPressed: () { setState(() {...}); }`, never arrow-in-arrow. |
 | S5 | Spread in collections: `if (cond) ...[Widget()]`, even for one widget. |
-| S6 | `var` for locals where the type is inferable. |
+| S6 | `final` for locals by default (type omitted); `var` only when the local is genuinely reassigned. |
 | S7 | `if (!context.mounted) return;` after every `await` that uses `BuildContext`. |
 
 Class size: target <100 lines, split at >200. Never `Widget _buildFoo()` — extract to a class. Comments: none unless the *why* is non-obvious; `///` only for public APIs in `starter_*` packages (1-3 lines). Naming: no `Impl`/`Model`/`Helper`/`Manager`/`Data`/`Info`/`Util` suffixes; BLoCs are nouns; file name == class name.
@@ -168,7 +168,7 @@ Check before writing anything new.
 ## Git — `docs/ai-context/git.md`
 
 Branches: `<category>/[<TICKET-ID>_]<kebab-case>` where category ∈ `feature/fix/refactor/research/release`. Ticketed work always uses `feature/`.
-Commits: `TICKET-ID: Capitalized imperative` or `type: Capitalized imperative` — ≤72 chars, no trailing period, one logical change per commit.
+Commits: `TICKET-ID: Capitalized imperative` or `type: Capitalized imperative` — ≤72 chars, no trailing period, one logical change per commit. `type` ∈ `feature|feat, fix, refactor, research, release, docs, style, test, chore`; an optional scope is allowed (`feat(starter_lints): …`).
 
 ---
 
@@ -188,9 +188,9 @@ Commits: `TICKET-ID: Capitalized imperative` or `type: Capitalized imperative` �
 |---|---|
 | "Dependencies not sorted alphabetically" | SDK deps first, then alphabetical in `pubspec.yaml`. |
 | `use_build_context_synchronously` | Add `if (!mounted) return` after the `await`. |
-| `omit_local_variable_types` | Use `var` for locals. |
+| `omit_local_variable_types` | Drop the type annotation — `final x = ...` (`prefer_final_locals` is also enabled). |
 | `MissingStubError` in integration tests | Register fallback values in `setUpAll` (`T5`). |
-| Retry test timeout / flaky | Match `wait:` to the retry config (`T6`). |
+| Retry test timeout / flaky | Don't sit through retry backoff — assert failure with an immediately-throwing repo (`T6`); retry timing belongs to the central executor test (`T3`). |
 | Old executor imports (`DefaultRepositoryExecutor`, `RetriableRepositoryExecutor`) | Deprecated — use `RawRepositoryExecutor().withErrorHandling().withRetry()`. |
 
 ---

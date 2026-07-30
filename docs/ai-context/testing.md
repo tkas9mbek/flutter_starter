@@ -19,8 +19,8 @@ Concise rules. Full guide: [../guides/testing.md](../guides/testing.md).
 
 | # | Rule |
 |---|------|
-| T1 | **No per-repository unit test.** A repo is a thin facade — delegation is proven by the **mandatory** feature-flow test (#4). Add one back only if a repo gains real logic. |
-| T2 | **#4 is mandatory per feature** (not just critical), with **happy path + one `state.exception != null` assertion**: real BLoC → real Repo → real `Mock*DataSource`. |
+| T1 | **No per-repository unit test.** A repo is a thin facade — delegation is proven by the **mandatory** feature-flow test (#4). Add one back only if a repo gains real logic. *(Existing `test/features/*/data/*_repository_test.dart` files predate this doctrine and are grandfathered — don't add new ones.)* |
+| T2 | **#4 is mandatory per feature** (not just critical), with **happy path + one failure-state assertion**: real BLoC → real Repo → real `Mock*DataSource`. |
 | T3 | Test the **repository executor once, centrally** (error/retry/cache). Never per-repo. Retry *timing* lives here, not in bloc tests. |
 | T4 | Build expected models from a per-feature **`*MockModels`** builder (`.user` / `.rawUser` from `assets/*.json`), never inline. Standalone model test (#1) **only** for enum/`@JsonKey` defaults. |
 | T4b | **API DS tests run the real `fromJson`/`toJson` on the way:** invoke the captured `fromJson` on a raw fixture; `captureAny(named: 'body')` + assert concrete serialized values for `toJson`. Never `fromJson: any(named:)` → return a hand-built model. |
@@ -31,19 +31,22 @@ Concise rules. Full guide: [../guides/testing.md](../guides/testing.md).
 
 ## Per-feature policy (replaces "100%")
 
-Each feature ships: **1 feature-flow test (#4, happy + error)** · **1 bloc test** (success/empty/failure) · **1 data-driven widget smoke** per reused widget/param-screen · appears in the **DI graph test**. Model test (#1) only for non-trivial mapping. **Net: test count can fall while coverage rises.**
+Each feature ships: **1 feature-flow test (#4, happy + error)** · **1 bloc test** (success/empty/failure) · **widget smoke coverage** for reused widgets/param-screens (currently one app-wide table in `test/uikit/uikit_widgets_smoke_test.dart`) · appears in the **DI graph test**. Model test (#1) only for non-trivial mapping. **Net: test count can fall while coverage rises.**
 
 ## Layout
 
 ```
-test/features/{feature}/{assets,model,data,bloc,widget,integration}/   # assets/ = feature-local fixtures
-test/core/di_graph_test.dart        # DI smoke (app-wide)
-test/support/pump.dart              # wrapApp() helper
-test/support/fixtures.dart          # fixtureMap/List(feature,file) + sharedFixtureMap/List(file)
-test/support/assets/                # shared cross-feature fixtures
+test/features/{feature}/{assets,model,data,bloc,integration}/   # assets/ = feature-local fixtures
+test/core/di_graph_test.dart          # DI smoke (app-wide)
+test/uikit/uikit_widgets_smoke_test.dart  # data-driven widget smoke table (app-wide)
+test/support/pump.dart                # wrapApp() helper
+test/support/fixtures.dart            # fixtureMap/List(feature,file) + sharedFixtureMap/List(file)
+test/support/assets/                  # shared cross-feature fixtures (add when a fixture is used by 2+ features)
 ```
 
-**Fixtures:** load via `test/support/fixtures.dart` — `fixtureMap('<feature>', 'x.json')` for feature-local, `sharedFixtureMap('x.json')` for cross-feature (`test/support/assets/`). Never hand-roll a `File(...).readAsStringSync()` loader.
+There are no per-feature `widget/` test dirs today — widget smokes live in the app-wide table; add a per-feature dir only when a feature accumulates bespoke-finder tests.
+
+**Fixtures:** load via `test/support/fixtures.dart` — `fixtureMap('<feature>', 'x.json')` for feature-local (e.g. `task/task1.json`, `profile/user.json`), `sharedFixtureMap('x.json')` for cross-feature (`test/support/assets/`). Never hand-roll a `File(...).readAsStringSync()` loader.
 
 ## Widget smoke helper + data-driven loop
 
@@ -59,7 +62,8 @@ Widget wrapApp(Widget child) => MaterialApp(
   home: ThemeProvider(child: child),     // wrapWidget() adds a Scaffold for leaf widgets
 );
 
-// One loop replaces N near-identical testWidgets blocks:
+// One loop replaces N near-identical testWidgets blocks
+// (see test/uikit/uikit_widgets_smoke_test.dart for the real table):
 smokeCases.forEach((name, build) => testWidgets('$name builds', (t) async {
   await t.pumpWidget(wrapApp(build()));
   await t.pumpAndSettle();
@@ -72,17 +76,22 @@ Don't pump bloc-driven full screens (they use `getIt`) — cover their child wid
 ## Feature-flow (#4) — happy + error
 
 ```dart
-// happy
-final bloc = buildBloc(MockOrderDataSource());
-bloc.add(const CheckoutEvent.submitted());
-await bloc.stream.firstWhere((s) => s.order != null || s.exception != null);
-expect(bloc.state.order, isNotNull);
+// happy — real bloc, real repo, real MockTaskDataSource (nothing stubbed)
+final base = const RawRepositoryExecutor().withErrorHandling();
+final bloc = TasksListBloc(TaskRepository(base, MockTaskDataSource()));
+bloc.add(const TasksListEvent.requested());
+await bloc.stream.firstWhere(
+  (s) => s is SuccessTasksListState || s is FailureTasksListState,
+);
+expect(bloc.state, isA<SuccessTasksListState>());
 
 // error — one extra expect, doubles vertical coverage (executor map + repo + bloc failure)
-final failBloc = buildBloc(MockOrderDataSource.failing());
-failBloc.add(const CheckoutEvent.submitted());
-await failBloc.stream.firstWhere((s) => s.order != null || s.exception != null);
-expect(failBloc.state.exception, isNotNull);
+final failBloc = TasksListBloc(TaskRepository(base, MockTaskDataSource.failing()));
+failBloc.add(const TasksListEvent.requested());
+await failBloc.stream.firstWhere(
+  (s) => s is SuccessTasksListState || s is FailureTasksListState,
+);
+expect(failBloc.state, isA<FailureTasksListState>());
 ```
 
 ## API DS — real `fromJson`/`toJson` on the way (#1)
@@ -124,11 +133,11 @@ verify(() => client.requestVoid(method: HttpMethod.post, path: '/auth/logout')).
 ## DI graph smoke
 
 ```dart
-SharedPreferences.setMockInitialValues({});            // + stub secure storage
+SharedPreferences.setMockInitialValues({});            // + stub secure storage channel
 await getIt.reset();
-getIt.registerSingleton<AppEnvironment>(AppEnvironment.dev());
 await AppConfigurator.configure();
-expect(getIt<CheckoutBloc>(), isA<CheckoutBloc>());     // one line per feature bloc
+expect(getIt<TasksListBloc>(), isA<TasksListBloc>());   // one line per feature bloc
+expect(getIt<LoginBloc>(), isA<LoginBloc>());           // (see test/core/di_graph_test.dart)
 ```
 
 ## Coverage filter
@@ -142,8 +151,8 @@ lcov --remove coverage/lcov.info \
 
 ## Don't
 
-- ❌ Unit-test a thin repository (re-asserts delegation) — use #4.
-- ❌ Ship a #4 with only a happy path — add one `state.exception != null` assertion.
+- ❌ Unit-test a thin repository (re-asserts delegation) — use #4. (Existing per-repo tests are grandfathered.)
+- ❌ Ship a #4 with only a happy path — add one failure-state assertion.
 - ❌ Round-trip every model — exercise fromJson/toJson on the way through the API-DS test; standalone #1 only for enum/`@JsonKey` defaults.
 - ❌ Stub `fromJson: any(named:)` → return a hand-built model (bypasses deserialization, duplicates the model). Invoke the captured fromJson on a raw fixture.
 - ❌ Assert a mock's fault-injection trigger — test real branches; cover errors via #4.
