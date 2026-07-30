@@ -52,5 +52,6 @@ A single phase ≤ **21 SP**. Above that → split into independently deliverabl
 
 1. Counting by file count instead of behavior.
 2. Ignoring UI state-management complexity.
-3. Underestimating cross-package changes (`starter_*` always triggers a publish step).
+3. Underestimating cross-package changes (`starter_*` are pub-workspace members, not published —
+   but still cost codegen, cross-package review, and a consuming-app rebuild).
 4. Skipping the Fibonacci rounding.

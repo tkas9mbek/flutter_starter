@@ -19,8 +19,10 @@ Consolidated rule set for the flutter_starter project. Rules tagged `[lint]` are
 13. [Data Layer](#data-layer)
 14. [Testing](#testing)
 15. [Cleanup](#cleanup)
-16. [Git](#git)
-17. [Lint Rules Reference](#lint-rules-reference)
+16. [Code Generation](#code-generation)
+17. [Dependencies](#dependencies)
+18. [Git](#git)
+19. [Lint Rules Reference](#lint-rules-reference)
 
 ---
 
@@ -31,7 +33,7 @@ Consolidated rule set for the flutter_starter project. Rules tagged `[lint]` are
 Files under `**/data/**` and `**/domain/**` must not import `package:flutter/*` or `dart:ui`.
 
 ```dart
-// ❌ Bad — File: lib/features/user/data/remote_user_data_source.dart
+// ❌ Bad — File: lib/features/user/data/api_user_data_source.dart
 import 'package:flutter/foundation.dart';
 
 // ✅ Good — pure-Dart alternatives
@@ -68,7 +70,7 @@ Repositories are concrete classes. The abstraction lives on the `*DataSource` in
 
 ### Use repository executors for cross-cutting concerns
 
-Compose executors in the repository's DI module closure from a single local `base = const RawRepositoryExecutor().withErrorHandling()` and inject them via constructor params, instead of writing manual `try/catch`/retry loops. `withErrorHandling()` must be the innermost (called first in the chain). Caching is the `RepositoryCache` collaborator, not a decorator — see [repository_executor.md](../guides/repository_executor.md).
+Compose executors in the repository's DI module closure from a single local `base = const RawRepositoryExecutor().withErrorHandling()` and inject them via constructor params, instead of writing manual `try/catch`/retry loops. Baseline is `.withErrorHandling()` alone; append `.withRetry(maxRetries: 3, retryDelay: ...)` only for idempotent reads (today `ProfileRepository`, `PushTokenRepository`, `RemoteConfigRepository` do). `withErrorHandling()` must be the innermost (called first in the chain). Caching is the `RepositoryCache` collaborator (`InMemoryRepositoryCache`), not a decorator — it ships in `starter_toolkit` but has no consumer yet — see [repository_executor.md](../guides/repository_executor.md).
 
 ---
 
@@ -82,7 +84,7 @@ Classes follow `Feature + [Description] + Type`. Drop `Description` for single i
 |-----------|---------|---------|
 | Repository | `FeatureRepository` | `UserRepository` |
 | Abstract DS | `FeatureDataSource` | `UserDataSource` |
-| Concrete DS | `<Source>FeatureDataSource` | `RemoteUserDataSource` |
+| Concrete DS | `<Source>FeatureDataSource` | `ApiUserDataSource` |
 | BLoC | `Feature[Description]Bloc` | `UserListBloc` |
 | Screen | `Feature[Description]Screen` | `LoginScreen` |
 | Widget | `DescriptiveWidget` | `UserProfileCard` |
@@ -104,7 +106,7 @@ const factory UserState.success(List<User> users) = SuccessUserState;
 
 ### Concrete implementations: source prefix first
 
-`RemoteUserDataSource`, `LocalUserDataSource`, `MockUserDataSource` — not `UserDataSourceRemote`.
+`ApiUserDataSource`, `LocalUserDataSource`, `MockUserDataSource` — not `UserDataSourceApi`.
 
 ### No naming anti-patterns
 
@@ -120,7 +122,7 @@ Forbid `Impl`, `Module`, `Manager`, `Helper` (in non-helper files), `Data`, `Inf
 
 ### One public class per file
 
-**Exceptions:** BLoC events + states + bloc in one file; private helpers prefixed `_`; tightly-coupled models <5 fields.
+**Exceptions:** a BLoC is **two files** forming one library via `part` / `part of` — `{feature}_bloc.dart` (Bloc class only) + `{feature}_event_state.dart` (`@freezed` events + states); private helpers prefixed `_`; tightly-coupled models <5 fields.
 
 ### Package imports only
 
@@ -138,8 +140,11 @@ lib/features/{feature}/
 ├── domain/      # AbstractDataSource + Repository
 ├── model/       # Domain models
 ├── configs/     # GetIt module
-└── ui/          # bloc/, screen/, widget/
+└── ui/          # subfeature folders only
+    └── {subfeature}/   # bloc/, screen/, widget/
 ```
+
+`ui/` never holds `bloc/`, `screen/`, or `widget/` directly — a single-flow feature uses one subfeature folder named after the feature (e.g. `profile/ui/overview/`).
 
 ---
 
@@ -223,7 +228,20 @@ final result = await repo.fetch();
 
 ### Line length
 
-100 chars for ordinary code, 200 chars for deeply composed widget chains. Extract before wrapping.
+`dart format` enforces an 80-character page width (`analysis_options.yaml: page_width: 80`) — that
+is the real, tool-enforced limit for all code, including widget chains. Extract a named local, split
+a builder into its own widget class, or put each `.method()` call on its own line rather than
+hard-wrapping mid-expression.
+
+### Comments and documentation
+
+Write self-documenting code first. Comments and docs must be concise, but still give enough context
+to explain non-obvious purpose, constraints, invariants, or workarounds.
+
+- Comment / doc lines may exceed the 80-character code limit but must stay **under 120 characters**.
+- Describe only non-trivial behavior; exclude anything self-explanatory from comments and docs.
+- Prefer `///` summaries for public APIs in shared modules.
+- Do not comment what the code already says.
 
 ### Single quotes
 
@@ -310,6 +328,34 @@ Bottom sheets and dialogs are `StatelessWidget` classes that expose a static `sh
 ### Reuse starter_uikit
 
 Before writing new UI, check `starter_uikit` for: `FailureWidget.large`, `EmptyInformationBody`, `CustomCircularProgressIndicator`, `NotificationSnackBar`, `AppTextField`, `AppDropdownField`, `AppDatePickerField`, `AppCheckbox`, `AppElevatedButton`, `AppOutlinedButton`, `TitleAppBar`, `BaseAppBar`, `TransparentAppBar`.
+
+### Icons via `SvgIcon`, never material `Icons`
+
+Every glyph comes from the Spider-generated `UiSvgIcons` set in `starter_uikit`, rendered through `SvgIcon`. Material `Icon`/`Icons.*` are forbidden in app and uikit code.
+
+```dart
+// ❌ Bad
+Icon(Icons.chevron_right, size: 20, color: theme.textTertiary);
+
+// ✅ Good
+SvgIcon(UiSvgIcons.chevronRight, size: 20, color: theme.textTertiary);
+```
+
+### Forms use a form UI model
+
+Every multi-field form has a UI model in `ui/{subfeature}/model/` with static field-name constants and a `fromForm(Map<String, dynamic>)` factory. Field widgets and value reads reference the constants — never raw string keys.
+
+```dart
+// ❌ Bad
+AppTextField(name: 'phone', label: localizer.phoneNumber);
+final phone = formKey.currentState!.value['phone'] as String;
+
+// ✅ Good
+AppTextField(name: LoginForm.phoneField, label: localizer.phoneNumber);
+final form = LoginForm.fromForm(formKey.currentState!.value);
+```
+
+The model owns normalization (trimming, empty-to-null) inside `fromForm`, so screens hand the BLoC a ready value object.
 
 ### `mounted` after async
 
@@ -536,7 +582,34 @@ Full guide: [../guides/testing.md](../guides/testing.md).
 | No empty stub methods | File clutter |
 | No scattered `// ignore:` lines | Fix the root cause; if unavoidable, use `// ignore_for_file:` at top with `—` justification (e.g. `// ignore_for_file: avoid_print — developer-only generator`). |
 | `Key` only when needed | Unused keys defeat Flutter widget reuse |
-| Comments only when WHY is non-obvious | Code says WHAT |
+| Concise comments only when WHY is non-obvious | Code says WHAT; keep comment/doc lines ≤ 120 chars |
+
+---
+
+## Code Generation
+
+All generated files are produced by tools — never edit them by hand.
+
+| Tool | Command | Run after changing | Generates |
+|------|---------|--------------------|-----------|
+| build_runner | `fvm flutter pub run build_runner build --delete-conflicting-outputs` | Routes, JSON models, Freezed BLoC events/states | `*.freezed.dart`, `*.g.dart`, `*.gr.dart` |
+| Exception mapper | `dart run utils/generators/generate_exception_mapper.dart` | `AppException` factories / `@ExceptionUiConfig` | `exception_ui_mapper.dart`, `exception_ui_mapper_decorator.dart` |
+| intl_utils | `fvm flutter --no-color pub global run intl_utils:generate` | ARB files (`en`, `ru`) | `l10n/generated/` localizers |
+| Spider | `(cd packages/starter_uikit && spider build)` | SVG/image assets in `starter_uikit` | `lib/resources/ui_svg_icons.dart` from `spider.json` |
+
+Install Spider once with `dart pub global activate spider`.
+
+---
+
+## Dependencies
+
+The repo is a pub workspace: the root `pubspec.yaml` lists all packages under `workspace:`, and each
+package opts in with `resolution: workspace`.
+
+- Declare dependencies in package pubspecs **without version constraints** (`shimmer:`, not
+  `shimmer: ^3.0.0`) — the workspace resolves one version for the whole repo.
+- Order: Flutter SDK deps first, then alphabetical; `dev_dependencies` follow the same rule
+  independently.
 
 ---
 

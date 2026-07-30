@@ -2,13 +2,13 @@
 
 Concise rules. Full guide: [../guides/testing.md](../guides/testing.md).
 
-**Core idea:** test layers with *logic* (blocs, executors), and make the **no-mock vertical slice (#4)** the backbone — it's the most coverage-dense test (bloc + executor + repo delegation + mock DS, nothing stubbed). The app is **mock-first** — test the `Mock*DataSource` path that ships, not a remote/`ApiClient` path. Optimise coverage-per-effort, not a percentage.
+**Core idea:** test layers with *logic* (blocs, executors), and make the **no-mock vertical slice (#4)** the backbone — it's the most coverage-dense test (bloc + executor + repo delegation + mock DS, nothing stubbed). Features ship both `Mock*DataSource` and `Api*DataSource` behind a per-feature `useMock` switch; feature-flow tests still wire the `Mock*DataSource` (no network stack needed), while the `Api*DataSource` contract is locked separately, once per data source. Optimise coverage-per-effort, not a percentage.
 
 ## Test types
 
 | # | Type | Covers |
 |---|------|--------|
-| 1 | Model serialization | real `fromJson`/`toJson` **exercised on the way** through the `Remote*DataSource` test — **not** standalone round-trips (standalone only for enum/`@JsonKey` defaults no DS reaches) |
+| 1 | Model serialization | real `fromJson`/`toJson` **exercised on the way** through the `Api*DataSource` test — **not** standalone round-trips (standalone only for enum/`@JsonKey` defaults no DS reaches) |
 | 2 | **BLoC unit** (backbone) | every event→state; failure via an *immediately-throwing* repo (no retry timing) |
 | 3 | Repository executor (central) | error mapping, retry timing, cache — once, for all repos *(leave as-is)* |
 | 4 | **Feature-flow** (backbone, integration) | `BLoC → Repo → MockDataSource` end-to-end — **happy path + one error branch** |
@@ -23,7 +23,7 @@ Concise rules. Full guide: [../guides/testing.md](../guides/testing.md).
 | T2 | **#4 is mandatory per feature** (not just critical), with **happy path + one `state.exception != null` assertion**: real BLoC → real Repo → real `Mock*DataSource`. |
 | T3 | Test the **repository executor once, centrally** (error/retry/cache). Never per-repo. Retry *timing* lives here, not in bloc tests. |
 | T4 | Build expected models from a per-feature **`*MockModels`** builder (`.user` / `.rawUser` from `assets/*.json`), never inline. Standalone model test (#1) **only** for enum/`@JsonKey` defaults. |
-| T4b | **Remote DS tests run the real `fromJson`/`toJson` on the way:** invoke the captured `fromJson` on a raw fixture; `captureAny(named: 'body')` + assert concrete serialized values for `toJson`. Never `fromJson: any(named:)` → return a hand-built model. |
+| T4b | **API DS tests run the real `fromJson`/`toJson` on the way:** invoke the captured `fromJson` on a raw fixture; `captureAny(named: 'body')` + assert concrete serialized values for `toJson`. Never `fromJson: any(named:)` → return a hand-built model. |
 | T5 | `registerFallbackValue` for every custom type in `any(named:)` (in `setUpAll`) — incl. `HttpMethod` and the `T Function(Map<String,dynamic>)` fromJson type when matched with `any(named:)`. |
 | T6 | `blocTest` `wait:` is for **debounce only** — never to sit through retry backoff; assert failure with a repo that throws immediately. |
 | T7 | Widget smoke = a `(widget, state)` table → `pumpWidget(wrapApp(w))` → `pumpAndSettle()` → `expect(takeException(), isNull)`. Bespoke finder only where content matters. No pixels. |
@@ -85,7 +85,7 @@ await failBloc.stream.firstWhere((s) => s.order != null || s.exception != null);
 expect(failBloc.state.exception, isNotNull);
 ```
 
-## Remote DS — real `fromJson`/`toJson` on the way (#1)
+## API DS — real `fromJson`/`toJson` on the way (#1)
 
 ```dart
 // 1. Reusable answer: run the REAL fromJson the DS passed, on a raw fixture.
@@ -144,10 +144,10 @@ lcov --remove coverage/lcov.info \
 
 - ❌ Unit-test a thin repository (re-asserts delegation) — use #4.
 - ❌ Ship a #4 with only a happy path — add one `state.exception != null` assertion.
-- ❌ Round-trip every model — exercise fromJson/toJson on the way through the remote-DS test; standalone #1 only for enum/`@JsonKey` defaults.
+- ❌ Round-trip every model — exercise fromJson/toJson on the way through the API-DS test; standalone #1 only for enum/`@JsonKey` defaults.
 - ❌ Stub `fromJson: any(named:)` → return a hand-built model (bypasses deserialization, duplicates the model). Invoke the captured fromJson on a raw fixture.
 - ❌ Assert a mock's fault-injection trigger — test real branches; cover errors via #4.
 - ❌ `wait: 8s` for retry in a bloc test — retry timing is #3's.
 - ❌ Hand-write N near-identical widget smokes — loop a table.
-- ❌ Integration-test the `ApiClient`/remote path (not what ships).
+- ❌ Integration-test the `ApiClient` path with a full feature-flow slice — lock its contract with a mocked `ApiClient` instead (not what ships as the flow path).
 - ❌ Assert pixels/layout in smoke tests; chase coverage %.

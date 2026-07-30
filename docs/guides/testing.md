@@ -1,6 +1,6 @@
 # Testing Guide
 
-> **Philosophy:** test the layers that contain *logic*, and lean on the **no-mock vertical slice** for everything else. The app is **mock-first** — it ships `Mock*DataSource` implementations and makes no network calls today — so tests exercise the **mock path that actually runs**, not a remote/`ApiClient` path that doesn't. Prioritise by coverage-per-unit-of-effort, not by a coverage percentage.
+> **Philosophy:** test the layers that contain *logic*, and lean on the **no-mock vertical slice** for everything else. The app ships both `Mock*DataSource` and `Api*DataSource` implementations behind a per-feature `useMock` switch. Feature-flow tests wire the `Mock*DataSource` because it needs no network stack and still proves the real bloc/repository/executor wiring; the `Api*DataSource` contract (method, path, body, `fromJson`) is locked separately, once per data source (§5.4 callout) — not by re-running the whole feature-flow slice against it. Prioritise by coverage-per-unit-of-effort, not by a coverage percentage.
 
 **The single most coverage-dense test is the feature-flow slice (#4).** One run lights up the bloc, the executor, the repository's delegation, and the mock data source's happy path simultaneously — with nothing stubbed. It is therefore the **backbone alongside the bloc test (#2)**, and it is **mandatory per feature**, not reserved for critical ones. Most of the policy below follows from that reweighting: spend less on narrow, mock-heavy tests that mostly cover generated or mock-config code, and more on the slice that proves real wiring.
 
@@ -8,10 +8,10 @@
 
 | # | Type | Tests a layer with… | What it covers | What it can't | Effort |
 |---|------|---------------------|----------------|---------------|--------|
-| 1 | **Model serialization** | mapping | real `fromJson`/`toJson` **exercised on the way** through the `Remote*DataSource` test (§5.1); standalone only for enum/`@JsonKey` defaults no DS reaches | vanity round-trips, logic, UI | XS |
+| 1 | **Model serialization** | mapping | real `fromJson`/`toJson` **exercised on the way** through the `Api*DataSource` test (§5.1); standalone only for enum/`@JsonKey` defaults no DS reaches | vanity round-trips, logic, UI | XS |
 | 2 | **BLoC unit** *(backbone)* | logic | every event→state transition, repo calls, error→failure (with an *immediately-throwing* repo) | retry *timing* (that's #3), rendering, wiring | S |
 | 3 | **Repository executor** *(central)* | logic | error mapping, retry/backoff timing, cache TTL — once, for all repos | per-feature behaviour | S |
-| 4 | **Feature-flow** *(backbone, integration)* | thin glue | `BLoC → Repository → MockDataSource` end-to-end — **happy path + one error branch** | remote/API contracts, pixels | M |
+| 4 | **Feature-flow** *(backbone, integration)* | thin glue | `BLoC → Repository → MockDataSource` end-to-end — **happy path + one error branch** | API contracts, pixels | M |
 | 5 | **Widget smoke** *(data-driven)* | rendering | a table of `(widget, state)` pairs builds without throwing; l10n keys exist; nullable branches render | exact pixels, deep behaviour | S |
 | 6 | **DI graph smoke** | wiring | every registered type resolves from GetIt | logic, UI | XS |
 
@@ -37,7 +37,7 @@ Central, once for the whole app: the **executor tests (#3)** and the **DI graph 
 test/features/{feature}/
 ├── assets/        # feature-local JSON fixtures
 ├── model/         # *MockModels fixture builder (rawX + built X via fromJson)
-├── data/          # remote-DS unit tests (real fromJson/toJson on the way)
+├── data/          # API-DS unit tests (real fromJson/toJson on the way)
 ├── bloc/          # bloc unit tests
 ├── widget/        # data-driven widget smoke tests
 └── integration/   # feature-flow tests (mandatory per feature)
@@ -53,7 +53,7 @@ test/support/
 ## 4. Shared conventions
 
 - **Build models from JSON + `fromJson`**, never construct domain models inline in assertions. Keep fixtures in `assets/` and the built models in a per-feature `*MockModels` builder (e.g. `ProfileMockModels.user` / `.rawUser`) so DS, bloc, and integration tests share one source of truth.
-- **Exercise real `fromJson`/`toJson` on the way** through the `Remote*DataSource` test — invoke the captured `fromJson` on a raw fixture, capture the request `body` for `toJson` (§5.1). Don't stub `fromJson: any(named:)` and return a hand-built model.
+- **Exercise real `fromJson`/`toJson` on the way** through the `Api*DataSource` test — invoke the captured `fromJson` on a raw fixture, capture the request `body` for `toJson` (§5.1). Don't stub `fromJson: any(named:)` and return a hand-built model.
 - **`registerFallbackValue`** for every custom type used inside an `any(named:)`/`any()` matcher (mocktail), in `setUpAll` — including `HttpMethod` and the `T Function(Map<String,dynamic>)` `fromJson` type when those are matched with `any(named:)`.
 - **No `state.toString()` assertions** — compare states via Freezed's generated equality.
 - **No sleep-based waits.** Use `blocTest`'s `wait:` only for **debounce** windows; **never** to sit through retry backoff — assert the failure state with a repo that throws immediately and let the executor test (#3) own retry timing.
@@ -62,7 +62,7 @@ test/support/
 
 ### 5.1 Model serialization (#1) — exercise real `fromJson`/`toJson` *on the way*
 
-A standalone `fromJson`/`toJson` round-trip tests the **generator** (already tested upstream) and only inflates line coverage on `*.g.dart`/`*.freezed.dart`. **Don't write round-trips.** Instead, exercise the model's *real* (de)serialization **on the production path** — through the `Remote*DataSource` test that already has to exist, where the data source passes `fromJson:`/`body: model.toJson()` to `ApiClient.requestJson`. One test then covers the DS wiring **and** the serialization, with no duplicated model literals.
+A standalone `fromJson`/`toJson` round-trip tests the **generator** (already tested upstream) and only inflates line coverage on `*.g.dart`/`*.freezed.dart`. **Don't write round-trips.** Instead, exercise the model's *real* (de)serialization **on the production path** — through the `Api*DataSource` test that already has to exist, where the data source passes `fromJson:`/`body: model.toJson()` to `ApiClient.requestJson`. One test then covers the DS wiring **and** the serialization, with no duplicated model literals.
 
 #### Step 1 — a fixture builder per feature (no duplication)
 
@@ -262,8 +262,8 @@ void main() {
 }
 ```
 
-> **Remote contract path:** when a remote data source exists or is being added, keep its `*_remote_test.dart`
-> separate from mock-first flow tests. Wire `Remote*DataSource` + a mocked `ApiClient` to lock method/path/body
+> **API contract path:** when an `Api*DataSource` exists or is being added, keep its `*_api_test.dart`
+> separate from mock-first flow tests. Wire `Api*DataSource` + a mocked `ApiClient` to lock method/path/body
 > shape, then run the captured `fromJson`/`toJson` on fixtures.
 
 ### 5.5 Widget smoke (#5) — data-driven
@@ -391,7 +391,7 @@ Coverage is a *map of gaps*, not a target — read the **filtered** report to fi
 
 | Don't | Do |
 |-------|----|
-| Round-trip every model through JSON | Exercise `fromJson`/`toJson` **on the way** through the remote-DS test (§5.1); standalone only for enum/`@JsonKey` defaults (#1) |
+| Round-trip every model through JSON | Exercise `fromJson`/`toJson` **on the way** through the API-DS test (§5.1); standalone only for enum/`@JsonKey` defaults (#1) |
 | Stub `fromJson: any(named:)` and return a hand-built model | Invoke the **captured** `fromJson` (`invocation.namedArguments[#fromJson]`) on a raw fixture; build the expected model from the same fixture |
 | Assert `body == model.toJson()` and call it a toJson test | `captureAny(named: 'body')` then assert **concrete serialized values** (e.g. `body['birthday'] == '…ISO…'`) |
 | Add a standalone test for a mock's fault-injection trigger | Don't unit-test the mock DS at all — cover its happy + error path via the feature-flow test (#4) |
@@ -399,7 +399,7 @@ Coverage is a *map of gaps*, not a target — read the **filtered** report to fi
 | Unit-test a thin repository (`verify(ds.getX).called(1)`) | Cover it via the mandatory feature-flow test (#4) |
 | Ship a feature-flow test with only a happy path | Add **one error assertion** (`state.exception != null`) (#4) |
 | Hand-write N near-identical widget smokes | Loop a `(widget, state)` table; bespoke finders only where content matters (#5) |
-| Integration-test the remote `ApiClient` path | Integration-test the **mock** path that ships (#4) |
+| Integration-test the `ApiClient` path with a full feature-flow slice | Integration-test the **mock** path that ships (#4); lock the `ApiClient` contract separately (§5.1) |
 | Re-test error/retry per repository | Test the executor once, centrally (#3) |
 | Chase 100% coverage everywhere | Follow the per-feature policy (§2); read the **filtered** coverage report |
 | `sleep()` / real delays | `blocTest` `wait:` (debounce only) or `fakeAsync` |

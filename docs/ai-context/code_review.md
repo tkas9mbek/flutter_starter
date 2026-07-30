@@ -7,8 +7,8 @@ Concise checklist. Full rules: [../guides/code_review.md](../guides/code_review.
 | Symbol | Meaning |
 |--------|---------|
 | 🔴 Blocking | Must fix before merge |
-| 🟡 Format | TODO acceptable |
-| 🟢 Suggestion | Nice to have |
+| 🟡 Mild | TODO acceptable |
+| 🟢 Suggestion | Nice to have (incl. low-stakes formatting nits) |
 
 Rules tagged `[lint]` are auto-enforced — skip in manual review.
 
@@ -77,7 +77,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | NAME-3 | 🟡 | No `Helper` / `Manager` / `Data` / `Info` / `Util` suffixes |
 | NAME-4 | 🟡 | BLoCs are nouns (`LoginBloc`, not `SubmitLoginBloc`) |
 | NAME-5 | 🟡 | Methods start with a verb |
-| NAME-6 | 🟡 | Source prefix first: `RemoteUserDataSource` |
+| NAME-6 | 🟡 | Source prefix first: `ApiUserDataSource` |
 | NAME-7 | 🟡 | File name == class name |
 
 ## FILE

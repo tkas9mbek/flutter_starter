@@ -4,7 +4,7 @@
 
 When creating a BLoC:
 1. Use Freezed `sealed` unions for immutable states and events
-2. Keep all definitions in ONE file (`feature_bloc.dart`)
+2. Split definitions across TWO files: `feature_bloc.dart` (Bloc class) + `feature_event_state.dart` (events/states), joined via `part` / `part of`
 3. Use standard state names: `initial`, `loading`, `success`, `failure`
 4. Use past-tense event names: `requested`, `submitted`, `refreshed`
 5. State case classes are public (`SuccessFeatureState`) so UI can pattern-match; event case classes stay private (`_RequestedFeatureEvent`)
@@ -13,7 +13,7 @@ When creating a BLoC:
 
 ## BLoC File Structure
 
-All BLoC code goes in ONE file with parts:
+BLoC code is split across two files joined with `part` / `part of`: `feature_bloc.dart` holds the imports, the generated-file `part`, the `part` for the event/state file, and the Bloc class; `feature_event_state.dart` is `part of` the bloc file and holds the event and state unions.
 
 ```dart
 // feature_bloc.dart
@@ -21,30 +21,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'feature_bloc.freezed.dart';  // Generated file
+part 'feature_event_state.dart';
 
-// 1. Events (union type — case classes stay private)
-@freezed
-sealed class FeatureEvent with _$FeatureEvent {
-  const factory FeatureEvent.requested() = _RequestedFeatureEvent;
-  const factory FeatureEvent.submitted(Data data) = _SubmittedFeatureEvent;
-  const factory FeatureEvent.refreshed() = _RefreshedFeatureEvent;
-}
-
-// 2. States (union type — case classes are public so UI can pattern-match)
-@freezed
-sealed class FeatureState with _$FeatureState {
-  const FeatureState._();  // Enable extensions
-
-  const factory FeatureState.initial() = InitialFeatureState;
-  const factory FeatureState.loading() = LoadingFeatureState;
-  const factory FeatureState.success(List<Item> items) = SuccessFeatureState;
-  const factory FeatureState.failure(AppException exception) = FailureFeatureState;
-
-  // Helper getters
-  bool get isLoading => this is LoadingFeatureState;
-}
-
-// 3. BLoC
+// BLoC
 class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
   final FeatureRepository _repository;
 
@@ -82,6 +61,33 @@ class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
   ) async {
     // Handle refresh
   }
+}
+```
+
+```dart
+// feature_event_state.dart
+part of 'feature_bloc.dart';
+
+// 1. Events (union type — case classes stay private)
+@freezed
+sealed class FeatureEvent with _$FeatureEvent {
+  const factory FeatureEvent.requested() = _RequestedFeatureEvent;
+  const factory FeatureEvent.submitted(Data data) = _SubmittedFeatureEvent;
+  const factory FeatureEvent.refreshed() = _RefreshedFeatureEvent;
+}
+
+// 2. States (union type — case classes are public so UI can pattern-match)
+@freezed
+sealed class FeatureState with _$FeatureState {
+  const FeatureState._();  // Enable extensions
+
+  const factory FeatureState.initial() = InitialFeatureState;
+  const factory FeatureState.loading() = LoadingFeatureState;
+  const factory FeatureState.success(List<Item> items) = SuccessFeatureState;
+  const factory FeatureState.failure(AppException exception) = FailureFeatureState;
+
+  // Helper getters
+  bool get isLoading => this is LoadingFeatureState;
 }
 ```
 
@@ -497,24 +503,7 @@ import 'package:starter/features/user/model/user.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 part 'user_list_bloc.freezed.dart';
-
-@freezed
-sealed class UserListEvent with _$UserListEvent {
-  const factory UserListEvent.requested() = _RequestedUserListEvent;
-  const factory UserListEvent.refreshed() = _RefreshedUserListEvent;
-}
-
-@freezed
-sealed class UserListState with _$UserListState {
-  const UserListState._();
-
-  const factory UserListState.initial() = InitialUserListState;
-  const factory UserListState.loading() = LoadingUserListState;
-  const factory UserListState.success(List<User> users) = SuccessUserListState;
-  const factory UserListState.failure(AppException exception) = FailureUserListState;
-
-  bool get isLoading => this is LoadingUserListState;
-}
+part 'user_list_event_state.dart';
 
 class UserListBloc extends Bloc<UserListEvent, UserListState> {
   final UserRepository _repository;
@@ -554,11 +543,34 @@ class UserListBloc extends Bloc<UserListEvent, UserListState> {
 }
 ```
 
+```dart
+// user_list_event_state.dart
+part of 'user_list_bloc.dart';
+
+@freezed
+sealed class UserListEvent with _$UserListEvent {
+  const factory UserListEvent.requested() = _RequestedUserListEvent;
+  const factory UserListEvent.refreshed() = _RefreshedUserListEvent;
+}
+
+@freezed
+sealed class UserListState with _$UserListState {
+  const UserListState._();
+
+  const factory UserListState.initial() = InitialUserListState;
+  const factory UserListState.loading() = LoadingUserListState;
+  const factory UserListState.success(List<User> users) = SuccessUserListState;
+  const factory UserListState.failure(AppException exception) = FailureUserListState;
+
+  bool get isLoading => this is LoadingUserListState;
+}
+```
+
 ---
 
 ## VS Code Snippet
 
-Add to your VS Code snippets for quick BLoC generation:
+Add to your VS Code snippets for quick BLoC generation. A VS Code snippet inserts text into a single active file, so it can't scaffold two files at once — this snippet generates the combined content. After inserting it in `feature_bloc.dart`, cut the `${1:Feature}Event` and `${1:Feature}State` class declarations into a sibling `feature_event_state.dart` file that starts with `part of 'feature_bloc.dart';`, and add `part 'feature_event_state.dart';` next to the `part '${TM_FILENAME_BASE}.freezed.dart';` line, matching the two-file structure described above.
 
 ```json
 {

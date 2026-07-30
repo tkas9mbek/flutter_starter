@@ -5,8 +5,8 @@
 | Severity | Meaning |
 |---|---|
 | 🔴 Blocking | Must fix before merge — bugs, severe violations, broken architecture |
-| 🟡 Format | Can leave as TODO — style/formatting, mild violations |
-| 🟢 Suggestion | Nice to have — improvements, optimizations |
+| 🟡 Mild | Can leave as TODO — mild violations (naming, structure, review-time conventions) |
+| 🟢 Suggestion | Nice to have — improvements, optimizations, and low-stakes formatting nits |
 | 💬 Comment | Cannot be changed retroactively — naming of commits/branches, prior decisions |
 
 ## Finding Types
@@ -93,12 +93,12 @@
 
 | ID | Type | Description | Suggested Fix |
 |---|---|---|---|
-| NAME-1 | Mild Violation 🟡 | `Impl` suffix on class `[lint]` | Concrete name describing the source: `RemoteUserDataSource`, not `UserDataSourceImpl` |
+| NAME-1 | Mild Violation 🟡 | `Impl` suffix on class `[lint]` | Concrete name describing the source: `ApiUserDataSource`, not `UserDataSourceImpl` |
 | NAME-2 | Mild Violation 🟡 | `Model` suffix on a domain data class `[lint]` | Drop the suffix: `User`, not `UserModel` |
 | NAME-3 | Mild Violation 🟡 | Anti-pattern suffix: `Helper`, `Manager`, `Data`, `Info`, `Util` `[lint]` | Use `Feature + Description + Type` |
 | NAME-4 | Mild Violation 🟡 | Verb-based BLoC name | Noun-based: `LoginBloc`, not `SubmitLoginBloc` |
 | NAME-5 | Mild Violation 🟡 | Method missing a verb prefix | `fetchUsers`, not `users` |
-| NAME-6 | Mild Violation 🟡 | Concrete data source name has source suffix | Source prefix first: `RemoteUserDataSource`, `LocalUserDataSource`, `MockUserDataSource` |
+| NAME-6 | Mild Violation 🟡 | Concrete data source name has source suffix | Source prefix first: `ApiUserDataSource`, `LocalUserDataSource`, `MockUserDataSource` |
 | NAME-7 | Mild Violation 🟡 | File name doesn't match class | `user_repository.dart` for `UserRepository` |
 
 ---

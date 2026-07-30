@@ -2,7 +2,7 @@
 
 ## Root Structure
 
-Three main directories: `lib/`, `packages/`, `assets/`
+Main directories: `lib/`, `packages/`, `assets/`, `test/`, `docs/`, `work/`
 
 ```
 flutter_starter/
@@ -12,9 +12,12 @@ flutter_starter/
 │   └── l10n/             # Localization (generated)
 ├── packages/
 │   ├── starter_toolkit/  # Shared utilities and data infrastructure
-│   └── starter_uikit/    # UI components (Flutter)
+│   ├── starter_uikit/    # UI components (Flutter)
+│   └── starter_lints/    # Custom lint rules
 ├── assets/               # Images, icons
-└── test/                 # Tests
+├── test/                 # Tests
+├── docs/                 # Project context, rules, and guides
+└── work/                 # Supplemental product/API/planning docs when present
 ```
 
 ### Generated Files
@@ -34,14 +37,12 @@ Only application-wide, feature-independent code
 
 ```
 lib/core/
-├── consts/               # Constants
+├── global/               # Constants, storage keys, global flags
 ├── data/                 # Core data (NO Flutter imports)
-│   ├── error/
-│   ├── network/
-│   └── storage/
 ├── di/                   # Dependency injection
-│   └── modules/
-└── router/              # auto_route configuration
+├── notifications/        # Push notification setup, FCM/API token data sources
+├── remote_config/        # Firebase/asset-backed remote config
+└── router/               # auto_route configuration
 ```
 
 ## Feature Structure
@@ -50,8 +51,8 @@ Standard pattern: data → domain → model → configs → ui
 
 ```
 lib/features/{feature}/
-├── data/                 # DataSource (abstract + implementations)
-├── domain/               # Repository (usually concrete)
+├── data/                 # DataSource implementations (Api/Local/Mock)
+├── domain/               # Repository (concrete) + abstract DataSource
 ├── model/                # Freezed models (*.freezed.dart, *.g.dart)
 ├── configs/              # DI module
 └── ui/                   # BLoC + screens + widgets
@@ -67,8 +68,8 @@ Follow these strictly
 
 | Layer | Flutter? | Contains | Rules |
 |-------|----------|----------|-------|
-| **data/** | ❌ | DataSource implementations (Remote/Local/Mock) | Pure Dart, implements Domain |
-| **domain/** | ❌ | Repository (concrete) | Pure Dart, delegates to DS |
+| **data/** | ❌ | DataSource implementations (Api/Local/Mock) | Pure Dart, implements Domain |
+| **domain/** | ❌ | Repository (concrete), abstract DataSource | Pure Dart, delegates to DS |
 | **model/** | ❌ | Freezed classes, JSON | Use `freezed` + `json_serializable` |
 | **ui/** | ✅ | BLoC, Screens, Widgets | Horizontal deps OK, no business logic |
 
@@ -88,18 +89,8 @@ lib/features/application/
 
 ## UI Organization
 
-Flat structure for simple, subdivided for complex
-
-### Simple Features (1-2 screens)
-
-```
-ui/
-├── bloc/
-├── screen/
-└── widget/
-```
-
-### Complex Features (multiple screens/flows)
+`ui/` always contains subfeature folders — never `bloc/`, `screen/`, or `widget/` directly at its root.
+Each subfeature owns its own `bloc/`, `screen/`, `widget/` (and `model/` if needed).
 
 ```
 ui/
@@ -110,6 +101,10 @@ ui/
 ├── details/       # Detail view
 └── operation/     # Create/Edit
 ```
+
+A feature with a single flow still gets one subfeature folder, named after the feature
+(e.g. `profile/ui/overview/`). Widgets shared across subfeatures live in the subfeature that owns
+them; cross-subfeature imports within a feature are fine.
 
 **Common subdivisions**: `list/`, `details/`, `operation/`, `settings/`
 
@@ -139,13 +134,22 @@ packages/starter_uikit/lib/
 **Use when**: Used in 3+ features, generic, no feature logic
 **Keep in feature when**: Feature-specific or single use
 
+### starter_lints
+
+```
+packages/starter_lints/lib/
+└── src/lints/        # custom_lint rules
+```
+
+**Use when**: A style/architecture rule should be enforced automatically.
+
 ## File Naming
 
 `snake_case` for files, `PascalCase` for classes
 
 ```
 authentication_data_source.dart          → AuthenticationDataSource
-remote_authentication_data_source.dart   → RemoteAuthenticationDataSource
+api_authentication_data_source.dart      → ApiAuthenticationDataSource
 authentication_repository.dart           → AuthenticationRepository
 user.dart                                → User
 login_bloc.dart                          → LoginBloc
@@ -164,7 +168,7 @@ Follow this order
 1. Create `lib/features/{feature}/`
 2. Add models (freezed classes with JSON serialization)
 3. Add domain layer (abstract DataSource + concrete Repository)
-4. Add data layer (DataSource implementations: Remote/Local/Mock)
+4. Add data layer (DataSource implementations: Api/Local/Mock)
 5. Add DI module
 6. Add UI (BLoC, screens, widgets)
 7. Register module in `lib/core/di/app_configurator.dart`

@@ -17,7 +17,7 @@ Presentation (Flutter, BLoC) → Domain (Repo, AbstractDS, Model) ← Data (DS i
 | # | Rule |
 |---|------|
 | A1 | Repositories are **concrete facades** over abstract DataSources. Do not make repositories abstract. |
-| A2 | Abstract DataSource lives in `domain/`. Implementations (remote/local/mock) live in `data/`. |
+| A2 | Abstract DataSource lives in `domain/`. Implementations (api/local/mock) live in `data/`. |
 | A3 | BLoCs **never** depend on other BLoCs. Coordinate at UI layer (`BlocListener`, route extras). |
 | A4 | Repositories **never** depend on other repositories. |
 | A5 | All dependencies are wired via GetIt modules (`extends AppModule`) under `configs/`. |
@@ -27,7 +27,7 @@ Presentation (Flutter, BLoC) → Domain (Repo, AbstractDS, Model) ← Data (DS i
 
 ## Decisions
 
-- Need cross-cutting concerns on a repo call? Compose in the DI module from a single local `base = const RawRepositoryExecutor().withErrorHandling()` and inject via constructor params; caching is the `RepositoryCache` collaborator. See [repository_executor.md](repository_executor.md).
+- Need cross-cutting concerns on a repo call? Compose in the DI module from a single local `base = const RawRepositoryExecutor().withErrorHandling()` and inject via constructor params. Baseline is `.withErrorHandling()` alone; append `.withRetry(maxRetries: 3, retryDelay: ...)` only for idempotent reads (today `ProfileRepository`, `PushTokenRepository`, `RemoteConfigRepository` do). Caching is the `RepositoryCache` collaborator (`InMemoryRepositoryCache`), available in `starter_toolkit` but with no consumer yet. See [repository_executor.md](repository_executor.md).
 - Need a new exception type? Add sealed factory + `@ExceptionUiConfig` → run generator.
 - Need shared widget? Check `starter_uikit` first. Check `starter_toolkit` for utilities.
 

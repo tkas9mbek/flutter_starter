@@ -34,7 +34,8 @@ void data() { ... }
 **Pattern**: `Feature + Description + Type`
 
 - **Feature**: Domain/module name (e.g., `Tax`, `User`, `Note`)
-- **Description**: Specific use case or data (optional if single implementation)
+- **Description**: Specific use case or data — omit only when the feature has a single instance of
+  that Type (e.g. one screen, one repository); required as soon as a second instance exists.
 - **Type**: Component type (`Repository`, `Bloc`, `Screen`, `Widget`)
 
 ```dart
@@ -42,11 +43,13 @@ void data() { ... }
 class TaxRepository { ... }           // Single implementation, omit description
 class TaxPaymentScreen { ... }        // Payment is the description
 class UserListBloc { ... }            // List is the description
+class LoginScreen { ... }             // Feature has only one screen, omit description
 
 // ✗ Wrong
 class TaxData { ... }                 // Too generic
 class TaxModel { ... }                // Avoid "Model"
-class UserScreen { ... }              // Missing description
+class NoteScreen { ... }              // Note has both NoteListScreen and NoteDetailScreen —
+                                       // ambiguous without a description
 ```
 
 ---
@@ -62,8 +65,8 @@ Use `snake_case`. Match the main class name
 // Class: UserListBloc
 // File: user_list_bloc.dart
 
-// Class: RemoteAuthDataSource
-// File: remote_auth_data_source.dart
+// Class: ApiAuthDataSource
+// File: api_auth_data_source.dart
 ```
 
 ---
@@ -90,11 +93,11 @@ Prefix with implementation type
 
 ```dart
 // ✓ Correct - Implementations
-class RemoteUserDataSource implements UserDataSource { ... }
+class ApiUserDataSource implements UserDataSource { ... }
 class LocalUserDataSource implements UserDataSource { ... }
 class MockUserDataSource implements UserDataSource { ... }
 
-class RemoteAuthDataSource implements AuthDataSource { ... }
+class ApiAuthDataSource implements AuthDataSource { ... }
 class SecureAuthLocalDataSource implements AuthLocalDataSource { ... }
 ```
 
@@ -256,11 +259,11 @@ abstract class UserDataSource { ... }
 abstract class AuthAuthorizedDataSource { ... }
 
 // Implementations
-class RemoteUserDataSource implements UserDataSource { ... }
+class ApiUserDataSource implements UserDataSource { ... }
 class LocalUserDataSource implements UserDataSource { ... }
 class MockUserDataSource implements UserDataSource { ... }
 
-class RemoteAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
+class ApiAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
 class MockAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
 ```
 
@@ -324,7 +327,7 @@ BLoC managing the list of tax debts.
 
 **Abstract**: `UserDataSource`
 **Implementations**:
-- `RemoteUserDataSource` - API implementation
+- `ApiUserDataSource` - API implementation
 - `LocalUserDataSource` - Database implementation
 - `MockUserDataSource` - Testing implementation
 
@@ -362,7 +365,7 @@ Concrete corrections for the most common naming mistakes seen in review.
 | `ImageContainer` | `UserAvatarCard` | `Container` is a Flutter widget; pick a specific UI type (Card / Panel / Tile) |
 | `AddUserBloc` | `UserCreationBloc` | BLoCs are named with nouns, not verbs |
 | `UserFetchEvent` | `UserRequestedEvent` | Events must be past tense |
-| `UserLocalDataSource` | `LocalUserDataSource` | Source prefix (Remote / Local / Mock) comes first |
+| `UserLocalDataSource` | `LocalUserDataSource` | Source prefix (Api / Local / Mock) comes first |
 | `AddUserWidget` | `UserCreationButton` | `Widget` is vague; use a concrete UI type |
 | `MainScreen` | `HomeDashboardScreen` | Avoid `Main` / `Default` — say what the screen actually is |
 
@@ -374,7 +377,7 @@ Concrete corrections for the most common naming mistakes seen in review.
 |-----------|---------|---------|
 | Repository | `FeatureRepository` | `UserRepository` |
 | Abstract DS | `FeatureDataSource` | `UserDataSource` |
-| Remote DS | `RemoteFeatureDataSource` | `RemoteUserDataSource` |
+| API DS | `ApiFeatureDataSource` | `ApiUserDataSource` |
 | Local DS | `LocalFeatureDataSource` | `LocalUserDataSource` |
 | Mock DS | `MockFeatureDataSource` | `MockUserDataSource` |
 | BLoC | `FeatureDescriptionBloc` | `UserListBloc` |

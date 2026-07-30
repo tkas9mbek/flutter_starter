@@ -2,7 +2,9 @@
 
 ## Core Principles
 
-1. **Dependency Inversion**: Both Data and UI layers depend on Domain abstractions
+1. **Dependency Inversion (Data → Domain only)**: Data implements the abstract `*DataSource`
+   contracts Domain defines. Presentation depends on Domain's concrete Repositories directly — that
+   edge is an ordinary downward dependency, not an inverted one (see "Why Concrete Repositories?")
 2. **Testability**: Easy testing through proper abstraction and dependency injection
 3. **Separation of Concerns**: Each layer has clearly defined responsibilities
 4. **Simplicity**: Minimize unnecessary abstractions
@@ -22,8 +24,8 @@
              ↓
 ┌─────────────────────────────────┐
 │       Domain Layer              │
-│  (Abstract DS, Repository)      │  ← Both layers depend on this!
-└────────────┬────────────────────┘
+│  (Abstract DS, Repository)      │  ← Data implements the abstract DS here;
+└────────────┬────────────────────┘    Presentation calls the concrete Repository
              ↑ implements
 ┌────────────┴────────────────────┐
 │        Data Layer               │
@@ -31,7 +33,9 @@
 └─────────────────────────────────┘
 ```
 
-**Key Insight**: Domain defines contracts (interfaces). Both Presentation and Data depend on Domain.
+**Key Insight**: Domain defines the abstract `*DataSource` contract that Data implements (the
+inverted edge), and hosts the concrete Repository that Presentation calls directly (an ordinary
+downward dependency — see "Why Concrete Repositories?").
 
 ---
 
@@ -105,15 +109,15 @@ class UserRepository {
 **Purpose:** Implement data contracts
 
 **Contains:**
-- **DataSource Implementations**: Remote, Local, Mock
+- **DataSource Implementations**: Api, Local, Mock
 
 **Note:** We use the same domain models for API responses (no separate DTOs).
 
 ```dart
 // DataSource Implementation (implements Domain contract)
-class RemoteUserDataSource implements UserDataSource {
+class ApiUserDataSource implements UserDataSource {
   final ApiClient _client;
-  const RemoteUserDataSource(this._client);
+  const ApiUserDataSource(this._client);
 
   @override
   Future<List<User>> getUsers() => _client.requestJsonList<User>(
@@ -145,6 +149,10 @@ class RemoteUserDataSource implements UserDataSource {
 **Location:** `lib/features/{feature}/ui/`
 
 **Purpose:** Display UI and manage presentation state
+
+**Layout:** `ui/` contains only subfeature folders (`ui/{subfeature}/{bloc,screen,widget}`) — never
+`bloc/`, `screen/`, or `widget/` at its root. Single-flow features use one subfeature named after the
+feature (e.g. `profile/ui/overview/`).
 
 **Contains:**
 - **BLoCs**: State management
@@ -196,14 +204,14 @@ abstract class TaskDataSource {
 }
 
 // Data provides implementations
-class RemoteTaskDataSource implements TaskDataSource { ... }
+class ApiTaskDataSource implements TaskDataSource { ... }
 class LocalTaskDataSource implements TaskDataSource { ... }
 class MockTaskDataSource implements TaskDataSource { ... }
 
 // Easy switching via DI
 getIt.registerFactory<TaskDataSource>(() {
   if (env == AppEnvironment.dev) return MockTaskDataSource();
-  return RemoteTaskDataSource(getIt<ApiClient>());
+  return ApiTaskDataSource(getIt<ApiClient>());
 });
 ```
 

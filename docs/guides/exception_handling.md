@@ -181,7 +181,7 @@ fvm flutter --no-color pub global run intl_utils:generate
 **Step 4: Throw in data source**
 
 ```dart
-class RemotePaymentDataSource implements PaymentDataSource {
+class ApiPaymentDataSource implements PaymentDataSource {
   @override
   Future<Payment> processPayment(PaymentRequest request) async {
     try {

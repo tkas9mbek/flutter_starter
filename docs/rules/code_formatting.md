@@ -18,18 +18,25 @@ One public class per file. File name matches class name.
 
 **Exceptions:**
 - Private helper classes (prefix `_`)
-- BLoC states/events in same file
+- BLoC events + states share `{feature}_event_state.dart`, kept separate from `{feature}_bloc.dart` (two files, one library via `part` / `part of`)
 - Simple related models (< 5 fields)
 - Extension groups (`FeatureExtensions.dart`)
 
 ```dart
-// ✓ Correct
+// ✓ Correct — two files, one library
 // File: user_bloc.dart
+part 'user_bloc.freezed.dart';
+part 'user_event_state.dart';
+
+class UserBloc extends Bloc<UserEvent, UserState> { ... }
+
+// File: user_event_state.dart
+part of 'user_bloc.dart';
+
 @freezed
 sealed class UserEvent with _$UserEvent { ... }
 @freezed
 sealed class UserState with _$UserState { ... }
-class UserBloc extends Bloc<UserEvent, UserState> { ... }
 
 // ✗ Wrong
 // File: models.dart
@@ -355,7 +362,7 @@ class CounterWidget extends StatefulWidget {
 }
 
 class _CounterWidgetState extends State<CounterWidget> {
-  int count = 0;  // Public variable (no underscore)
+  int _count = 0;  // Instance vars get `_` (see coding_rules.md § State class)
 
   void increment() { ... }  // Public method
   void _reset() { ... }     // Private helper
@@ -542,7 +549,13 @@ void dispose() {
 
 ## Comments
 
-Write self-documenting code. Minimize inline comments.
+Write self-documenting code. Minimize inline comments. Comments and documentation should be concise,
+but still include enough context to explain non-obvious purpose, constraints, invariants, or
+workarounds. Describe only non-trivial behavior — never restate what the code already says.
+
+Comment and documentation lines are exempt from the 80-character code limit: they may exceed 80
+characters when that keeps a sentence together, but every `//`, `///`, and block-comment line must
+stay under **120 characters**. Wrap longer text.
 
 ### Minimize Code Comments
 
@@ -570,6 +583,7 @@ Document public APIs in shared modules (toolkit, uikit):
 
 - ✅ 1-3 line summary using `///`
 - ✅ Brief description of purpose
+- ✅ Each documentation line ≤ 120 characters
 - ❌ No obvious comments
 
 ```dart
@@ -593,8 +607,9 @@ class RetriableRepositoryExecutor extends RepositoryExecutor { ... }
 
 ## Line Length Limits
 
-- **100 characters** for ordinary code.
-- **200 characters** for deeply composed widget trees where a chain still reads cleaner on one line than broken up.
+`dart format` enforces an **80-character page width** (`analysis_options.yaml: page_width: 80`) —
+that is the real, tool-enforced limit for every line, including widget-tree chains; there is no
+per-construct exception the formatter honors.
 
 When a line approaches the limit, prefer:
 
@@ -635,7 +650,7 @@ log('Failed to fetch payments: $error', name: 'PaymentRepository');
 | No empty stub methods | File clutter; signal that a TODO was abandoned |
 | No scattered `// ignore:` lines | Fix the root cause. When unavoidable, use `// ignore_for_file:` at the top of the file with a `—` justification, e.g. `// ignore_for_file: avoid_print — developer-only generator script`. Prefer file-level over per-line ignores. |
 | Add `Key` only when needed | Unnecessary keys defeat Flutter's widget-reuse optimization |
-| Comments only when WHY is non-obvious | The code already says WHAT |
+| Concise comments only when WHY is non-obvious | The code already says WHAT; keep comment/doc lines ≤ 120 chars |
 | No leftover `_unused` renamed locals after a refactor | Delete instead — name is not load-bearing context |
 
 ---
@@ -646,13 +661,13 @@ log('Failed to fetch payments: $error', name: 'PaymentRepository');
 |----------|-------|
 | **Files** | One public class per file • File name = class name |
 | **Size** | Classes < 100 lines • Screens split into widgets • BLoCs independent |
-| **Lines** | < 100 chars (simple) • < 200 chars (complex widget chains) |
+| **Lines** | < 80 chars — `dart format`-enforced page width, no per-construct exception |
 | **Brackets** | Always brackets for control structures • Always `if (cond) ...[Widget()]` in collections |
 | **Ordering** | Constructors → final fields → methods → `build()` → `==`/`hashCode`/`toString` |
 | **Params** | required → defaults → optional → `super.key` |
 | **Arrows** | Always `=>` except: `build()` method, nested callbacks `setState` |
 | **Widgets** | No widget functions • Private state class • `super.init` first, `super.dispose` last |
-| **Comments** | Self-documenting code • `///` for public APIs only • No obvious comments |
+| **Comments** | Concise but sufficient • comment/doc lines ≤ 120 chars • no obvious comments |
 | **Logging** | `debugPrint` / `log` only • Never `print` outside `utils/generators/` |
 | **Cleanup** | No back-compat aliases • No empty stubs • Prefer `ignore_for_file:` with justification |
 
