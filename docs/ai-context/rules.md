@@ -1,6 +1,6 @@
 # Rules — AI Context
 
-Hard rules for code generation. Full sources: [../rules/code_formatting.md](../rules/code_formatting.md), [../rules/naming.md](../rules/naming.md).
+Hard rules for code generation. Full sources: [../rules/code_standards.md](../rules/code_standards.md), [../rules/code_preferences.md](../rules/code_preferences.md), [../rules/naming.md](../rules/naming.md).
 
 ## Style
 

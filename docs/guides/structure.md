@@ -193,5 +193,5 @@ Follow this order
 
 - [Architecture](./architecture.md) - Layer structure
 - [Naming](../rules/naming.md) - Naming standards
-- [Code Formatting](../rules/code_formatting.md) - Style guide
+- [Code Standards](../rules/code_standards.md) - Style guide
 - [Testing](./testing.md) - Test strategies

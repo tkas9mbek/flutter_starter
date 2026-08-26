@@ -589,5 +589,5 @@ doctrine and are grandfathered; don't add new ones.)
 - [Project Structure](./structure.md) - File organization
 - [Testing Guide](./testing.md) - Testing strategies
 - [BLoC & Freezed](./freezed_bloc.md) - BLoC patterns
-- [Code Formatting](../rules/code_formatting.md) - Code style guide
+- [Code Standards](../rules/code_standards.md) - Code style guide
 - [Naming Conventions](../rules/naming.md) - Naming standards

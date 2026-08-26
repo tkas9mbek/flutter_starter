@@ -1,6 +1,8 @@
-# Coding Rules
+# Code Standards
 
-Consolidated rule set for the flutter_starter project. Rules tagged `[lint]` are auto-enforced by [`starter_lints`](../../packages/starter_lints). Rules without the tag are review-time conventions — see [`../guides/code_review.md`](../guides/code_review.md) for severity mapping.
+Objective, tool-enforced, and architecture rules for flutter_starter. Rules tagged `[lint]` are auto-enforced by [`starter_lints`](../../packages/starter_lints) — see the "Lint Rules Reference" section below for the full list. Rules without the tag are review-time conventions — see [`../guides/code_review.md`](../guides/code_review.md) for severity mapping.
+
+For personal/AI-session stylistic conventions that are more specific than (but must not contradict) this file, see [`code_preferences.md`](./code_preferences.md).
 
 ## Table of Contents
 
@@ -9,20 +11,19 @@ Consolidated rule set for the flutter_starter project. Rules tagged `[lint]` are
 3. [File Organization](#file-organization)
 4. [Class Size & SRP](#class-size--srp)
 5. [Formatting](#formatting)
-6. [Class Member Ordering](#class-member-ordering)
-7. [Theme](#theme)
-8. [Widgets](#widgets)
-9. [BLoC](#bloc)
-10. [Exceptions](#exceptions)
-11. [Models](#models)
-12. [Parameters](#parameters)
-13. [Data Layer](#data-layer)
-14. [Testing](#testing)
-15. [Cleanup](#cleanup)
-16. [Code Generation](#code-generation)
-17. [Dependencies](#dependencies)
-18. [Git](#git)
-19. [Lint Rules Reference](#lint-rules-reference)
+6. [Theme](#theme)
+7. [Widgets](#widgets)
+8. [BLoC](#bloc)
+9. [Exceptions](#exceptions)
+10. [Models](#models)
+11. [Parameters](#parameters)
+12. [Data Layer](#data-layer)
+13. [Testing](#testing)
+14. [Cleanup](#cleanup)
+15. [Code Generation](#code-generation)
+16. [Dependencies](#dependencies)
+17. [Git](#git)
+18. [Lint Rules Reference](#lint-rules-reference)
 
 ---
 
@@ -130,10 +131,6 @@ Forbid `Impl`, `Manager`, `Helper` (in non-helper files), `Data`, `Info`, `Conta
 
 Inside `lib/` and `packages/*/lib/`, use `package:starter/...` — never relative paths.
 
-### Flat widget folders
-
-Keep `ui/widget/` flat. Don't nest by section (`ui/widget/header/`). If folder browsing becomes painful, split the **feature** by flow (`list/`, `details/`) — each with its own flat `widget/`.
-
 ### Feature directory layout
 
 ```
@@ -147,6 +144,9 @@ lib/features/{feature}/
 ```
 
 `ui/` never holds `bloc/`, `screen/`, or `widget/` directly — a single-flow feature uses one subfeature folder named after the feature (e.g. `profile/ui/overview/`).
+
+> Widget folder layout inside `ui/{subfeature}/widget/` (flat vs. nested) is a stylistic
+> convention, not enforced here — see [code_preferences.md § Flat widget folders](./code_preferences.md#flat-widget-folders).
 
 ---
 
@@ -200,9 +200,34 @@ Column(
 )
 ```
 
-### Multi-line ternary → if/else
+### Multi-line ternary → if/else `[lint: multi_line_ternary]`
 
-Single-condition ternary > 10 lines, or nested (2+) ternary ≥ 5 lines, must be rewritten as `if`/`else`. See [code_formatting.md § Multi-line Ternary](./code_formatting.md#multi-line-ternary--ifelse).
+A ternary expression that spans many lines reads worse than an explicit `if`/`else`. Convert when:
+
+- A single-condition ternary spans **more than 10 lines**.
+- A nested (2+) ternary spans **5+ lines**.
+
+```dart
+// ❌ Bad — nested ternary, hard to scan
+final label = state.isLoading
+    ? localizer.loading
+    : state.hasError
+        ? localizer.error
+        : state.isEmpty
+            ? localizer.empty
+            : localizer.ready;
+
+// ✅ Good — explicit if/else with early returns
+String _resolveLabel(MyState state, Localizer localizer) {
+  if (state.isLoading) return localizer.loading;
+  if (state.hasError) return localizer.error;
+  if (state.isEmpty) return localizer.empty;
+
+  return localizer.ready;
+}
+```
+
+A short ternary on one line stays a ternary — this rule is about long, branching ones.
 
 ### Constructor parameter order `[lint: sort_constructor_params]`
 
@@ -245,33 +270,18 @@ to explain non-obvious purpose, constraints, invariants, or workarounds.
 - Prefer `///` summaries for public APIs in shared modules.
 - Do not comment what the code already says.
 
+For AI-session-specific comment length guidance (≤2 lines per comment block), see
+[code_preferences.md § Comments stay within two lines](./code_preferences.md#comments-stay-within-two-lines).
+
 ### Single quotes
 
 `'hello'`, never `"hello"` (already enforced by analyzer).
 
 ---
 
-## Class Member Ordering
-
-```
-1. Constructors (default first, then named)
-2. Constants of same type
-3. Static factory methods
-4. Final fields (from constructor)
-5. Other static methods/properties
-6. Mutable properties (getter, field, setter together)
-7. Read-only properties
-8. Operators (except ==)
-9. Methods (except toString, build)
-10. build (for widgets)
-11. operator ==, hashCode, toString
-```
-
----
-
 ## Theme
 
-### Theme accessed in build only
+### Theme accessed in build only `[lint: theme_in_build_only]`
 
 Read theme in `build()` (or local helper called from build). Don't store it as a field, parameter, or stream.
 
@@ -327,9 +337,24 @@ class _MyScreenState extends State<MyScreen> {
 
 Bottom sheets and dialogs are `StatelessWidget` classes that expose a static `show(...)` returning the future result.
 
-### Reuse starter_uikit
+### Reuse starter_uikit and starter_toolkit
 
 Before writing new UI, check `starter_uikit` for: `FailureWidget.large`, `EmptyInformationBody`, `CustomCircularProgressIndicator`, `NotificationSnackBar`, `AppTextField`, `AppDropdownField`, `AppDatePickerField`, `AppCheckbox`, `AppElevatedButton`, `AppOutlinedButton`, `TitleAppBar`, `BaseAppBar`, `TransparentAppBar`.
+
+Before hand-writing a date/time computation, check `starter_toolkit` for an existing helper:
+
+```dart
+// ❌ Bad — manual date comparison
+final isToday = DateTime.now().year == date.year &&
+    DateTime.now().month == date.month &&
+    DateTime.now().day == date.day;
+
+// ✅ Good — starter_toolkit's DateTimeHelpers extension
+import 'package:starter_toolkit/utils/date/date_time_extension.dart';
+
+final isToday = date.isToday;
+final isTomorrow = date.isTomorrow;
+```
 
 ### Icons via `SvgIcon`, never material `Icons`
 
@@ -341,6 +366,18 @@ Icon(Icons.chevron_right, size: 20, color: theme.textTertiary);
 
 // ✅ Good
 SvgIcon(UiSvgIcons.chevronRight, size: 20, color: theme.textTertiary);
+```
+
+### All user-facing strings are localized
+
+```dart
+// ❌ Bad — hardcoded strings
+Text('Tasks')
+Text('No tasks yet')
+
+// ✅ Good — localized
+Text(Localizer.of(context).tasks)
+Text(Localizer.of(context).noTasksYet)
 ```
 
 ### Forms use a form UI model
@@ -590,6 +627,7 @@ Mock-first doctrine — full guide: [../guides/testing.md](../guides/testing.md)
 | No scattered `// ignore:` lines | Fix the root cause; if unavoidable, use `// ignore_for_file:` at top with `—` justification (e.g. `// ignore_for_file: avoid_print — developer-only generator`). |
 | `Key` only when needed | Unused keys defeat Flutter widget reuse |
 | Concise comments only when WHY is non-obvious | Code says WHAT; keep comment/doc lines ≤ 120 chars |
+| No leftover `_unused` renamed locals after a refactor | Delete instead — name is not load-bearing context |
 
 ---
 
@@ -631,6 +669,7 @@ Full guide: [git_workflow.md](./git_workflow.md). Quick reference:
 | Commit with ticket | `PROJ-152: Refactor payment module` |
 | Commit without | `fix: Resolve null pointer in handler`, `docs: Sync guides` |
 | Commit with scope | `feat(starter_lints): Port advisory rules` |
+| Commit with multiple scopes | `fix(toolkit,uikit): Resolve shared date-parsing crash` |
 | PR title | Same as commit format |
 
 Capitalize first letter, no period, ≤ 72 chars, imperative mood.
@@ -639,30 +678,8 @@ Capitalize first letter, no period, ≤ 72 chars, imperative mood.
 
 ## Lint Rules Reference
 
-All 19 lints enforced by [`starter_lints`](../../packages/starter_lints):
-
-| Lint | Severity | Section |
-|------|----------|---------|
-| `no_flutter_in_data_domain` | ERROR | [Architecture](#architecture) |
-| `bloc_no_bloc_dependency` | WARNING | [Architecture](#architecture) |
-| `avoid_naming_antipatterns` | WARNING / INFO | [Naming](#naming) |
-| `class_size_warning` | INFO | [Class Size & SRP](#class-size--srp) |
-| `avoid_widget_functions` | WARNING | [Widgets](#widgets) |
-| `avoid_build_context_field` | WARNING | [Widgets](#widgets) |
-| `max_widget_nesting` | INFO | [Widgets](#widgets) |
-| `no_hardcoded_colors` | WARNING | [Theme](#theme) |
-| `theme_in_build_only` | WARNING | [Theme](#theme) |
-| `avoid_mutable_bloc_fields` | WARNING | [BLoC](#bloc) |
-| `prefer_map_or_null` | INFO | [BLoC](#bloc) |
-| `bloc_listener_builder_usage` | INFO | [BLoC](#bloc) |
-| `braces_in_flow_control` | WARNING | [Formatting](#formatting) |
-| `prefer_arrow_except_build` | WARNING / INFO | [Formatting](#formatting) |
-| `always_spread_in_collections` | INFO | [Formatting](#formatting) |
-| `blank_line_before_return` | INFO | [Formatting](#formatting) |
-| `sort_constructor_params` | INFO | [Formatting](#formatting) |
-| `multi_line_ternary` | INFO | [Formatting](#formatting) |
-| `prefer_bool_default` | INFO | [Parameters](#parameters) |
+All 19 lints enforced by [`starter_lints`](../../packages/starter_lints) are tagged inline above
+(`[lint: rule_name]`) on the rule they back — the rule's own section is the reference for its
+severity and enforcement.
 
 Lints run as part of `fvm dart run custom_lint` and during the analyzer pass (`fvm flutter analyze`).
-
-> **Note:** `prefer_map_or_null` (and `bloc_listener_builder_usage` in `starter_lints`) target the legacy Freezed 2 pattern-matching methods (`maybeMap`/`maybeWhen`/`mapOrNull`/`whenOrNull`), which were removed in Freezed 3. They only fire on legacy code — new code uses Dart `switch` / `if-case` pattern matching on the sealed state classes.

@@ -4,6 +4,19 @@
 
 # Part 1: Branch Naming
 
+## Long-lived branches
+
+| Branch | Role |
+|--------|------|
+| `main` | Stable branch. Tip is always a shipped release (e.g. `release: v3.0.0`). |
+| `release/<version>` | Release-prep branch cut from `main`, named by bare version (e.g. `release/3.1.0`). Work for the next release lands here directly (or via short-lived work branches merged into it), then merges back into `main` when the release ships. |
+
+There is no `dev` branch — day-to-day work commits straight to the active `release/<version>`
+branch (confirmed via `git log`: `release/3.1.0` carries a linear sequence of `docs:`/`refactor:`/
+`test:` commits with no intermediate feature-branch merges). Short-lived work branches are optional;
+when you create one, name it per the format below and target it at the active `release/<version>`
+branch, not `main` directly.
+
 ## Format
 
 ```
@@ -91,6 +104,19 @@ parenthesized scope narrows the change (`feat(starter_lints): …`).
 | ≤ 72 characters | Subject only — long bodies go below |
 | Imperative mood | "Add" / "Fix" / "Update", not "Adding" / "Fixed" |
 | One logical change per commit | Don't mix unrelated work |
+
+## Multi-scope commits
+
+When one logical change touches more than one workspace package, comma-separate the scopes inside
+a single parenthesized group — no space after the comma:
+
+```bash
+fix(toolkit,uikit): Resolve shared date-parsing crash
+refactor(starter_lints,starter_toolkit): Align severity levels with docs
+```
+
+Don't split one logical change into several single-scope commits just to keep the scope singular —
+that violates "one logical change per commit" above.
 
 ## ✅ Good
 
