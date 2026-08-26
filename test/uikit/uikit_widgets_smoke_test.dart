@@ -18,6 +18,7 @@ import 'package:starter_uikit/widgets/screen/stack_animated_switcher.dart';
 import 'package:starter_uikit/widgets/size/fill_remaining_scroll_view.dart';
 import 'package:starter_uikit/widgets/size/safe_vertical_box.dart';
 import 'package:starter_uikit/widgets/status/app_shimmer.dart';
+import 'package:starter_uikit/widgets/status/app_status_screen.dart';
 import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
 import 'package:starter_uikit/widgets/status/empty_information_body.dart';
 import 'package:starter_uikit/widgets/status/failure_widget.dart';
@@ -65,6 +66,22 @@ void main() {
     ),
     'AppShimmerText': () =>
         const AppShimmer(mode: AppShimmerMode.static, child: AppShimmerText()),
+    'AppStatusScreen (primary only)': () => AppStatusScreen(
+      icon: const Icon(Icons.check),
+      title: 'Title',
+      subtitle: 'Subtitle',
+      primaryButtonLabel: 'Continue',
+      onPrimaryPressed: () {},
+    ),
+    'AppStatusScreen (primary + secondary)': () => AppStatusScreen(
+      icon: const Icon(Icons.error),
+      title: 'Title',
+      subtitle: 'Subtitle',
+      primaryButtonLabel: 'Retry',
+      onPrimaryPressed: () {},
+      secondaryButtonLabel: 'Cancel',
+      onSecondaryPressed: () {},
+    ),
     'OtpCodeField': () => OtpCodeField(onCompleted: (_) {}),
     'CountryCodeField': () => CountryCodeField(
       countries: _countries,
