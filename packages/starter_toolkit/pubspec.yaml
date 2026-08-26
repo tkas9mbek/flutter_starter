@@ -18,6 +18,7 @@ dependencies:
   collection:
   dio:
   equatable:
+  firebase_crashlytics:
   flutter_bloc:
   flutter_form_builder:
   freezed_annotation:
