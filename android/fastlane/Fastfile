@@ -1,0 +1,18 @@
+default_platform(:android)
+opt_out_usage
+
+platform :android do
+  desc "Upload an already-built AAB/APK (ARTIFACT_PATH) to Firebase App Distribution"
+  lane :beta do
+    changelog = ENV["CHANGELOG"].to_s.strip
+
+    firebase_app_distribution(
+      app: ENV.fetch("FIREBASE_APP_ID"),
+      android_artifact_type: "APK",
+      android_artifact_path: ENV.fetch("ARTIFACT_PATH"),
+      service_credentials_file: ENV.fetch("FIREBASE_SERVICE_ACCOUNT_JSON_PATH"),
+      release_notes: changelog.empty? ? nil : changelog,
+      groups: ENV["FIREBASE_DISTRIBUTION_GROUPS"],
+    )
+  end
+end

@@ -1,0 +1,9 @@
+# PLACEHOLDER VALUES — replace before using this template for a real app.
+#
+# IOS_APP_IDENTIFIER must match the app's real bundle identifier. Note the Xcode project
+# (ios/Runner.xcodeproj) currently ships with PRODUCT_BUNDLE_IDENTIFIER = com.example.flutterStarter
+# — keep this value and that one in sync once you rename the app.
+# IOS_TEAM_ID is the 10-character Apple Developer Team ID, found at
+# https://developer.apple.com/account under Membership.
+app_identifier(ENV.fetch("IOS_APP_IDENTIFIER", "com.example.starter"))
+team_id(ENV.fetch("IOS_TEAM_ID", "REPLACE_WITH_TEAM_ID"))

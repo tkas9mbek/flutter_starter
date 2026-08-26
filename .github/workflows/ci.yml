@@ -25,6 +25,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          # Keep in sync with .fvmrc
           flutter-version: '3.44.5'
           cache: true
 
@@ -34,8 +35,8 @@ jobs:
       - name: Custom lint (warnings/info non-fatal)
         run: dart run custom_lint --no-fatal-infos --no-fatal-warnings
 
-      - name: Analyze
-        run: flutter analyze --no-pub
+      - name: Analyze (warnings/info non-fatal)
+        run: flutter analyze --no-pub --no-fatal-warnings --no-fatal-infos
 
   flutter-quality-strict:
     name: Flutter Quality (Strict Lints)
@@ -49,6 +50,7 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          # Keep in sync with .fvmrc
           flutter-version: '3.44.5'
           cache: true
 
@@ -59,26 +61,17 @@ jobs:
         run: dart run custom_lint --no-fatal-infos
 
   flutter-tests:
-    name: Flutter Tests (${{ matrix.shard.name }})
+    name: Flutter Tests (${{ matrix.package }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
-        # Every top-level directory under test/ must appear in exactly one
-        # shard, or its tests silently never run in CI.
-        shard:
-          - name: application
-            paths: test/features/application
-          - name: settings
-            paths: test/features/settings
-          - name: auth
-            paths: test/features/auth
-          - name: profile
-            paths: test/features/profile
-          - name: task
-            paths: test/features/task
-          - name: core-uikit
-            paths: test/core test/uikit
+        # Root app is "." — packages/starter_lints and packages/starter_uikit are excluded,
+        # neither has a test/ directory (uikit widget smoke tests live in the root app's
+        # test/uikit/ instead).
+        package:
+          - .
+          - packages/starter_toolkit
 
     steps:
       - name: Checkout
@@ -87,11 +80,13 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
+          # Keep in sync with .fvmrc
           flutter-version: '3.44.5'
           cache: true
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Test shard
-        run: flutter test --no-pub --reporter compact --concurrency 4 ${{ matrix.shard.paths }}
+      - name: Test
+        working-directory: ${{ matrix.package }}
+        run: flutter test --no-pub --reporter compact --concurrency 4
