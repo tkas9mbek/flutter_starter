@@ -159,9 +159,17 @@ Class size: target <100 lines, split at >200. Never `Widget _buildFoo()` — ext
 Check before writing anything new.
 
 - **starter_toolkit**: `DateTimeHelpers` (`isToday`, `isTomorrow`, `isSameDay`), date formatting (`getLocalizedDateLabel`, `getFormattedTimeRange`), validators (phone/email/password/URL), `AppException` hierarchy.
-- **starter_uikit**: status (`EmptyInformationBody`, `FailureWidget.large/.small`, `CustomCircularProgressIndicator.adaptive`), `NotificationSnackBar`, theme (`AppTheme`, `AppTextStyles`, `ThemeProvider`), app bars (`TitleAppBar`, `BaseAppBar`, `TransparentAppBar`), forms (`AppTextField`, `AppDropdownField`, `AppCheckbox`, `AppDatePickerField`), buttons (`AppElevatedButton`, `AppOutlinedButton`).
+- **starter_uikit**: status (`EmptyInformationBody`, `FailureWidget.large/.small`, `CustomCircularProgressIndicator.adaptive`, `AppStatusScreen` for full-screen terminal outcomes), `NotificationSnackBar`, theme (`AppTheme`, `AppTextStyles`, `ThemeProvider`), app bars (`TitleAppBar`, `BaseAppBar`, `TransparentAppBar`), forms (`AppTextField`, `AppDropdownField`, `AppCheckbox`, `AppDatePickerField`), buttons (`AppElevatedButton`, `AppOutlinedButton`).
 - **Imports**: always the specific file (e.g. `package:starter_uikit/widgets/app_bar/title_app_bar.dart`) — no barrel exports.
 - **Forms**: never bare `FormBuilder*` fields directly. Multi-field screens → `FormBuilder` + `AppTextField`/`App*PickerField`. Single-field (e.g. search) → `ControllerTextField` + `ValidatableTextEditingController`.
+
+**Reference implementations**: `lib/features/task/` (list/details/calendar/search/create) is the
+canonical example of these rules applied end-to-end — BLoC states, exception handling, form
+models, and repository-executor wiring for a real feature. `packages/starter_uikit/lib/example/`
+is the live widget gallery for every `starter_uikit` component (buttons, forms, status widgets
+including `AppStatusScreen`, dialogs, app bars, pagination, misc) — reachable in a running debug
+build via the hidden dev-mode tap gesture (`DevModeActivator`, 7 taps) → "UI Kit Examples". Read
+both before writing a new feature or widget.
 
 ---
 
@@ -208,6 +216,7 @@ Commits: `TICKET-ID: Capitalized imperative` or `type: Capitalized imperative` �
 | [docs/ai-context/code_review.md](docs/ai-context/code_review.md) | Full severity-tagged rule-ID checklist (ARCH/BLOC/EXC/UI/NAME/FILE/TEST/STYLE) |
 | [docs/ai-context/git.md](docs/ai-context/git.md) | Branch / commit / PR format |
 | [docs/ai-context/estimation.md](docs/ai-context/estimation.md) | Story-point model |
+| [docs/guides/deployment.md](docs/guides/deployment.md) | CI/CD: TestFlight + Firebase App Distribution, secrets, fastlane |
 
 Full prose guides: `docs/guides/`. Full rule prose: `docs/rules/`. If a rule here conflicts with a full guide, the guide wins — flag it.
 

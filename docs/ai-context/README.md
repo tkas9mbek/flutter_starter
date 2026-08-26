@@ -24,7 +24,7 @@ be fixed.
 - [repository_executor.md](repository_executor.md) - executor composition, caching, executor tests.
   Source: [repository executor guide](../guides/repository_executor.md).
 - [rules.md](rules.md) - style, naming, comments, imports, forbidden patterns.
-  Source: [coding](../rules/coding_rules.md), [formatting](../rules/code_formatting.md), [naming](../rules/naming.md).
+  Source: [code standards](../rules/code_standards.md), [code preferences](../rules/code_preferences.md), [naming](../rules/naming.md).
 - [testing.md](testing.md) - tests.
   Source: [testing guide](../guides/testing.md).
 - [code_review.md](code_review.md) - review checklist.
@@ -33,6 +33,11 @@ be fixed.
   Source: [estimation guide](../guides/estimation.md).
 - [git.md](git.md) - branch, commit, PR naming.
   Source: [git workflow](../rules/git_workflow.md).
+
+## CI/CD
+
+- [deployment.md](../guides/deployment.md) - TestFlight (iOS) + Firebase App Distribution (Android)
+  release pipeline: workflow trigger chain, required secrets, local manual deploy commands.
 
 ## Fast Loading Paths
 

@@ -355,13 +355,14 @@ The template includes extensive documentation:
 - **[Architecture Guide](docs/guides/architecture.md)** - Three-layer architecture, dependency inversion
 - **[BLoC & Freezed Guide](docs/guides/freezed_bloc.md)** - State management patterns
 - **[Code Review Guide](docs/guides/code_review.md)** - Severity-based review checklist
+- **[Deployment Guide](docs/guides/deployment.md)** - TestFlight & Firebase App Distribution CI/CD, fastlane, secrets
 - **[Estimation Guide](docs/guides/estimation.md)** - Story-point estimation method
 - **[Exception Handling](docs/guides/exception_handling.md)** - Two-layer exception system, code generation
 - **[Structure Guide](docs/guides/structure.md)** - File organization, feature layout
 - **[Testing Guide](docs/guides/testing.md)** - Testing strategies, patterns, best practices
-- **[Coding Rules](docs/rules/coding_rules.md)** - Consolidated rule set + lint mapping
+- **[Code Standards](docs/rules/code_standards.md)** - Objective, tool-enforced, and architecture rules + lint mapping
+- **[Code Preferences](docs/rules/code_preferences.md)** - Personal/AI-session stylistic conventions
 - **[BLoC File Rules](docs/rules/bloc.md)** - File layout & basic flow
-- **[Code Formatting](docs/rules/code_formatting.md)** - Code style, BLoC patterns, conventions
 - **[Git Workflow](docs/rules/git_workflow.md)** - Branch / commit / PR naming
 - **[Naming Conventions](docs/rules/naming.md)** - Consistent naming patterns
 
