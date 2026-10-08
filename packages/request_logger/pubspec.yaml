@@ -1,0 +1,26 @@
+name: request_logger
+
+description: "In-app HTTP request/response logger with a custom UI."
+
+publish_to: 'none'
+
+version: 0.1.0
+
+resolution: workspace
+
+environment:
+  sdk: ^3.12.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio:
+  intl:
+  starter_uikit:
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
