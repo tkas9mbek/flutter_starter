@@ -65,7 +65,10 @@ class ThemedMaterialApp extends StatelessWidget {
         supportedLocales: Localizer.delegate.supportedLocales,
         builder: (context, child) => GlobalRouteWrapper(
           router: router,
-          child: ApplicationWrapper(child: child!),
+          child: ApplicationWrapper(
+            navigatorKey: router.navigatorKey,
+            child: child!,
+          ),
         ),
       ),
     );

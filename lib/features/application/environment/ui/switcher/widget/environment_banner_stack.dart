@@ -1,37 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:request_logger/widget/request_logger_button.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/application/environment/ui/switcher/bloc/environment_cubit.dart';
 import 'package:starter_uikit/theme/app_colors.dart';
-import 'package:starter_uikit/theme/theme_provider.dart';
 
 class EnvironmentBannerStack extends StatelessWidget {
-  const EnvironmentBannerStack({required this.child, super.key});
+  const EnvironmentBannerStack({
+    required this.child,
+    required this.navigatorKey,
+    super.key,
+  });
 
   final Widget child;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeProvider.of(context).theme;
-    final textStyles = ThemeProvider.of(context).textStyles;
-
     return Stack(
       children: [
         child,
         Align(
-          alignment: Alignment.topCenter,
+          alignment: Alignment.topRight,
           child: Material(
             color: AppColors.transparent,
             child: SafeArea(
-              child: BlocBuilder<EnvironmentCubit, AppEnvironment>(
-                builder: (context, env) => env.showBanner
-                    ? Text(
-                        env.name,
-                        style: textStyles.regularBody13.copyWith(
-                          color: theme.error,
-                        ),
-                      )
-                    : const SizedBox.shrink(),
+              child: Padding(
+                padding: EdgeInsets.only(
+                  right: MediaQuery.sizeOf(context).width * 0.25,
+                ),
+                child: BlocBuilder<EnvironmentCubit, AppEnvironment>(
+                  builder: (context, env) => env.showBanner
+                      ? RequestLoggerButton(
+                          label: env.name,
+                          navigatorKey: navigatorKey,
+                        )
+                      : const SizedBox.shrink(),
+                ),
               ),
             ),
           ),

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:request_logger/controller/request_logger.dart';
 import 'package:starter/core/data/dio_provider.dart';
 import 'package:starter/core/di/app_module.dart';
 import 'package:starter/core/global/global_variables.dart';
@@ -20,7 +21,9 @@ class DataModule extends AppModule {
   @override
   List<Unregister> get unregisterCallbacks => [
     unregisterIfRegistered<ApiClient>,
-    () => unregisterIfRegistered<ApiClient>(instanceName: InstanceNames.unauthorized),
+    () => unregisterIfRegistered<ApiClient>(
+      instanceName: InstanceNames.unauthorized,
+    ),
     () => unregisterIfRegistered<Dio>(
       disposingFunction: (dio) => dio.close(force: true),
     ),
@@ -70,6 +73,10 @@ class DataModule extends AppModule {
 
     final env = getIt<AppEnvironment>();
 
+    final requestLoggerInterceptors = env.showBanner
+        ? [RequestLogger.dioInterceptor()]
+        : const <Interceptor>[];
+
     // Template guard: the placeholder consts in CoreConsts must be replaced
     // before any real backend is used. Debug-only by design — the mock
     // environment stays runnable out of the box.
@@ -82,10 +89,18 @@ class DataModule extends AppModule {
 
     getIt
       ..registerSingleton<Dio>(
-        dioProvider.getDio(useToken: false),
+        dioProvider.getDio(
+          useToken: false,
+          extraInterceptors: requestLoggerInterceptors,
+        ),
         instanceName: InstanceNames.unauthorized,
       )
-      ..registerSingleton<Dio>(dioProvider.getDio(useToken: true))
+      ..registerSingleton<Dio>(
+        dioProvider.getDio(
+          useToken: true,
+          extraInterceptors: requestLoggerInterceptors,
+        ),
+      )
       ..registerFactory<ApiClient>(
         () => DioApiClient(
           dio: getIt<Dio>(instanceName: InstanceNames.unauthorized),

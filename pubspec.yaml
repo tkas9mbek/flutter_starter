@@ -6,6 +6,7 @@ publish_to: 'none'
 version: 3.0.0+1
 
 workspace:
+  - packages/request_logger
   - packages/starter_toolkit
   - packages/starter_uikit
   - packages/starter_lints
@@ -38,6 +39,7 @@ dependencies:
   intl: ^0.20.2
   intl_utils: ^2.8.8
   json_annotation: ^4.9.0
+  request_logger:
   rxdart: ^0.28.0
   shared_preferences: ^2.5.3
   starter_toolkit:

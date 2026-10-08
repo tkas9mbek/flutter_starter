@@ -3,9 +3,14 @@ import 'package:starter/features/application/environment/ui/switcher/widget/envi
 import 'package:starter_uikit/widgets/misc/input_accessory_view_wrapper.dart';
 
 class ApplicationWrapper extends StatelessWidget {
-  const ApplicationWrapper({required this.child, super.key});
+  const ApplicationWrapper({
+    required this.child,
+    required this.navigatorKey,
+    super.key,
+  });
 
   final Widget child;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   @override
   Widget build(BuildContext context) {
@@ -18,6 +23,7 @@ class ApplicationWrapper extends StatelessWidget {
         }
       },
       child: EnvironmentBannerStack(
+        navigatorKey: navigatorKey,
         child: InputAccessoryViewWrapper(child: child),
       ),
     );
