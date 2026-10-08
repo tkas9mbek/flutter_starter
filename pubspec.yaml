@@ -61,6 +61,11 @@ dev_dependencies:
   starter_lints:
     path: ./packages/starter_lints
 
+dependency_overrides:
+  # app_settings 6.1.1 (pulled in transitively by permission_handler) fails
+  # Xcode's Swift 6 actor-isolation checks; the plugin fixed this upstream.
+  app_settings: ^8.0.3
+
 
 flutter:
   generate: true
