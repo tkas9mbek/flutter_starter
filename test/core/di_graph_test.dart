@@ -28,10 +28,19 @@ void main() {
     TestWidgetsFlutterBinding.ensureInitialized();
     SharedPreferences.setMockInitialValues({});
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
-        .setMockMethodCallHandler(
-          const MethodChannel('plugins.it_nomads.com/flutter_secure_storage'),
-          (call) async => null,
-        );
+      ..setMockMethodCallHandler(
+        const MethodChannel('plugins.it_nomads.com/flutter_secure_storage'),
+        (call) async => null,
+      )
+      ..setMockMethodCallHandler(
+        const MethodChannel('dev.fluttercommunity.plus/package_info'),
+        (call) async => const {
+          'appName': 'starter',
+          'packageName': 'com.example.starter',
+          'version': '1.0.0',
+          'buildNumber': '1',
+        },
+      );
 
     await getIt.reset();
     await AppConfigurator.configure();
