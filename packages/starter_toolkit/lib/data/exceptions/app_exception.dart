@@ -12,6 +12,9 @@ sealed class AppException implements Exception {
   /// Exception type identifier used for logging.
   String get name;
 
+  @override
+  String toString() => name;
+
   bool get canRetry;
 
   /// Creates exception from Dio response.
@@ -68,6 +71,9 @@ final class ServerException extends AppException {
 
   @override
   bool get canRetry => true;
+
+  @override
+  String toString() => '$name(statusCode: $statusCode, message: $message)';
 }
 
 /// Authentication error (401)
@@ -82,6 +88,9 @@ final class UnauthorizedException extends AppException {
 
   @override
   bool get canRetry => false;
+
+  @override
+  String toString() => '$name(message: $message)';
 }
 
 /// Forbidden error (403)
@@ -99,6 +108,9 @@ final class ForbiddenException extends AppException {
 
   @override
   bool get canRetry => false;
+
+  @override
+  String toString() => '$name(message: $message)';
 }
 
 /// Internal server error (500)
@@ -116,6 +128,9 @@ final class InternalServerErrorException extends AppException {
 
   @override
   bool get canRetry => true;
+
+  @override
+  String toString() => '$name(message: $message)';
 }
 
 /// Unknown/unexpected error with details
@@ -131,6 +146,9 @@ final class UnknownException extends AppException {
 
   @override
   bool get canRetry => true;
+
+  @override
+  String toString() => '$name($error)';
 }
 
 /// Development/programming error

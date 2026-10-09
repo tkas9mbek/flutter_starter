@@ -32,7 +32,8 @@ class AppErrorInterceptor extends Interceptor {
         type: err.type,
         error: appException,
         stackTrace: err.stackTrace,
-        message: err.message,
+        // Keep the original cause readable for loggers; `error` is replaced.
+        message: err.message ?? err.error?.toString(),
       ),
     );
   }
