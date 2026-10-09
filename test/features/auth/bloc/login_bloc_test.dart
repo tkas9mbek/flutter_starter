@@ -41,10 +41,7 @@ void main() {
     unauthorizedDataSource = MockUnauthorizedDataSource();
     localDataSource = MockLocalDataSource();
     authRepository = AuthRepository(
-      const RawRepositoryExecutor().withErrorHandling().withRetry(
-        maxRetries: 3,
-        retryDelay: const Duration(milliseconds: 10),
-      ),
+      const RawRepositoryExecutor().withErrorHandling(),
       authorizedDataSource,
       unauthorizedDataSource,
       localDataSource,

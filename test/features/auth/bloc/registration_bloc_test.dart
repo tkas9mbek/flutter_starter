@@ -41,10 +41,7 @@ void main() {
     unauthorizedDataSource = MockUnauthorizedDataSource();
     localDataSource = MockLocalDataSource();
     authRepository = AuthRepository(
-      const RawRepositoryExecutor().withErrorHandling().withRetry(
-        maxRetries: 3,
-        retryDelay: const Duration(milliseconds: 10),
-      ),
+      const RawRepositoryExecutor().withErrorHandling(),
       authorizedDataSource,
       unauthorizedDataSource,
       localDataSource,
@@ -111,15 +108,12 @@ void main() {
         return registrationBloc;
       },
       act: (bloc) => bloc.add(event),
-      wait: const Duration(milliseconds: 120),
       expect: () => [
         const RegistrationState.loading(),
         const RegistrationState.failure(exception),
       ],
       verify: (_) {
-        verify(
-          () => unauthorizedDataSource.register(requestBody),
-        ).called(greaterThan(1));
+        verify(() => unauthorizedDataSource.register(requestBody)).called(1);
         verifyNever(() => localDataSource.saveToken(any()));
       },
     );
