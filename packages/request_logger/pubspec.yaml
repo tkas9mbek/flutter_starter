@@ -19,6 +19,8 @@ dependencies:
   starter_uikit:
 
 dev_dependencies:
+  flutter_localizations:
+    sdk: flutter
   flutter_test:
     sdk: flutter
 
