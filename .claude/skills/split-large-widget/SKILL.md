@@ -3,15 +3,15 @@ name: split-large-widget
 description: Extract an oversized screen/widget file in this repo into separate widget/ files, per the <200-line UI ceiling in docs/rules/code_standards.md.
 ---
 
-Applies AGENTS.md's Style Rule: "Keep classes near 100 lines; split by 200 lines." This is a
-pure extract-to-file refactor — no behavior, layout, or styling change, ever.
+Applies AGENTS.md's class-size rule: "Class size: target <100 lines, split at >200. Never
+`Widget _buildFoo()` — extract to a class." This is a pure extract-to-file refactor — no behavior, layout, or styling change, ever.
 
 ## When to use
 
 A screen or widget file under `lib/features/{feature}/ui/{subfeature}/screen|widget/` (or a
 `packages/starter_uikit` widget) is over ~150-200 lines, usually because it has one or more large
 private (`_Foo`) classes or a large inline `build()` subtree that should be its own class per
-AGENTS.md's UI rule "Do not create widget-returning helper functions; extract widgets."
+the same rule (no `Widget _buildFoo()` helpers — extract to a class).
 
 ## Procedure
 

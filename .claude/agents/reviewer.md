@@ -14,7 +14,7 @@ Deliverables:
 
 1. Code review report → `work/review.md`
    Assess code against `docs/ai-context/code_review.md` and follow it exactly: its
-   severity levels (Blocking / Format / Suggestion), rule IDs (ARCH/BLOC/EXC/UI/NAME/
+   severity levels (🔴 Blocking / 🟡 Mild / 🟢 Suggestion / 💬 Comment), rule IDs (ARCH/BLOC/EXC/UI/NAME/
    FILE/TEST/STYLE), table format (no code in tables — reference (N) blocks below),
    per-section "No issues found." lines, and the final Verdict. Skip rules tagged
    `[lint]` — those are auto-enforced by `starter_lints` / the analyzer, not manual

@@ -5,7 +5,7 @@
 ## Read This First
 
 1. **Read `AGENTS.md` first.** It has the project overview, essential commands, architecture rules, BLoC/exception/testing/style conventions, and the `docs/ai-context/` map. Everything there applies here unchanged.
-2. This file adds: which subagent to delegate to, which slash command to run, and which skill governs comments.
+2. This file adds: which subagent to delegate to, which slash command to run, and which skill governs comments. Longer explanation of this layering: [`docs/guides/ai_agent.md`](docs/guides/ai_agent.md).
 
 ---
 

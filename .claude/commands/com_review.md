@@ -4,7 +4,7 @@ description: Review branch vs main per docs/ai-context/code_review.md and save t
 
 Delegate to the reviewer agent: review all changes in this branch vs main and write
 `work/review.md` following `docs/ai-context/code_review.md` EXACTLY — its severity
-levels (🔴 Blocking / 🟡 Format / 🟢 Suggestion), rule IDs (ARCH/BLOC/EXC/UI/NAME/FILE/
+levels (🔴 Blocking / 🟡 Mild / 🟢 Suggestion / 💬 Comment), rule IDs (ARCH/BLOC/EXC/UI/NAME/FILE/
 TEST/STYLE), table format with (N) code blocks below tables, "No issues found." for
 clean sections, counts per severity, and the Verdict line. Skip rules tagged `[lint]` —
 those are auto-enforced by `starter_lints` / the analyzer, not manual review.
