@@ -415,11 +415,11 @@ the chain is cheap, deterministic, and part of the behavior under test; the
 new lever is that *you* choose its construction parameters per test.
 
 ```dart
-late MockTaskDataSource mockDataSource;
+late _MockTaskDataSource mockDataSource; // mocktail `extends Mock implements TaskDataSource`, not the data/mock/ twin
 late TaskRepository repository;
 
 setUp(() {
-  mockDataSource = MockTaskDataSource();
+  mockDataSource = _MockTaskDataSource();
   final base = const RawRepositoryExecutor().withErrorHandling();
 
   repository = TaskRepository(

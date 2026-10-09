@@ -31,7 +31,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 
 | ID | Severity | Rule |
 |---|---|---|
-| BLOC-1 | 🔴 `[lint]` | No mutable instance fields on Bloc/Cubit |
+| BLOC-1 | 🔴 `[lint]` | No mutable instance fields on Bloc/Cubit. Exempt: lifecycle infra (`StreamSubscription`, `StreamController`, `Timer`, `CancelToken`) and the `RefreshableBloc.refreshing` flag |
 | BLOC-2 | 🔴 | Handler catches `AppException` |
 | BLOC-3 | 🔴 | Failure factory carries `AppException` |
 | BLOC-4 | 🔴 | Events + states are `@freezed sealed class` |
@@ -65,9 +65,12 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | UI-4 | 🔴 `[lint]` | No `Widget _buildFoo()` — extract to a class |
 | UI-5 | 🟡 `[lint]` | Spread `if (cond) ...[Widget()]` even for one |
 | UI-6 | 🟡 `[lint]` | `=>` except `build()`, nested callbacks, and `if-case` listener bodies |
-| UI-7 | 🟡 | `if (!context.mounted) return;` after every `await` that uses context |
+| UI-7 | 🟡 | `if (!context.mounted) return;` after every `await` that uses context (`S7`) |
 | UI-8 | 🟡 | Use `starter_uikit` form widgets, not bare `FormBuilder*` |
 | UI-9 | 🟡 `[lint]` | `build()` widget nesting ≤ 10 levels — extract deep subtrees |
+| UI-10 | 🔴 | Shared widget takes color/typography only from `ThemeProvider` tokens — no `Color(0x…)`, `Colors.*` (except `AppColors.transparent`), hand-built `TextStyle` ([uikit.md](../rules/uikit.md)) |
+| UI-11 | 🟡 | New/changed `starter_uikit` widget has a gallery section in `lib/example/` and a behavior test in `packages/starter_uikit/test/widgets/<category>/` |
+| UI-12 | 🟡 | `starter_uikit` widget sits in a category folder, is not feature-specific, one public class per file, 1–3 line `///` summary, no barrel import |
 
 ## NAME
 
@@ -90,15 +93,43 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | FILE-3 | 🟡 | Feature has `data/`, `domain/`, `model/`, `configs/`, `ui/` |
 | FILE-4 | 🟡 | UI subfolder layout matches feature complexity |
 
+## PAG (pagination — rule detail in [pagination.md](pagination.md))
+
+| ID | Severity | Rule |
+|---|---|---|
+| PAG-1 | 🔴 | DataSource/Repository/`Mock*` twin return `PaginatedListItems<T>` with `{required int page}` (1-based) |
+| PAG-2 | 🔴 | State holds `PaginatedData<T> data` + `loadMoreState` in the data-carrying variant — no `loadingMore` variant/bool, no `int _page` |
+| PAG-3 | 🟡 | Events `requested()` / `loadMoreRequested()` / `refreshed()`; load-more uses `droppable()` |
+| PAG-4 | 🔴 | Load-more early-returns unless results state && `canLoadMore`; emits `loadMoreState: loading` on the same variant; guards `emit.isDone` |
+| PAG-5 | 🔴 | Append via `data.merge(PaginatedData.fromApi(page))` — never mutate `items` |
+| PAG-6 | 🔴 | Load-more failure → `copyWith(loadMoreState: failure)` keeping `data`, never top-level `failure(e)` |
+| PAG-7 | 🔴 | UI uses `PaginatedListView` / `SliverPaginatedListView`; no manual `ListView.builder` + scroll listener |
+| PAG-8 | 🔴 | `refreshed()` reloads page 1 (no merge); with `MultiBlocRefreshIndicator` the bloc uses `RefreshableBloc` (`finally { refreshing = false; }`, `close()` → `dispose()`) |
+| PAG-9 | 🟡 | `blocTest` covers load-more (merge / no-op when `!canLoadMore` / failure keeps data) with an immediately-throwing DS, no `wait:` |
+
+## MODEL
+
+| ID | Severity | Rule |
+|---|---|---|
+| MODEL-1 | 🟡 | Serialized (`fromJson`) enum has `unknown` + `@JsonKey(unknownEnumValue: …)` (`S9`) |
+
+## REUSE (rule detail in [polymorphism.md](polymorphism.md))
+
+| ID | Severity | Rule |
+|---|---|---|
+| REUSE-1 | 🟡 | Same enum / sealed type switched in 3+ places → UI model (`from()` holds the one switch) or strategy (`POLY-1`) |
+| REUSE-2 | 🟢 | Same algorithm repeated with small differences → extract shared logic, parameterize the differences (`POLY-9`) |
+
 ## TEST
 
 | ID | Severity | Rule |
 |---|---|---|
 | TEST-1 | 🔴 | Build mocks via JSON + `fromJson` |
 | TEST-2 | 🔴 | Register fallback values for custom types in `any(named:)` |
-| TEST-3 | 🟡 | `blocTest` never sits through retry backoff — assert failure with an immediately-throwing repo; `wait:` only for debounce (retry timing is the central executor test's job) |
+| TEST-3 | 🟡 | `blocTest` never sits through retry backoff — immediately-throwing repo/DS; `wait:` only for debounce (`T3`, `T6`) |
 | TEST-4 | 🟡 | Cover success / empty / failure per event |
-| TEST-5 | 🟡 | Feature-flow (integration) test wires real BLoC → real Repo → real `Mock*DataSource`, stubbing nothing; the `ApiClient` contract is locked separately in the API-DS test |
+| TEST-5 | 🟡 | Feature-flow test wires real BLoC → real Repo → real `Mock*DataSource`, stubbing nothing; `ApiClient` contract locked separately in the API-DS test |
+| TEST-6 | 🟡 | New DataSource method without a `Mock*DataSource` twin, or a twin using `Future.delayed` / UI strings / `UnimplementedError` instead of `MockNetworkBehavior` + backend-shaped `AppException` ([mocking.md](mocking.md) `M1`–`M7`) |
 
 ## STYLE
 
@@ -110,6 +141,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | STYLE-4 | 🟢 | Trailing commas |
 | STYLE-5 | 🟢 `[lint]` | Single quotes |
 | STYLE-6 | 🟢 `[lint]` | Package imports inside `lib/` |
+| STYLE-7 | 🟢 | Tell, don't ask (`S8`) — rule in a named getter/method, not re-derived from raw fields at call sites |
 
 ## Workflow
 

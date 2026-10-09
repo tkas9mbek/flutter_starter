@@ -1,13 +1,8 @@
 # Testing Guide
 
-> **Philosophy:** test the layers that contain *logic*, and lean on the **no-mock vertical slice** for everything else. The app ships both `Mock*DataSource` and `Api*DataSource` implementations behind a per-feature `useMock` switch. Feature-flow tests wire the `Mock*DataSource` because it needs no network stack and still proves the real bloc/repository/executor wiring; the `Api*DataSource` contract (method, path, body, `fromJson`) is locked separately, once per data source (§5.4 callout) — not by re-running the whole feature-flow slice against it. Prioritise by coverage-per-unit-of-effort, not by a coverage percentage.
+> **Philosophy:** test the layers that contain *logic*, and lean on the **no-mock vertical slice** for everything else. Each data source ships as an `Api*DataSource` and a `Mock*DataSource` twin behind `mockOrProd`. Feature-flow tests wire the twin (built with `const MockNetworkBehavior.instant()`): no network stack, yet the real bloc/repository/executor wiring is proven. The `Api*DataSource` contract (method, path, body, `fromJson`) is locked separately, once per data source (§5.1, §5.4). Prioritise coverage-per-unit-of-effort, not a coverage percentage.
 
-**The single most coverage-dense test is the feature-flow slice (#4).** One run lights up the bloc, the executor, the repository's delegation, and the mock data source's happy path simultaneously — with nothing stubbed. It is therefore the **backbone alongside the bloc test (#2)**, and it is **mandatory per feature**, not reserved for critical ones. Most of the policy below follows from that reweighting: spend less on narrow, mock-heavy tests that mostly cover generated or mock-config code, and more on the slice that proves real wiring.
-
-> **Current suite vs. this doctrine:** parts of the existing suite predate this policy — the
-> per-repository unit tests (`test/features/*/data/*_repository_test.dart`) and the
-> `ApiClient`-mocked integration tests (e.g. `test/features/task/integration/integration_test.dart`)
-> are **grandfathered**. Don't add new tests in those shapes; write new tests in the shapes below.
+**The most coverage-dense test is the feature-flow slice (#4)**: one run lights up the bloc, the executor, the repository's delegation and the twin's happy path with nothing stubbed. It is the **backbone alongside the bloc test (#2)** and is **mandatory per feature**. Spend less on narrow mock-heavy tests that mostly cover generated code, more on the slice that proves real wiring.
 
 ## 1. The test types
 
@@ -20,21 +15,19 @@
 | 5 | **Widget smoke** *(data-driven)* | rendering | a table of `(widget, state)` pairs builds without throwing; l10n keys exist; nullable branches render | exact pixels, deep behaviour | S |
 | 6 | **DI graph smoke** | wiring | every registered type resolves from GetIt | logic, UI | XS |
 
-**Do NOT write per-repository unit tests.** A concrete repository is a thin facade (`getX() => _executor.execute(_ds.getX)`); a unit test for it only re-asserts that delegation delegates. The delegation is proven *transitively* by the **feature-flow test (#4)** — which is why #4 is now mandatory — and the only real repo-layer logic, the executor decorators, is tested **once, centrally (#3)**. Add a repository unit test back **only** when a repo gains real logic (coordinates multiple data sources, merges/transforms results, owns cache keys). Existing per-repo tests are grandfathered.
+**Do NOT write per-repository unit tests.** A repository is a thin facade (`getX() => _executor.execute(_ds.getX)`); a unit test only re-asserts delegation. Delegation is proven *transitively* by the feature-flow test (#4), and the only real repo-layer logic, the executor decorators, is tested **once, centrally (#3)**. Add a repository test only when a repo gains real logic (coordinates several data sources, merges/transforms results, owns cache keys).
 
 ## 2. What each feature must have (the policy)
 
 Replace "aim for 100%" with a per-feature checklist:
 
 - ✅ **One feature-flow test per feature (#4)** — real BLoC → real Repo → real `Mock*DataSource`, **happy path + one failure-state assertion**. This is the backbone; it closes the delegation blind spot for *every* feature, not just critical ones.
-- ✅ **One BLoC unit test per bloc/cubit (#2)** — success, empty, failure for every event. Drop scattered mocked-repo edge cases that #4 now covers with real wiring.
+- ✅ **One BLoC unit test per bloc/cubit (#2)** — success, empty, failure for every event.
 - ✅ **A data-driven widget smoke (#5)** covering each reused widget and param-only screen in its key states (currently one app-wide table in `test/uikit/uikit_widgets_smoke_test.dart`).
 - ✅ The feature's blocs **appear in the DI graph smoke test (#6)** (`test/core/di_graph_test.dart`).
 - ✅ **Model test (#1) only** for non-trivial mapping (enums, `@JsonKey` defaults, non-obvious nested) — skip plain round-trips entirely.
 
 Central, once for the whole app: the **executor tests (#3)** and the **DI graph smoke test (#6)** — both already at the efficient frontier; leave them as-is.
-
-> **Net effect:** test *count* can drop while coverage *rises* — you trade narrow mocked-repo bloc cases and model round-trips for one real vertical slice per feature, and collapse the widget layer into a table.
 
 ## 3. Layout
 
@@ -42,9 +35,9 @@ The current tree:
 
 ```
 test/features/{feature}/
-├── assets/        # feature-local JSON fixtures (e.g. task/task1.json, profile/user.json)
+├── assets/        # feature-local JSON fixtures (e.g. task1.json)
 ├── model/         # *MockModels fixture builder (rawX + built X via fromJson)
-├── data/          # API-DS unit tests (+ grandfathered per-repo tests — don't add new ones)
+├── data/          # Api*DataSource contract tests (api_<feature>_data_source_test.dart)
 ├── bloc/          # bloc unit tests
 └── integration/   # feature-flow tests (mandatory per feature)
 test/core/di_graph_test.dart              # DI smoke (app-wide)
@@ -53,13 +46,12 @@ test/support/
 ├── pump.dart      # wrapApp() / wrapWidget() for widget smokes
 ├── finders.dart   # shared finders
 ├── fixtures.dart  # fixtureMap/List(feature, file)  +  sharedFixtureMap/List(file)
-└── assets/        # shared cross-feature fixtures (add when a fixture is used by 2+ features)
+└── assets/        # shared cross-feature fixtures (create when a fixture is used by 2+ features)
 ```
 
-There are no per-feature `widget/` test directories today — widget smokes live in the app-wide
-table; add a per-feature dir only when a feature accumulates bespoke-finder tests.
+There are no per-feature `widget/` test directories — widget smokes live in the app-wide table; add one only for bespoke-finder tests.
 
-**Fixtures have two homes:** a fixture used by **one** feature lives in `test/features/<feature>/assets/` (load via `fixtureMap('<feature>', 'x.json')`); a fixture used by **several** features lives in `test/support/assets/` (load via `sharedFixtureMap('x.json')` — no feature, so there's no cross-feature path coupling). Never hand-roll a `_rawJson`/`File(...).readAsStringSync()` loader — always go through `test/support/fixtures.dart`.
+**Fixtures have two homes:** a fixture used by **one** feature lives in `test/features/<feature>/assets/` (load via `fixtureMap('<feature>', 'x.json')`); a fixture used by **several** features lives in `test/support/assets/` (load via `sharedFixtureMap('x.json')` — no feature, so there's no cross-feature path coupling). Never hand-roll a `File(...).readAsStringSync()` loader — use `test/support/fixtures.dart`.
 
 ## 4. Shared conventions
 
@@ -235,12 +227,12 @@ test('withRetry retries a retryable failure up to maxRetries attempts', () async
 
 ### 5.4 Feature-flow / integration (#4) — the backbone, mandatory per feature
 
-Wire the **real** bloc, **real** repository, and the **real `Mock*DataSource`** — stub nothing else. This is the most coverage-dense test in the suite: one run proves the whole shipping path (delegation included) and exercises real behaviour, which is why it **replaces** per-repository unit tests and scattered mocked-repo bloc edge cases.
+Wire the **real** bloc, **real** repository, and the **real `Mock*DataSource`** built with `const MockNetworkBehavior.instant()` (no wait, no random failure) — stub nothing else. One run proves the whole shipping path, delegation included, which is why it **replaces** per-repository tests and scattered mocked-repo bloc edge cases.
 
-**Assert two paths, not one** — the happy path *and* one error branch. The error assertion roughly doubles the slice's vertical coverage for one extra `expect`: it exercises the executor's error *mapping*, the repo's error delegation, and the bloc's failure state together. Highest marginal ROI in the suite.
+**Assert two paths:** the happy path *and* one error branch. The error assertion exercises the executor's error *mapping*, the repo's error delegation and the bloc's failure state for one extra `expect` — the highest marginal ROI in the suite. Produce the error either with a throwing stub of the abstract data source (below) or through a sentinel input the twin refuses (`M7`/`M9`, e.g. `MockAuthScenarios.wrongOtp`). Do not unit-test the twin's own fault injection (`MockNetworkBehavior.simulate()` failures).
 
 ```dart
-// test/features/task/integration/integration_test.dart (target shape)
+// test/features/task/integration/integration_test.dart (abridged)
 class _ThrowingTaskDataSource implements TaskDataSource {
   // every method throws — e.g. `throw const NoInternetException();`
 }
@@ -254,7 +246,7 @@ void main() {
       );
 
   test('task-list flow reaches a grouped success state', () async {
-    final bloc = buildBloc(MockTaskDataSource());
+    final bloc = buildBloc(MockTaskDataSource(const MockNetworkBehavior.instant()));
     bloc.add(const TasksListEvent.requested());
     await bloc.stream.firstWhere(
       (s) => s is SuccessTasksListState || s is FailureTasksListState,
@@ -273,18 +265,11 @@ void main() {
 }
 ```
 
-> **Current suite note:** the existing integration tests (e.g. the task one) wire the
-> `Api*DataSource` with a mocked `ApiClient` — the pre-doctrine shape. They are grandfathered;
-> write new feature-flow tests in the `Mock*DataSource` shape above.
->
-> **API contract path:** when an `Api*DataSource` exists or is being added, keep its `*_api_test.dart`
-> separate from mock-first flow tests. Wire `Api*DataSource` + a mocked `ApiClient` to lock method/path/body
-> shape, then run the captured `fromJson`/`toJson` on fixtures (see
-> `test/features/profile/data/api_profile_data_source_test.dart`).
+> **API contract path:** keep each `api_<feature>_data_source_test.dart` separate from the flow tests: wire `Api*DataSource` + a mocked `ApiClient` to lock method/path/body shape, then run the captured `fromJson`/`toJson` on fixtures (see `test/features/profile/data/api_profile_data_source_test.dart`).
 
 ### 5.5 Widget smoke (#5) — data-driven
 
-One helper, then a **table loop** over `(widget, state)` pairs — pump each, assert it builds. This collapses what used to be S×N hand-written `testWidgets` into roughly one `S` per widget with identical crash / l10n / nullable-branch coverage. This is the **only** layer that catches a `build()` crash, a **deleted l10n key**, a missing provider, or a broken nullable branch. The live example is `test/uikit/uikit_widgets_smoke_test.dart`.
+One helper, then a **table loop** over `(widget, state)` pairs — pump each, assert it builds. This is the **only** layer that catches a `build()` crash, a **deleted l10n key**, a missing provider, or a broken nullable branch. The live example is `test/uikit/uikit_widgets_smoke_test.dart`.
 
 ```dart
 // test/support/pump.dart
@@ -392,12 +377,12 @@ Coverage is a *map of gaps*, not a target — read the **filtered** report to fi
 | Round-trip every model through JSON | Exercise `fromJson`/`toJson` **on the way** through the API-DS test (§5.1); standalone only for enum/`@JsonKey` defaults (#1) |
 | Stub `fromJson: any(named:)` and return a hand-built model | Invoke the **captured** `fromJson` (`invocation.namedArguments[#fromJson]`) on a raw fixture; build the expected model from the same fixture |
 | Assert `body == model.toJson()` and call it a toJson test | `captureAny(named: 'body')` then assert **concrete serialized values** (e.g. `body['birthday'] == '…ISO…'`) |
-| Add a standalone test for a mock's fault-injection trigger | Don't unit-test the mock DS at all — cover its happy + error path via the feature-flow test (#4) |
+| Unit-test the twin or its `MockNetworkBehavior` fault injection | Cover its happy + error path (throwing stub or sentinel input) via the feature-flow test (#4) |
 | Pay `wait: 8s` to sit through retry backoff in a bloc test | Assert failure with an **immediately-throwing** repo; retry timing is the executor's (#3) |
-| Unit-test a thin repository (`verify(ds.getX).called(1)`) | Cover it via the mandatory feature-flow test (#4); existing per-repo tests are grandfathered |
+| Unit-test a thin repository (`verify(ds.getX).called(1)`) | Cover it via the mandatory feature-flow test (#4) |
 | Ship a feature-flow test with only a happy path | Add **one failure-state assertion** (#4) |
 | Hand-write N near-identical widget smokes | Loop a `(widget, state)` table; bespoke finders only where content matters (#5) |
-| Integration-test the `ApiClient` path with a full feature-flow slice | Integration-test the **mock** path that ships (#4); lock the `ApiClient` contract separately (§5.1) |
+| Run the whole feature-flow slice against `Api*DataSource` + mocked `ApiClient` | Feature-flow uses the twin (#4); lock the `ApiClient` contract in the `Api*` test (§5.1) |
 | Re-test error/retry per repository | Test the executor once, centrally (#3) |
 | Chase 100% coverage everywhere | Follow the per-feature policy (§2); read the **filtered** coverage report |
 | `sleep()` / real delays | `blocTest` `wait:` (debounce only) or `fakeAsync` |

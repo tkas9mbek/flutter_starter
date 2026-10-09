@@ -9,13 +9,9 @@
 | Branch | Role |
 |--------|------|
 | `main` | Stable branch. Tip is always a shipped release (e.g. `release: v3.0.0`). |
-| `release/<version>` | Release-prep branch cut from `main`, named by bare version (e.g. `release/3.1.0`). Work for the next release lands here directly (or via short-lived work branches merged into it), then merges back into `main` when the release ships. |
+| `release/<version>` | Release-prep branch cut from `main`, named by bare version (e.g. `release/3.1.0`). Next-release work lands here directly (or via short-lived work branches merged into it), then merges back into `main` when the release ships. |
 
-There is no `dev` branch — day-to-day work commits straight to the active `release/<version>`
-branch (confirmed via `git log`: `release/3.1.0` carries a linear sequence of `docs:`/`refactor:`/
-`test:` commits with no intermediate feature-branch merges). Short-lived work branches are optional;
-when you create one, name it per the format below and target it at the active `release/<version>`
-branch, not `main` directly.
+There is no `dev` branch — day-to-day work commits straight to the active `release/<version>` branch. Short-lived work branches are optional; name them per the format below and target the active `release/<version>` branch, not `main`.
 
 ## Format
 
@@ -24,8 +20,8 @@ branch, not `main` directly.
 ```
 
 | Component | Required | Notes |
-|-----------|---------|-------|
-| `category/` | ✅ | One of the allowed categories below |
+|-----------|----------|-------|
+| `category/` | ✅ | One of the allowed categories below — never abbreviated |
 | `TICKET-ID_` | ⚠️ Optional | Required if a ticket exists; followed by underscore |
 | `description` | ✅ | Short, kebab-case |
 
@@ -39,26 +35,7 @@ branch, not `main` directly.
 | `research/` | Experiment, PoC, spike | `research/state-management-eval` |
 | `release/` | Release-prep branch | `release/2.1.0` |
 
-**Rule**: A branch with a ticket always uses `feature/`, regardless of work type. `fix/` exists only for bugs without a ticket.
-
-## Decision tree
-
-```
-Has a ticket?  → YES → feature/TICKET-ID_description
-               → NO  → fix/ | refactor/ | research/ | feature/ | release/
-```
-
-## ✅ Good
-
-```bash
-feature/PROJ-152_payment-redesign
-feature/PROJ-160_fix-login-crash
-feature/dark-mode
-fix/crash-on-login
-refactor/clean-auth-repository
-research/clean-architecture-poc
-release/2.1.0
-```
+**Rule**: a branch with a ticket always uses `feature/`, regardless of work type (`feature/PROJ-160_fix-login-crash`). `fix/` exists only for bugs without a ticket.
 
 ## ❌ Bad → ✅ Fix
 
@@ -67,7 +44,7 @@ release/2.1.0
 | `fix/PROJ-160_crash` | Ticketed work must use `feature/` | `feature/PROJ-160_crash` |
 | `kasymbek/home-design` | Personal-name prefix | `feature/PROJ-XXX_home-design` |
 | `PROJ-142` | No category prefix | `feature/PROJ-142_description` |
-| `feat/PROJ-220` | Abbreviated category — branch categories are never abbreviated | `feature/PROJ-220_description` |
+| `feat/PROJ-220` | Abbreviated category | `feature/PROJ-220_description` |
 | `PROJ-221-fix-routing` | Hyphen instead of underscore between ticket and description | `feature/PROJ-221_fix-routing` |
 | `updated-service` | No category, vague description | `refactor/update-payment-service` |
 
@@ -77,25 +54,13 @@ release/2.1.0
 
 ## Format
 
-**With a ticket:**
-
 ```
-TICKET-ID: Capitalized imperative description
-```
-
-**Without a ticket:**
-
-```
-type: Capitalized imperative description
-type(scope): Capitalized imperative description    # optional scope, e.g. a package
+TICKET-ID: Capitalized imperative description        # with a ticket
+type: Capitalized imperative description             # without a ticket
+type(scope): Capitalized imperative description      # optional scope, e.g. a package
 ```
 
-`type` ∈ `{feature|feat, fix, refactor, research, release, docs, style, test, chore}`. The first
-five mirror the branch categories; `docs`/`style`/`test`/`chore` cover changes those categories
-don't (documentation, formatting-only passes, test-only changes, housekeeping). An optional
-parenthesized scope narrows the change (`feat(starter_lints): …`).
-
-## Rules
+`type` ∈ `{feature|feat, fix, refactor, research, release, docs, style, test, chore}`. The first five mirror the branch categories; `docs`/`style`/`test`/`chore` cover documentation, formatting-only passes, test-only changes and housekeeping.
 
 | Rule | Note |
 |------|------|
@@ -107,16 +72,12 @@ parenthesized scope narrows the change (`feat(starter_lints): …`).
 
 ## Multi-scope commits
 
-When one logical change touches more than one workspace package, comma-separate the scopes inside
-a single parenthesized group — no space after the comma:
+When one logical change touches more than one workspace package, comma-separate the scopes inside a single parenthesized group — no space after the comma. Don't split one logical change into single-scope commits just to keep the scope singular.
 
 ```bash
 fix(toolkit,uikit): Resolve shared date-parsing crash
 refactor(starter_lints,starter_toolkit): Align severity levels with docs
 ```
-
-Don't split one logical change into several single-scope commits just to keep the scope singular —
-that violates "one logical change per commit" above.
 
 ## ✅ Good
 
@@ -128,6 +89,7 @@ fix: Resolve null pointer in notification handler
 refactor: Extract common form validation logic
 docs: Sync guides with current architecture
 style: Deep-format pass on task feature
+chore: Remove stale planning docs
 research: Test WebSocket integration
 release: Prepare version 2.1.0
 ```
@@ -146,14 +108,7 @@ release: Prepare version 2.1.0
 
 # Part 3: Pull / Merge Request Titles
 
-Same format as commits:
-
-- `TICKET-ID: Description` (with ticket)
-- `type: Description` (without ticket)
-
-Use the branch's primary commit message as the PR title in most cases.
-
-## ❌ Bad → ✅ Fix
+Same format as commits (`TICKET-ID: Description` or `type: Description`); usually the branch's primary commit message.
 
 | Bad | Problem | Fix |
 |-----|---------|-----|
@@ -166,11 +121,4 @@ Use the branch's primary commit message as the PR title in most cases.
 
 ## Adapting the ticket prefix
 
-If your team uses a tracker other than the placeholder `PROJ-`:
-
-- Linear → `LIN-` (`LIN-123: …`)
-- GitHub Issues → `#123` (`#123: …`) — keep the `#`
-- Jira (mobile) → `MOBILE-` (`MOBILE-152: …`)
-- No tracker → use the `type:` form for everything
-
-Pick one and stay consistent across branches, commits, and PRs.
+Replace the placeholder `PROJ-` with your tracker's prefix and stay consistent across branches, commits, and PRs: Linear `LIN-123: …`, GitHub Issues `#123: …` (keep the `#`), Jira `MOBILE-152: …`. No tracker → use the `type:` form for everything.

@@ -2,12 +2,7 @@
 
 ## Core Principle
 
-Follow the pattern: **Feature + Description + Type**
-
-By reading a name, developers should understand:
-- What feature it belongs to
-- What it does (description)
-- What type of component it is
+**Feature + Description + Type** — a name tells you the feature it belongs to, what it does, and what kind of component it is.
 
 ---
 
@@ -15,222 +10,35 @@ By reading a name, developers should understand:
 
 ### Functions & Methods
 
-Start with a verb indicating the action
-
-```dart
-// ✓ Correct
-void fetchUsers() { ... }
-void calculateTotal() { ... }
-Future<void> saveData() { ... }
-
-// ✗ Wrong
-void users() { ... }
-void total() { ... }
-void data() { ... }
-```
+Start with a verb: `fetchUsers()`, `calculateTotal()`, `saveData()` — never `users()`, `total()`, `data()`.
 
 ### Classes
 
-**Pattern**: `Feature + Description + Type`
+`Feature + Description + Type`
 
-- **Feature**: Domain/module name (e.g., `Tax`, `User`, `Note`)
-- **Description**: Specific use case or data — omit only when the feature has a single instance of
-  that Type (e.g. one screen, one repository); required as soon as a second instance exists.
-- **Type**: Component type (`Repository`, `Bloc`, `Screen`, `Widget`)
+- **Feature**: domain/module name (`Tax`, `User`, `Note`)
+- **Description**: specific use case or data — omit only when the feature has a single instance of that Type (one screen, one repository); required as soon as a second instance exists.
+- **Type**: component type (`Repository`, `Bloc`, `Screen`, `Widget`)
 
 ```dart
 // ✓ Correct
-class TaxRepository { ... }           // Single implementation, omit description
-class TaxPaymentScreen { ... }        // Payment is the description
-class UserListBloc { ... }            // List is the description
-class LoginScreen { ... }             // Feature has only one screen, omit description
+class TaxRepository { ... }     // single implementation, description omitted
+class TaxPaymentScreen { ... }  // Payment is the description
+class UserListBloc { ... }      // List is the description
+class LoginScreen { ... }       // only one screen in the feature
 
 // ✗ Wrong
-class TaxData { ... }                 // Too generic
-class TaxModel { ... }                // Avoid "Model"
-class NoteScreen { ... }              // Note has both NoteListScreen and NoteDetailScreen —
-                                       // ambiguous without a description
+class TaxData { ... }           // too generic
+class NoteScreen { ... }        // Note has NoteListScreen and NoteDetailScreen — ambiguous
 ```
+
+Private (`_`) classes follow the same rule — never a bare `_Item`; see [code_preferences § Private classes](./code_preferences.md#private-classes-use-a-full-descriptive-name). The feature word leads widget names ([§ Feature word leads](./code_preferences.md#feature-word-leads-the-widget-name)).
 
 ---
 
 ## File Names
 
-Use `snake_case`. Match the main class name
-
-```dart
-// Class: TaxPaymentScreen
-// File: tax_payment_screen.dart
-
-// Class: UserListBloc
-// File: user_list_bloc.dart
-
-// Class: ApiAuthDataSource
-// File: api_auth_data_source.dart
-```
-
----
-
-## Abstraction Naming
-
-### Abstract Classes
-
-Use the base pattern without implementation prefix
-
-```dart
-// ✓ Correct - Abstract
-abstract class UserDataSource { ... }
-abstract class TaskRepository { ... }  // Only if truly needed
-
-// ✗ Wrong
-abstract class IUserDataSource { ... }  // No "I" prefix
-abstract class AbstractUserDataSource { ... }  // No "Abstract" prefix
-```
-
-### Concrete Implementations
-
-Prefix with implementation type
-
-```dart
-// ✓ Correct - Implementations
-class ApiUserDataSource implements UserDataSource { ... }
-class LocalUserDataSource implements UserDataSource { ... }
-class MockUserDataSource implements UserDataSource { ... }
-
-class ApiAuthDataSource implements AuthDataSource { ... }
-class SecureAuthLocalDataSource implements AuthLocalDataSource { ... }
-```
-
----
-
-## Widget Naming
-
-Use descriptive names based on purpose, not just widget type
-
-### Generic Widgets
-
-Describe what the widget displays or does:
-
-```dart
-// ✓ Correct
-class UserProfileCard extends StatelessWidget { ... }
-class TaskListView extends StatelessWidget { ... }
-class PriceRow extends StatelessWidget { ... }
-class SubmitButton extends StatelessWidget { ... }
-
-// ✗ Wrong
-class UserContainer extends StatelessWidget { ... }  // Too generic
-class TaskWidget extends StatelessWidget { ... }     // Too generic
-```
-
-### Avoid Generic Names
-
-Never use `Container`, `Widget`, `Component` in names
-
-```dart
-// ✓ Correct
-class ProductDetailsCard { ... }
-class UserInfoTile { ... }
-
-// ✗ Wrong
-class ProductContainer { ... }
-class UserWidget { ... }
-class InfoComponent { ... }
-```
-
----
-
-## BLoC Naming
-
-Follow official [BLoC naming conventions](https://bloclibrary.dev/naming-conventions/)
-
-### BLoC Classes
-
-Pattern: `Feature + Description + Bloc`
-
-```dart
-class UserListBloc extends Bloc<UserListEvent, UserListState> { ... }
-class TaskOperationBloc extends Bloc<TaskOperationEvent, TaskOperationState> { ... }
-class ProfileDetailsBloc extends Bloc<ProfileDetailsEvent, ProfileDetailsState> { ... }
-```
-
-### Events
-
-Use **past tense** (events represent actions that already occurred). Event case classes stay
-**private**, named `_{Verb}{Feature}Event`:
-
-```dart
-@freezed
-sealed class UserListEvent with _$UserListEvent {
-  const factory UserListEvent.requested() = _RequestedUserListEvent;
-  const factory UserListEvent.refreshed() = _RefreshedUserListEvent;
-  const factory UserListEvent.itemSelected(String id) = _ItemSelectedUserListEvent;
-}
-
-// ✓ Correct: requested, submitted, deleted, refreshed, updated
-// ✗ Wrong: request, submit, delete, refresh, update
-```
-
-### States
-
-Use the **canonical four state names**: `initial`, `loading`, `success`, `failure` (plus
-`submitting` for operation blocs). State case classes are **public** (`SuccessUserListState`) so
-UI code can pattern-match on them — Freezed 3 removed the generated `when`/`map` helpers:
-
-```dart
-@freezed
-sealed class UserListState with _$UserListState {
-  const factory UserListState.initial() = InitialUserListState;
-  const factory UserListState.loading() = LoadingUserListState;
-  const factory UserListState.success(List<User> users) = SuccessUserListState;
-  const factory UserListState.failure(AppException exception) = FailureUserListState;
-}
-
-// ✓ Correct: initial, loading, success, failure
-// ✗ Wrong: initializing, loaded, succeeded, failed — stick to the canonical set
-```
-
-### Common BLoC Names
-
-Use these standard patterns:
-
-| Purpose | Pattern | Example |
-|---------|---------|---------|
-| List fetching | `FeatureListBloc` | `NotesListBloc`, `UsersListBloc` |
-| Create/Edit | `FeatureOperationBloc` | `NoteOperationBloc`, `TaskOperationBloc` |
-| Details view | `FeatureDetailsBloc` | `UserDetailsBloc`, `OrderDetailsBloc` |
-
----
-
-## Model Naming
-
-Use domain-specific names, avoid generic suffixes
-
-```dart
-// ✓ Correct
-class User { ... }
-class Task { ... }
-class OrderItem { ... }
-class PaymentDetails { ... }
-
-// ✗ Wrong
-class UserModel { ... }         // Avoid "Model"
-class TaskData { ... }          // Avoid "Data"
-class OrderItemDto { ... }      // We don't use DTOs
-```
-
-### Request/Response Models
-
-```dart
-// ✓ Correct
-class LoginRequest { ... }
-class TaskCreateRequest { ... }
-class AuthRegisterRequestBody { ... }
-
-// For responses, use domain model directly
-class User { ... }  // Used for both request and response
-class Task { ... }
-```
+`snake_case`, matching the main class name: `TaxPaymentScreen` → `tax_payment_screen.dart`, `ApiAuthAuthorizedDataSource` → `api_auth_authorized_data_source.dart`.
 
 ---
 
@@ -238,141 +46,112 @@ class Task { ... }
 
 ### Repository
 
-Usually one per feature, omit description
-
-```dart
-// ✓ Correct - Single implementation
-class UserRepository { ... }
-class TaskRepository { ... }
-class AuthRepository { ... }
-
-// ✓ Correct - Multiple implementations (rare)
-abstract class PaymentRepository { ... }
-class StripePaymentRepository implements PaymentRepository { ... }
-class PayPalPaymentRepository implements PaymentRepository { ... }
-```
+One per feature, description omitted (`UserRepository`, `TaskRepository`). Repositories are concrete — see [code_standards § Repository](./code_standards.md#repository-depends-on-abstract-datasource).
 
 ### DataSource
 
-Always abstract, prefix implementations
+The abstract type lives in `domain/` with the base pattern — no `I` / `Abstract` prefix. **Implementations are prefixed with their source**, source first (`UserLocalDataSource` is wrong):
+
+| Kind | Pattern | Example |
+|---|---|---|
+| Abstract | `FeatureDataSource` | `UserDataSource`, `AuthAuthorizedDataSource` |
+| REST (`ApiClient`) | `ApiFeatureDataSource` | `ApiUserDataSource` |
+| Local / secure storage | `LocalFeatureDataSource` / `SecureFeatureDataSource` | `LocalSettingsDataSource`, `SecureAuthLocalDataSource` |
+| Mock twin | `MockFeatureDataSource` | `MockUserDataSource` |
+
+- REST implementations are `Api*` (not `Remote*`) and live in `data/`; mock twins are `Mock*` and live in `data/mock/` beside their `Mock<Feature>Scenarios` — see [mocking](../guides/mocking.md).
+- A feature with several abstract sources keeps the qualifier on every implementation (`ApiAuthAuthorizedDataSource`, `MockAuthAuthorizedDataSource`).
+- Multiple implementations of a repository are rare; if they exist, prefix the same way (`StripePaymentRepository implements PaymentRepository`).
+
+### API access
+
+There is no separate "service" layer: all HTTP goes through the typed `ApiClient` (from `starter_toolkit`), called only by `Api*DataSource` classes. A `FeatureService` / Retrofit-style class bypasses the DataSource contract and adds a layer the architecture doesn't have.
 
 ```dart
-// Abstract
-abstract class UserDataSource { ... }
-abstract class AuthAuthorizedDataSource { ... }
-
-// Implementations
-class ApiUserDataSource implements UserDataSource { ... }
-class LocalUserDataSource implements UserDataSource { ... }
-class MockUserDataSource implements UserDataSource { ... }
-
-class ApiAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
-class MockAuthAuthorizedDataSource implements AuthAuthorizedDataSource { ... }
-```
-
----
-
-## API Access Naming
-
-There is no separate "service" layer: all HTTP access goes through the shared typed `ApiClient`
-(from `starter_toolkit`), called only by `Api*DataSource` implementations. Name the pieces
-accordingly:
-
-```dart
-// ✓ Correct — the data source is the only API-facing class
 class ApiTaskDataSource implements TaskDataSource {
   const ApiTaskDataSource(this._client);
 
   final ApiClient _client;
 
+  @override
   Future<List<Task>> getTasks() => _client.requestJsonList<Task>(
         method: HttpMethod.get,
         path: '/tasks',
         fromJson: Task.fromJson,
       );
 }
-
-// ✗ Wrong — a `FeatureService` / Retrofit-style service class bypasses the
-// DataSource contract and adds a layer the architecture doesn't have
-abstract class TaskService { ... }
 ```
 
 ---
 
-## Examples
+## Widget Naming
 
-### Example 1: Tax Feature Repository
+Describe what the widget displays or does, not its Flutter base type: `UserProfileCard`, `TaskListView`, `PriceRow`, `SubmitButton`. Never use `Container`, `Widget` or `Component` in a name (`UserContainer`, `TaskWidget`, `InfoComponent`); pick a concrete UI type (Card / Panel / Tile).
 
-**Class**: `TaxRepository`
-- **Feature**: Tax
-- **Description**: (omitted - single implementation)
-- **Type**: Repository
+---
 
-Single repository for tax feature, no description needed.
+## BLoC Naming
 
-### Example 2: Tax Payment Screen
+Follow the official [BLoC naming conventions](https://bloclibrary.dev/naming-conventions/).
 
-**Class**: `TaxPaymentScreen`
-- **Feature**: Tax
-- **Description**: Payment
-- **Type**: Screen
+| Purpose | Pattern | Example |
+|---|---|---|
+| List fetching | `FeatureListBloc` | `UserListBloc` |
+| Create / edit | `FeatureOperationBloc` | `TaskOperationBloc` |
+| Details view | `FeatureDetailsBloc` | `UserDetailsBloc` |
 
-Screen for handling tax payments.
+BLoCs are named with nouns, not verbs (`UserCreationBloc`, not `AddUserBloc`).
 
-### Example 3: Tax Debts List BLoC
+**Events** — **past tense**; case classes **private**, named `_{Verb}{Feature}Event`. ✓ `requested`, `submitted`, `deleted`, `refreshed` · ✗ `request`, `submit`, `delete`, `refresh`.
 
-**Class**: `TaxDebtsListBloc`
-- **Feature**: Tax
-- **Description**: DebtsList
-- **Type**: Bloc
+**States** — the canonical set `initial`, `loading`, `success`, `failure` (plus `submitting` for operation blocs) — not `initializing` / `loaded` / `succeeded` / `failed`. Case classes are **public**, `{Status}{Feature}State`, so UI code can pattern-match (Freezed 3 has no `when` / `map`).
 
-BLoC managing the list of tax debts.
-
-### Example 4: User Data Source
-
-**Abstract**: `UserDataSource`
-**Implementations**:
-- `ApiUserDataSource` - API implementation
-- `LocalUserDataSource` - Database implementation
-- `MockUserDataSource` - Testing implementation
-
-### Example 5: Authentication
-
-**BLoC**: `LoginBloc`
-- **Feature**: Login
-- **Type**: Bloc
-
-**Events** (private case classes):
 ```dart
-const factory LoginEvent.submitted(String phone, String password) = _SubmittedLoginEvent;
-const factory LoginEvent.passwordVisibilityToggled() = _PasswordVisibilityToggledLoginEvent;
+@freezed
+sealed class UserListEvent with _$UserListEvent {
+  const factory UserListEvent.requested() = _RequestedUserListEvent;
+  const factory UserListEvent.itemSelected(String id) = _ItemSelectedUserListEvent;
+}
+
+@freezed
+sealed class UserListState with _$UserListState {
+  const factory UserListState.initial() = InitialUserListState;
+  const factory UserListState.loading() = LoadingUserListState;
+  const factory UserListState.success(List<User> users) = SuccessUserListState;
+  const factory UserListState.failure(AppException exception) = FailureUserListState;
+}
 ```
 
-**States** (public case classes):
-```dart
-const factory LoginState.initial() = InitialLoginState;
-const factory LoginState.loading() = LoadingLoginState;
-const factory LoginState.success() = SuccessLoginState;
-const factory LoginState.failure(AppException exception) = FailureLoginState;
-```
+---
+
+## Model Naming
+
+Domain-specific names, no generic suffixes: `User`, `Task`, `OrderItem`, `PaymentDetails` — not `UserModel`, `TaskData`, `OrderItemDto` (we don't use DTOs).
+
+- **Presentation-layer variants use `*UiModel`** (`ExceptionUiModel`, `TaskStatusUiModel`): the `Model` ban targets *domain* types, and `avoid_naming_antipatterns` explicitly exempts `UiModel`. Forms are `*Form`, domain models stay bare. `TaskStatusModel` / `TaskStatusHelper` / `TaskStatusMapper` are all wrong names for a UI model — see [polymorphism guide § UI Model Pattern](../guides/polymorphism.md#ui-model-pattern).
+- **Transport-only types** take `Request` / `Response` (`LoginRequest`, `TaskCreateRequest`, `AuthRegisterRequestBody`). Responses normally reuse the domain model directly.
 
 ---
 
 ## Anti-Patterns: Bad → Good
 
-Concrete corrections for the most common naming mistakes seen in review.
+Enforced by the `avoid_naming_antipatterns` lint where noted: `Impl` suffix, `Module` in a Repository/DataSource/Bloc/Service name, `Model` suffix under `model/` (not `UiModel`). The rest is review-time.
 
 | ❌ Bad | ✅ Correct | Why |
 |--------|-----------|-----|
 | `Property` | `RealEstateProperty` | Too generic — missing feature context |
 | `UserModel` | `User` | `Model` suffix is redundant for domain types |
+| `TaskDataSourceImpl` | `ApiTaskDataSource` | `Impl` says nothing — name the source |
+| `RemoteTaskDataSource` | `ApiTaskDataSource` | REST sources are `Api*` |
 | `TitleValueTile` | `TaxPropertyTitleValueTile` | Missing feature prefix — collides across modules |
-| `ImageContainer` | `UserAvatarCard` | `Container` is a Flutter widget; pick a specific UI type (Card / Panel / Tile) |
-| `AddUserBloc` | `UserCreationBloc` | BLoCs are named with nouns, not verbs |
-| `UserFetchEvent` factory `.fetch()` | `.requested()` → `_RequestedUserEvent` | Events must be past tense, case classes private: `_{Verb}{Feature}Event` |
+| `ImageContainer` | `UserAvatarCard` | `Container` is a Flutter widget; pick a specific UI type |
+| `AddUserBloc` | `UserCreationBloc` | BLoCs are nouns, not verbs |
+| `UserFetchEvent` / `.fetch()` | `.requested()` → `_RequestedUserEvent` | Events past tense, case classes private |
 | `UserLocalDataSource` | `LocalUserDataSource` | Source prefix (Api / Local / Mock) comes first |
 | `AddUserWidget` | `UserCreationButton` | `Widget` is vague; use a concrete UI type |
-| `MainScreen` | `HomeDashboardScreen` | Avoid `Main` / `Default` — say what the screen actually is |
+| `MainScreen` | `HomeDashboardScreen` | Avoid `Main` / `Default` — say what the screen is |
+
+`Module` is only legitimate on DI config classes (`configs/{feature}_module.dart extends AppModule`).
 
 ---
 
@@ -381,14 +160,12 @@ Concrete corrections for the most common naming mistakes seen in review.
 | Component | Pattern | Example |
 |-----------|---------|---------|
 | Repository | `FeatureRepository` | `UserRepository` |
-| Abstract DS | `FeatureDataSource` | `UserDataSource` |
-| API DS | `ApiFeatureDataSource` | `ApiUserDataSource` |
-| Local DS | `LocalFeatureDataSource` | `LocalUserDataSource` |
-| Mock DS | `MockFeatureDataSource` | `MockUserDataSource` |
+| Abstract / API / Local / Mock DS | `FeatureDataSource` / `Api…` / `Local…` / `Mock…` | `UserDataSource` / `ApiUserDataSource` / `LocalUserDataSource` / `MockUserDataSource` |
 | BLoC | `FeatureDescriptionBloc` | `UserListBloc` |
 | Screen | `FeatureDescriptionScreen` | `LoginScreen` |
-| Widget | `DescriptiveWidget` | `UserProfileCard` |
-| Model | `DomainName` | `User`, `Task` |
+| Widget | `FeatureDescriptiveType` | `UserProfileCard` |
+| Domain model | `DomainName` | `User`, `Task` |
+| UI model | `FeatureThingUiModel` | `TaskStatusUiModel` |
 | Request | `FeatureActionRequest` | `LoginRequest` |
 | State case class (public) | `{Status}{Feature}State` | `SuccessUserListState` |
 | Event case class (private) | `_{Verb}{Feature}Event` | `_RequestedUserListEvent` |
@@ -397,6 +174,4 @@ Concrete corrections for the most common naming mistakes seen in review.
 
 ## Related Documentation
 
-- [Architecture](../guides/architecture.md) - Layer structure
-- [Structure](../guides/structure.md) - File organization
-- [BLoC & Freezed](../guides/freezed_bloc.md) - BLoC patterns
+- [Architecture](../guides/architecture.md) · [Structure](../guides/structure.md) · [BLoC & Freezed](../guides/freezed_bloc.md)

@@ -11,11 +11,7 @@ Concise rules. Full guide: [../guides/estimation.md](../guides/estimation.md).
 
 ## Flow
 
-1. State the outcome in one sentence.
-2. Split into vertical slices or display screens.
-3. Count base SP (1 per slice / screen).
-4. Add modifiers.
-5. Round to Fibonacci: `1, 2, 3, 5, 8, 13`.
+State the outcome in one sentence → split into slices / display screens → 1 SP each → add modifiers → round to Fibonacci `1, 2, 3, 5, 8, 13`.
 
 ## Modifiers
 
@@ -40,18 +36,8 @@ Concise rules. Full guide: [../guides/estimation.md](../guides/estimation.md).
 | 8 | Cross-package feature with multiple BLoCs / screens |
 | 13 | Refactor / migration — likely should split |
 
-## Don't count
+A single phase ≤ **21 SP**; above that split into independently deliverable phases.
 
-Formatting / lint, file renames, import-only updates, pure codegen, test implementation (estimate separately).
+**Don't count**: formatting/lint, file renames, import-only updates, pure codegen, test implementation (estimate separately).
 
-## Limit
-
-A single phase ≤ **21 SP**. Above that → split into independently deliverable phases.
-
-## Pitfalls
-
-1. Counting by file count instead of behavior.
-2. Ignoring UI state-management complexity.
-3. Underestimating cross-package changes (`starter_*` are pub-workspace members, not published —
-   but still cost codegen, cross-package review, and a consuming-app rebuild).
-4. Skipping the Fibonacci rounding.
+**Pitfalls**: counting by file count instead of behavior · ignoring UI state-management complexity · underestimating cross-package changes (`starter_*` are pub-workspace members, not published, but still cost codegen, cross-package review, and a consuming-app rebuild) · skipping Fibonacci rounding.

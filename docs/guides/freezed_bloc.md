@@ -90,7 +90,7 @@ abstract class CalendarState with _$CalendarState {
 | Question | Yes → | No → |
 |----------|-------|------|
 | Does the user's input or selection need to survive a reload? | Shape B | Shape A |
-| Are there multiple independent things loading? | Split into multiple BLoCs (or use [polymorphism](#polymorphism-and-ui-models)) | Either shape |
+| Are there multiple independent things loading? | Split into multiple BLoCs (or model variants per [polymorphism.md](./polymorphism.md)) | Either shape |
 | Will the UI render different content across multiple statuses simultaneously? | Shape B | Shape A |
 
 ---
@@ -125,7 +125,7 @@ Future<void> _onDateSelected(_DateSelectedCalendarEvent event, Emitter<CalendarS
   emit(state.copyWith(selectedDate: event.date, status: const CalendarStatus.loading()));
 
   try {
-    final tasks = await _repository.tasksForDate(event.date);
+    final tasks = await _repository.getTasksByDate(event.date);
 
     return emit(state.copyWith(status: CalendarStatus.success(tasks: tasks)));
   } on AppException catch (e) {
@@ -224,47 +224,18 @@ BlocListener<AuthBloc, AuthState>(
 
 For more than two listeners, use `MultiBlocListener`.
 
-### Pagination (sketch)
+### Pagination
 
-Pagination is Shape B with a list and a "loading more" sub-status. The recommended skeleton:
-
-```dart
-@freezed
-abstract class FeedState with _$FeedState {
-  const FeedState._();
-
-  const factory FeedState({
-    required List<Post> posts,
-    required FeedStatus status,
-    required bool hasReachedEnd,
-  }) = _FeedState;
-
-  factory FeedState.initial() => const FeedState(
-    posts: [],
-    status: FeedStatus.initial(),
-    hasReachedEnd: false,
-  );
-}
-```
-
-Add events: `.requested()`, `.nextPageRequested()`, `.refreshed()`. Append to `state.posts` on success, set `hasReachedEnd` when the page is short.
+Pagination is Shape B with `PaginatedData<T>` + `BlocLoadState loadMoreState` inside the data-carrying variant — see
+[pagination.md](./pagination.md) and the shipped `TasksSearchBloc`.
 
 ---
 
 ## Polymorphism and UI models
 
-If a state factory's payload would carry an enum to switch on in the UI, model the variants as a separate Freezed union and let the UI pattern-match on it instead. Keeps the BLoC oblivious to UI presentation rules.
-
-```dart
-@freezed
-sealed class TaskTileModel with _$TaskTileModel {
-  const factory TaskTileModel.completed(Task task) = CompletedTaskTileModel;
-  const factory TaskTileModel.overdue(Task task) = OverdueTaskTileModel;
-  const factory TaskTileModel.upcoming(Task task) = UpcomingTaskTileModel;
-}
-```
-
-The mapping `Task → TaskTileModel` lives in a UI-layer mapper, not in the BLoC.
+If a state payload would carry an enum the UI switches on in several places, keep the BLoC state on the domain
+enum/model and map it to a `*UiModel` in the widget (one `from()` switch; never a UI model in state or events). Patterns
+and thresholds: [polymorphism.md](./polymorphism.md).
 
 ---
 

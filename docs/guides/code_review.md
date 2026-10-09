@@ -43,7 +43,7 @@
 
 | ID | Type | Description | Suggested Fix |
 |---|---|---|---|
-| BLOC-1 | Severe Violation 🔴 | Mutable instance variables in BLoC `[lint]` | Put all mutable data in the Freezed state |
+| BLOC-1 | Severe Violation 🔴 | Mutable instance variables in BLoC `[lint]`. Exempt: lifecycle infra (`StreamSubscription`, `StreamController`, `Timer`, `CancelToken`) and `RefreshableBloc.refreshing` | Put all mutable data in the Freezed state |
 | BLOC-2 | Bug 🔴 | Handler missing `catch` for `AppException` | Add `on AppException catch (e) { return emit(MyState.failure(e)); }` |
 | BLOC-3 | Bug 🔴 | `failure` factory missing the `AppException` field | Failure must carry the exception so UI can render via `FailureWidget.large` |
 | BLOC-4 | Severe Violation 🔴 | Hand-rolled sealed event/state classes | Use `@freezed sealed class` with factory constructors |
@@ -83,9 +83,12 @@
 | UI-4 | Severe Violation 🔴 | `Widget _buildFoo()` builder method | Extract to a `StatelessWidget`/`StatefulWidget` class |
 | UI-5 | Mild Violation 🟡 | Single widget added to a `children:` list as a literal element | Use spread: `if (cond) ...[Widget()]` even for one |
 | UI-6 | Mild Violation 🟡 | Block body where arrow body fits | Use `=>` (except `build()`, nested callbacks, and `if-case` listener bodies) |
-| UI-7 | Mild Violation 🟡 | `BuildContext` used after `await` without `mounted` check | `if (!mounted) return;` after the await |
+| UI-7 | Mild Violation 🟡 | `BuildContext` used after `await` without `mounted` check | `if (!context.mounted) return;` after the await |
 | UI-8 | Mild Violation 🟡 | `FormBuilder*` used directly | Use `starter_uikit` form widgets (`AppTextField`, `AppDropdownField`, …) |
 | UI-9 | Mild Violation 🟡 | `build()` widget tree is too deeply nested | Extract deep subtrees into their own widget classes |
+| UI-10 | Severe Violation 🔴 | Shared widget uses raw `Color(0x…)`, `Colors.*` (except `AppColors.transparent`) or a hand-built `TextStyle` | Read from `ThemeProvider` tokens — see `docs/rules/uikit.md` |
+| UI-11 | Mild Violation 🟡 | New/changed `starter_uikit` widget lacks a `lib/example/` gallery section or a behavior test | Add both (`packages/starter_uikit/test/widgets/<category>/`) |
+| UI-12 | Mild Violation 🟡 | `starter_uikit` widget outside a category folder, feature-specific, several public classes per file, missing `///`, or barrel import | Follow `docs/rules/uikit.md` |
 
 ---
 
@@ -114,6 +117,28 @@
 
 ---
 
+## Pagination (`PAG-*`) — see [pagination.md](pagination.md)
+
+| ID | Type | Description | Suggested Fix |
+|---|---|---|---|
+| PAG-1 | Severe Violation 🔴 | Paged DataSource/Repository does not return `PaginatedListItems<T>` with `{required int page}`, or the mock returns another shape | 1-based `page`; mock slices `(page - 1) * pageSize` |
+| PAG-2 | Severe Violation 🔴 | Separate `loadingMore` variant/bool or `int _page` field | `PaginatedData<T> data` + `loadMoreState` in the data-carrying variant |
+| PAG-3 | Mild Violation 🟡 | Event names or transformer off the standard | `requested()`, `loadMoreRequested()`, `refreshed()`; `droppable()` on load-more |
+| PAG-4 | Severe Violation 🔴 | Load-more handler fires without `canLoadMore`, or skips the `emit.isDone` guard | Early-return, emit `loadMoreState: loading`, fetch `data.nextPage` |
+| PAG-5 | Severe Violation 🔴 | Next page mutates `items` or hand-builds `PaginatedData` | `data.merge(PaginatedData.fromApi(page))` |
+| PAG-6 | Severe Violation 🔴 | Load-more failure emits top-level `failure(e)` | `copyWith(loadMoreState: failure)`, keep `data` |
+| PAG-7 | Severe Violation 🔴 | Manual `ListView.builder` + scroll listener | `PaginatedListView` / `SliverPaginatedListView` |
+| PAG-8 | Severe Violation 🔴 | Refresh merges onto old pages, or `RefreshableBloc` contract broken | Reload page 1; `finally { refreshing = false; }`, `close()` → `dispose()` |
+| PAG-9 | Mild Violation 🟡 | Load-more not covered by `blocTest`, or the test waits on retry backoff | Merge / no-op / failure-keeps-data cases with an immediately-throwing DS |
+
+## Model (`MODEL-*`) and Reuse (`REUSE-*`)
+
+| ID | Type | Description | Suggested Fix |
+|---|---|---|---|
+| MODEL-1 | Mild Violation 🟡 | Serialized enum without an `unknown` fallback | Add `unknown` + `@JsonKey(unknownEnumValue: …)` |
+| REUSE-1 | Non-optimal 🟡 | Same enum/sealed type switched in 3+ places | UI model with one `from()` switch, or strategy — see [polymorphism.md](polymorphism.md) |
+| REUSE-2 | Non-optimal 🟢 | Same algorithm repeated with small differences | Extract and parameterize |
+
 ## Testing (`TEST-*`)
 
 | ID | Type | Description | Suggested Fix |
@@ -122,7 +147,8 @@
 | TEST-2 | Severe Violation 🔴 | `MissingStubError` because `any(named: ...)` lacks fallback | `registerFallbackValue` for every custom type used inside `any(named:)` |
 | TEST-3 | Mild Violation 🟡 | `blocTest` sized to sit through retry backoff (e.g. `wait: 8s`) | Assert failure with an immediately-throwing repo; `wait:` is for debounce only — retry timing belongs to the central executor test |
 | TEST-4 | Mild Violation 🟡 | BLoC test missing failure-path coverage | Cover success, empty, and failure for every event |
-| TEST-5 | Mild Violation 🟡 | Feature-flow (integration) test stubbing the repository or executor | Wire real BLoC → real Repo → real `Mock*DataSource`; stub nothing. Lock the `ApiClient` contract separately in the API-DS test. |
+| TEST-5 | Mild Violation 🟡 | Feature-flow (integration) test stubbing the repository or executor | Wire real BLoC → real Repo → real `Mock*DataSource` (built with `MockNetworkBehavior.instant()`); stub nothing. Lock the `ApiClient` contract separately in the API-DS test. |
+| TEST-6 | Mild Violation 🟡 | New DataSource method without a `Mock*DataSource` twin, or a twin using `Future.delayed` / UI strings / `UnimplementedError` instead of `MockNetworkBehavior` + a backend-shaped `AppException` | Add the twin method per [mocking.md](./mocking.md) (`M1`–`M10`) |
 
 ---
 
@@ -136,6 +162,7 @@
 | STYLE-4 | Formatting 🟢 | Missing trailing comma | Add — required by formatter |
 | STYLE-5 | Formatting 🟢 | Double quotes for a string `[lint]` | Single quotes |
 | STYLE-6 | Formatting 🟢 | Relative import inside `lib/` `[lint]` | `package:` import |
+| STYLE-7 | Formatting 🟢 | Rule re-derived from raw fields at call sites | Named getter/method on the owning type ("tell, don't ask", `code_preferences.md` § 15) |
 
 ---
 

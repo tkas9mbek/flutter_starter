@@ -1,7 +1,7 @@
 # Engineering Context for AI Agents
 
 > **Template**: Fill this in when starting a new app from the starter. Read it with
-> `CLAUDE.md`/`AGENTS.md` and `docs/ai-context/` before making code changes.
+> `AGENTS.md` (and `CLAUDE.md` in Claude Code) and `docs/ai-context/` before making code changes.
 
 <!-- Source snapshot: YYYY-MM-DD. Update the snapshot date when this doc changes. -->
 
@@ -22,7 +22,7 @@ Feature layout: `lib/features/{feature}/` with `configs/`, `data/`, `domain/`, `
 Rules that matter most:
 
 - Domain owns abstract data-source contracts and concrete repositories (no abstract repositories).
-- Data owns mock/API implementations; domain/data must not import Flutter.
+- Data owns `Api*` implementations and `data/mock/` `Mock*` twins; domain/data must not import Flutter.
 - BLoCs must not depend on other BLoCs; coordinate via the UI layer.
 - Package imports only in `lib/`; user-facing strings via `Localizer.of(context)`.
 
@@ -62,7 +62,7 @@ When adding a route, update `app_router.dart`, run build_runner, and keep genera
 
 ## Testing And Commands
 
-See `CLAUDE.md` "Essential Commands": `fvm flutter analyze`, `fvm dart run custom_lint`,
+See `AGENTS.md` "Essential Commands": `fvm flutter analyze`, `fvm dart run custom_lint`,
 `fvm flutter test --concurrency 4`, and build_runner for codegen.
 
 Run build_runner after changing routes, Freezed unions, or JSON models; `intl_utils` after ARB
@@ -71,7 +71,7 @@ changes; `generate_exception_mapper.dart` after adding `AppException` classes; `
 
 ## Agent Workflow
 
-1. Read `CLAUDE.md`, then the relevant `docs/ai-context/*` files.
+1. Read `AGENTS.md`, then the relevant `docs/ai-context/*` files.
 2. Inspect the feature module and existing mock/API data sources before editing.
 3. Prefer `starter_uikit` widgets and `starter_toolkit` helpers over new local abstractions.
 4. Add focused tests for changed BLoCs, data sources, and integration flows.

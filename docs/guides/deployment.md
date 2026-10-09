@@ -152,12 +152,11 @@ To switch to a self-hosted runner:
    `jetjat_mobile`'s `.github/workflows/testflight.yml` for the exact `security` commands), since a
    persistent keychain can still lock on sleep/screen-lock between runs.
 
-Because each CI run's build-number bump isn't committed back to `main` (unlike `jetjat_mobile`,
-whose workflow coordinates a multi-app bump-and-push step — out of scope here per
-`work/jetjat-sync-plan.md`), two back-to-back releases from a clean checkout will reuse the same
-base build number unless you commit the bump yourself or replace it with a monotonic source (e.g.
-`${{ github.run_number }}`). Flag this as a known simplification rather than a hidden bug — a real
-fork should decide how it wants build numbers to persist.
+Known simplification: each CI run's build-number bump isn't committed back to `main` (unlike
+`jetjat_mobile`, whose workflow does a multi-app bump-and-push — not replicated here), so two
+back-to-back releases from a clean checkout reuse the same base build number. Commit the bump
+yourself or use a monotonic source (e.g. `${{ github.run_number }}`); a real fork should decide how
+build numbers persist.
 
 ## Troubleshooting
 

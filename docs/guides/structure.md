@@ -2,7 +2,7 @@
 
 ## Root Structure
 
-Main directories: `lib/`, `packages/`, `assets/`, `test/`, `docs/`, `work/`
+Main directories: `lib/`, `packages/`, `assets/`, `test/`, `docs/`, `utils/`. A `work/` scratch directory (agent plans/reviews) is created on demand and is not part of a clean checkout.
 
 ```
 flutter_starter/
@@ -17,7 +17,7 @@ flutter_starter/
 ├── assets/               # Images, icons
 ├── test/                 # Tests
 ├── docs/                 # Project context, rules, and guides
-└── work/                 # Supplemental product/API/planning docs when present
+└── utils/                # Deploy scripts, coverage.sh, code generators
 ```
 
 ### Generated Files
@@ -51,7 +51,7 @@ Standard pattern: data → domain → model → configs → ui
 
 ```
 lib/features/{feature}/
-├── data/                 # DataSource implementations (Api/Local/Mock)
+├── data/                 # DataSource implementations (Api*/Local/Secure) + mock/ twins and scenarios
 ├── domain/               # Repository (concrete) + abstract DataSource
 ├── model/                # Freezed models (*.freezed.dart, *.g.dart)
 ├── configs/              # DI module
@@ -68,7 +68,7 @@ Follow these strictly
 
 | Layer | Flutter? | Contains | Rules |
 |-------|----------|----------|-------|
-| **data/** | ❌ | DataSource implementations (Api/Local/Mock) | Pure Dart, implements Domain |
+| **data/** | ❌ | DataSource implementations (Api/Local) + `mock/` twins | Pure Dart, implements Domain |
 | **domain/** | ❌ | Repository (concrete), abstract DataSource | Pure Dart, delegates to DS |
 | **model/** | ❌ | Freezed classes, JSON | Use `freezed` + `json_serializable` |
 | **ui/** | ✅ | BLoC, Screens, Widgets | Horizontal deps OK, no business logic |
@@ -181,8 +181,8 @@ Follow this order
 1. Create `lib/features/{feature}/`
 2. Add models (freezed classes with JSON serialization)
 3. Add domain layer (abstract DataSource + concrete Repository)
-4. Add data layer (DataSource implementations: Api/Local/Mock)
-5. Add DI module
+4. Add data layer (`Api*`/Local DataSources, plus `data/mock/` twin + `mock_<feature>_scenarios.dart`; see [mocking.md](./mocking.md))
+5. Add DI module (`mockOrProd(mock:, prod:)` for twin vs `Api*`)
 6. Add UI (BLoC, screens, widgets)
 7. Register module in `lib/core/di/app_configurator.dart`
 8. Add routes in `app_router.dart`
@@ -195,3 +195,4 @@ Follow this order
 - [Naming](../rules/naming.md) - Naming standards
 - [Code Standards](../rules/code_standards.md) - Style guide
 - [Testing](./testing.md) - Test strategies
+- [Mocking](./mocking.md) - `data/mock/` twins
