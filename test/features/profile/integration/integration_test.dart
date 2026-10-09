@@ -1,10 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:starter/features/profile/data/mock_profile_data_source.dart';
+import 'package:starter/features/profile/data/mock/mock_profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_data_source.dart';
 import 'package:starter/features/profile/domain/profile_repository.dart';
 import 'package:starter/features/profile/model/user.dart';
 import 'package:starter/features/profile/ui/overview/bloc/user_bloc.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
 import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
@@ -28,7 +29,9 @@ void main() {
   );
 
   test('profile flow reaches a success state', () async {
-    final bloc = buildBloc(const MockProfileDataSource());
+    final bloc = buildBloc(
+      const MockProfileDataSource(MockNetworkBehavior.instant()),
+    );
 
     bloc.add(const UserEvent.requested());
     await settle(bloc);

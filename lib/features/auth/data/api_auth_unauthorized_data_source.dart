@@ -7,8 +7,8 @@ import 'package:starter/features/auth/model/auth_verify_otp_request_body.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
 
-class RemoteAuthUnauthorizedDataSource implements AuthUnauthorizedDataSource {
-  const RemoteAuthUnauthorizedDataSource(this._client);
+class ApiAuthUnauthorizedDataSource implements AuthUnauthorizedDataSource {
+  const ApiAuthUnauthorizedDataSource(this._client);
 
   final ApiClient _client;
 

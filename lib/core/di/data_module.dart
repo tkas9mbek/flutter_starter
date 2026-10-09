@@ -13,6 +13,7 @@ import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/dio_api_client.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
 
 class DataModule extends AppModule {
   @override
@@ -20,6 +21,7 @@ class DataModule extends AppModule {
 
   @override
   List<Unregister> get unregisterCallbacks => [
+    unregisterIfRegistered<MockNetworkBehavior>,
     unregisterIfRegistered<ApiClient>,
     () => unregisterIfRegistered<ApiClient>(
       instanceName: InstanceNames.unauthorized,
@@ -88,6 +90,8 @@ class DataModule extends AppModule {
     );
 
     getIt
+      // The one place to tune mock latency / failure rate for every twin.
+      ..registerSingleton<MockNetworkBehavior>(const MockNetworkBehavior())
       ..registerSingleton<Dio>(
         dioProvider.getDio(
           useToken: false,

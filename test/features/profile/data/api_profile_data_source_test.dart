@@ -8,12 +8,12 @@ import 'package:starter_toolkit/data/client/http_method.dart';
 class MockApiClient extends Mock implements ApiClient {}
 
 void main() {
-  late RemoteProfileDataSource dataSource;
+  late ApiProfileDataSource dataSource;
   late MockApiClient mockApiClient;
 
   setUp(() {
     mockApiClient = MockApiClient();
-    dataSource = RemoteProfileDataSource(mockApiClient);
+    dataSource = ApiProfileDataSource(mockApiClient);
   });
 
   group('getUserProfile', () {

@@ -1,7 +1,8 @@
 import 'package:starter/core/di/app_module.dart';
+import 'package:starter/core/di/mock_or_prod.dart';
 import 'package:starter/core/global/global_variables.dart';
 import 'package:starter/features/task/data/api_task_data_source.dart';
-import 'package:starter/features/task/data/mock_task_data_source.dart';
+import 'package:starter/features/task/data/mock/mock_task_data_source.dart';
 import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
 import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
@@ -10,6 +11,7 @@ import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
 import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
 import 'package:starter/features/task/ui/search/bloc/tasks_search_bloc.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
+import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
 import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
@@ -31,13 +33,12 @@ class TaskModule extends AppModule {
   @override
   void register() {
     getIt
-      ..registerFactory<TaskDataSource>(() {
-        if (useMock) {
-          return MockTaskDataSource();
-        }
-
-        return RemoteTaskDataSource(getIt<ApiClient>());
-      })
+      ..registerFactory<TaskDataSource>(
+        mockOrProd(
+          mock: () => MockTaskDataSource(getIt<MockNetworkBehavior>()),
+          prod: () => ApiTaskDataSource(getIt<ApiClient>()),
+        ),
+      )
       ..registerFactory(
         () => TaskRepository(
           const RawRepositoryExecutor().withErrorHandling(),

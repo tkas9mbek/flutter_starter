@@ -1,12 +1,13 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:starter/core/di/app_module.dart';
+import 'package:starter/core/di/mock_or_prod.dart';
 import 'package:starter/core/global/firebase_config.dart';
 import 'package:starter/core/global/global_variables.dart';
 import 'package:starter/core/notifications/data/api_push_token_data_source.dart';
 import 'package:starter/core/notifications/data/firebase_messaging_data_source.dart';
-import 'package:starter/core/notifications/data/mock_messaging_data_source.dart';
-import 'package:starter/core/notifications/data/mock_push_token_data_source.dart';
+import 'package:starter/core/notifications/data/mock/mock_messaging_data_source.dart';
+import 'package:starter/core/notifications/data/mock/mock_push_token_data_source.dart';
 import 'package:starter/core/notifications/domain/messaging_data_source.dart';
 import 'package:starter/core/notifications/domain/push_notification_repository.dart';
 import 'package:starter/core/notifications/domain/push_token_data_source.dart';
@@ -47,13 +48,12 @@ class NotificationsModule extends AppModule {
 
         return FirebaseMessagingDataSource(FirebaseMessaging.instance);
       })
-      ..registerLazySingleton<PushTokenDataSource>(() {
-        if (useMock) {
-          return const MockPushTokenDataSource();
-        }
-
-        return ApiPushTokenDataSource(getIt<ApiClient>());
-      })
+      ..registerLazySingleton<PushTokenDataSource>(
+        mockOrProd(
+          mock: () => const MockPushTokenDataSource(),
+          prod: () => ApiPushTokenDataSource(getIt<ApiClient>()),
+        ),
+      )
       ..registerLazySingleton<PushNotificationRepository>(
         () => PushNotificationRepository(getIt<MessagingDataSource>()),
       )

@@ -6,7 +6,7 @@ import 'package:starter/core/di/app_module.dart';
 import 'package:starter/core/global/firebase_config.dart';
 import 'package:starter/core/global/global_variables.dart';
 import 'package:starter/core/remote_config/data/firebase_remote_config_data_source.dart';
-import 'package:starter/core/remote_config/data/mock_remote_config_data_source.dart';
+import 'package:starter/core/remote_config/data/mock/mock_remote_config_data_source.dart';
 import 'package:starter/core/remote_config/domain/remote_config_data_source.dart';
 import 'package:starter/core/remote_config/domain/remote_config_registry.dart';
 import 'package:starter/core/remote_config/domain/remote_config_repository.dart';
@@ -14,6 +14,7 @@ import 'package:starter/core/remote_config/model/remote_config_entry.dart';
 import 'package:starter/core/remote_config/model/remote_general_settings.dart';
 import 'package:starter/core/remote_config/model/remote_phone_codes.dart';
 import 'package:starter/core/remote_config/ui/bloc/remote_configs_bloc.dart';
+import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
 import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
@@ -59,7 +60,10 @@ class RemoteConfigModule extends AppModule {
       ..registerLazySingleton<RemoteConfigDataSource>(() {
         // Firebase path is an example — see FirebaseConfig.
         if (useMock || !FirebaseConfig.enabled) {
-          return MockRemoteConfigDataSource(getIt<RemoteConfigRegistry>());
+          return MockRemoteConfigDataSource(
+            getIt<RemoteConfigRegistry>(),
+            getIt<MockNetworkBehavior>(),
+          );
         }
 
         return FirebaseRemoteConfigDataSource(

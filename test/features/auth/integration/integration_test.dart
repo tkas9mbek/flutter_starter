@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:starter/features/auth/data/mock_auth_authorized_data_source.dart';
-import 'package:starter/features/auth/data/mock_auth_unauthorized_data_source.dart';
+import 'package:starter/features/auth/data/mock/mock_auth_authorized_data_source.dart';
+import 'package:starter/features/auth/data/mock/mock_auth_unauthorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart';
@@ -16,6 +16,7 @@ import 'package:starter/features/auth/ui/otp/bloc/otp_bloc.dart';
 import 'package:starter/features/auth/ui/register/bloc/registration_bloc.dart';
 import 'package:starter/features/auth/ui/register/model/registration_form.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
 import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
 
@@ -49,7 +50,8 @@ class _InMemoryAuthLocalDataSource implements AuthLocalDataSource {
   Future<AuthToken?> getToken() async => _token;
 }
 
-class _ThrowingAuthUnauthorizedDataSource implements AuthUnauthorizedDataSource {
+class _ThrowingAuthUnauthorizedDataSource
+    implements AuthUnauthorizedDataSource {
   const _ThrowingAuthUnauthorizedDataSource();
 
   @override
@@ -85,11 +87,11 @@ void main() {
 
   AuthRepository buildRepository([
     AuthUnauthorizedDataSource unauthorizedDataSource =
-        const MockAuthUnauthorizedDataSource(),
+        const MockAuthUnauthorizedDataSource(MockNetworkBehavior.instant()),
   ]) {
     final repository = AuthRepository(
       const RawRepositoryExecutor().withErrorHandling(),
-      const MockAuthAuthorizedDataSource(),
+      const MockAuthAuthorizedDataSource(MockNetworkBehavior.instant()),
       unauthorizedDataSource,
       localDataSource,
     );
@@ -101,7 +103,7 @@ void main() {
   group('login flow', () {
     LoginBloc buildBloc([
       AuthUnauthorizedDataSource unauthorizedDataSource =
-          const MockAuthUnauthorizedDataSource(),
+          const MockAuthUnauthorizedDataSource(MockNetworkBehavior.instant()),
     ]) {
       final bloc = LoginBloc(buildRepository(unauthorizedDataSource));
       addTearDown(bloc.close);
@@ -138,7 +140,7 @@ void main() {
   group('registration flow', () {
     RegistrationBloc buildBloc([
       AuthUnauthorizedDataSource unauthorizedDataSource =
-          const MockAuthUnauthorizedDataSource(),
+          const MockAuthUnauthorizedDataSource(MockNetworkBehavior.instant()),
     ]) {
       final bloc = RegistrationBloc(buildRepository(unauthorizedDataSource));
       addTearDown(bloc.close);

@@ -16,12 +16,12 @@ class FakeTaskCreateRequest extends Fake implements TaskCreateRequest {}
 void main() {
   setUpAll(() => registerFallbackValue(FakeTaskCreateRequest()));
 
-  late RemoteTaskDataSource dataSource;
+  late ApiTaskDataSource dataSource;
   late MockApiClient mockApiClient;
 
   setUp(() {
     mockApiClient = MockApiClient();
-    dataSource = RemoteTaskDataSource(mockApiClient);
+    dataSource = ApiTaskDataSource(mockApiClient);
   });
 
   group('getTasks', () {

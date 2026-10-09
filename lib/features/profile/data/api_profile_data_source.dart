@@ -3,8 +3,8 @@ import 'package:starter/features/profile/model/user.dart';
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
 
-class RemoteProfileDataSource implements ProfileDataSource {
-  const RemoteProfileDataSource(this._client);
+class ApiProfileDataSource implements ProfileDataSource {
+  const ApiProfileDataSource(this._client);
 
   final ApiClient _client;
 

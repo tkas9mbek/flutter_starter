@@ -14,7 +14,7 @@ class MockApiClient extends Mock implements ApiClient {}
 AuthToken _fakeFromJson(Map<String, dynamic> json) => AuthToken.fromJson(json);
 
 void main() {
-  late RemoteAuthUnauthorizedDataSource dataSource;
+  late ApiAuthUnauthorizedDataSource dataSource;
   late MockApiClient mockApiClient;
 
   setUpAll(() {
@@ -24,7 +24,7 @@ void main() {
 
   setUp(() {
     mockApiClient = MockApiClient();
-    dataSource = RemoteAuthUnauthorizedDataSource(mockApiClient);
+    dataSource = ApiAuthUnauthorizedDataSource(mockApiClient);
   });
 
   group(

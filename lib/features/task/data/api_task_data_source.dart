@@ -5,8 +5,8 @@ import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
 import 'package:starter_toolkit/data/model/paginated_list_items.dart';
 
-class RemoteTaskDataSource implements TaskDataSource {
-  const RemoteTaskDataSource(this._client);
+class ApiTaskDataSource implements TaskDataSource {
+  const ApiTaskDataSource(this._client);
 
   final ApiClient _client;
 

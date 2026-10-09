@@ -1,67 +1,26 @@
+import 'package:starter/features/task/data/mock/mock_task_scenarios.dart';
 import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/model/task_create_request.dart';
-import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
 import 'package:starter_toolkit/data/model/paginated_list_items.dart';
 
 class MockTaskDataSource implements TaskDataSource {
-  final List<Task> _tasks = [
-    Task(
-      id: '1',
-      title: 'Morning Meeting',
-      description: 'Team standup meeting',
-      date: DateTime.now(),
-      startTime: DateTime.now().copyWith(hour: 9, minute: 0),
-      endTime: DateTime.now().copyWith(hour: 10, minute: 0),
-      isCompleted: false,
-    ),
-    Task(
-      id: '2',
-      title: 'Code Review',
-      description: 'Review pull requests',
-      date: DateTime.now(),
-      startTime: DateTime.now().copyWith(hour: 14, minute: 0),
-      endTime: DateTime.now().copyWith(hour: 15, minute: 30),
-      isCompleted: true,
-    ),
-    Task(
-      id: '3',
-      title: 'Project Planning',
-      description: 'Plan next sprint features',
-      date: DateTime.now().add(const Duration(days: 1)),
-      startTime: DateTime.now()
-          .add(const Duration(days: 1))
-          .copyWith(hour: 10, minute: 0),
-      endTime: DateTime.now()
-          .add(const Duration(days: 1))
-          .copyWith(hour: 12, minute: 0),
-      isCompleted: false,
-    ),
-    Task(
-      id: '4',
-      title: 'Documentation',
-      description: 'Update project documentation',
-      date: DateTime.now().add(const Duration(days: 1)),
-      startTime: DateTime.now()
-          .add(const Duration(days: 1))
-          .copyWith(hour: 15, minute: 0),
-      endTime: DateTime.now()
-          .add(const Duration(days: 1))
-          .copyWith(hour: 17, minute: 0),
-      isCompleted: false,
-    ),
-  ];
+  MockTaskDataSource(this._network) : _tasks = MockTaskScenarios.seed();
+
+  final MockNetworkBehavior _network;
+  final List<Task> _tasks;
 
   @override
   Future<List<Task>> getTasks() async {
-    await Future.delayed(const Duration(seconds: 2));
+    await _network.simulate();
 
     return List.from(_tasks);
   }
 
   @override
   Future<List<Task>> getTasksByDate(DateTime date) async {
-    await Future.delayed(const Duration(seconds: 2));
+    await _network.simulate();
 
     return _tasks
         .where(
@@ -73,15 +32,14 @@ class MockTaskDataSource implements TaskDataSource {
         .toList();
   }
 
-  static const _searchPageSize = 10;
-
   @override
   Future<PaginatedListItems<Task>> searchTasks(
     String query, {
     required int page,
   }) async {
-    await Future.delayed(const Duration(seconds: 2));
+    await _network.simulate();
 
+    const pageSize = MockTaskScenarios.searchPageSize;
     final normalized = query.toLowerCase();
     final matches = _tasks
         .where(
@@ -90,22 +48,22 @@ class MockTaskDataSource implements TaskDataSource {
               task.description.toLowerCase().contains(normalized),
         )
         .toList();
-    final start = (page - 1) * _searchPageSize;
+    final start = (page - 1) * pageSize;
     final elements = start >= matches.length
         ? <Task>[]
-        : matches.skip(start).take(_searchPageSize).toList();
+        : matches.skip(start).take(pageSize).toList();
 
     return PaginatedListItems(
-      pageLimit: _searchPageSize,
+      pageLimit: pageSize,
       countItems: matches.length,
-      countPages: (matches.length / _searchPageSize).ceil(),
+      countPages: (matches.length / pageSize).ceil(),
       elements: elements,
     );
   }
 
   @override
   Future<Task> createTask(TaskCreateRequest request) async {
-    await Future.delayed(const Duration(seconds: 2));
+    await _network.simulate();
 
     final task = Task(
       id: DateTime.now().millisecondsSinceEpoch.toString(),
@@ -124,12 +82,12 @@ class MockTaskDataSource implements TaskDataSource {
 
   @override
   Future<Task> updateTask(String id, TaskCreateRequest request) async {
-    await Future.delayed(const Duration(seconds: 2));
+    await _network.simulate();
 
     final index = _tasks.indexWhere((task) => task.id == id);
 
     if (index == -1) {
-      throw const ServerException(statusCode: 404, message: 'Task not found');
+      throw MockTaskScenarios.taskNotFound();
     }
 
     final task = Task(
@@ -149,7 +107,7 @@ class MockTaskDataSource implements TaskDataSource {
 
   @override
   Future<void> deleteTask(String id) async {
-    await Future.delayed(const Duration(seconds: 2));
+    await _network.simulate();
     _tasks.removeWhere((task) => task.id == id);
   }
 }
