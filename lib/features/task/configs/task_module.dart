@@ -33,7 +33,7 @@ class TaskModule extends AppModule {
   @override
   void register() {
     getIt
-      ..registerFactory<TaskDataSource>(
+      ..registerLazySingleton<TaskDataSource>(
         mockOrProd(
           mock: () => MockTaskDataSource(getIt<MockNetworkBehavior>()),
           prod: () => ApiTaskDataSource(getIt<ApiClient>()),
