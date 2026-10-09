@@ -6,6 +6,7 @@ import 'package:request_logger/controller/request_logger.dart';
 import 'package:request_logger/data/http_bean.dart';
 import 'package:request_logger/data/http_log_manager.dart';
 import 'package:request_logger/data/request_status.dart';
+import 'package:starter_toolkit/data/interceptor/app_error_interceptor.dart';
 
 import 'support/fake_adapter.dart';
 
@@ -112,5 +113,59 @@ void main() {
     manager.cleanHTTP();
 
     expect(manager.logValues(), isEmpty);
+  });
+
+  group('behind AppErrorInterceptor (the real app chain)', () {
+    Dio buildAppDio(Future<ResponseBody> Function(RequestOptions) handler) {
+      final dio = Dio(BaseOptions(baseUrl: 'https://api.test'));
+      dio.httpClientAdapter = FakeAdapter(handler);
+      dio.interceptors
+        ..add(const AppErrorInterceptor())
+        ..add(RequestLogger.dioInterceptor());
+
+      return dio;
+    }
+
+    test('an HTTP error keeps its status, type and the server body', () async {
+      final dio = buildAppDio(
+        (_) async => FakeAdapter.json({'message': 'Not found'}, status: 404),
+      );
+
+      await expectLater(
+        dio.get<dynamic>('/tasks/1'),
+        throwsA(isA<DioException>()),
+      );
+
+      final error = manager.logValues().single.error;
+      expect(error?.statusCode, 404);
+      expect(error?.errorType, 'badResponse');
+      expect(error?.errorData, {'message': 'Not found'});
+      expect(error?.errorMessage, isNotNull);
+    });
+
+    test('a connection failure keeps a readable message and type', () async {
+      final dio = buildAppDio(
+        (options) async => throw DioException.connectionError(
+          requestOptions: options,
+          reason: 'Failed host lookup',
+          error: const SocketException(
+            'Failed host lookup',
+            osError: OSError('No address associated with hostname', 7),
+          ),
+        ),
+      );
+
+      await expectLater(
+        dio.get<dynamic>('/tasks'),
+        throwsA(isA<DioException>()),
+      );
+
+      final log = manager.logValues().single;
+      expect(log.error?.statusCode, isNull);
+      expect(log.error?.errorType, 'connectionError');
+      expect(log.error?.errorMessage, contains('Failed host lookup'));
+      expect(log.error?.errorData.toString(), isNot(startsWith('Instance of')));
+      expect(log.status, RequestStatus.noInternet);
+    });
   });
 }

@@ -51,21 +51,23 @@ final class DioLogInterceptor implements Interceptor {
 
   @override
   void onError(DioException err, ErrorInterceptorHandler handler) {
-    final errorData = switch (err.error) {
-      final Map<dynamic, dynamic> map => map,
-      final SocketException socket => {
+    final errorData = switch ((err.error, err.response?.data)) {
+      (final Map<dynamic, dynamic> map, _) => map,
+      (final SocketException socket, _) => {
         'Error': socket.message,
         'OS Error': socket.osError?.message,
         'OS Error code': socket.osError?.errorCode,
         'No internet': _isNetworkError(socket),
       },
-      _ => err.error,
+      (_, final Object serverBody) => serverBody,
+      (final Object? error, _) => _describe(error),
     };
 
     _logManager.onError(
       HttpErrorBean(
         id: err.requestOptions.hashCode,
-        errorMessage: err.message,
+        errorMessage: err.message ?? _describe(err.error),
+        errorType: err.type.name,
         errorData: _redactor.body(errorData),
         statusCode: err.response?.statusCode,
         statusMessage: err.response?.statusMessage,
@@ -90,6 +92,15 @@ final class DioLogInterceptor implements Interceptor {
     data: _redactor.body(response.data),
     headers: _redactor.headers(response.headers.map),
   );
+}
+
+/// `toString()` unless it is the useless default `Instance of 'X'`.
+String? _describe(Object? error) {
+  final text = error?.toString();
+
+  return text != null && text.startsWith('Instance of')
+      ? '${error.runtimeType}'
+      : text;
 }
 
 bool _isNetworkError(SocketException error) {

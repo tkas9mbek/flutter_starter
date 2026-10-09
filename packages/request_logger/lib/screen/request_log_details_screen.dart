@@ -77,6 +77,7 @@ class RequestLogDetailsScreen extends StatelessWidget {
   String get _responseText => switch (log.error) {
     final error? => RequestLogJsonView.prettyPrint({
       'message': error.errorMessage,
+      'type': error.errorType,
       'statusCode': error.statusCode,
       'data': error.errorData,
     }),
@@ -115,7 +116,11 @@ class _SummaryHeader extends StatelessWidget {
     final requestTime = log.request?.requestTime;
     final isFailed = error != null || (statusCode ?? 0) >= 400;
     final status = [
-      if (statusCode != null) ...['$statusCode'],
+      if (statusCode != null) ...[
+        '$statusCode',
+      ] else if (error?.errorType case final type?) ...[
+        type,
+      ],
       if (statusMessage != null && statusMessage.isNotEmpty) ...[statusMessage],
     ].join(' ');
 
@@ -252,6 +257,7 @@ class _ErrorTab extends StatelessWidget {
             style: textStyles.mediumBody14.copyWith(color: theme.error),
           ),
           const SizedBox(height: 16),
+          _Section(label: 'Type', data: error.errorType),
           _Section(label: 'Data', data: error.errorData),
         ],
       ),

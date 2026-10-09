@@ -4,8 +4,10 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:request_logger/controller/request_logger.dart';
 import 'package:request_logger/data/http_log_manager.dart';
+import 'package:request_logger/screen/request_log_details_screen.dart';
 import 'package:request_logger/screen/request_log_list_screen.dart';
 import 'package:request_logger/widget/request_logger_button.dart';
+import 'package:starter_toolkit/data/interceptor/app_error_interceptor.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
@@ -38,6 +40,26 @@ Future<void> _logCall(String path, {int status = 200}) async {
     await dio.get<dynamic>(path);
   } on DioException {
     // The failing call is still captured by the interceptor.
+  }
+}
+
+Future<void> _logConnectionFailure(String path) async {
+  final dio = Dio(BaseOptions(baseUrl: 'https://api.test'))
+    ..httpClientAdapter = FakeAdapter(
+      (options) async => throw DioException.connectionError(
+        requestOptions: options,
+        reason: 'Failed host lookup',
+      ),
+    )
+    ..interceptors.addAll([
+      const AppErrorInterceptor(),
+      RequestLogger.dioInterceptor(),
+    ]);
+
+  try {
+    await dio.get<dynamic>(path);
+  } on DioException {
+    // Captured by the interceptor.
   }
 }
 
@@ -106,5 +128,27 @@ void main() {
     await tester.pumpAndSettle();
 
     expect(find.byType(RequestLogListScreen), findsOneWidget);
+  });
+
+  testWidgets('a failed call shows its error type and message', (tester) async {
+    await tester.runAsync(() => _logConnectionFailure('/tasks'));
+    await tester.pumpWidget(_app(const RequestLogListScreen()));
+    await tester.pumpAndSettle();
+
+    expect(find.text('connectionError'), findsOneWidget);
+
+    await tester.tap(find.text('/tasks'));
+    await tester.pumpAndSettle();
+    expect(find.byType(RequestLogDetailsScreen), findsOneWidget);
+    expect(
+      find.textContaining('connectionError', findRichText: true),
+      findsWidgets,
+    );
+
+    await tester.tap(find.text('Error'));
+    await tester.pumpAndSettle();
+
+    expect(find.textContaining('Failed host lookup'), findsWidgets);
+    expect(find.textContaining('Instance of'), findsNothing);
   });
 }

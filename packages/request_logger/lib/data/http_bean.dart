@@ -52,6 +52,8 @@ extension HttpBeanExtension on HttpBean {
           errorData['No internet'] == true;
     }
 
-    return false;
+    // AppErrorInterceptor replaces the socket error, so fall back to the Dio type.
+    return error.errorType == 'connectionTimeout' ||
+        error.errorType == 'connectionError';
   }
 }

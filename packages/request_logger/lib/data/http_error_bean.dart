@@ -11,6 +11,7 @@ final class HttpErrorBean {
     this.duration,
     this.headers,
     this.errorMessage,
+    this.errorType,
     this.statusMessage,
     this.statusCode,
     this.errorData,
@@ -21,6 +22,10 @@ final class HttpErrorBean {
   final DateTime? errorTime;
   final HttpResponseBean? response;
   final String? errorMessage;
+
+  /// Dio failure kind (`connectionError`, `badResponse`, …) — the only
+  /// signal when no HTTP status exists.
+  final String? errorType;
   final String? statusMessage;
   final int? statusCode;
   final dynamic errorData;

@@ -23,6 +23,7 @@ dev_dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
+  starter_toolkit:
 
 flutter:
   uses-material-design: true

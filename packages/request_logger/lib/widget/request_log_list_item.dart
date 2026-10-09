@@ -84,7 +84,7 @@ class RequestLogListItem extends StatelessWidget {
               ),
             ] else ...[
               Text(
-                statusCode?.toString() ?? '—',
+                statusCode?.toString() ?? log.error?.errorType ?? '—',
                 style: textStyles.mediumBody13.copyWith(color: statusColor),
               ),
             ],
