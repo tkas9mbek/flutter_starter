@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 
 /// Renders [text] as rich text, applying [formatStyle] to segments wrapped
-/// in [tag] markers (e.g. `**bold**`) while the rest keeps [style].
+/// in [tag] markers (e.g. `**bold**`) while the rest keeps [style] (body 14
+/// by default).
 class AutoFormattedText extends StatelessWidget {
   const AutoFormattedText(
     this.text, {
@@ -20,6 +22,7 @@ class AutoFormattedText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final textStyles = ThemeProvider.of(context).textStyles;
     final textSpans = <InlineSpan>[];
     final escapedTag = RegExp.escape(tag);
     final exp = RegExp('$escapedTag(.*?)$escapedTag');
@@ -42,7 +45,7 @@ class AutoFormattedText extends StatelessWidget {
     }
 
     return Text.rich(
-      TextSpan(style: style, children: textSpans),
+      TextSpan(style: style ?? textStyles.regularBody14, children: textSpans),
       textAlign: textAlign,
     );
   }

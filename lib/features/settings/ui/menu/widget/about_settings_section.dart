@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:starter/core/global/core_consts.dart';
-import 'package:starter/features/settings/ui/menu/widget/settings_card.dart';
-import 'package:starter/features/settings/ui/menu/widget/settings_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/resources/resources.dart';
-import 'package:starter_uikit/theme/theme_provider.dart';
-import 'package:starter_uikit/widgets/media/svg_icon.dart';
+import 'package:starter_uikit/widgets/misc/app_list_tile.dart';
+import 'package:starter_uikit/widgets/misc/grouped_rows_card.dart';
 import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 
 class AboutSettingsSection extends StatelessWidget {
@@ -13,39 +11,26 @@ class AboutSettingsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeProvider.of(context).theme;
     final localizer = Localizer.of(context);
 
-    return SettingsCard(
+    return GroupedRowsCard(
       children: [
-        SettingsTile(
+        AppListTile(
           icon: UiSvgIcons.infoCircle,
           title: localizer.version,
-          subtitle: CoreConsts.appVersion,
+          value: CoreConsts.appVersion,
         ),
-        const Divider(height: 1),
-        SettingsTile(
+        AppListTile(
           icon: UiSvgIcons.documentGlyph,
           title: localizer.termsAndConditions,
-          trailing: SvgIcon(
-            UiSvgIcons.chevronRight,
-            size: 24,
-            color: theme.textSecondary,
-          ),
           onTap: () => NotificationSnackBar.show(
             context,
             NotificationSnackBar.error(text: localizer.termsComingSoon),
           ),
         ),
-        const Divider(height: 1),
-        SettingsTile(
+        AppListTile(
           icon: UiSvgIcons.shieldDone,
           title: localizer.privacyPolicy,
-          trailing: SvgIcon(
-            UiSvgIcons.chevronRight,
-            size: 24,
-            color: theme.textSecondary,
-          ),
           onTap: () => NotificationSnackBar.show(
             context,
             NotificationSnackBar.error(text: localizer.privacyPolicyComingSoon),

@@ -15,14 +15,11 @@ class ProfileHeader extends StatelessWidget {
     return Column(
       children: [
         CircleAvatar(
-          radius: 50,
+          radius: 40,
           backgroundColor: theme.primary,
           child: Text(
             user.name.isNotEmpty ? user.name[0].toUpperCase() : '',
-            style: textStyles.boldTitle20.copyWith(
-              color: theme.onPrimary,
-              fontSize: 24,
-            ),
+            style: textStyles.boldTitle28.copyWith(color: theme.onPrimary),
           ),
         ),
         const SizedBox(height: 16),
@@ -31,7 +28,7 @@ class ProfileHeader extends StatelessWidget {
           style: textStyles.boldTitle20,
           textAlign: TextAlign.center,
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 4),
         Text(
           user.phone,
           style: textStyles.regularBody14.copyWith(color: theme.textSecondary),

@@ -65,12 +65,17 @@ class _TasksListView extends StatelessWidget {
           title: localizer.tasks,
           actions: [
             IconButton(
-              icon: const SvgIcon(UiSvgIcons.searchGlyph, size: 24),
+              icon: SvgIcon(UiSvgIcons.searchGlyph, color: theme.textPrimary),
               onPressed: () => context.router.push(const TasksSearchRoute()),
             ),
           ],
         ),
         floatingActionButton: FloatingActionButton(
+          backgroundColor: theme.primary,
+          elevation: 0,
+          focusElevation: 0,
+          hoverElevation: 0,
+          highlightElevation: 0,
           onPressed: () async {
             final created = await context.router.push<bool>(
               const TaskCreateRoute(),

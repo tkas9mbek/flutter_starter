@@ -92,7 +92,7 @@ class ExceptionUiMapper {
     return ExceptionUiModel(
       description: _localizer.errorMessageUnexpectedError,
       snackbarDescription: _localizer.errorMessageUnexpectedError,
-      canRetry: true,
+      canRetry: false,
     );
   }
 

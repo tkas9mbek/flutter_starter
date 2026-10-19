@@ -979,6 +979,26 @@ class UikitLocalizer {
       args: [],
     );
   }
+
+  /// `Clear`
+  String get clearField {
+    return Intl.message(
+      'Clear',
+      name: 'clearField',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Show or hide password`
+  String get togglePasswordVisibility {
+    return Intl.message(
+      'Show or hide password',
+      name: 'togglePasswordVisibility',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<UikitLocalizer> {

@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
-/// Screen heading that stacks a bold [title] above an optional
-/// secondary-colored [subtitle], aligned per [textAlign] with [spacing]
-/// between the two.
+/// Screen heading that stacks a [title] above an optional secondary-colored
+/// [subtitle], aligned per [textAlign] with [spacing] between the two.
 class TitleSubtitle extends StatelessWidget {
   const TitleSubtitle({
     required this.title,
     this.textAlign = TextAlign.center,
-    this.spacing = 10,
+    this.spacing = 8,
     this.subtitle,
     this.titleStyle,
     this.subtitleStyle,
@@ -37,7 +36,7 @@ class TitleSubtitle extends StatelessWidget {
         Text(
           title,
           textAlign: textAlign,
-          style: titleStyle ?? textStyles.boldTitle24,
+          style: titleStyle ?? textStyles.mediumTitle24,
         ),
         if (subtitle != null) ...[
           SizedBox(height: spacing),
@@ -46,7 +45,7 @@ class TitleSubtitle extends StatelessWidget {
             textAlign: textAlign,
             style:
                 subtitleStyle ??
-                textStyles.regularBody14.copyWith(color: theme.textSecondary),
+                textStyles.regularBody16.copyWith(color: theme.textSecondary),
           ),
         ],
       ],

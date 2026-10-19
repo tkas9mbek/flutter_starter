@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
@@ -8,8 +9,8 @@ part 'otp_event_state.dart';
 
 class OtpBloc extends Bloc<OtpEvent, OtpState> {
   OtpBloc(this.authRepository) : super(const OtpState.initial()) {
-    on<_SubmittedOtpEvent>(_onSubmitted);
-    on<_ResentOtpEvent>(_onResent);
+    on<_SubmittedOtpEvent>(_onSubmitted, transformer: droppable());
+    on<_ResentOtpEvent>(_onResent, transformer: droppable());
   }
 
   final AuthRepository authRepository;

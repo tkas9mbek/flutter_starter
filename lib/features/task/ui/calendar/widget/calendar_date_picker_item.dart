@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:starter_uikit/theme/app_colors.dart';
+import 'package:starter_toolkit/utils/date/date_time_extension.dart';
+import 'package:starter_uikit/theme/app_radii.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/misc/app_tap_area.dart';
 
 class CalendarDatePickerItem extends StatelessWidget {
   const CalendarDatePickerItem({
@@ -19,35 +21,37 @@ class CalendarDatePickerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
+    final isMarkedToday = date.isToday && !isSelected;
 
-    return GestureDetector(
+    final weekdayColor = isSelected ? theme.onPrimary : theme.textSecondary;
+    final dayColor = switch ((isSelected, isMarkedToday)) {
+      (true, _) => theme.onPrimary,
+      (_, true) => theme.accent,
+      _ => theme.textSecondary,
+    };
+
+    return AppTapArea(
       onTap: onTap,
+      selected: isSelected,
       child: Container(
-        width: 60,
+        width: 56,
         margin: const EdgeInsets.symmetric(horizontal: 4),
         decoration: BoxDecoration(
-          color: isSelected ? theme.primary : AppColors.transparent,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: isSelected ? theme.primary : theme.border,
-            width: 1,
-          ),
+          color: isSelected ? theme.primary : null,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          border: isMarkedToday ? Border.all(color: theme.accent) : null,
         ),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               DateFormat('EEE').format(date),
-              style: textStyles.regularBody12.copyWith(
-                color: isSelected ? theme.onPrimary : theme.textSecondary,
-              ),
+              style: textStyles.regularBody12.copyWith(color: weekdayColor),
             ),
             const SizedBox(height: 4),
             Text(
               date.day.toString(),
-              style: textStyles.boldBody16.copyWith(
-                color: isSelected ? theme.onPrimary : theme.textPrimary,
-              ),
+              style: textStyles.mediumBody16.copyWith(color: dayColor),
             ),
           ],
         ),

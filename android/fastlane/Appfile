@@ -1,0 +1,9 @@
+# PLACEHOLDER VALUES — replace before using this template for a real app.
+#
+# FIREBASE_SERVICE_ACCOUNT_JSON_PATH points at a service account key JSON file with the
+# "Firebase App Distribution Admin" role (see docs/guides/deployment.md's secrets table for how
+# to generate one). ANDROID_PACKAGE_NAME must match android/app/build.gradle's applicationId —
+# that file currently ships with "com.example.flutter_starter", so update both together once you
+# rename the app.
+json_key_file(ENV["FIREBASE_SERVICE_ACCOUNT_JSON_PATH"])
+package_name(ENV.fetch("ANDROID_PACKAGE_NAME", "com.example.starter"))

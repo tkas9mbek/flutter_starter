@@ -58,7 +58,7 @@ class _TaskDetailsScreenState extends State<TaskDetailsScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: TaskDetailsDeleteButton(taskId: widget.task.id),
               ),
-              const SafeVerticalBox(height: 20),
+              const SafeVerticalBox(bottom: true, height: 16),
             ],
           ),
         ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/app_colors.dart';
+import 'package:starter_uikit/theme/app_radii.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_base_button.dart';
 
-/// Customizable outlined button with loading and icon support.
+/// Flat 1px-outlined button in the `accent` color with loading and icon
+/// support; disabled it falls back to a `border` outline and `textTertiary`.
 class AppOutlinedButton extends StatelessWidget {
   const AppOutlinedButton({
     required this.text,
@@ -11,7 +13,7 @@ class AppOutlinedButton extends StatelessWidget {
     this.enabled = true,
     this.loading = false,
     this.iconDirection = TextDirection.ltr,
-    this.borderRadius = 12,
+    this.borderRadius = AppRadii.control,
     this.onPressed,
     this.width,
     this.icon,
@@ -34,7 +36,7 @@ class AppOutlinedButton extends StatelessWidget {
   }) {
     return AppOutlinedButton(
       height: 52,
-      textStyle: ThemeProvider.of(context).textStyles.regularBody16,
+      textStyle: ThemeProvider.of(context).textStyles.mediumBody16,
       text: text,
       onPressed: onPressed,
       icon: icon,
@@ -42,7 +44,6 @@ class AppOutlinedButton extends StatelessWidget {
       iconDirection: iconDirection,
       loading: loading,
       enabled: enabled,
-      borderRadius: 12,
     );
   }
 
@@ -60,7 +61,7 @@ class AppOutlinedButton extends StatelessWidget {
 
     return AppOutlinedButton(
       height: 48,
-      textStyle: textStyles.regularBody16,
+      textStyle: textStyles.mediumBody16,
       text: text,
       onPressed: onPressed,
       icon: icon,
@@ -68,7 +69,6 @@ class AppOutlinedButton extends StatelessWidget {
       iconDirection: iconDirection,
       loading: loading,
       enabled: enabled,
-      borderRadius: 12,
     );
   }
 
@@ -86,7 +86,7 @@ class AppOutlinedButton extends StatelessWidget {
 
     return AppOutlinedButton(
       height: 40,
-      textStyle: textStyles.regularBody14,
+      textStyle: textStyles.mediumBody14,
       text: text,
       onPressed: onPressed,
       icon: icon,
@@ -94,7 +94,6 @@ class AppOutlinedButton extends StatelessWidget {
       iconDirection: iconDirection,
       loading: loading,
       enabled: enabled,
-      borderRadius: 12,
     );
   }
 
@@ -118,7 +117,8 @@ class AppOutlinedButton extends StatelessWidget {
 
     return AppBaseButton(
       disabledBackgroundColor: AppColors.transparent,
-      disabledTextColor: theme.textSecondary,
+      disabledTextColor: theme.textTertiary,
+      disabledBorderColor: theme.border,
       borderRadius: borderRadius,
       backgroundColor: AppColors.transparent,
       height: height,
@@ -130,8 +130,8 @@ class AppOutlinedButton extends StatelessWidget {
       iconDirection: iconDirection,
       loading: loading,
       enabled: enabled,
-      borderColor: borderColor ?? theme.primary,
-      textColor: textColor ?? theme.primary,
+      borderColor: borderColor ?? theme.accent,
+      textColor: textColor ?? theme.accent,
       padding: padding,
     );
   }

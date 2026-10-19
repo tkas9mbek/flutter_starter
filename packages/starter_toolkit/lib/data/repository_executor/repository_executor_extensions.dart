@@ -12,9 +12,13 @@ extension RepositoryExecutorExtensions on RepositoryExecutor {
 
   /// Wraps this executor to retry failed operations with a growing delay.
   RepositoryExecutor withRetry({
-    int maxRetries = 3,
+    int maxAttempts = 3,
     Duration retryDelay = const Duration(seconds: 2),
   }) {
-    return RetryExecutor(this, maxRetries: maxRetries, retryDelay: retryDelay);
+    return RetryExecutor(
+      this,
+      maxAttempts: maxAttempts,
+      retryDelay: retryDelay,
+    );
   }
 }

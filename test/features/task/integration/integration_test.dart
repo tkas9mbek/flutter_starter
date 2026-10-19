@@ -1,248 +1,312 @@
-import 'package:bloc_test/bloc_test.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mocktail/mocktail.dart';
-import 'package:starter/features/task/data/remote_task_data_source.dart';
+import 'package:starter/features/task/data/mock/mock_task_data_source.dart';
 import 'package:starter/features/task/domain/task_data_source.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
 import 'package:starter/features/task/model/task.dart';
+import 'package:starter/features/task/model/task_create_request.dart';
 import 'package:starter/features/task/ui/calendar/bloc/calendar_bloc.dart';
+import 'package:starter/features/task/ui/create/bloc/task_creation_bloc.dart';
+import 'package:starter/features/task/ui/create/model/task_create_form.dart';
+import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
 import 'package:starter/features/task/ui/list/bloc/tasks_list_bloc.dart';
-import 'package:starter_toolkit/data/client/api_client.dart';
-import 'package:starter_toolkit/data/client/http_method.dart';
+import 'package:starter/features/task/ui/search/bloc/tasks_search_bloc.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
+import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
+import 'package:starter_toolkit/data/model/paginated_list_items.dart';
 import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
+import 'package:starter_toolkit/utils/bloc/bloc_load_state.dart';
 
-import '../model/task_mock_models.dart';
+class _ThrowingTaskDataSource implements TaskDataSource {
+  const _ThrowingTaskDataSource();
 
-class MockApiClient extends Mock implements ApiClient {}
+  @override
+  Future<List<Task>> getTasks() async => throw const NoInternetException();
 
-Task _fakeFromJson(Map<String, dynamic> json) => Task.fromJson(json);
+  @override
+  Future<List<Task>> getTasksByDate(DateTime date) async =>
+      throw const NoInternetException();
 
-/// Integration tests: BLoC → TaskRepository → RemoteTaskDataSource → ApiClient (mocked)
-///
-/// Tests the full flow from BLoC through Repository and DataSource with only ApiClient mocked.
+  @override
+  Future<PaginatedListItems<Task>> searchTasks(
+    String query, {
+    required int page,
+  }) async => throw const NoInternetException();
+
+  @override
+  Future<Task> createTask(TaskCreateRequest request) async =>
+      throw const NoInternetException();
+
+  @override
+  Future<Task> updateTask(String id, TaskCreateRequest request) async =>
+      throw const NoInternetException();
+
+  @override
+  Future<void> deleteTask(String id) async => throw const NoInternetException();
+}
+
+final _form = TaskCreateForm(
+  title: 'Release notes',
+  description: 'Write the 3.1.0 notes',
+  date: DateTime(2030, 5, 10),
+  startTime: const TimeOfDay(hour: 11, minute: 0),
+  endTime: const TimeOfDay(hour: 12, minute: 30),
+);
+
+TaskCreateRequest _request(String title) => TaskCreateRequest(
+  title: title,
+  description: 'Description',
+  date: DateTime(2030, 5, 10),
+  startTime: DateTime(2030, 5, 10, 9),
+  endTime: DateTime(2030, 5, 10, 10),
+);
+
 void main() {
-  late MockApiClient mockApiClient;
-  late TaskDataSource taskDataSource;
-  late TaskRepository taskRepository;
+  TaskDataSource mockDataSource() =>
+      MockTaskDataSource(const MockNetworkBehavior.instant());
 
-  setUpAll(() {
-    registerFallbackValue(HttpMethod.get);
-    registerFallbackValue(_fakeFromJson);
-  });
+  TaskRepository buildRepository(TaskDataSource dataSource) => TaskRepository(
+    const RawRepositoryExecutor().withErrorHandling(),
+    dataSource,
+  );
 
-  setUp(() {
-    mockApiClient = MockApiClient();
-    taskDataSource = RemoteTaskDataSource(mockApiClient);
-    taskRepository = TaskRepository(
-      const RawRepositoryExecutor().withErrorHandling(),
-      taskDataSource,
+  B track<B extends BlocBase<Object?>>(B bloc) {
+    addTearDown(bloc.close);
+
+    return bloc;
+  }
+
+  group('task-list flow', () {
+    TasksListBloc buildBloc(TaskDataSource dataSource) =>
+        track(TasksListBloc(buildRepository(dataSource)));
+
+    Future<void> settle(TasksListBloc bloc) => bloc.stream.firstWhere(
+      (state) =>
+          state is SuccessTasksListState || state is FailureTasksListState,
     );
-  });
 
-  group('CalendarBloc integration', () {
-    late CalendarBloc calendarBloc;
+    test('reaches a grouped success state', () async {
+      final bloc = buildBloc(mockDataSource());
 
-    setUp(() => calendarBloc = CalendarBloc(taskRepository));
+      bloc.add(const TasksListEvent.requested());
+      await settle(bloc);
 
-    test('initial state has today as selectedDate and initial status', () {
-      final now = DateTime.now();
-      expect(calendarBloc.state.selectedDate.year, equals(now.year));
-      expect(calendarBloc.state.selectedDate.month, equals(now.month));
-      expect(calendarBloc.state.selectedDate.day, equals(now.day));
-      expect(calendarBloc.state.status, const CalendarStatus.initial());
+      expect(bloc.state, isA<SuccessTasksListState>());
     });
 
-    final testDate = DateTime(2025, 1, 15);
+    test('surfaces a failure end-to-end', () async {
+      final bloc = buildBloc(const _ThrowingTaskDataSource());
 
-    blocTest<CalendarBloc, CalendarState>(
-      'completes full successful flow for getTasksByDate',
-      build: () {
-        when(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: any(named: 'path'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenAnswer((_) async => [TaskMockModels.task1]);
+      bloc.add(const TasksListEvent.requested());
+      await settle(bloc);
 
-        return calendarBloc;
-      },
-      act: (bloc) => bloc.add(CalendarEvent.dateSelected(testDate)),
-      expect: () => [
-        CalendarState(
-          selectedDate: testDate,
-          status: const CalendarStatus.loading(),
-        ),
-        CalendarState(
-          selectedDate: testDate,
-          status: CalendarStatus.success(tasks: [TaskMockModels.task1]),
-        ),
-      ],
-      verify: (_) => verify(
-        () => mockApiClient.requestJsonList<Task>(
-          method: any(named: 'method'),
-          path: '/tasks/date/${testDate.toIso8601String()}',
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(1),
-    );
-
-    blocTest<CalendarBloc, CalendarState>(
-      'handles network error through full stack',
-      build: () {
-        when(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: any(named: 'path'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenThrow(const NoInternetException());
-
-        return calendarBloc;
-      },
-      act: (bloc) => bloc.add(CalendarEvent.dateSelected(testDate)),
-      expect: () => [
-        CalendarState(
-          selectedDate: testDate,
-          status: const CalendarStatus.loading(),
-        ),
-        CalendarState(
-          selectedDate: testDate,
-          status: const CalendarStatus.failure(
-            exception: NoInternetException(),
-          ),
-        ),
-      ],
-    );
-
-    blocTest<CalendarBloc, CalendarState>(
-      'refreshed() event triggers getTasksByDate with current selected date',
-      build: () {
-        when(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: any(named: 'path'),
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenAnswer((_) async => [TaskMockModels.task1]);
-
-        return calendarBloc;
-      },
-      seed: () => CalendarState(
-        selectedDate: testDate,
-        status: const CalendarStatus.initial(),
-      ),
-      act: (bloc) => bloc.add(const CalendarEvent.refreshed()),
-      expect: () => [
-        CalendarState(
-          selectedDate: testDate,
-          status: const CalendarStatus.loading(),
-        ),
-        CalendarState(
-          selectedDate: testDate,
-          status: CalendarStatus.success(tasks: [TaskMockModels.task1]),
-        ),
-      ],
-      verify: (_) => verify(
-        () => mockApiClient.requestJsonList<Task>(
-          method: any(named: 'method'),
-          path: '/tasks/date/${testDate.toIso8601String()}',
-          fromJson: any(named: 'fromJson'),
-        ),
-      ).called(1),
-    );
+      expect(bloc.state, isA<FailureTasksListState>());
+    });
   });
 
-  group('TasksListBloc integration', () {
-    late TasksListBloc tasksListBloc;
+  group('calendar flow', () {
+    CalendarBloc buildBloc(TaskDataSource dataSource) =>
+        track(CalendarBloc(buildRepository(dataSource)));
 
-    setUp(() => tasksListBloc = TasksListBloc(taskRepository));
-
-    test(
-      'initial state is initial()',
-      () => expect(tasksListBloc.state, const TasksListState.initial()),
+    Future<void> settle(CalendarBloc bloc) => bloc.stream.firstWhere(
+      (state) =>
+          state.status is SuccessCalendarStatus ||
+          state.status is FailureCalendarStatus,
     );
 
-    blocTest<TasksListBloc, TasksListState>(
-      'completes full successful flow: getTasks, groups by date, sorts by time',
-      build: () {
-        when(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: '/tasks',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenAnswer((_) async => TaskMockModels.allTasks);
+    test('returns only the tasks on the selected day', () async {
+      final bloc = buildBloc(mockDataSource());
+      final tomorrow = DateTime.now().add(const Duration(days: 1));
 
-        return tasksListBloc;
-      },
-      act: (bloc) => bloc.add(const TasksListEvent.requested()),
-      expect: () {
-        final date1 = DateTime(2025, 1, 15);
-        final date2 = DateTime(2025, 1, 16);
-        final date1OnlyDay = DateTime(date1.year, date1.month, date1.day);
-        final date2OnlyDay = DateTime(date2.year, date2.month, date2.day);
+      bloc.add(CalendarEvent.dateSelected(tomorrow));
+      await settle(bloc);
 
-        return [
-          const TasksListState.loading(),
-          TasksListState.success(
-            tasks: TaskMockModels.allTasks,
-            groupedTasks: {
-              date1OnlyDay: TaskMockModels.tasksForDate1,
-              date2OnlyDay: TaskMockModels.tasksForDate3,
-            },
+      final status = bloc.state.status as SuccessCalendarStatus;
+      expect(status.tasks, isNotEmpty);
+      expect(
+        status.tasks.map((task) => task.date.day),
+        everyElement(tomorrow.day),
+      );
+    });
+
+    test('surfaces a failure end-to-end', () async {
+      final bloc = buildBloc(const _ThrowingTaskDataSource());
+
+      bloc.add(CalendarEvent.dateSelected(DateTime.now()));
+      await settle(bloc);
+
+      expect(bloc.state.status, isA<FailureCalendarStatus>());
+    });
+  });
+
+  group('create flow', () {
+    Future<void> settle(TaskCreationBloc bloc) => bloc.stream.firstWhere(
+      (state) =>
+          state is SuccessTaskCreationState ||
+          state is FailureTaskCreationState,
+    );
+
+    test('creates the task and it shows up on its calendar day', () async {
+      final dataSource = mockDataSource();
+      final bloc = track(TaskCreationBloc(buildRepository(dataSource)));
+
+      bloc.add(TaskCreationEvent.submitted(_form));
+      await settle(bloc);
+
+      final created = (bloc.state as SuccessTaskCreationState).task;
+      expect(created.title, _form.title);
+      expect(created.startTime, DateTime(2030, 5, 10, 11, 0));
+      expect(created.endTime, DateTime(2030, 5, 10, 12, 30));
+      expect(created.isCompleted, isFalse);
+
+      final calendar = track(CalendarBloc(buildRepository(dataSource)));
+      calendar.add(CalendarEvent.dateSelected(_form.date));
+      final calendarState = await calendar.stream.firstWhere(
+        (state) => state.status is SuccessCalendarStatus,
+      );
+      expect((calendarState.status as SuccessCalendarStatus).tasks, [created]);
+    });
+
+    test('surfaces a failure end-to-end', () async {
+      final bloc = track(
+        TaskCreationBloc(buildRepository(const _ThrowingTaskDataSource())),
+      );
+
+      bloc.add(TaskCreationEvent.submitted(_form));
+      await settle(bloc);
+
+      expect(bloc.state, isA<FailureTaskCreationState>());
+    });
+  });
+
+  // No BLoC dispatches updates yet, so the update path runs repository → twin.
+  group('update flow', () {
+    test('replaces the task and keeps its completion flag', () async {
+      final repository = buildRepository(mockDataSource());
+      final completed = (await repository.getTasks()).firstWhere(
+        (task) => task.isCompleted,
+      );
+
+      final updated = await repository.updateTask(
+        completed.id,
+        _request('Renamed'),
+      );
+
+      expect(updated.id, completed.id);
+      expect(updated.title, 'Renamed');
+      expect(updated.isCompleted, isTrue);
+      expect(await repository.getTasks(), contains(updated));
+    });
+
+    test('surfaces the backend not-found error for an unknown id', () {
+      final repository = buildRepository(mockDataSource());
+
+      expect(
+        repository.updateTask('missing-id', _request('Renamed')),
+        throwsA(
+          isA<ServerException>().having(
+            (exception) => exception.statusCode,
+            'statusCode',
+            404,
           ),
-        ];
-      },
-      verify: (_) => verify(
-        () => mockApiClient.requestJsonList<Task>(
-          method: any(named: 'method'),
-          path: '/tasks',
-          fromJson: any(named: 'fromJson'),
         ),
-      ).called(1),
+      );
+    });
+
+    test('surfaces a failure end-to-end', () {
+      final repository = buildRepository(const _ThrowingTaskDataSource());
+
+      expect(
+        repository.updateTask('1', _request('Renamed')),
+        throwsA(isA<NoInternetException>()),
+      );
+    });
+  });
+
+  group('delete flow', () {
+    Future<void> settle(TaskDeleteBloc bloc) => bloc.stream.firstWhere(
+      (state) =>
+          state is SuccessTaskDeleteState || state is FailureTaskDeleteState,
     );
 
-    blocTest<TasksListBloc, TasksListState>(
-      'handles network error through full stack',
-      build: () {
-        when(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: '/tasks',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenThrow(const NoInternetException());
+    test('removes the task from the list', () async {
+      final dataSource = mockDataSource();
+      final repository = buildRepository(dataSource);
+      final target = (await repository.getTasks()).first;
+      final bloc = track(TaskDeleteBloc(repository));
 
-        return tasksListBloc;
-      },
-      act: (bloc) => bloc.add(const TasksListEvent.requested()),
-      expect: () => [
-        const TasksListState.loading(),
-        const TasksListState.failure(NoInternetException()),
-      ],
-    );
+      bloc.add(TaskDeleteEvent.deleted(target.id));
+      await settle(bloc);
 
-    blocTest<TasksListBloc, TasksListState>(
-      'handles empty task list',
-      build: () {
-        when(
-          () => mockApiClient.requestJsonList<Task>(
-            method: any(named: 'method'),
-            path: '/tasks',
-            fromJson: any(named: 'fromJson'),
-          ),
-        ).thenAnswer((_) async => []);
+      expect(bloc.state, isA<SuccessTaskDeleteState>());
+      expect(
+        (await repository.getTasks()).map((task) => task.id),
+        isNot(contains(target.id)),
+      );
+    });
 
-        return tasksListBloc;
-      },
-      act: (bloc) => bloc.add(const TasksListEvent.requested()),
-      expect: () => [
-        const TasksListState.loading(),
-        const TasksListState.success(tasks: [], groupedTasks: {}),
-      ],
-    );
+    test('surfaces a failure end-to-end', () async {
+      final bloc = track(
+        TaskDeleteBloc(buildRepository(const _ThrowingTaskDataSource())),
+      );
+
+      bloc.add(const TaskDeleteEvent.deleted('1'));
+      await settle(bloc);
+
+      expect(bloc.state, isA<FailureTaskDeleteState>());
+    });
+  });
+
+  group('search flow', () {
+    const query = 'Bulk';
+
+    test('pages through every match', () async {
+      final repository = buildRepository(mockDataSource());
+      for (var index = 0; index < 11; index++) {
+        await repository.createTask(_request('Bulk item $index'));
+      }
+      final bloc = track(TasksSearchBloc(repository));
+
+      bloc.add(const TasksSearchEvent.querySubmitted(query));
+      final firstPage = await bloc.stream.firstWhere(
+        (state) => state.status is ResultsTasksSearchStatus,
+      );
+
+      final firstStatus = firstPage.status as ResultsTasksSearchStatus;
+      expect(firstStatus.data.items, hasLength(10));
+      expect(firstStatus.data.canLoadMore, isTrue);
+
+      bloc.add(const TasksSearchEvent.loadMoreRequested());
+      final secondPage = await bloc.stream.firstWhere(
+        (state) => switch (state.status) {
+          ResultsTasksSearchStatus(:final loadMoreState) =>
+            loadMoreState == BlocLoadState.loaded,
+          _ => false,
+        },
+      );
+
+      final secondStatus = secondPage.status as ResultsTasksSearchStatus;
+      expect(secondStatus.data.items, hasLength(11));
+      expect(secondStatus.data.canLoadMore, isFalse);
+      expect(
+        secondStatus.data.items.map((task) => task.title),
+        everyElement(startsWith('Bulk item')),
+      );
+    });
+
+    test('surfaces a failure end-to-end', () async {
+      final bloc = track(
+        TasksSearchBloc(buildRepository(const _ThrowingTaskDataSource())),
+      );
+
+      bloc.add(const TasksSearchEvent.querySubmitted(query));
+      await bloc.stream.firstWhere(
+        (state) => state.status is FailureTasksSearchStatus,
+      );
+
+      expect(bloc.state.recentQueries, [query]);
+    });
   });
 }

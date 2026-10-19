@@ -2,12 +2,14 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:starter_toolkit/utils/bloc/refreshable_bloc.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 
 /// Wraps [child] with a [RefreshIndicator] that coordinates multiple BLoCs.
 ///
 /// On pull, sets `refreshing` to true on all [blocs], calls [onRefresh]
 /// (dispatch the reload events there), then keeps the indicator visible until
-/// every bloc's refreshing state is false again.
+/// every bloc's refreshing state is false again. The spinner is a flat
+/// `accent` on `surface` disc unless [color]/[backgroundColor] are set.
 class MultiBlocRefreshIndicator extends StatefulWidget {
   const MultiBlocRefreshIndicator({
     required this.child,
@@ -72,12 +74,15 @@ class _MultiBlocRefreshIndicatorState extends State<MultiBlocRefreshIndicator> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
+
     return RefreshIndicator.adaptive(
       onRefresh: handleRefresh,
       displacement: widget.displacement,
       edgeOffset: widget.edgeOffset,
-      color: widget.color,
-      backgroundColor: widget.backgroundColor,
+      color: widget.color ?? theme.accent,
+      backgroundColor: widget.backgroundColor ?? theme.surface,
+      elevation: 0,
       notificationPredicate: widget.notificationPredicate,
       triggerMode: widget.triggerMode,
       child: widget.child,

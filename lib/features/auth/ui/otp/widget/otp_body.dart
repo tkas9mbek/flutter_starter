@@ -36,26 +36,27 @@ class OtpBody extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           TitleSubtitle(
             title: localizer.otpTitle,
             subtitle: localizer.otpSubtitle(destination),
+            textAlign: TextAlign.start,
+            spacing: 8,
           ),
-          const SizedBox(height: 32),
+          const SizedBox(height: 24),
           OtpCodeField(
             controller: fieldController,
             hasError: error != null,
             onCompleted: onCompleted,
           ),
           if (error != null) ...[
-            const SizedBox(height: 12),
+            const SizedBox(height: 8),
             Text(
               error!,
-              style: textStyles.regularBody14.copyWith(color: theme.error),
-              textAlign: TextAlign.center,
+              style: textStyles.regularBody13.copyWith(color: theme.errorText),
             ),
           ],
-          const SizedBox(height: 24),
+          const SizedBox(height: 16),
           Center(
             child: TextButton(
               onPressed: secondsLeft > 0 ? null : onResend,

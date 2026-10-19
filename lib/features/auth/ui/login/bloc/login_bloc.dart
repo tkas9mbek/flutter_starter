@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
@@ -28,7 +29,7 @@ sealed class LoginState with _$LoginState {
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
   LoginBloc(this.authRepository) : super(const LoginState.initial()) {
-    on<_SubmittedLoginEvent>(_onSubmitted);
+    on<_SubmittedLoginEvent>(_onSubmitted, transformer: droppable());
   }
 
   final AuthRepository authRepository;

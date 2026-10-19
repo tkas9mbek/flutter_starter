@@ -2,6 +2,20 @@
 
 All notable changes to starter_toolkit will be documented in this file.
 
+## [3.1.0] - 2026-10-19
+
+Version aligned with the app (`3.1.0`), replacing the package-local 4.x numbering below; the 4.0.0 changes were already released with app `3.0.0`.
+
+### Added
+- `MockNetworkBehavior` (`data/mock/`) — shared latency and random-failure source for `Mock*DataSource` twins: `simulate()` waits then throws `InternalServerErrorException` at `failureRate`, `delay()` only waits, `chance(rate)` varies response shapes, `MockNetworkBehavior.instant()` for tests
+- `CrashReporter` interface with `NoopCrashReporter` and `FirebaseCrashReporter` (`utils/crash/`) plus a global `crashReporter` (no-op until the app swaps it in after Firebase initializes); adds the `firebase_crashlytics` dependency
+
+### Changed
+- `AppException` subtypes implement `toString()` with their payload (`Server(statusCode: 502, message: ...)`, `Unknown(<error>)`), so logged errors keep their cause
+- `AppErrorInterceptor` keeps the original error text in `DioException.message` when it replaces `error` with an `AppException`
+- **Breaking**: `withRetry(maxRetries:)` / `RetryExecutor.maxRetries` renamed to `maxAttempts` (it counts total calls, first call included) and asserts `>= 1`
+- `UnknownException.canRetry` is now `false`
+
 ## [4.0.0] - 2026-07-25
 
 ### Added

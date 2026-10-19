@@ -3,7 +3,7 @@ description: Fix all analyzer errors in the app and every package under packages
 ---
 
 Fix every analyzer error in the root app and every project under `packages/`
-(`starter_toolkit`, `starter_uikit`, `starter_lints`).
+(`starter_toolkit`, `starter_uikit`, `starter_lints`, `request_logger`).
 
 1. Enumerate all Dart projects (directories containing pubspec.yaml): the repo root
    plus everything under `packages/`. Run `fvm flutter analyze` covering all of them;

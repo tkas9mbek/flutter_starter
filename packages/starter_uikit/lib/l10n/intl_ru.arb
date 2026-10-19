@@ -99,5 +99,7 @@
       }
     }
   },
-  "endReached": "Вы достигли конца"
+  "endReached": "Вы достигли конца",
+  "clearField": "Очистить",
+  "togglePasswordVisibility": "Показать или скрыть пароль"
 }

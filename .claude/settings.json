@@ -1,5 +1,14 @@
 {
   "permissions": {
+    "allow": [
+      "Bash(sed *)",
+      "Bash(git mv *)",
+      "Bash(git grep *)",
+      "Bash(grep *)",
+      "Bash(fvm flutter analyze*)",
+      "Bash(fvm flutter pub run build_runner build*)",
+      "Bash(spider build*)"
+    ],
     "deny": ["Agent(Explore)"]
   }
 }

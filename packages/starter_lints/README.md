@@ -18,17 +18,17 @@ Custom lint rules for flutter_starter project.
 | `sort_constructor_params` | INFO | Order: required → defaults → optional → super |
 | `no_flutter_in_data_domain` | ERROR | No `package:flutter/*` or `dart:ui` imports under `data/` or `domain/` |
 | `braces_in_flow_control` | WARNING | `for`/`while`/`do` always braced; multi-line `if` braced |
-| `no_hardcoded_colors` | WARNING | No `Color(...)` / `Colors.X` outside theme/constants/tokens |
+| `no_hardcoded_colors` | WARNING | No `Color(...)` / `Colors.X` outside theme/constants/tokens/converters |
 | `avoid_build_context_field` | WARNING | Don't store `BuildContext` as a field |
 | `avoid_mutable_bloc_fields` | WARNING | BLoC/Cubit instance fields must be final (subscriptions/timers exempt) |
 | `prefer_map_or_null` | INFO | `mapOrNull`/`whenOrNull` over `maybeMap`/`maybeWhen` with empty `orElse` (legacy Freezed 2 code only) |
 | `prefer_bool_default` | INFO | Avoid `bool?` parameters — use a default value |
-| `avoid_naming_antipatterns` | INFO | No `Impl`/`Model`/`Helper`/`Manager`/`Data`/`Info`/`Util` name suffixes |
+| `avoid_naming_antipatterns` | WARNING/INFO | No `Impl` suffix or `Module` in `*Repository`/`*DataSource`/`*Bloc`/`*Service` names (WARNING); no `Model` suffix on classes under `model/` (INFO) |
 | `bloc_listener_builder_usage` | INFO | `BlocListener` uses `mapOrNull`/`whenOrNull`; `BlocBuilder` uses `maybeMap`/`maybeWhen` (legacy Freezed 2 code only) |
-| `class_size_warning` | INFO | Class exceeds 100 lines — consider splitting for SRP |
+| `class_size_warning` | INFO | Class exceeds 100 lines — consider splitting for SRP (generated, `example/`, `external/` and `l10n/` files skipped) |
 | `max_widget_nesting` | INFO | `build()` widget nesting exceeds 8 levels — extract subtrees |
-| `multi_line_ternary` | INFO | Long/multi-line ternary — use if/else with early return |
-| `theme_in_build_only` | INFO | Don't store theme types as fields — read in `build()` |
+| `multi_line_ternary` | INFO | Ternary over 10 lines (or 5+ lines when nested) — use if/else with early return |
+| `theme_in_build_only` | WARNING | Don't store `AppTheme`/`AppTextStyles`/`ThemeData` as fields or constructor params — read in `build()` |
 
 > **Note on legacy Freezed rules:** `prefer_map_or_null` and `bloc_listener_builder_usage` target the generated Freezed 2 pattern-matching methods (`when`/`map`/`maybeMap`/`mapOrNull` families). Freezed 3 removed those methods, so these rules only fire on legacy code. New code should use Dart `switch` expressions and `if-case` pattern matching on the sealed state classes.
 
@@ -167,7 +167,7 @@ const MyWidget({
 Forbids `package:flutter/*` and `dart:ui` imports inside files whose path contains `/data/` or `/domain/`. Only the presentation layer may depend on Flutter — keeping the lower layers Flutter-free makes them reusable and easy to unit-test.
 
 ```dart
-// File: lib/features/user/data/remote_user_data_source.dart
+// File: lib/features/user/data/api_user_data_source.dart
 // Bad
 import 'package:flutter/foundation.dart';
 
@@ -200,7 +200,7 @@ if (ready) {
 
 ### no_hardcoded_colors
 
-No raw `Color(0xFF...)` or `Colors.X` references outside `**/theme/**`, `**/constants/**`, or `**/tokens/**`. UI must consume colors via `ThemeProvider` so the design system stays the source of truth.
+No raw `Color(0xFF...)` or `Colors.X` references outside `**/theme/**`, `**/constants/**`, `**/tokens/**`, or `**/converters/**`. UI must consume colors via `ThemeProvider` so the design system stays the source of truth.
 
 ```dart
 // Bad — anywhere outside theme/constants/tokens
@@ -209,8 +209,10 @@ Container(color: Colors.blue)
 
 // Good
 final theme = ThemeProvider.of(context).theme;
-Container(color: theme.colors.primary)
+Container(color: theme.primary)
 ```
+
+Also exempt: `**/converters/**`. `AppColors.*` palette constants are not flagged.
 
 ### avoid_build_context_field
 
@@ -289,3 +291,45 @@ void configure({bool loud = false}) { ... }
 enum LoudPolicy { off, on, system }
 void configure({LoudPolicy loud = LoudPolicy.system}) { ... }
 ```
+
+### avoid_naming_antipatterns
+
+Flags class names that describe the mechanism instead of the thing. Severity differs per case.
+
+- `Impl` suffix (WARNING): `TaskDataSourceImpl` → `ApiTaskDataSource`.
+- `Module` inside a `*Repository`, `*DataSource`, `*Bloc` or `*Service` name (WARNING): `ModuleRepository` → `FeatureRepository`.
+- `Model` suffix on a class in a `model/` or `models/` folder (INFO; `*UiModel` is exempt): `PaymentCategoryModel` → `PaymentCategory`.
+
+### theme_in_build_only
+
+Theme types (`AppTheme`, `AppTextStyles`, `ThemeData`) must not be stored in instance fields or passed as constructor parameters. Each widget reads `ThemeProvider.of(context)` inside `build()`. Files under `/theme/` are exempt.
+
+```dart
+// Bad
+class Card extends StatelessWidget {
+  const Card({required this.theme, super.key});
+  final AppTheme theme;
+}
+
+// Good
+Widget build(BuildContext context) {
+  final theme = ThemeProvider.of(context).theme;
+  ...
+}
+```
+
+### class_size_warning
+
+Reports a class longer than 100 lines as a guideline, not a hard rule (suppress with `// ignore_for_file: class_size_warning — <why>` when a class is cohesive). Skipped: `*.g.dart`, `*.freezed.dart`, `*.config.dart`, and paths containing `/example/`, `/external/` or `/l10n/`.
+
+### max_widget_nesting
+
+Reports a `build()` override whose widget tree is nested deeper than 8 levels — extract subtrees into widget classes.
+
+### multi_line_ternary
+
+Reports a ternary spanning more than 10 lines, or 5 or more lines when it contains a nested ternary — rewrite as `if`/`else` with an early return.
+
+### bloc_listener_builder_usage
+
+Legacy Freezed 2 only: `BlocListener` should use `whenOrNull`/`mapOrNull`, `BlocBuilder` should use `maybeWhen`/`maybeMap`. Freezed 3 removed those methods, so this rule no longer fires on new code.

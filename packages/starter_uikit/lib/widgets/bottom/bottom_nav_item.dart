@@ -4,7 +4,8 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/size/safe_vertical_box.dart';
 
 /// A single bottom navigation destination showing an SVG icon above its
-/// [title], tinted with the theme primary color while [isActive].
+/// [title], tinted with the accent color while [isActive] and the tertiary
+/// text color otherwise.
 class BottomNavItem extends StatelessWidget {
   const BottomNavItem({
     required this.iconPath,
@@ -25,7 +26,7 @@ class BottomNavItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
-    final color = isActive ? theme.primary : theme.textPrimary;
+    final color = isActive ? theme.accent : theme.textTertiary;
 
     return Expanded(
       child: GestureDetector(
@@ -36,7 +37,7 @@ class BottomNavItem extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const SizedBox(height: 10),
+            const SizedBox(height: 8),
             SvgPicture.asset(
               iconPath,
               package: package,
@@ -45,8 +46,8 @@ class BottomNavItem extends StatelessWidget {
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
             const SizedBox(height: 4),
-            Text(title, style: textStyles.regularBody13.copyWith(color: color)),
-            const SafeVerticalBox(height: 10, bottom: true),
+            Text(title, style: textStyles.mediumBody12.copyWith(color: color)),
+            const SafeVerticalBox(height: 8, bottom: true),
           ],
         ),
       ),

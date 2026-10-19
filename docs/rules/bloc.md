@@ -1,19 +1,35 @@
 # BLoC + Freezed Guide
 
+File layout, state shapes, handler rules and UI integration — the single source for BLoC rules. Rule summary: [`code_standards.md` § BLoC](./code_standards.md#bloc); naming: [`naming.md` § BLoC Naming](./naming.md#bloc-naming); review rules: `BLOC-*` in [`code_review.md`](../guides/code_review.md).
+
 ## Quick Reference
 
-When creating a BLoC:
-1. Use Freezed `sealed` unions for immutable states and events
-2. Keep all definitions in ONE file (`feature_bloc.dart`)
-3. Use standard state names: `initial`, `loading`, `success`, `failure`
-4. Use past-tense event names: `requested`, `submitted`, `refreshed`
-5. State case classes are public (`SuccessFeatureState`) so UI can pattern-match; event case classes stay private (`_RequestedFeatureEvent`)
+1. Freezed `sealed` unions for immutable states and events.
+2. Standard state names `initial` / `loading` / `success` / `failure` (`submitting` for operations); past-tense event names `requested` / `submitted` / `refreshed`.
+3. State case classes are public (`SuccessFeatureState`) so UI can pattern-match; event case classes stay private (`_RequestedFeatureEvent`).
+4. Larger BLoCs split into two files joined via `part` / `part of` (below); a small BLoC may keep events and states in the bloc file (`tasks_list_bloc.dart`).
+5. Freezed 3 generates no `when` / `map` — use `switch` / `if-case` / `is` on the sealed classes.
+
+---
+
+## Why Freezed
+
+| Need | Freezed gives you |
+|---|---|
+| Sealed unions for events / states | `@freezed sealed class` + factory constructors |
+| `==` / `hashCode` so `BlocBuilder` rebuilds correctly | Auto-generated |
+| `copyWith` for compound states | Auto-generated |
+| Exhaustive / partial pattern matching | `sealed` unions + `switch` expressions / `if-case` / `is` on the public case classes |
+
+Freezed 3 removed the generated `.when()` / `.map()` / `.maybeMap()` / `.mapOrNull()` families; union case classes are public (`SuccessLoginState`, not `_SuccessLoginState`) so UI code pattern-matches with plain Dart.
+
+**Forbidden alternatives:** hand-rolled sealed classes (Freezed is the standard), Equatable for BLoC states (fine elsewhere), manual `copyWith`.
 
 ---
 
 ## BLoC File Structure
 
-All BLoC code goes in ONE file with parts:
+`feature_bloc.dart` holds the imports, the generated-file `part`, the `part` for the event/state file and the Bloc class; `feature_event_state.dart` is `part of` the bloc file and holds the event and state unions. Constructor first, fields after (member order: [code_preferences § Class Member Ordering](./code_preferences.md#class-member-ordering)).
 
 ```dart
 // feature_bloc.dart
@@ -21,38 +37,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'feature_bloc.freezed.dart';  // Generated file
+part 'feature_event_state.dart';
 
-// 1. Events (union type — case classes stay private)
-@freezed
-sealed class FeatureEvent with _$FeatureEvent {
-  const factory FeatureEvent.requested() = _RequestedFeatureEvent;
-  const factory FeatureEvent.submitted(Data data) = _SubmittedFeatureEvent;
-  const factory FeatureEvent.refreshed() = _RefreshedFeatureEvent;
-}
-
-// 2. States (union type — case classes are public so UI can pattern-match)
-@freezed
-sealed class FeatureState with _$FeatureState {
-  const FeatureState._();  // Enable extensions
-
-  const factory FeatureState.initial() = InitialFeatureState;
-  const factory FeatureState.loading() = LoadingFeatureState;
-  const factory FeatureState.success(List<Item> items) = SuccessFeatureState;
-  const factory FeatureState.failure(AppException exception) = FailureFeatureState;
-
-  // Helper getters
-  bool get isLoading => this is LoadingFeatureState;
-}
-
-// 3. BLoC
 class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
-  final FeatureRepository _repository;
-
   FeatureBloc(this._repository) : super(const FeatureState.initial()) {
     on<_RequestedFeatureEvent>(_onRequested);
     on<_SubmittedFeatureEvent>(_onSubmitted);
     on<_RefreshedFeatureEvent>(_onRefreshed);
   }
+
+  final FeatureRepository _repository;
 
   Future<void> _onRequested(
     _RequestedFeatureEvent event,
@@ -73,281 +67,6 @@ class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
     _SubmittedFeatureEvent event,
     Emitter<FeatureState> emit,
   ) async {
-    // Handle submission (event.data carries the payload)
-  }
-
-  Future<void> _onRefreshed(
-    _RefreshedFeatureEvent event,
-    Emitter<FeatureState> emit,
-  ) async {
-    // Handle refresh
-  }
-}
-```
-
----
-
-## Standard State Patterns
-
-Use these standard state patterns:
-
-### 1. List Loading Pattern
-
-```dart
-@freezed
-sealed class ItemListState with _$ItemListState {
-  const ItemListState._();
-
-  const factory ItemListState.initial() = InitialItemListState;
-  const factory ItemListState.loading() = LoadingItemListState;
-  const factory ItemListState.success(List<Item> items) = SuccessItemListState;
-  const factory ItemListState.failure(AppException exception) = FailureItemListState;
-
-  // Helper getters
-  bool get isLoading => this is LoadingItemListState;
-  bool get hasData => this is SuccessItemListState;
-}
-```
-
-### 2. Details Loading Pattern
-
-```dart
-@freezed
-sealed class ItemDetailsState with _$ItemDetailsState {
-  const ItemDetailsState._();
-
-  const factory ItemDetailsState.initial() = InitialItemDetailsState;
-  const factory ItemDetailsState.loading() = LoadingItemDetailsState;
-  const factory ItemDetailsState.success(Item item) = SuccessItemDetailsState;
-  const factory ItemDetailsState.failure(AppException exception) = FailureItemDetailsState;
-}
-```
-
-### 3. Operation Pattern (Create/Update/Delete)
-
-```dart
-@freezed
-sealed class ItemOperationState with _$ItemOperationState {
-  const ItemOperationState._();
-
-  const factory ItemOperationState.initial() = InitialItemOperationState;
-  const factory ItemOperationState.submitting() = SubmittingItemOperationState;
-  const factory ItemOperationState.success() = SuccessItemOperationState;
-  const factory ItemOperationState.failure(AppException exception) = FailureItemOperationState;
-
-  bool get isSubmitting => this is SubmittingItemOperationState;
-}
-```
-
-### 4. Nested Status Pattern (For Persistent Data)
-
-For states that need persistent data (like selectedDate, filters, pagination) across status changes, use a nested status pattern:
-
-```dart
-// Status union - handles loading/success/failure
-@freezed
-sealed class CalendarStatus with _$CalendarStatus {
-  const factory CalendarStatus.initial() = InitialCalendarStatus;
-  const factory CalendarStatus.loading() = LoadingCalendarStatus;
-  const factory CalendarStatus.success({
-    required List<Task> tasks,
-  }) = SuccessCalendarStatus;
-  const factory CalendarStatus.failure({
-    required AppException exception,
-  }) = FailureCalendarStatus;
-}
-
-// State with persistent data + nested status (single constructor → abstract)
-@freezed
-abstract class CalendarState with _$CalendarState {
-  const factory CalendarState({
-    required DateTime selectedDate,  // Persists across status changes
-    required CalendarStatus status,   // Changes with loading/success/failure
-  }) = _CalendarState;
-
-  const CalendarState._();
-
-  // Factory for initial state
-  factory CalendarState.initial() => CalendarState(
-    selectedDate: DateTime.now(),
-    status: const CalendarStatus.initial(),
-  );
-
-  // Helper methods
-  bool get isLoading => status is LoadingCalendarStatus;
-}
-
-// Events
-@freezed
-sealed class CalendarEvent with _$CalendarEvent {
-  const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
-  const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;  // Reloads current date
-}
-
-// BLoC handlers
-Future<void> _onDateSelected(
-  _DateSelectedCalendarEvent event,
-  Emitter<CalendarState> emit,
-) async {
-  // Update persistent data AND status
-  emit(state.copyWith(
-    selectedDate: event.date,
-    status: const CalendarStatus.loading(),
-  ));
-
-  try {
-    final tasks = await _repository.getTasksByDate(event.date);
-
-    return emit(state.copyWith(
-      status: CalendarStatus.success(tasks: tasks),
-    ));
-  } on AppException catch (e) {
-    return emit(state.copyWith(
-      status: CalendarStatus.failure(exception: e),
-    ));
-  }
-}
-
-Future<void> _onRefreshed(
-  _RefreshedCalendarEvent event,
-  Emitter<CalendarState> emit,
-) async {
-  // Reload using current persistent data
-  emit(state.copyWith(status: const CalendarStatus.loading()));
-
-  try {
-    final tasks = await _repository.getTasksByDate(state.selectedDate);
-
-    return emit(state.copyWith(
-      status: CalendarStatus.success(tasks: tasks),
-    ));
-  } on AppException catch (e) {
-    return emit(state.copyWith(
-      status: CalendarStatus.failure(exception: e),
-    ));
-  }
-}
-```
-
-**Usage in UI:**
-```dart
-BlocBuilder<CalendarBloc, CalendarState>(
-  builder: (context, state) => Column(
-    children: [
-      // Access persistent data directly
-      CalendarPicker(selectedDate: state.selectedDate),
-
-      // Use nested status for content — exhaustive switch expression
-      Expanded(
-        child: switch (state.status) {
-          InitialCalendarStatus() => EmptyView(),
-          LoadingCalendarStatus() => LoadingIndicator(),
-          SuccessCalendarStatus(:final tasks) => TasksList(tasks: tasks),
-          FailureCalendarStatus(:final exception) =>
-            ErrorWidget(exception: exception),
-        },
-      ),
-    ],
-  ),
-)
-```
-
-**When to use nested status:**
-- State needs to persist data across multiple load operations (filters, pagination, selection)
-- You need to refresh/reload without changing persistent data
-- You want to avoid duplicating persistent data in every status variant
-
-**When NOT to use nested status:**
-- Simple CRUD operations that don't need persistent data
-- One-time data fetch scenarios
-- States where all data changes together
-
----
-
-## Standard Event Patterns
-
-Use past-tense event names:
-
-### 1. Data Fetching Events
-
-```dart
-@freezed
-sealed class ItemEvent with _$ItemEvent {
-  // Load initial data
-  const factory ItemEvent.requested() = _RequestedItemEvent;
-
-  // Refresh/reload data
-  const factory ItemEvent.refreshed() = _RefreshedItemEvent;
-
-  // Load more (pagination)
-  const factory ItemEvent.loadMoreRequested() = _LoadMoreRequestedItemEvent;
-}
-```
-
-### 2. Form/Operation Events
-
-```dart
-@freezed
-sealed class ItemOperationEvent with _$ItemOperationEvent {
-  // Submit form/operation
-  const factory ItemOperationEvent.submitted(ItemData data) = _SubmittedItemOperationEvent;
-
-  // Form field changed
-  const factory ItemOperationEvent.fieldChanged(String field, dynamic value) = _FieldChangedItemOperationEvent;
-
-  // Validation triggered
-  const factory ItemOperationEvent.validated() = _ValidatedItemOperationEvent;
-}
-```
-
-### 3. Item Selection Events
-
-```dart
-@freezed
-sealed class ItemEvent with _$ItemEvent {
-  const factory ItemEvent.itemSelected(String id) = _ItemSelectedItemEvent;
-  const factory ItemEvent.itemDeselected() = _ItemDeselectedItemEvent;
-  const factory ItemEvent.itemToggled(String id) = _ItemToggledItemEvent;
-}
-```
-
----
-
-## BLoC Event Handlers
-
-Register a typed `on<_Event>` per event and give each its own handler:
-
-```dart
-class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
-  final FeatureRepository _repository;
-
-  FeatureBloc(this._repository) : super(const FeatureState.initial()) {
-    // Map each event to handler
-    on<_RequestedFeatureEvent>(_onRequested);
-    on<_SubmittedFeatureEvent>(_onSubmitted);
-    on<_DeletedFeatureEvent>(_onDeleted);
-  }
-
-  // Separate handler methods
-  Future<void> _onRequested(
-    _RequestedFeatureEvent event,
-    Emitter<FeatureState> emit,
-  ) async {
-    emit(const FeatureState.loading());
-
-    try {
-      final data = await _repository.getData();
-
-      return emit(FeatureState.success(data));
-    } on AppException catch (e) {
-      return emit(FeatureState.failure(e));
-    }
-  }
-
-  Future<void> _onSubmitted(
-    _SubmittedFeatureEvent event,
-    Emitter<FeatureState> emit,
-  ) async {
     emit(const FeatureState.submitting());
 
     try {
@@ -359,261 +78,288 @@ class FeatureBloc extends Bloc<FeatureEvent, FeatureState> {
     }
   }
 
-  Future<void> _onDeleted(
-    _DeletedFeatureEvent event,
-    Emitter<FeatureState> emit,
-  ) async {
-    try {
-      await _repository.delete(event.id);
+  // _onRefreshed: same as _onRequested, minus the loading emit
+}
+```
 
-      return emit(const FeatureState.success());
-    } on AppException catch (e) {
-      return emit(FeatureState.failure(e));
-    }
+```dart
+// feature_event_state.dart
+part of 'feature_bloc.dart';
+
+@freezed
+sealed class FeatureEvent with _$FeatureEvent {
+  const factory FeatureEvent.requested() = _RequestedFeatureEvent;
+  const factory FeatureEvent.submitted(Data data) = _SubmittedFeatureEvent;
+  const factory FeatureEvent.refreshed() = _RefreshedFeatureEvent;
+}
+
+@freezed
+sealed class FeatureState with _$FeatureState {
+  const FeatureState._();  // Required for getters
+
+  const factory FeatureState.initial() = InitialFeatureState;
+  const factory FeatureState.loading() = LoadingFeatureState;
+  const factory FeatureState.success(List<Item> items) = SuccessFeatureState;
+  const factory FeatureState.failure(AppException exception) = FailureFeatureState;
+
+  bool get isLoading => this is LoadingFeatureState;
+}
+```
+
+---
+
+## Standard State Patterns
+
+| Pattern | States | Notes |
+|---|---|---|
+| List / details loading | `initial`, `loading`, `success(data)`, `failure(exception)` | `success` carries `List<Item>` or `Item`; add `hasData`-style getters if widgets repeat the check |
+| Operation (create / update / delete) | `initial`, `submitting`, `success()`, `failure(exception)` | `bool get isSubmitting => this is SubmittingItemOperationState;` |
+| Persistent data across statuses | nested status — below | filters, selection, pagination |
+
+### Nested Status Pattern (persistent data)
+
+When a state has data that must survive loading/success/failure transitions (selected date, filters, pagination), nest a status union inside a single-constructor state instead of duplicating the fields on every variant:
+
+```dart
+@freezed
+sealed class CalendarStatus with _$CalendarStatus {
+  const factory CalendarStatus.initial() = InitialCalendarStatus;
+  const factory CalendarStatus.loading() = LoadingCalendarStatus;
+  const factory CalendarStatus.success({required List<Task> tasks}) = SuccessCalendarStatus;
+  const factory CalendarStatus.failure({required AppException exception}) = FailureCalendarStatus;
+}
+
+@freezed
+abstract class CalendarState with _$CalendarState {  // single constructor → abstract
+  const factory CalendarState({
+    required DateTime selectedDate,  // persists across status changes
+    required CalendarStatus status,
+  }) = _CalendarState;
+
+  const CalendarState._();
+
+  factory CalendarState.initial() => CalendarState(
+    selectedDate: DateTime.now(),
+    status: const CalendarStatus.initial(),
+  );
+
+  bool get isLoading => status is LoadingCalendarStatus;
+}
+
+@freezed
+sealed class CalendarEvent with _$CalendarEvent {
+  const factory CalendarEvent.dateSelected(DateTime date) = _DateSelectedCalendarEvent;
+  const factory CalendarEvent.refreshed() = _RefreshedCalendarEvent;  // reloads the current date
+}
+```
+
+```dart
+// Handler: update persistent data AND status; refresh reuses state.selectedDate.
+Future<void> _onDateSelected(
+  _DateSelectedCalendarEvent event,
+  Emitter<CalendarState> emit,
+) async {
+  emit(state.copyWith(selectedDate: event.date, status: const CalendarStatus.loading()));
+
+  try {
+    final tasks = await _repository.getTasksByDate(event.date);
+
+    return emit(state.copyWith(status: CalendarStatus.success(tasks: tasks)));
+  } on AppException catch (e) {
+    return emit(state.copyWith(status: CalendarStatus.failure(exception: e)));
   }
 }
+```
+
+```dart
+// UI: persistent data read directly, content via an exhaustive switch on the nested status
+BlocBuilder<CalendarBloc, CalendarState>(
+  builder: (context, state) => Column(
+    children: [
+      CalendarPicker(selectedDate: state.selectedDate),
+      Expanded(
+        child: switch (state.status) {
+          InitialCalendarStatus() => const SizedBox.shrink(),
+          LoadingCalendarStatus() => const CustomCircularProgressIndicator.adaptive(),
+          SuccessCalendarStatus(:final tasks) => TasksList(tasks: tasks),
+          FailureCalendarStatus(:final exception) => FailureWidget.large(
+            exception: exception,
+            onRetry: () => context.read<CalendarBloc>().add(const CalendarEvent.refreshed()),
+          ),
+        },
+      ),
+    ],
+  ),
+)
+```
+
+**Use** when data must persist across loads (filters, pagination, selection) or a refresh must keep it. **Don't** use for simple CRUD, one-time fetches, or states whose data all changes together.
+
+### Picking the shape
+
+Ask: **does data persist across status changes?** **Shape A**, a flat union (`LoginState` above), when each status carries only its own payload (login flows, one-shot submits, dialogs); **Shape B**, nested status (`CalendarState`), when it does (calendars, filters, tabs, search queries).
+
+| Question | Yes → | No → |
+|---|---|---|
+| Does the user's input or selection need to survive a reload? | Shape B | Shape A |
+| Several independent things loading? | Split into several BLoCs (or model variants, [polymorphism.md](../guides/polymorphism.md)) | Either shape |
+| Does the UI render different content across several statuses at once? | Shape B | Shape A |
+
+The outer state's generated `copyWith` updates persistent fields without losing `status`, and the inner status stays a clean union.
+
+---
+
+## Standard Event Patterns
+
+Past tense, one private case class per event:
+
+| Group | Events |
+|---|---|
+| Fetching | `requested()`, `refreshed()`, `loadMoreRequested()` (pagination) |
+| Form / operation | `submitted(ItemData data)`, `fieldChanged(String field, dynamic value)`, `validated()` |
+| Selection | `itemSelected(String id)`, `itemDeselected()`, `itemToggled(String id)` |
+
+```dart
+const factory ItemEvent.loadMoreRequested() = _LoadMoreRequestedItemEvent;
+```
+
+Register a typed `on<_Event>` per event, each with its own handler method (see the file above).
+
+### Event handler rules
+
+| Rule | Reason |
+|---|---|
+| `return emit(...)` for the final emit | Explicit control flow; prevents accidental double emits |
+| Blank line before each `emit(...)` | Visual separation of state transitions |
+| Catch `AppException` only | Other errors should crash; wrap raw IO with `withErrorHandling()` |
+| Variable names `successState`, `failureState` — never `s` | Readability in pattern matches and casts |
+| Handlers that start work (submit, resend, delete) use `transformer: droppable()` from `bloc_concurrency` | A second tap while one runs is ignored; otherwise both run in turn and the request goes out twice |
+| Search / debounced input uses `restartable()` and checks `emit.isDone` after each `await` | A newer event cancels the in-flight handler |
+
+### Refreshed event pattern
+
+Always add a `refreshed()` event so retry callbacks never extract data from state; the handler reads `state` directly:
+
+```dart
+Future<void> _onRefreshed(_RefreshedCalendarEvent event, Emitter<CalendarState> emit) =>
+    _onDateSelected(_DateSelectedCalendarEvent(state.selectedDate), emit);
 ```
 
 ---
 
 ## UI Integration
 
-### 1. BlocBuilder (Display Data)
+### BlocBuilder (display)
 
-Use `BlocBuilder` with an exhaustive `switch` over the sealed state:
+Exhaustive `switch` over the sealed state; the builder returns a non-null `Widget`:
 
 ```dart
 BlocBuilder<ItemListBloc, ItemListState>(
   builder: (context, state) => switch (state) {
     InitialItemListState() => const SizedBox.shrink(),
-    LoadingItemListState() => const Center(child: CircularProgressIndicator()),
+    LoadingItemListState() => const CustomCircularProgressIndicator.adaptive(),
     SuccessItemListState(:final items) => ItemListView(items: items),
-    FailureItemListState(:final exception) => ErrorWidget(exception: exception),
+    FailureItemListState(:final exception) => FailureWidget.large(
+      exception: exception,
+      onRetry: () => context.read<ItemListBloc>().add(const ItemListEvent.refreshed()),
+    ),
   },
 )
 ```
 
-### 2. BlocListener (Side Effects)
+### BlocListener (side effects)
 
-Use `BlocListener` with `if-case` / `is` checks for navigation, snackbars, dialogs:
+`if-case` / `is` checks for navigation, snackbars, dialogs. User-facing text is localized; exceptions go through `NotificationSnackBar.showExceptionMessage`:
 
 ```dart
 BlocListener<ItemOperationBloc, ItemOperationState>(
   listener: (context, state) {
     if (state is SuccessItemOperationState) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Item saved successfully')),
+      NotificationSnackBar.show(
+        context,
+        NotificationSnackBar.success(text: Localizer.of(context).itemSaved),
       );
-      context.router.pop();
+      unawaited(context.router.maybePop());
     }
 
     if (state case FailureItemOperationState(:final exception)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(exception.toString())),
-      );
+      NotificationSnackBar.showExceptionMessage(context, exception: exception);
     }
   },
-  child: YourForm(),
+  child: const ItemForm(),
 )
 ```
 
-### 3. BlocConsumer (Both Display and Side Effects)
+### BlocConsumer (both)
+
+Same two shapes combined: `listener:` with `if-case`, `builder:` with an exhaustive `switch` (`InitialItemState() || LoadingItemState() => …` to group cases). Use it only when listener and builder share the same state branches.
+
+**Don't:** a `BlocBuilder` with a non-exhaustive match (an exhaustive `switch` proves every state returns a `Widget`); legacy Freezed 2 methods; side effects (snackbars, navigation, focus) inside `BlocBuilder`.
+
+### Coordinating multiple BLoCs
+
+BLoCs **never** depend on other BLoCs — coordinate at the UI layer with `BlocListener` (`MultiBlocListener` for more than two):
 
 ```dart
-BlocConsumer<ItemBloc, ItemState>(
+BlocListener<AuthBloc, AuthState>(
   listener: (context, state) {
-    // Handle side effects
-    if (state case FailureItemState(:final exception)) {
-      showErrorDialog(context, exception);
+    if (state is AuthenticatedAuthState) {
+      context.read<ProfileBloc>().add(const ProfileEvent.requested());
     }
   },
-  builder: (context, state) => switch (state) {
-    SuccessItemState(:final item) => ItemWidget(item: item),
-    FailureItemState() => ErrorPlaceholder(),
-    InitialItemState() || LoadingItemState() => LoadingWidget(),
-  },
+  child: ...,
 )
 ```
+
+### Pagination and UI models
+
+Pagination is Shape B with `PaginatedData<T>` + `BlocLoadState loadMoreState` in the data-carrying variant — see [pagination.md](../guides/pagination.md) and `TasksSearchBloc`. If a state payload would carry an enum the UI switches on in several places, keep the state on the domain enum/model and map it to a `*UiModel` in the widget (one `from()` switch; never a UI model in state or events) — [polymorphism.md](../guides/polymorphism.md).
 
 ---
 
-## State Helper Methods
+## State Helper Getters
 
-Add helper getters to State for common checks:
+Add getters to the state for checks widgets repeat (`const State._();` is required). For per-case data prefer a getter built on a `switch`:
 
 ```dart
-@freezed
-sealed class ItemListState with _$ItemListState {
-  const ItemListState._();  // Enable custom methods
+bool get isLoading => this is LoadingItemListState;
 
-  const factory ItemListState.initial() = InitialItemListState;
-  const factory ItemListState.loading() = LoadingItemListState;
-  const factory ItemListState.success(List<Item> items) = SuccessItemListState;
-  const factory ItemListState.failure(AppException exception) = FailureItemListState;
-
-  // Helper getters
-  bool get isLoading => this is LoadingItemListState;
-  bool get hasData => this is SuccessItemListState;
-  bool get hasError => this is FailureItemListState;
-
-  List<Item> get items => switch (this) {
-    SuccessItemListState(:final items) => items,
-    _ => [],
-  };
-
-  String? get errorMessage => switch (this) {
-    FailureItemListState(:final exception) => exception.toString(),
-    _ => null,
-  };
-}
+List<Item> get items => switch (this) {
+  SuccessItemListState(:final items) => items,
+  _ => const [],
+};
 ```
+
+The `_ =>` arm is acceptable here because the default is the point; elsewhere never add `default` / `_` to a switch over a sealed type you own ([polymorphism guide](../guides/polymorphism.md)).
 
 ---
 
 ## Code Generation
 
-Run after creating/modifying BLoC:
+After creating or modifying a BLoC:
 
 ```bash
 fvm flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
-**Generated methods:**
-- `copyWith` - Create modified copies
-- `==` / `hashCode` - Value equality for correct `BlocBuilder` rebuilds
-
-**Pattern matching:** Freezed 3 no longer generates `when` / `map` helpers. Use Dart's built-in `switch` expressions and `if-case` on the sealed state classes instead.
+Freezed generates `copyWith` and `==` / `hashCode` (value equality for correct `BlocBuilder` rebuilds). During a session `fvm flutter pub run build_runner watch --delete-conflicting-outputs` rebuilds on save.
 
 ---
 
-## Complete Example
+## Anti-patterns
 
-```dart
-// user_list_bloc.dart
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:starter/features/user/domain/user_repository.dart';
-import 'package:starter/features/user/model/user.dart';
-import 'package:starter_toolkit/data/exceptions/app_exception.dart';
-
-part 'user_list_bloc.freezed.dart';
-
-@freezed
-sealed class UserListEvent with _$UserListEvent {
-  const factory UserListEvent.requested() = _RequestedUserListEvent;
-  const factory UserListEvent.refreshed() = _RefreshedUserListEvent;
-}
-
-@freezed
-sealed class UserListState with _$UserListState {
-  const UserListState._();
-
-  const factory UserListState.initial() = InitialUserListState;
-  const factory UserListState.loading() = LoadingUserListState;
-  const factory UserListState.success(List<User> users) = SuccessUserListState;
-  const factory UserListState.failure(AppException exception) = FailureUserListState;
-
-  bool get isLoading => this is LoadingUserListState;
-}
-
-class UserListBloc extends Bloc<UserListEvent, UserListState> {
-  final UserRepository _repository;
-
-  UserListBloc(this._repository) : super(const UserListState.initial()) {
-    on<_RequestedUserListEvent>(_onRequested);
-    on<_RefreshedUserListEvent>(_onRefreshed);
-  }
-
-  Future<void> _onRequested(
-    _RequestedUserListEvent event,
-    Emitter<UserListState> emit,
-  ) async {
-    emit(const UserListState.loading());
-
-    try {
-      final users = await _repository.getUsers();
-
-      return emit(UserListState.success(users));
-    } on AppException catch (e) {
-      return emit(UserListState.failure(e));
-    }
-  }
-
-  Future<void> _onRefreshed(
-    _RefreshedUserListEvent event,
-    Emitter<UserListState> emit,
-  ) async {
-    try {
-      final users = await _repository.getUsers();
-
-      return emit(UserListState.success(users));
-    } on AppException catch (e) {
-      return emit(UserListState.failure(e));
-    }
-  }
-}
-```
-
----
-
-## VS Code Snippet
-
-Add to your VS Code snippets for quick BLoC generation:
-
-```json
-{
-  "Freezed Bloc": {
-    "prefix": "genbloc",
-    "body": [
-      "import 'package:flutter_bloc/flutter_bloc.dart';",
-      "import 'package:freezed_annotation/freezed_annotation.dart';",
-      "",
-      "part '${TM_FILENAME_BASE}.freezed.dart';",
-      "",
-      "@freezed",
-      "sealed class ${1:Feature}Event with _$${1:Feature}Event {",
-      "  const factory ${1:Feature}Event.requested() = _Requested${1:Feature}Event;",
-      "}",
-      "",
-      "@freezed",
-      "sealed class ${1:Feature}State with _$${1:Feature}State {",
-      "  const ${1:Feature}State._();",
-      "",
-      "  const factory ${1:Feature}State.initial() = Initial${1:Feature}State;",
-      "  const factory ${1:Feature}State.loading() = Loading${1:Feature}State;",
-      "  const factory ${1:Feature}State.success() = Success${1:Feature}State;",
-      "  const factory ${1:Feature}State.failure(AppException exception) = Failure${1:Feature}State;",
-      "",
-      "  bool get isLoading => this is Loading${1:Feature}State;",
-      "}",
-      "",
-      "class ${1:Feature}Bloc extends Bloc<${1:Feature}Event, ${1:Feature}State> {",
-      "  final ${1:Feature}Repository _repository;",
-      "",
-      "  ${1:Feature}Bloc(this._repository) : super(const ${1:Feature}State.initial()) {",
-      "    on<_Requested${1:Feature}Event>(_onRequested);",
-      "  }",
-      "",
-      "  Future<void> _onRequested(",
-      "    _Requested${1:Feature}Event event,",
-      "    Emitter<${1:Feature}State> emit,",
-      "  ) async {",
-      "    emit(const ${1:Feature}State.loading());",
-      "",
-      "    try {",
-      "      final data = await _repository.getData();",
-      "",
-      "      return emit(${1:Feature}State.success());",
-      "    } on AppException catch (e) {",
-      "      return emit(${1:Feature}State.failure(e));",
-      "    }",
-      "  }",
-      "}"
-    ],
-    "description": "Generates freezed BLoC with standard pattern"
-  }
-}
-```
+| Anti-pattern | Replace with |
+|---|---|
+| Mutable instance variable on the BLoC class | Move to state |
+| `BlocBuilder` returning a nullable Widget | Exhaustive `switch` over the sealed state |
+| Legacy Freezed 2 matching (`when`, `maybeMap`, `mapOrNull`, `whenOrNull`) | `switch` / `if-case` |
+| Repeated inline `state is LoadingFeatureState` checks | State helper getter |
+| `s` as a variable name in pattern matches | `successState`, `failureState` |
+| Catching bare `Exception` in handlers | `on AppException catch (e)` |
+| UI-localized strings in state | Store `AppException` / domain models; localize in the widget |
+| Manual `copyWith`, `==`, `toString` | Let Freezed generate them |
+| Two BLoCs with constructor-injected dependency on each other | Coordinate via `BlocListener` |
+| Submit / delete handler with the default transformer | `on<...>(_onSubmitted, transformer: droppable())` |
 
 ---
 
@@ -621,4 +367,3 @@ Add to your VS Code snippets for quick BLoC generation:
 
 - [Flutter BLoC Documentation](https://bloclibrary.dev)
 - [Freezed Package](https://pub.dev/packages/freezed)
-- [Flutter Freezed BLoC Without Boilerplate](https://medium.com/@morning-stars/flutter-freezed-bloc-7-2-0-without-boilerplate-99fe6051f8d)

@@ -39,11 +39,11 @@ class AppCupertinoDatePicker extends StatelessWidget {
         ),
       ),
       selectedStyle: textStyles.mediumBody16,
-      unselectedStyle: textStyles.mediumBody14.copyWith(
-        color: theme.textPrimary,
-      ),
-      disabledStyle: textStyles.mediumBody14.copyWith(
+      unselectedStyle: textStyles.regularBody14.copyWith(
         color: theme.textSecondary,
+      ),
+      disabledStyle: textStyles.regularBody14.copyWith(
+        color: theme.textPlaceholder,
       ),
     );
   }

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:starter_uikit/theme/app_radii.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/form/decoration/text_field_visual_state.dart';
 
 /// Clears an [OtpCodeField] from outside (e.g. on resend).
 class OtpCodeFieldController {
@@ -98,42 +100,41 @@ class _OtpCodeFieldState extends State<OtpCodeField> {
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
-    final sideColor = widget.hasError ? theme.error : theme.border;
+    final radius = BorderRadius.circular(AppRadii.control);
+
+    OutlineInputBorder outline({required bool focused}) => OutlineInputBorder(
+      borderRadius: radius,
+      borderSide: BorderSide(
+        color: TextFieldVisualState.resolve(
+          enabled: true,
+          focused: focused,
+          hasError: widget.hasError,
+        ).borderColor(theme),
+      ),
+    );
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         for (var i = 0; i < widget.length; i++) ...[
           SizedBox(
-            width: 50,
-            height: 50,
+            width: 48,
+            height: 52,
             child: TextField(
               controller: _controllers[i],
               focusNode: _focusNodes[i],
               keyboardType: TextInputType.number,
               textAlign: TextAlign.center,
               maxLength: 1,
-              style: textStyles.boldTitle24,
+              style: textStyles.mediumTitle24,
               inputFormatters: [FilteringTextInputFormatter.digitsOnly],
               decoration: InputDecoration(
                 counterText: '',
                 filled: true,
                 fillColor: theme.surface,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  borderSide: BorderSide(color: sideColor),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  borderSide: BorderSide(color: sideColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(18),
-                  borderSide: BorderSide(
-                    color: widget.hasError ? theme.error : theme.secondary,
-                    width: 2,
-                  ),
-                ),
+                border: outline(focused: false),
+                enabledBorder: outline(focused: false),
+                focusedBorder: outline(focused: true),
               ),
               onChanged: (value) => _onDigitChanged(i, value),
             ),

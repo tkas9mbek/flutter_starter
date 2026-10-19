@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
-import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/form/option_label_builders.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 import 'package:starter_uikit/widgets/dialogs/dropdown_bottom_sheet.dart';
 import 'package:starter_uikit/widgets/form/app_text_field.dart';
 import 'package:starter_uikit/widgets/form/decoration/filled_text_field_decoration.dart';
 import 'package:starter_uikit/widgets/form/decoration/text_field_decoration.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 /// FormBuilder-backed single-select field shown as a read-only [AppTextField]
 /// with a chevron suffix; tapping opens a [DropdownBottomSheet] with
@@ -95,6 +95,8 @@ class _AppDropdownFieldState<T extends Object>
 
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
+
     return FormBuilderField<T>(
       name: widget.name,
       enabled: widget.enabled,
@@ -120,9 +122,10 @@ class _AppDropdownFieldState<T extends Object>
         initialValue: field.value == null
             ? null
             : widget.optionLabelBuilder(field.value!),
-        suffix: SvgPicture.asset(
+        suffix: SvgIcon(
           UiSvgIcons.chevronRight,
-          package: UiConsts.package,
+          size: 20,
+          color: theme.textTertiary,
         ),
       ),
     );

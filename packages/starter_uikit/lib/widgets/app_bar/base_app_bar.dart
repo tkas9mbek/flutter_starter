@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
-/// Flat app bar on the theme surface color with no elevation or shadow,
-/// sized to [height] and hosting an arbitrary [child] as its title area.
+/// Flat app bar on the theme background (same as the scaffold) with no
+/// elevation, shadow or scroll tint, sized to [height] and hosting an
+/// arbitrary [child] as its title area.
 class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
   const BaseAppBar({
     required this.height,
@@ -24,8 +26,9 @@ class BaseAppBar extends StatelessWidget implements PreferredSizeWidget {
     final theme = ThemeProvider.of(context).theme;
 
     return AppBar(
-      backgroundColor: theme.surface,
-      surfaceTintColor: theme.surface,
+      backgroundColor: theme.background,
+      surfaceTintColor: AppColors.transparent,
+      shadowColor: AppColors.transparent,
       automaticallyImplyLeading: false,
       titleSpacing: 0,
       elevation: 0,

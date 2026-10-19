@@ -2,21 +2,19 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nested/nested.dart';
 import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/application/global/bloc/auth_bloc.dart';
 
-class GlobalRouteWrapper extends StatelessWidget {
-  const GlobalRouteWrapper({
-    required this.router,
-    required this.child,
-    super.key,
-  });
+/// Replaces the route stack when the auth status changes. Placed in a
+/// `Nested` list, which supplies the child.
+class GlobalRouteWrapper extends SingleChildStatelessWidget {
+  const GlobalRouteWrapper({required this.router, super.key, super.child});
 
   final AppRouter router;
-  final Widget child;
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildWithChild(BuildContext context, Widget? child) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         // New users land on login too; point this at an onboarding

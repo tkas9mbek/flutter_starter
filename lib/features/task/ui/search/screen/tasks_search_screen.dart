@@ -11,6 +11,7 @@ import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/utils/bloc/bloc_load_state.dart';
 import 'package:starter_toolkit/utils/bloc/paginated_data.dart';
 import 'package:starter_uikit/resources/resources.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/form/controller_text_field.dart';
 import 'package:starter_uikit/widgets/media/svg_icon.dart';
@@ -53,6 +54,7 @@ class _TasksSearchViewState extends State<_TasksSearchView> {
   @override
   Widget build(BuildContext context) {
     final localizer = Localizer.of(context);
+    final theme = ThemeProvider.of(context).theme;
 
     return BlocListener<TaskDeleteBloc, TaskDeleteState>(
       listener: (context, state) {
@@ -81,7 +83,11 @@ class _TasksSearchViewState extends State<_TasksSearchView> {
                   autofocus: true,
                   hasClearButton: true,
                   textInputAction: TextInputAction.search,
-                  prefix: const SvgIcon(UiSvgIcons.searchGlyph, size: 20),
+                  prefix: SvgIcon(
+                    UiSvgIcons.searchGlyph,
+                    size: 20,
+                    color: theme.textTertiary,
+                  ),
                   onChanged: (query) => context.read<TasksSearchBloc>().add(
                     TasksSearchEvent.queryChanged(query),
                   ),

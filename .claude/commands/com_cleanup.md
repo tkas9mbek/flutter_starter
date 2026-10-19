@@ -14,11 +14,11 @@ Run two passes.
 
 ## 1. Temp artifacts (repo-wide — these are never source, ignore the scope)
 
-- `work/` in this repo is TRACKED and holds real survey/reference docs (check
-  `git ls-files work/` first) — never delete tracked files here. Only remove files
-  under `work/` that are untracked (`git status --porcelain work/` shows `??`) AND
-  clearly stale AI scratch output (old plans/reviews from a finished, unrelated task).
-  When in doubt, list the file for me instead of deleting it.
+- `work/` is a scratch/savepoint dir for agent output (plans, reviews, analyses) and may
+  not exist or may hold tracked files — check `git ls-files work/` first and never
+  delete tracked files. Only remove files under `work/` that are untracked
+  (`git status --porcelain work/` shows `??`) AND clearly stale AI output from a
+  finished, unrelated task. When in doubt, list the file for me instead of deleting it.
 - Delete junk regardless of tracking: `.DS_Store`, stray `*.log` (e.g.
   `custom_lint.log`), scratch/fixture files you or agents left behind
   (`*_fixture.dart`, temp scripts) — confirm via `git status` that each is untracked

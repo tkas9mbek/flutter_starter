@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:starter_toolkit/utils/form/form_validators.dart';
-import 'package:starter_uikit/configs/ui_consts.dart';
+import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/form/decoration/field_error_text.dart';
 import 'package:starter_uikit/widgets/form/decoration/filled_text_field_decoration.dart';
 import 'package:starter_uikit/widgets/form/decoration/text_field_decoration.dart';
+import 'package:starter_uikit/widgets/form/decoration/text_field_visual_state.dart';
 import 'package:starter_uikit/widgets/media/svg_icon.dart';
-import 'package:starter_uikit/widgets/misc/animated_visibility.dart';
+import 'package:starter_uikit/widgets/misc/app_tap_area.dart';
 import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
 
 /// Themed text field wrapping [FormBuilderTextField] in a customizable
@@ -93,6 +94,7 @@ class _AppTextFieldState extends State<AppTextField> {
   FormBuilderFieldState<FormBuilderField, dynamic>? controller;
   String? value;
   String? errorText;
+  bool focused = false;
   late bool obscureText;
 
   @override
@@ -131,6 +133,12 @@ class _AppTextFieldState extends State<AppTextField> {
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
+    final state = TextFieldVisualState.resolve(
+      enabled: widget.enabled,
+      focused: focused,
+      hasError: errorText != null,
+    );
+    final inputColor = widget.enabled ? widget.color : theme.textTertiary;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -138,117 +146,123 @@ class _AppTextFieldState extends State<AppTextField> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          widget.decoration.build(
-            context,
-            Row(
-              children: [
-                if (widget.prefixWidget != null) ...[
-                  widget.prefixWidget!,
-                  const SizedBox(width: 10),
-                ],
-                Expanded(
-                  child: FormBuilderTextField(
-                    name: widget.name,
-                    focusNode: widget.focusNode,
-                    onTap: widget.onTap,
-                    onChanged: (v) {
-                      widget.onChanged?.call(v);
-                      setState(() => value = v);
-                    },
-                    enabled: widget.enabled,
-                    readOnly: widget.readOnly,
-                    autofocus: widget.autofocus,
-                    obscureText: obscureText,
-                    textCapitalization: widget.textCapitalization,
-                    style:
-                        widget.textStyle ??
-                        textStyles.regularBody14.copyWith(color: widget.color),
-                    keyboardType: widget.keyboardType,
-                    inputFormatters: [
-                      ...?widget.inputFormatters,
-                      if (widget.maxLength != null) ...[
-                        LengthLimitingTextInputFormatter(widget.maxLength),
+          Focus(
+            canRequestFocus: false,
+            skipTraversal: true,
+            onFocusChange: (hasFocus) => setState(() => focused = hasFocus),
+            child: widget.decoration.buildWithState(
+              context,
+              Row(
+                children: [
+                  if (widget.prefixWidget != null) ...[
+                    widget.prefixWidget!,
+                    const SizedBox(width: 12),
+                  ],
+                  Expanded(
+                    child: FormBuilderTextField(
+                      name: widget.name,
+                      focusNode: widget.focusNode,
+                      onTap: widget.onTap,
+                      onChanged: (v) {
+                        widget.onChanged?.call(v);
+                        setState(() => value = v);
+                      },
+                      enabled: widget.enabled,
+                      readOnly: widget.readOnly,
+                      autofocus: widget.autofocus,
+                      obscureText: obscureText,
+                      textCapitalization: widget.textCapitalization,
+                      style:
+                          widget.textStyle ??
+                          textStyles.regularBody14.copyWith(color: inputColor),
+                      keyboardType: widget.keyboardType,
+                      inputFormatters: [
+                        ...?widget.inputFormatters,
+                        if (widget.maxLength != null) ...[
+                          LengthLimitingTextInputFormatter(widget.maxLength),
+                        ],
                       ],
-                    ],
-                    validator: (value) {
-                      final error = validateField(value);
-                      setState(() => errorText = error);
+                      validator: (value) {
+                        final error = validateField(value);
+                        setState(() => errorText = error);
 
-                      return error;
-                    },
-                    maxLines: widget.maxLines,
-                    minLines: widget.minLines,
-                    initialValue: widget.initialValue,
-                    decoration: InputDecoration(
-                      hintText: widget.hint,
-                      labelText: widget.label,
-                      prefix: widget.prefix,
-                      errorStyle: const TextStyle(height: -10, fontSize: 0),
-                      floatingLabelStyle: textStyles.boldBody13.copyWith(
-                        fontSize: 14 * 1.4,
-                        height: 1,
-                        color:
-                            (widget.colorLabelOnError &&
-                                !(controller?.isValid ?? true))
-                            ? theme.error
-                            : (widget.color ?? theme.textPrimary),
+                        return error;
+                      },
+                      maxLines: widget.maxLines,
+                      minLines: widget.minLines,
+                      initialValue: widget.initialValue,
+                      decoration: InputDecoration(
+                        hintText: widget.hint,
+                        labelText: widget.label,
+                        prefix: widget.prefix,
+                        // Collapses Material's error line; FieldErrorText draws
+                        // the message below the box instead.
+                        errorStyle: textStyles.regularBody10.copyWith(
+                          fontSize: 0,
+                          height: -10,
+                        ),
+                        // Floating labels render at 3/4 size, so 16 lands on 12.
+                        floatingLabelStyle: textStyles.mediumBody16.copyWith(
+                          color: state.labelColor(
+                            theme,
+                            colorError: widget.colorLabelOnError,
+                          ),
+                        ),
+                        hintMaxLines: widget.maxLines,
                       ),
-                      hintMaxLines: widget.maxLines,
                     ),
                   ),
-                ),
-                if (widget.loading) ...[
-                  const SizedBox(width: 12),
-                  const CustomCircularProgressIndicator.adaptive(size: 24),
-                ] else if (widget.suffix != null) ...[
-                  const SizedBox(width: 12),
-                  widget.suffix!,
-                ] else if (widget.hasClearButton &&
-                    (value?.isNotEmpty ?? false)) ...[
-                  const SizedBox(width: 12),
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () => controller?.didChange(null),
-                    child: SvgPicture.asset(
-                      UiSvgIcons.closeMark,
-                      package: UiConsts.package,
+                  if (widget.loading) ...[
+                    const SizedBox(width: 12),
+                    const CustomCircularProgressIndicator.adaptive(size: 20),
+                  ] else if (widget.suffix != null) ...[
+                    const SizedBox(width: 12),
+                    widget.suffix!,
+                  ] else if (widget.hasClearButton &&
+                      (value?.isNotEmpty ?? false)) ...[
+                    const SizedBox(width: 12),
+                    AppTapArea(
+                      onTap: () => controller?.didChange(null),
+                      semanticLabel: UikitLocalizer.of(context).clearField,
+                      child: SvgIcon(
+                        UiSvgIcons.closeMark,
+                        size: 20,
+                        color: theme.textTertiary,
+                      ),
                     ),
-                  ),
-                ] else if (widget.canObscureText) ...[
-                  const SizedBox(width: 12),
-                  GestureDetector(
-                    behavior: HitTestBehavior.translucent,
-                    onTap: () => setState(() => obscureText = !obscureText),
-                    child: SvgIcon(
-                      obscureText ? UiSvgIcons.eyeSlash : UiSvgIcons.eyeOpen,
-                      size: 20,
-                      color: theme.textSecondary,
+                  ] else if (widget.canObscureText) ...[
+                    const SizedBox(width: 12),
+                    AppTapArea(
+                      onTap: () => setState(() => obscureText = !obscureText),
+                      semanticLabel: UikitLocalizer.of(
+                        context,
+                      ).togglePasswordVisibility,
+                      child: SvgIcon(
+                        obscureText ? UiSvgIcons.eyeSlash : UiSvgIcons.eyeOpen,
+                        size: 20,
+                        color: theme.textTertiary,
+                      ),
                     ),
-                  ),
+                  ],
+                  if (widget.maxLength != null) ...[
+                    const SizedBox(width: 12),
+                    Text(
+                      (value?.isEmpty ?? true)
+                          ? widget.maxLength.toString()
+                          : '${value?.length ?? 0}/${widget.maxLength}',
+                      style: textStyles.regularBody12.copyWith(
+                        color: theme.textTertiary,
+                      ),
+                    ),
+                  ],
                 ],
-                if (widget.maxLength != null) ...[
-                  const SizedBox(width: 12),
-                  Text(
-                    (value?.isEmpty ?? true)
-                        ? widget.maxLength.toString()
-                        : '${value?.length ?? 0}/${widget.maxLength}',
-                    style: textStyles.regularBody13.copyWith(
-                      color: theme.textPrimary,
-                    ),
-                  ),
-                ],
-              ],
+              ),
+              state,
             ),
           ),
-          AnimatedVisibility(
+          FieldErrorText(
             visible: errorText != null && !widget.hideErrorText,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Text(
-                '* ${errorText ?? ''}',
-                style: textStyles.regularBody14.copyWith(color: theme.error),
-              ),
-            ),
+            errorText: errorText,
           ),
         ],
       ),

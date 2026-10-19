@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
@@ -30,7 +31,7 @@ sealed class TaskDeleteState with _$TaskDeleteState {
 class TaskDeleteBloc extends Bloc<TaskDeleteEvent, TaskDeleteState> {
   TaskDeleteBloc(this._taskRepository)
     : super(const TaskDeleteState.initial()) {
-    on<_DeletedTaskDeleteEvent>(_onDeleted);
+    on<_DeletedTaskDeleteEvent>(_onDeleted, transformer: droppable());
   }
 
   final TaskRepository _taskRepository;

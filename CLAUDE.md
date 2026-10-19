@@ -16,12 +16,13 @@ Prefer delegating to the matching subagent (`.claude/agents/*.md`) over doing th
 | Task shape | Agent | Notes |
 |---|---|---|
 | "Where is X", "what calls Y", "which files touch Z" — fact-finding only | `explorer` | Reports file:line findings. Never diagnoses or edits. |
-| Plan before implementing, root-cause an unknown failure, write a code review report, judge a naming/design choice | `reviewer` | Writes Markdown under `work/` (or `docs/` only if explicitly asked). Never touches source. |
+| Plan before implementing, root-cause an unknown failure, judge a naming/design choice | `planner` | Writes Markdown under `work/` (plans, analyses). Never touches source, never `docs/`. |
+| Write a code review report on finished work, or author architecture/reference docs | `reviewer` | Writes Markdown under `work/` (or `docs/` only if explicitly asked). Never touches source. |
 | Apply an existing plan, or a change the prompt spec already fully describes | `implementer` | Needs a plan (a `work/` file or the prompt's own steps) — writes code + tests, verifies with `fvm flutter analyze`/`test`. |
 | Rename a class/file, move a declaration, mass find-and-replace, update imports everywhere | `mechanic` | Change is already decided; job is completeness, not judgment. |
 | Add/trim/remove comments and doc comments only | `documenter` | Applies the `comment-rules` skill. Never changes behavior. |
 
-Typical chain: `explorer` gathers facts → `reviewer` turns them into a plan (`work/plans/<slug>.md`) → `implementer` executes it → `reviewer` (or `/com_review`) checks the result.
+Typical chain: `explorer` gathers facts → `planner` turns them into a plan (`work/plans/<slug>.md`, with a Test Cases section written before Steps and a Review Criteria acceptance checklist) → `implementer` executes it, writing those tests first → `reviewer` (or `/com_review`) checks the result.
 
 ---
 
@@ -40,3 +41,4 @@ Typical chain: `explorer` gathers facts → `reviewer` turns them into a plan (`
 ## Skills
 
 - `comment-rules` (`.claude/skills/comment-rules/SKILL.md`) — the rules `documenter` applies to every comment/doc-comment decision (max line length, WHY-only, no location-justification comments, etc).
+- `split-large-widget` (`.claude/skills/split-large-widget/SKILL.md`) — extract-to-file procedure for a screen/widget file over the ~200-line ceiling in `docs/rules/code_standards.md`.

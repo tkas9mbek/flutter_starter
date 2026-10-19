@@ -15,27 +15,27 @@ class TaskTimelineItemCard extends StatelessWidget {
     final textStyles = ThemeProvider.of(context).textStyles;
     final timeFormat = DateFormat('HH:mm');
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           SizedBox(
-            width: 70,
+            width: 56,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   timeFormat.format(task.startTime),
-                  style: textStyles.mediumBody12.copyWith(
-                    color: theme.textSecondary,
+                  style: textStyles.mediumBody13.copyWith(
+                    color: theme.textPrimary,
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   timeFormat.format(task.endTime),
-                  style: textStyles.regularBody10.copyWith(
-                    color: theme.textSecondary,
+                  style: textStyles.regularBody12.copyWith(
+                    color: theme.textTertiary,
                   ),
                 ),
               ],
@@ -47,11 +47,11 @@ class TaskTimelineItemCard extends StatelessWidget {
                 width: 12,
                 height: 12,
                 decoration: BoxDecoration(
-                  color: task.isCompleted ? theme.primary : theme.border,
+                  color: task.isCompleted ? theme.accent : theme.border,
                   shape: BoxShape.circle,
                 ),
               ),
-              Container(width: 2, height: 60, color: theme.border),
+              Container(width: 1, height: 60, color: theme.border),
             ],
           ),
           const SizedBox(width: 16),

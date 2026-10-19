@@ -5,7 +5,8 @@ import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
 import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
-/// A widget that displays empty state with icon, text, and optional retry button.
+/// Centered empty state: a muted icon, a message (localized "no data" by
+/// default) and an optional outlined retry button.
 class EmptyInformationBody extends StatelessWidget {
   const EmptyInformationBody({
     this.iconPath,
@@ -29,25 +30,21 @@ class EmptyInformationBody extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (iconPath != null) ...[
-              SvgIcon(iconPath!, size: 64, color: theme.textSecondary),
-            ] else ...[
-              SvgIcon(
-                UiSvgIcons.inboxTray,
-                size: 64,
-                color: theme.textSecondary,
-              ),
-            ],
+            SvgIcon(
+              iconPath ?? UiSvgIcons.inboxTray,
+              size: 56,
+              color: theme.textTertiary,
+            ),
             const SizedBox(height: 16),
             Text(
               text ?? UikitLocalizer.of(context).noDataAvailable,
-              style: textStyles.regularBody14.copyWith(
+              style: textStyles.regularBody16.copyWith(
                 color: theme.textSecondary,
               ),
               textAlign: TextAlign.center,
             ),
             if (onRetry != null) ...[
-              const SizedBox(height: 16),
+              const SizedBox(height: 24),
               AppOutlinedButton.medium(
                 context: context,
                 text: UikitLocalizer.of(context).retry,

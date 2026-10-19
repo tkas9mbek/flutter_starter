@@ -99,5 +99,7 @@
       }
     }
   },
-  "endReached": "You reached the end"
+  "endReached": "You reached the end",
+  "clearField": "Clear",
+  "togglePasswordVisibility": "Show or hide password"
 }

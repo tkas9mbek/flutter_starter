@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:nested/nested.dart';
 import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/application/global/widget/application_wrapper.dart';
 import 'package:starter/features/application/global/widget/global_route_wrapper.dart';
@@ -63,9 +64,12 @@ class ThemedMaterialApp extends StatelessWidget {
           GlobalCupertinoLocalizations.delegate,
         ],
         supportedLocales: Localizer.delegate.supportedLocales,
-        builder: (context, child) => GlobalRouteWrapper(
-          router: router,
-          child: ApplicationWrapper(child: child!),
+        builder: (context, child) => Nested(
+          children: [
+            GlobalRouteWrapper(router: router),
+            ApplicationWrapper(navigatorKey: router.navigatorKey),
+          ],
+          child: child,
         ),
       ),
     );

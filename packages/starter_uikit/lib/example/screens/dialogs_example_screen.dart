@@ -1,12 +1,17 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
+import 'package:starter_uikit/resources/resources.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
-import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
+import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 import 'package:starter_uikit/widgets/dialogs/confirmation_bottom_sheet.dart';
 import 'package:starter_uikit/widgets/dialogs/date_range_picker_bottom_sheet.dart';
 import 'package:starter_uikit/widgets/dialogs/date_time_picker_bottom_sheet.dart';
 import 'package:starter_uikit/widgets/dialogs/dropdown_bottom_sheet.dart';
+import 'package:starter_uikit/widgets/dialogs/time_picker_bottom_sheet.dart';
+import 'package:starter_uikit/widgets/misc/app_list_tile.dart';
+import 'package:starter_uikit/widgets/misc/grouped_rows_card.dart';
 import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 
 /// **INTERNAL USE ONLY**: This screen is for UIKit testing and demonstration.
@@ -15,11 +20,51 @@ import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 class DialogsExampleScreen extends StatelessWidget {
   const DialogsExampleScreen({super.key});
 
-  Future<void> _showDateTimePicker(BuildContext context) async {
+  @override
+  Widget build(BuildContext context) {
     final localizer = UikitLocalizer.of(context);
-    final result = await showModalBottomSheet<DateTime>(
+    final theme = ThemeProvider.of(context).theme;
+    final textStyles = ThemeProvider.of(context).textStyles;
+
+    return Scaffold(
+      appBar: TitleAppBar(title: localizer.dialogs),
+      body: ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          Text(
+            localizer.dialogsDescription,
+            style: textStyles.mediumBody13.copyWith(color: theme.textSecondary),
+          ),
+          const SizedBox(height: 8),
+          const GroupedRowsCard(
+            children: [
+              _DateTimePickerTile(),
+              _DateRangePickerTile(),
+              _TimePickerTile(),
+              _ConfirmationTile(),
+              _DropdownTile(),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+void _notify(BuildContext context, String text) => NotificationSnackBar.show(
+  context,
+  NotificationSnackBar.success(text: text),
+);
+
+String _formatDate(DateTime date) => date.toString().split(' ')[0];
+
+class _DateTimePickerTile extends StatelessWidget {
+  const _DateTimePickerTile();
+
+  Future<void> _show(BuildContext context) async {
+    final localizer = UikitLocalizer.of(context);
+    final result = await BottomSheetScreen.show<DateTime>(
       context: context,
-      isScrollControlled: true,
       builder: (context) => DateTimePickerBottomSheet(
         title: localizer.dateTimePicker,
         backText: localizer.cancel,
@@ -28,20 +73,27 @@ class DialogsExampleScreen extends StatelessWidget {
       ),
     );
     if (result != null && context.mounted) {
-      NotificationSnackBar.show(
-        context,
-        NotificationSnackBar.success(
-          text: 'Selected: ${result.toString().split('.')[0]}',
-        ),
-      );
+      _notify(context, 'Selected: ${_formatDate(result)}');
     }
   }
 
-  Future<void> _showDateRangePicker(BuildContext context) async {
+  @override
+  Widget build(BuildContext context) {
+    return AppListTile(
+      icon: UiSvgIcons.calendarDates,
+      title: UikitLocalizer.of(context).dateTimePicker,
+      onTap: () => _show(context),
+    );
+  }
+}
+
+class _DateRangePickerTile extends StatelessWidget {
+  const _DateRangePickerTile();
+
+  Future<void> _show(BuildContext context) async {
     final localizer = UikitLocalizer.of(context);
-    final result = await showModalBottomSheet<(DateTime, DateTime)>(
+    final result = await BottomSheetScreen.show<(DateTime, DateTime)>(
       context: context,
-      isScrollControlled: true,
       builder: (context) => DateRangePickerBottomSheet(
         title: localizer.dateRangePicker,
         backText: localizer.cancel,
@@ -50,21 +102,58 @@ class DialogsExampleScreen extends StatelessWidget {
       ),
     );
     if (result != null && context.mounted) {
-      NotificationSnackBar.show(
-        context,
-        NotificationSnackBar.success(
-          text:
-              'Range: ${result.$1.toString().split(' ')[0]} - ${result.$2.toString().split(' ')[0]}',
-        ),
-      );
+      final (from, to) = result;
+      _notify(context, 'Range: ${_formatDate(from)} - ${_formatDate(to)}');
     }
   }
 
-  Future<void> _showConfirmation(BuildContext context) async {
+  @override
+  Widget build(BuildContext context) {
+    return AppListTile(
+      icon: UiSvgIcons.calendarDates,
+      title: UikitLocalizer.of(context).dateRangePicker,
+      onTap: () => _show(context),
+    );
+  }
+}
+
+class _TimePickerTile extends StatelessWidget {
+  const _TimePickerTile();
+
+  static const _title = 'Time Picker';
+
+  Future<void> _show(BuildContext context) async {
     final localizer = UikitLocalizer.of(context);
-    final result = await showModalBottomSheet<bool>(
+    final result = await BottomSheetScreen.show<TimeOfDay>(
       context: context,
-      isScrollControlled: true,
+      builder: (context) => TimePickerBottomSheet(
+        title: _title,
+        backText: localizer.cancel,
+        confirmText: localizer.confirm,
+      ),
+    );
+    if (result != null && context.mounted) {
+      _notify(context, 'Selected: ${result.format(context)}');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppListTile(
+      icon: UiSvgIcons.clockTime,
+      title: _title,
+      onTap: () => _show(context),
+    );
+  }
+}
+
+class _ConfirmationTile extends StatelessWidget {
+  const _ConfirmationTile();
+
+  Future<void> _show(BuildContext context) async {
+    final localizer = UikitLocalizer.of(context);
+    final result = await BottomSheetScreen.show<bool>(
+      context: context,
       builder: (context) => ConfirmationBottomSheet(
         title: localizer.confirmAction,
         text: localizer.areYouSure,
@@ -72,100 +161,52 @@ class DialogsExampleScreen extends StatelessWidget {
       ),
     );
     if ((result ?? false) && context.mounted) {
-      NotificationSnackBar.show(
-        context,
-        NotificationSnackBar.success(text: 'Confirmed!'),
-      );
-    }
-  }
-
-  Future<void> _showDropdown(BuildContext context) async {
-    final localizer = UikitLocalizer.of(context);
-    final result = await showModalBottomSheet<String>(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => DropdownBottomSheet<String>(
-        title: localizer.selectOption,
-        options: const ['option1', 'option2', 'option3'],
-        optionLabelBuilder: (value) {
-          switch (value) {
-            case 'option1':
-              return localizer.option1;
-            case 'option2':
-              return localizer.option2;
-            case 'option3':
-              return localizer.option3;
-            default:
-              return value;
-          }
-        },
-      ),
-    );
-    if (result != null && context.mounted) {
-      NotificationSnackBar.show(
-        context,
-        NotificationSnackBar.success(text: 'Selected: $result'),
-      );
+      _notify(context, 'Confirmed!');
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final localizer = UikitLocalizer.of(context);
+    return AppListTile(
+      icon: UiSvgIcons.infoCircle,
+      title: UikitLocalizer.of(context).confirmationDialog,
+      onTap: () => _show(context),
+    );
+  }
+}
 
-    return Scaffold(
-      appBar: TitleAppBar(title: localizer.dialogs),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Text(
-              localizer.dateTimePicker,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 12),
-            AppElevatedButton.big(
-              context: context,
-              text: localizer.showDialog,
-              onPressed: () => _showDateTimePicker(context),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              localizer.dateRangePicker,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 12),
-            AppElevatedButton.big(
-              context: context,
-              text: localizer.showDialog,
-              onPressed: () => _showDateRangePicker(context),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              localizer.confirmationDialog,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 12),
-            AppElevatedButton.big(
-              context: context,
-              text: localizer.showDialog,
-              onPressed: () => _showConfirmation(context),
-            ),
-            const SizedBox(height: 24),
-            Text(
-              localizer.dropdownBottomSheet,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
-            ),
-            const SizedBox(height: 12),
-            AppElevatedButton.big(
-              context: context,
-              text: localizer.showDialog,
-              onPressed: () => _showDropdown(context),
-            ),
-          ],
-        ),
+class _DropdownTile extends StatefulWidget {
+  const _DropdownTile();
+
+  @override
+  State<_DropdownTile> createState() => _DropdownTileState();
+}
+
+class _DropdownTileState extends State<_DropdownTile> {
+  String? _selected;
+
+  Future<void> _show() async {
+    final localizer = UikitLocalizer.of(context);
+    final result = await BottomSheetScreen.show<String>(
+      context: context,
+      builder: (context) => DropdownBottomSheet<String>(
+        title: localizer.selectOption,
+        options: [localizer.option1, localizer.option2, localizer.option3],
+        selected: _selected,
       ),
+    );
+    if (result != null && mounted) {
+      setState(() => _selected = result);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AppListTile(
+      icon: UiSvgIcons.menuBars,
+      title: UikitLocalizer.of(context).dropdownBottomSheet,
+      value: _selected,
+      onTap: _show,
     );
   }
 }

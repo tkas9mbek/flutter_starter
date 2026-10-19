@@ -6,6 +6,7 @@ import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart';
+import 'package:starter/features/auth/model/auth_login_request_body.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/raw_repository_executor.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor_extensions.dart';
@@ -21,6 +22,12 @@ class MockUnauthorizedDataSource extends Mock
 class MockLocalDataSource extends Mock implements AuthLocalDataSource {}
 
 void main() {
+  setUpAll(
+    () => registerFallbackValue(
+      const AuthLoginRequestBody(phone: '', password: ''),
+    ),
+  );
+
   late AuthBloc authBloc;
   late MockAuthorizedDataSource authorizedDataSource;
   late MockUnauthorizedDataSource unauthorizedDataSource;
@@ -32,10 +39,7 @@ void main() {
     unauthorizedDataSource = MockUnauthorizedDataSource();
     localDataSource = MockLocalDataSource();
     authRepository = AuthRepository(
-      const RawRepositoryExecutor().withErrorHandling().withRetry(
-        maxRetries: 3,
-        retryDelay: const Duration(milliseconds: 10),
-      ),
+      const RawRepositoryExecutor().withErrorHandling(),
       authorizedDataSource,
       unauthorizedDataSource,
       localDataSource,
@@ -87,6 +91,20 @@ void main() {
         verify(() => localDataSource.clearIfNotLaunchedBefore()).called(1);
         verify(() => localDataSource.getToken()).called(1);
       },
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'emits [newUser] on first launch without checking for a token.',
+      build: () {
+        when(
+          () => localDataSource.clearIfNotLaunchedBefore(),
+        ).thenAnswer((_) async => false);
+
+        return authBloc;
+      },
+      act: (bloc) => bloc.add(event),
+      expect: () => [const AuthState.newUser()],
+      verify: (_) => verifyNever(() => localDataSource.getToken()),
     );
 
     blocTest<AuthBloc, AuthState>(
@@ -151,6 +169,42 @@ void main() {
         verify(() => localDataSource.clearStorage()).called(1);
         verify(() => authorizedDataSource.logout()).called(1);
       },
+    );
+  });
+
+  group('on repository status changes', () {
+    // The refresh interceptor calls AuthRepository.logout() directly when a
+    // token refresh fails; the bloc must follow without a logoutRequested().
+    blocTest<AuthBloc, AuthState>(
+      'emits [unauthenticated] when the repository signs out with no token left.',
+      build: () {
+        when(() => localDataSource.getToken()).thenAnswer((_) async => null);
+        when(() => localDataSource.clearStorage()).thenAnswer((_) async {});
+
+        return authBloc;
+      },
+      act: (_) => authRepository.logout(),
+      expect: () => [const AuthState.unauthenticated()],
+      verify: (_) {
+        verify(() => localDataSource.clearStorage()).called(1);
+        verifyNever(() => authorizedDataSource.logout());
+      },
+    );
+
+    blocTest<AuthBloc, AuthState>(
+      'emits [authenticated] when the repository signs in.',
+      build: () {
+        when(
+          () => unauthorizedDataSource.login(any()),
+        ).thenAnswer((_) async => AuthMockModels.authToken);
+        when(
+          () => localDataSource.saveToken(AuthMockModels.authToken),
+        ).thenAnswer((_) async {});
+
+        return authBloc;
+      },
+      act: (_) => authRepository.login(phone: '+79991234567', password: 'pw'),
+      expect: () => [const AuthState.authenticated()],
     );
   });
 

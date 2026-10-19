@@ -33,10 +33,10 @@ Prompts like these are yours:
 - "Verify `AppException` is caught in every BLoC event handler under `task/ui`."
   (checking = reading each handler and reporting facts)
 - "Investigate the `refreshed()` event on `CalendarBloc` — where it's dispatched from"
-  (the where-used part; "why we call it / can it be removed" is reviewer's judgment)
+  (the where-used part; "why we call it / can it be removed" is planner's judgment)
 
 NOT yours: "what's the difference between X and Y, would other names be better?" —
-the usage list is yours, the naming judgment is reviewer's.
+the usage list is yours, the naming judgment is planner's.
 
 Hard rules:
 - Never state a cause or propose a fix. Facts with file:line only.
@@ -45,4 +45,4 @@ Hard rules:
 - Over ~25 findings: group, report counts plus the 10 most relevant, say how many omitted.
 - Stop when the question is answered. No exploring "for context".
 - If the task needs diagnosis, planning, or a code change, return:
-  "Out of scope. Relevant findings: <...>. Hand off to: <reviewer | implementer>."
+  "Out of scope. Relevant findings: <...>. Hand off to: <planner | implementer>."

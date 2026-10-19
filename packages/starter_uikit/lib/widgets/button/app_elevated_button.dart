@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/app_colors.dart';
+import 'package:starter_uikit/theme/app_radii.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_base_button.dart';
 
-/// Customizable elevated button with loading and icon support.
+/// Flat filled button (`primary` fill, `onPrimary` label) with loading and icon
+/// support; disabled it turns `surfaceMuted` with a `textTertiary` label.
 class AppElevatedButton extends StatelessWidget {
   const AppElevatedButton({
     required this.text,
@@ -11,7 +13,7 @@ class AppElevatedButton extends StatelessWidget {
     this.enabled = true,
     this.loading = false,
     this.iconDirection = TextDirection.ltr,
-    this.borderRadius = 12,
+    this.borderRadius = AppRadii.control,
     this.onPressed,
     this.width,
     this.icon,
@@ -36,7 +38,7 @@ class AppElevatedButton extends StatelessWidget {
 
     return AppElevatedButton(
       height: 52,
-      textStyle: textStyles.regularBody16,
+      textStyle: textStyles.mediumBody16,
       text: text,
       onPressed: onPressed,
       icon: icon,
@@ -44,7 +46,6 @@ class AppElevatedButton extends StatelessWidget {
       iconDirection: iconDirection,
       loading: loading,
       enabled: enabled,
-      borderRadius: 12,
     );
   }
 
@@ -62,7 +63,7 @@ class AppElevatedButton extends StatelessWidget {
 
     return AppElevatedButton(
       height: 48,
-      textStyle: textStyles.regularBody16,
+      textStyle: textStyles.mediumBody16,
       text: text,
       onPressed: onPressed,
       icon: icon,
@@ -70,7 +71,6 @@ class AppElevatedButton extends StatelessWidget {
       iconDirection: iconDirection,
       loading: loading,
       enabled: enabled,
-      borderRadius: 12,
     );
   }
 
@@ -88,7 +88,7 @@ class AppElevatedButton extends StatelessWidget {
 
     return AppElevatedButton(
       height: 40,
-      textStyle: textStyles.regularBody14,
+      textStyle: textStyles.mediumBody14,
       text: text,
       onPressed: onPressed,
       icon: icon,
@@ -96,7 +96,6 @@ class AppElevatedButton extends StatelessWidget {
       iconDirection: iconDirection,
       loading: loading,
       enabled: enabled,
-      borderRadius: 12,
     );
   }
 
@@ -119,8 +118,8 @@ class AppElevatedButton extends StatelessWidget {
     final theme = ThemeProvider.of(context).theme;
 
     return AppBaseButton(
-      disabledBackgroundColor: theme.surface,
-      disabledTextColor: theme.textSecondary,
+      disabledBackgroundColor: theme.surfaceMuted,
+      disabledTextColor: theme.textTertiary,
       borderRadius: borderRadius,
       borderColor: AppColors.transparent,
       height: height,

@@ -44,6 +44,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Cancel"),
         "cancellation": MessageLookupByLibrary.simpleMessage("Cancel"),
         "checkboxField": MessageLookupByLibrary.simpleMessage("Checkbox"),
+        "clearField": MessageLookupByLibrary.simpleMessage("Clear"),
         "confirm": MessageLookupByLibrary.simpleMessage("Confirm"),
         "confirmAction": MessageLookupByLibrary.simpleMessage("Confirm Action"),
         "confirmationDialog":
@@ -145,6 +146,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "thinDivider": MessageLookupByLibrary.simpleMessage("Thin Divider"),
         "titleAppBar": MessageLookupByLibrary.simpleMessage("Title App Bar"),
         "toSelect": MessageLookupByLibrary.simpleMessage("Select"),
+        "togglePasswordVisibility":
+            MessageLookupByLibrary.simpleMessage("Show or hide password"),
         "transparentAppBar":
             MessageLookupByLibrary.simpleMessage("Transparent App Bar"),
         "tryRefreshPage":

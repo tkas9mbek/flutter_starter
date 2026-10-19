@@ -28,7 +28,7 @@ class TaskCreateFormFields extends StatelessWidget {
           minLines: 3,
           maxLines: 5,
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 24),
         AppDatePickerField(
           name: TaskCreateForm.dateField,
           label: localizer.date,

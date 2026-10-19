@@ -36,7 +36,7 @@ Primary user jobs:
 Initial/auth stack:
 
 <!-- Bullets: onboarding, login/registration shape, any first-run setup flow.
-     The starter ships email/password login and registration screens. -->
+     The starter ships phone login with an OTP verification step, and a registration screen. -->
 
 Authenticated shell:
 
@@ -45,7 +45,7 @@ Authenticated shell:
 Full-screen flows above the shell:
 
 <!-- Detail screens, editors, modals pushed over the shell.
-     Example: task details opened from the calendar or list. -->
+     Example: task details, task creation and search opened from the calendar or list. -->
 
 ## Domain Vocabulary
 

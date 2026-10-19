@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 /// Lays out the inner content shared by most app bars: a centered [title]
 /// with optional [subtitle], trailing [actions], and a back chevron implied
@@ -37,13 +36,9 @@ class AppBarContent extends StatelessWidget {
               onTap: () => Navigator.pop(context),
               child: Padding(
                 padding: const EdgeInsets.fromLTRB(12, 17, 16, 12),
-                child: SvgPicture.asset(
+                child: SvgIcon(
                   UiSvgIcons.chevronLeft,
-                  package: UiConsts.package,
-                  colorFilter: ColorFilter.mode(
-                    theme.textPrimary,
-                    BlendMode.srcIn,
-                  ),
+                  color: theme.textPrimary,
                 ),
               ),
             ),

@@ -27,5 +27,5 @@ Report: occurrences found → transformed → verified, files renamed, packages
 where build_runner ran. If any occurrence was ambiguous (same name, different
 symbol), STOP and list them instead of guessing.
 
-Out of scope → hand off: choosing the new name (reviewer), any change where
+Out of scope → hand off: choosing the new name (planner), any change where
 two call sites should be treated differently (implementer).

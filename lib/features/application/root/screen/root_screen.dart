@@ -4,8 +4,7 @@ import 'package:starter/core/router/app_router.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
-import 'package:starter_uikit/theme/app_colors.dart';
-import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/bottom/app_bottom_nav_bar.dart';
 import 'package:starter_uikit/widgets/bottom/bottom_nav_item.dart';
 
 @RoutePage()
@@ -33,8 +32,6 @@ class RootScreen extends StatefulWidget {
 class _RootScreenState extends State<RootScreen> {
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeProvider.of(context).theme;
-
     final routes = [
       const CalendarRoute(),
       const TasksListRoute(),
@@ -44,55 +41,37 @@ class _RootScreenState extends State<RootScreen> {
 
     return AutoTabsScaffold(
       routes: routes,
-      bottomNavigationBuilder: (context, tabsRouter) => DecoratedBox(
-        decoration: BoxDecoration(
-          color: theme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: theme.themeMode == ThemeMode.dark
-                  ? AppColors.blackText.withValues(alpha: 0.3)
-                  : AppColors.blackText.withValues(alpha: 0.1),
-              blurRadius: 20,
-              offset: const Offset(0, -3),
-            ),
-          ],
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 10),
-          child: Row(
-            children: [
-              BottomNavItem(
-                iconPath: UiSvgIcons.calendarDates,
-                package: UiConsts.package,
-                title: Localizer.of(context).calendar,
-                isActive: tabsRouter.activeIndex == 0,
-                onTap: () => tabsRouter.setActiveIndex(0),
-              ),
-              BottomNavItem(
-                iconPath: UiSvgIcons.checkMark,
-                package: UiConsts.package,
-                title: Localizer.of(context).tasks,
-                isActive: tabsRouter.activeIndex == 1,
-                onTap: () => tabsRouter.setActiveIndex(1),
-              ),
-              BottomNavItem(
-                iconPath: UiSvgIcons.menuBars,
-                package: UiConsts.package,
-                title: Localizer.of(context).settings,
-                isActive: tabsRouter.activeIndex == 2,
-                onTap: () => tabsRouter.setActiveIndex(2),
-              ),
-              BottomNavItem(
-                iconPath: UiSvgIcons.personProfile,
-                package: UiConsts.package,
-                title: Localizer.of(context).profile,
-                isActive: tabsRouter.activeIndex == 3,
-                onTap: () => tabsRouter.setActiveIndex(3),
-              ),
-            ],
+      bottomNavigationBuilder: (context, tabsRouter) => AppBottomNavBar(
+        children: [
+          BottomNavItem(
+            iconPath: UiSvgIcons.calendarDates,
+            package: UiConsts.package,
+            title: Localizer.of(context).calendar,
+            isActive: tabsRouter.activeIndex == 0,
+            onTap: () => tabsRouter.setActiveIndex(0),
           ),
-        ),
+          BottomNavItem(
+            iconPath: UiSvgIcons.checkMark,
+            package: UiConsts.package,
+            title: Localizer.of(context).tasks,
+            isActive: tabsRouter.activeIndex == 1,
+            onTap: () => tabsRouter.setActiveIndex(1),
+          ),
+          BottomNavItem(
+            iconPath: UiSvgIcons.menuBars,
+            package: UiConsts.package,
+            title: Localizer.of(context).settings,
+            isActive: tabsRouter.activeIndex == 2,
+            onTap: () => tabsRouter.setActiveIndex(2),
+          ),
+          BottomNavItem(
+            iconPath: UiSvgIcons.personProfile,
+            package: UiConsts.package,
+            title: Localizer.of(context).profile,
+            isActive: tabsRouter.activeIndex == 3,
+            onTap: () => tabsRouter.setActiveIndex(3),
+          ),
+        ],
       ),
     );
   }

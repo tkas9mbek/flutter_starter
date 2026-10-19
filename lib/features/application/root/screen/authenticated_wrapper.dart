@@ -18,8 +18,7 @@ class AuthenticatedWrapper extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<UserBloc>(
-      create: (context) =>
-          getIt<UserBloc>()..add(const UserEvent.requested()),
+      create: (context) => getIt<UserBloc>()..add(const UserEvent.requested()),
       child: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) => switch (state) {
           FailureUserState(:final exception) => Scaffold(
@@ -43,7 +42,7 @@ class AuthenticatedWrapper extends StatelessWidget {
                     ),
                   ),
                 ),
-                const SafeVerticalBox(height: 20),
+                const SafeVerticalBox(height: 16),
               ],
             ),
           ),

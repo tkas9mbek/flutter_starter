@@ -7,8 +7,9 @@ Concise checklist. Full rules: [../guides/code_review.md](../guides/code_review.
 | Symbol | Meaning |
 |--------|---------|
 | 🔴 Blocking | Must fix before merge |
-| 🟡 Format | TODO acceptable |
-| 🟢 Suggestion | Nice to have |
+| 🟡 Mild | TODO acceptable |
+| 🟢 Suggestion | Nice to have (incl. low-stakes formatting nits) |
+| 💬 Comment | Cannot be changed retroactively — naming of commits/branches, prior decisions |
 
 Rules tagged `[lint]` are auto-enforced — skip in manual review.
 
@@ -19,7 +20,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | ARCH-1 | 🔴 `[lint]` | No Flutter / `dart:ui` in data or domain |
 | ARCH-2 | 🔴 `[lint]` | No BLoC depends on another BLoC |
 | ARCH-3 | 🔴 | Repository depends on **abstract** DataSource |
-| ARCH-4 | 🔴 | `getIt`/`GetIt.I` only in widgets / screens / routes |
+| ARCH-4 | 🔴 | `getIt`/`GetIt.I` only in widgets / screens / routes / DI-module registration closures |
 | ARCH-5 | 🔴 | UI never calls DataSource directly |
 | ARCH-6 | 🔴 | New feature has `configs/{feature}_module.dart extends AppModule` |
 | ARCH-7 | 🔴 | Repositories are concrete; the abstract is the DataSource |
@@ -30,7 +31,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 
 | ID | Severity | Rule |
 |---|---|---|
-| BLOC-1 | 🔴 `[lint]` | No mutable instance fields on Bloc/Cubit |
+| BLOC-1 | 🔴 `[lint]` | No mutable instance fields on Bloc/Cubit. Exempt: lifecycle infra (`StreamSubscription`, `StreamController`, `Timer`, `CancelToken`) and the `RefreshableBloc.refreshing` flag |
 | BLOC-2 | 🔴 | Handler catches `AppException` |
 | BLOC-3 | 🔴 | Failure factory carries `AppException` |
 | BLOC-4 | 🔴 | Events + states are `@freezed sealed class` |
@@ -43,12 +44,13 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | BLOC-11 | 🟡 | Final emit uses `return emit(...)` |
 | BLOC-12 | 🟢 `[lint]` | Blank line before every `emit(...)` |
 | BLOC-13 | 🟢 | `bool get isLoading => this is LoadingMyState` |
+| BLOC-14 | 🟡 | Handler that starts work (submit, resend, delete) is registered with `transformer: droppable()` |
 
 ## EXC (exceptions)
 
 | ID | Severity | Rule |
 |---|---|---|
-| EXC-1 | 🔴 | New `AppException` factory has `@ExceptionUiConfig` |
+| EXC-1 | 🔴 | New `AppException` subtype has `@ExceptionUiConfig` |
 | EXC-2 | 🔴 | Don't edit `exception_ui_mapper*.dart` by hand — run generator |
 | EXC-3 | 🔴 | Catch `AppException`, never bare `Exception` (in BLoC) |
 | EXC-4 | 🟡 | Decorator order — `withErrorHandling()` is innermost |
@@ -59,14 +61,18 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | ID | Severity | Rule |
 |---|---|---|
 | UI-1 | 🔴 | All user-facing strings via `Localizer.of(context)` |
-| UI-2 | 🟡 `[lint]` | No hardcoded `Color()` / `Colors.X` outside theme/constants/tokens |
-| UI-3 | 🔴 | Reuse `starter_uikit` widgets before writing your own |
+| UI-2 | 🟡 `[lint]` | No hardcoded `Color()` / `Colors.X` outside theme/constants/tokens/converters; no raw palette `AppColors.*` outside `starter_uikit/lib/theme/` (except `transparent`) |
+| UI-3 | 🔴 | Reuse `starter_uikit` widgets before writing your own — rows/cards/status labels compose `AppCard`, `GroupedRowsCard`, `AppListTile`, `StatusPill`, not a feature-local card or tile |
 | UI-4 | 🔴 `[lint]` | No `Widget _buildFoo()` — extract to a class |
 | UI-5 | 🟡 `[lint]` | Spread `if (cond) ...[Widget()]` even for one |
-| UI-6 | 🟡 `[lint]` | `=>` except `build()` and nested callbacks |
-| UI-7 | 🟡 | `if (!context.mounted) return;` after every `await` that uses context |
+| UI-6 | 🟡 `[lint]` | `=>` except `build()`, nested callbacks, and `if-case` listener bodies |
+| UI-7 | 🟡 | `if (!context.mounted) return;` after every `await` that uses context (`S7`) |
 | UI-8 | 🟡 | Use `starter_uikit` form widgets, not bare `FormBuilder*` |
-| UI-9 | 🟡 `[lint]` | `build()` widget nesting ≤ 10 levels — extract deep subtrees |
+| UI-9 | 🟡 `[lint]` | `build()` widget nesting ≤ 8 levels — extract deep subtrees |
+| UI-10 | 🔴 | Shared widget takes color/typography only from `ThemeProvider` tokens (role tokens used for their role: `accent`, `errorText`/`successText`, `onStatus`) — no `Color(0x…)`, `Colors.*` (except `AppColors.transparent`), hand-built `TextStyle`; flat design: no shadow/elevation/ripple/tint, radii from `AppRadii` ([uikit.md](../rules/uikit.md)) |
+| UI-11 | 🟡 | New/changed `starter_uikit` widget has a gallery section in `lib/example/` and a behavior test in `packages/starter_uikit/test/widgets/<category>/` |
+| UI-12 | 🟡 | `starter_uikit` widget sits in a category folder, is not feature-specific, one public class per file, 1–3 line `///` summary, no barrel import |
+| UI-13 | 🟡 | Tappable area uses `AppTapArea` (or `InkWell` / a Material button), never a bare `GestureDetector`; icon-only taps pass a localized `semanticLabel`; disabled → `onTap: null` |
 
 ## NAME
 
@@ -77,17 +83,44 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | NAME-3 | 🟡 | No `Helper` / `Manager` / `Data` / `Info` / `Util` suffixes |
 | NAME-4 | 🟡 | BLoCs are nouns (`LoginBloc`, not `SubmitLoginBloc`) |
 | NAME-5 | 🟡 | Methods start with a verb |
-| NAME-6 | 🟡 | Source prefix first: `RemoteUserDataSource` |
+| NAME-6 | 🟡 | Source prefix first: `ApiUserDataSource` |
 | NAME-7 | 🟡 | File name == class name |
 
 ## FILE
 
 | ID | Severity | Rule |
 |---|---|---|
-| FILE-1 | 🟡 | Route + screen split (`*_route.dart` + `*_screen.dart`) |
+| FILE-1 | 🟡 | Hand-written route class beside a screen (use `@RoutePage()` + `AppRouter`) |
 | FILE-2 | 🟡 | Class > 200 lines → split |
 | FILE-3 | 🟡 | Feature has `data/`, `domain/`, `model/`, `configs/`, `ui/` |
 | FILE-4 | 🟡 | UI subfolder layout matches feature complexity |
+
+## PAG (pagination — rule detail in [pagination.md](pagination.md))
+
+| ID | Severity | Rule |
+|---|---|---|
+| PAG-1 | 🔴 | DataSource/Repository/`Mock*` twin return `PaginatedListItems<T>` with `{required int page}` (1-based) |
+| PAG-2 | 🔴 | State holds `PaginatedData<T> data` + `loadMoreState` in the data-carrying variant — no `loadingMore` variant/bool, no `int _page` |
+| PAG-3 | 🟡 | Events `requested()` / `loadMoreRequested()` / `refreshed()`; load-more uses `droppable()` |
+| PAG-4 | 🔴 | Load-more early-returns unless results state && `canLoadMore`; emits `loadMoreState: loading` on the same variant; guards `emit.isDone` |
+| PAG-5 | 🔴 | Append via `data.merge(PaginatedData.fromApi(page))` — never mutate `items` |
+| PAG-6 | 🔴 | Load-more failure → `copyWith(loadMoreState: failure)` keeping `data`, never top-level `failure(e)` |
+| PAG-7 | 🔴 | UI uses `PaginatedListView` / `SliverPaginatedListView`; no manual `ListView.builder` + scroll listener |
+| PAG-8 | 🔴 | `refreshed()` reloads page 1 (no merge); with `MultiBlocRefreshIndicator` the bloc uses `RefreshableBloc` (`finally { refreshing = false; }`, `close()` → `dispose()`) |
+| PAG-9 | 🟡 | `blocTest` covers load-more (merge / no-op when `!canLoadMore` / failure keeps data) with an immediately-throwing DS, no `wait:` |
+
+## MODEL
+
+| ID | Severity | Rule |
+|---|---|---|
+| MODEL-1 | 🟡 | Serialized (`fromJson`) enum has `unknown` + `@JsonKey(unknownEnumValue: …)` (`S9`) |
+
+## REUSE (rule detail in [polymorphism.md](polymorphism.md))
+
+| ID | Severity | Rule |
+|---|---|---|
+| REUSE-1 | 🟡 | Same enum / sealed type switched in 3+ places → UI model (`from()` holds the one switch) or strategy (`POLY-1`) |
+| REUSE-2 | 🟢 | Same algorithm repeated with small differences → extract shared logic, parameterize the differences (`POLY-9`) |
 
 ## TEST
 
@@ -95,9 +128,10 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 |---|---|---|
 | TEST-1 | 🔴 | Build mocks via JSON + `fromJson` |
 | TEST-2 | 🔴 | Register fallback values for custom types in `any(named:)` |
-| TEST-3 | 🟡 | `blocTest` with retry must set `wait` based on retry delay/retries (e.g. `8s` for `2s × 3`, `300ms` for `10ms × 3`) |
+| TEST-3 | 🟡 | `blocTest` never sits through retry backoff — immediately-throwing repo/DS; `wait:` only for debounce (`T3`, `T6`) |
 | TEST-4 | 🟡 | Cover success / empty / failure per event |
-| TEST-5 | 🟡 | Integration mocks only `ApiClient` |
+| TEST-5 | 🟡 | Feature-flow test (mandatory per feature, `T2`) wires real BLoC → real Repo → real `Mock*DataSource`, stubbing nothing; `ApiClient` contract locked separately in the API-DS test |
+| TEST-6 | 🟡 | New DataSource method without a `Mock*DataSource` twin, or a twin using `Future.delayed` / UI strings / `UnimplementedError` instead of `MockNetworkBehavior` + backend-shaped `AppException` ([mocking.md](mocking.md) `M1`–`M7`) |
 
 ## STYLE
 
@@ -109,6 +143,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | STYLE-4 | 🟢 | Trailing commas |
 | STYLE-5 | 🟢 `[lint]` | Single quotes |
 | STYLE-6 | 🟢 `[lint]` | Package imports inside `lib/` |
+| STYLE-7 | 🟢 | Tell, don't ask (`S8`) — rule in a named getter/method, not re-derived from raw fields at call sites |
 
 ## Workflow
 

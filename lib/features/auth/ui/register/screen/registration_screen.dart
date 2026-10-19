@@ -8,9 +8,7 @@ import 'package:starter/features/application/environment/ui/switcher/widget/dev_
 import 'package:starter/features/auth/ui/register/bloc/registration_bloc.dart';
 import 'package:starter/features/auth/ui/register/model/registration_form.dart';
 import 'package:starter/features/auth/ui/register/widget/registration_body.dart';
-import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/utils/form/save_and_validate_form.dart';
-import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 
 @RoutePage()
 class RegistrationScreen extends StatefulWidget {
@@ -39,7 +37,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           key: formKey,
           child: DevModeActivator(
             child: Scaffold(
-              appBar: TitleAppBar(title: Localizer.of(context).login),
               body: RegistrationBody(
                 onLoginTap: () => context.router.replace(const LoginRoute()),
                 onRegisterPressed: () => onSubmitted(context),

@@ -1,26 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:starter_uikit/theme/app_radii.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/status/app_shimmer.dart';
 
-/// Text-line placeholder mirroring [TaskListItemTile]'s title, description,
-/// and time-range rows.
+/// Shape-only placeholder mirroring [TaskListItemTile]'s title, time-range
+/// subtitle and trailing status pill; wrap it in an [AppShimmer].
 class TaskTileSkeleton extends StatelessWidget {
   const TaskTileSkeleton({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          AppShimmerText(width: 160, height: 14),
-          SizedBox(height: 8),
-          AppShimmerText(width: 220, height: 12),
-          SizedBox(height: 4),
-          AppShimmerText(width: 140, height: 12),
-          SizedBox(height: 8),
-          AppShimmerText(width: 70, height: 12),
-        ],
+    final textStyles = ThemeProvider.of(context).textStyles;
+
+    return ConstrainedBox(
+      constraints: const BoxConstraints(minHeight: 56),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        child: Row(
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  AppShimmerText(width: 160, style: textStyles.mediumBody16),
+                  const SizedBox(height: 2),
+                  AppShimmerText(width: 96, style: textStyles.regularBody13),
+                ],
+              ),
+            ),
+            const SizedBox(width: 8),
+            const AppShimmerBox(width: 88, height: 20, radius: AppRadii.sm),
+          ],
+        ),
       ),
     );
   }

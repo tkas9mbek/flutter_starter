@@ -10,9 +10,7 @@ import 'package:starter/features/application/environment/ui/switcher/widget/dev_
 import 'package:starter/features/auth/ui/login/bloc/login_bloc.dart';
 import 'package:starter/features/auth/ui/login/model/login_form.dart';
 import 'package:starter/features/auth/ui/login/widget/login_body.dart';
-import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/utils/form/save_and_validate_form.dart';
-import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 
 @RoutePage()
@@ -61,7 +59,6 @@ class _LoginScreenState extends State<LoginScreen> {
           key: formKey,
           child: DevModeActivator(
             child: Scaffold(
-              appBar: TitleAppBar(title: Localizer.of(context).login),
               body: LoginBody(
                 loading: state.isLoading,
                 onRegisterTap: () =>

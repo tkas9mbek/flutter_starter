@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
-import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
+import 'package:starter_uikit/widgets/button/app_outlined_button.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 /// Displays a localized failure message for an [AppException] with an
 /// optional retry action.
@@ -44,6 +44,7 @@ class _FailureWidgetLarge extends FailureWidget {
   @override
   Widget build(BuildContext context) {
     final uiModel = ExceptionUiMapper(context).map(exception);
+    final localizer = UikitLocalizer.of(context);
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
 
@@ -54,43 +55,32 @@ class _FailureWidgetLarge extends FailureWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             const Spacer(),
+            SvgIcon(UiSvgIcons.infoCircle, size: 48, color: theme.errorText),
+            const SizedBox(height: 16),
             Text(
               uiModel.description,
-              style: textStyles.regularBody14,
+              style: textStyles.mediumBody16,
               textAlign: TextAlign.center,
             ),
-            const SizedBox(height: 8),
             if (uiModel.canRetry && onRetry != null) ...[
               const SizedBox(height: 8),
               Text(
-                UikitLocalizer.of(context).tryRefreshPage,
-                style: textStyles.regularBody14,
+                localizer.tryRefreshPage,
+                style: textStyles.regularBody14.copyWith(
+                  color: theme.textSecondary,
+                ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 18),
-              GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: onRetry,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    SvgPicture.asset(
-                      UiSvgIcons.refreshArrow,
-                      package: UiConsts.package,
-                      colorFilter: ColorFilter.mode(
-                        theme.primary,
-                        BlendMode.srcIn,
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    Text(
-                      UikitLocalizer.of(context).retry,
-                      style: textStyles.regularBody14.copyWith(
-                        color: theme.primary,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ],
+              const SizedBox(height: 24),
+              AppOutlinedButton.medium(
+                context: context,
+                text: localizer.retry,
+                width: null,
+                onPressed: onRetry,
+                icon: SvgIcon(
+                  UiSvgIcons.refreshArrow,
+                  size: 20,
+                  color: theme.accent,
                 ),
               ),
             ],
@@ -124,27 +114,26 @@ class _FailureWidgetSmall extends FailureWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              uiModel.description,
-              style: textStyles.regularBody14.copyWith(
-                color: textColor ?? theme.textPrimary,
+            Flexible(
+              child: Text(
+                uiModel.description,
+                style: textStyles.regularBody14.copyWith(
+                  color: textColor ?? theme.textSecondary,
+                ),
+                textAlign: TextAlign.center,
               ),
-              textAlign: TextAlign.center,
             ),
             if (uiModel.canRetry && onRetry != null) ...[
-              const SizedBox(width: 10),
-              Padding(
-                padding: const EdgeInsets.all(6),
-                child: GestureDetector(
-                  behavior: HitTestBehavior.translucent,
-                  onTap: onRetry,
-                  child: SvgPicture.asset(
+              const SizedBox(width: 4),
+              GestureDetector(
+                behavior: HitTestBehavior.translucent,
+                onTap: onRetry,
+                child: Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: SvgIcon(
                     UiSvgIcons.refreshArrow,
-                    package: UiConsts.package,
-                    colorFilter: ColorFilter.mode(
-                      textColor ?? theme.textPrimary,
-                      BlendMode.srcIn,
-                    ),
+                    size: 20,
+                    color: textColor ?? theme.accent,
                   ),
                 ),
               ),

@@ -5,8 +5,8 @@
 | Severity | Meaning |
 |---|---|
 | 🔴 Blocking | Must fix before merge — bugs, severe violations, broken architecture |
-| 🟡 Format | Can leave as TODO — style/formatting, mild violations |
-| 🟢 Suggestion | Nice to have — improvements, optimizations |
+| 🟡 Mild | Can leave as TODO — mild violations (naming, structure, review-time conventions) |
+| 🟢 Suggestion | Nice to have — improvements, optimizations, and low-stakes formatting nits |
 | 💬 Comment | Cannot be changed retroactively — naming of commits/branches, prior decisions |
 
 ## Finding Types
@@ -30,7 +30,7 @@
 | ARCH-1 | Severe Violation 🔴 | `package:flutter/*` import in Data or Domain layer `[lint]` | Move Flutter-dependent code to Presentation, or use `package:meta`/`dart:developer` |
 | ARCH-2 | Severe Violation 🔴 | BLoC depends on another BLoC (constructor injection) `[lint]` | Coordinate via `BlocListener` / `MultiBlocListener` in UI, or via route extras |
 | ARCH-3 | Severe Violation 🔴 | Repository depends on a concrete DataSource | Depend on the abstract `*DataSource` interface in `domain/` |
-| ARCH-4 | Severe Violation 🔴 | `GetIt.I` referenced inside Data, Domain, or BLoC | Constructor inject. `GetIt.I` is allowed only in widgets/screens/routes |
+| ARCH-4 | Severe Violation 🔴 | `GetIt.I` referenced inside Data, Domain, or BLoC | Constructor inject. `GetIt.I`/`getIt` is allowed only in widgets/screens/routes and DI-module registration closures |
 | ARCH-5 | Severe Violation 🔴 | UI calls a DataSource directly, skipping Repository | Route through Repository → AbstractDataSource |
 | ARCH-6 | Severe Violation 🔴 | New feature has no `configs/{feature}_module.dart extends AppModule` | Add the GetIt module and register it in the root injector |
 | ARCH-7 | Severe Violation 🔴 | Repository made `abstract` | Repositories are concrete facades. The `abstract` belongs on the DataSource. |
@@ -43,7 +43,7 @@
 
 | ID | Type | Description | Suggested Fix |
 |---|---|---|---|
-| BLOC-1 | Severe Violation 🔴 | Mutable instance variables in BLoC `[lint]` | Put all mutable data in the Freezed state |
+| BLOC-1 | Severe Violation 🔴 | Mutable instance variables in BLoC `[lint]`. Exempt: lifecycle infra (`StreamSubscription`, `StreamController`, `Timer`, `CancelToken`) and `RefreshableBloc.refreshing` | Put all mutable data in the Freezed state |
 | BLOC-2 | Bug 🔴 | Handler missing `catch` for `AppException` | Add `on AppException catch (e) { return emit(MyState.failure(e)); }` |
 | BLOC-3 | Bug 🔴 | `failure` factory missing the `AppException` field | Failure must carry the exception so UI can render via `FailureWidget.large` |
 | BLOC-4 | Severe Violation 🔴 | Hand-rolled sealed event/state classes | Use `@freezed sealed class` with factory constructors |
@@ -56,6 +56,7 @@
 | BLOC-11 | Mild Violation 🟡 | Final `emit(...)` without `return` | `return emit(state)` to make control flow explicit |
 | BLOC-12 | Formatting 🟢 | No blank line before `emit(...)` | Add blank line per project convention |
 | BLOC-13 | Formatting 🟢 | State helper using a verbose pattern match for a `bool` check | `bool get isLoading => this is LoadingMyState;` |
+| BLOC-14 | Mild Violation 🟡 | Handler that starts work (submit, resend, delete) uses the default transformer | `on<...>(_onSubmitted, transformer: droppable())` so a second tap is ignored |
 
 ¹ The `prefer_map_or_null` / `bloc_listener_builder_usage` lints only fire on legacy Freezed 2 pattern-matching methods (`when`/`map` families), which were removed in Freezed 3. New code pattern-matches with Dart `switch` / `if-case` directly.
 
@@ -65,7 +66,7 @@
 
 | ID | Type | Description | Suggested Fix |
 |---|---|---|---|
-| EXC-1 | Severe Violation 🔴 | New `AppException` factory without `@ExceptionUiConfig` | Add the annotation, then run the generator |
+| EXC-1 | Severe Violation 🔴 | New `AppException` subtype without `@ExceptionUiConfig` | Add the annotation, then run the generator |
 | EXC-2 | Severe Violation 🔴 | Manual edits to `exception_ui_mapper.dart` or `exception_ui_mapper_decorator.dart` | These are generated. Run `dart run utils/generators/generate_exception_mapper.dart` |
 | EXC-3 | Severe Violation 🔴 | Catching bare `Exception` in BLoC | Catch `AppException` and let other errors crash; wrap data calls with `withErrorHandling()` |
 | EXC-4 | Mild Violation 🟡 | `withRetry()` placed inside `withErrorHandling()` | `withErrorHandling()` must be the innermost decorator |
@@ -82,10 +83,14 @@
 | UI-3 | Severe Violation 🔴 | Reimplements a widget that exists in `starter_uikit` | Use `FailureWidget.large`, `EmptyInformationBody`, `AppElevatedButton`, `AppTextField`, etc. |
 | UI-4 | Severe Violation 🔴 | `Widget _buildFoo()` builder method | Extract to a `StatelessWidget`/`StatefulWidget` class |
 | UI-5 | Mild Violation 🟡 | Single widget added to a `children:` list as a literal element | Use spread: `if (cond) ...[Widget()]` even for one |
-| UI-6 | Mild Violation 🟡 | Block body where arrow body fits | Use `=>` (except `build()` and nested callbacks) |
-| UI-7 | Mild Violation 🟡 | `BuildContext` used after `await` without `mounted` check | `if (!mounted) return;` after the await |
+| UI-6 | Mild Violation 🟡 | Block body where arrow body fits | Use `=>` (except `build()`, nested callbacks, and `if-case` listener bodies) |
+| UI-7 | Mild Violation 🟡 | `BuildContext` used after `await` without `mounted` check | `if (!context.mounted) return;` after the await |
 | UI-8 | Mild Violation 🟡 | `FormBuilder*` used directly | Use `starter_uikit` form widgets (`AppTextField`, `AppDropdownField`, …) |
 | UI-9 | Mild Violation 🟡 | `build()` widget tree is too deeply nested | Extract deep subtrees into their own widget classes |
+| UI-10 | Severe Violation 🔴 | Shared widget uses raw `Color(0x…)`, `Colors.*` (except `AppColors.transparent`) or a hand-built `TextStyle` | Read from `ThemeProvider` tokens — see `docs/rules/uikit.md` |
+| UI-11 | Mild Violation 🟡 | New/changed `starter_uikit` widget lacks a `packages/starter_uikit/lib/example/` gallery section or a behavior test | Add both (`packages/starter_uikit/test/widgets/<category>/`) |
+| UI-12 | Mild Violation 🟡 | `starter_uikit` widget outside a category folder, feature-specific, several public classes per file, missing `///`, or barrel import | Follow `docs/rules/uikit.md` |
+| UI-13 | Mild Violation 🟡 | Bare `GestureDetector` as a tap target, an icon-only tap without `semanticLabel`, or a disabled control with a no-op `onTap` | `AppTapArea` (or `InkWell` / a Material button); localized `semanticLabel` for icons; `onTap: null` when disabled |
 
 ---
 
@@ -93,12 +98,12 @@
 
 | ID | Type | Description | Suggested Fix |
 |---|---|---|---|
-| NAME-1 | Mild Violation 🟡 | `Impl` suffix on class `[lint]` | Concrete name describing the source: `RemoteUserDataSource`, not `UserDataSourceImpl` |
+| NAME-1 | Mild Violation 🟡 | `Impl` suffix on class `[lint]` | Concrete name describing the source: `ApiUserDataSource`, not `UserDataSourceImpl` |
 | NAME-2 | Mild Violation 🟡 | `Model` suffix on a domain data class `[lint]` | Drop the suffix: `User`, not `UserModel` |
 | NAME-3 | Mild Violation 🟡 | Anti-pattern suffix: `Helper`, `Manager`, `Data`, `Info`, `Util` `[lint]` | Use `Feature + Description + Type` |
 | NAME-4 | Mild Violation 🟡 | Verb-based BLoC name | Noun-based: `LoginBloc`, not `SubmitLoginBloc` |
 | NAME-5 | Mild Violation 🟡 | Method missing a verb prefix | `fetchUsers`, not `users` |
-| NAME-6 | Mild Violation 🟡 | Concrete data source name has source suffix | Source prefix first: `RemoteUserDataSource`, `LocalUserDataSource`, `MockUserDataSource` |
+| NAME-6 | Mild Violation 🟡 | Concrete data source name has source suffix | Source prefix first: `ApiUserDataSource`, `LocalUserDataSource`, `MockUserDataSource` |
 | NAME-7 | Mild Violation 🟡 | File name doesn't match class | `user_repository.dart` for `UserRepository` |
 
 ---
@@ -107,12 +112,34 @@
 
 | ID | Type | Description | Suggested Fix |
 |---|---|---|---|
-| FILE-1 | Mild Violation 🟡 | Route + screen in one file | Split: `{feature}_route.dart` and `{feature}_screen.dart` |
+| FILE-1 | Mild Violation 🟡 | Hand-written route class next to a screen | Annotate the screen with `@RoutePage()` and register it in `AppRouter`; routes are generated, never hand-written |
 | FILE-2 | Mild Violation 🟡 | Class > 200 lines | Split into widgets / mixins |
 | FILE-3 | Mild Violation 🟡 | Feature missing one of: `data/`, `domain/`, `model/`, `configs/`, `ui/` | Match the layout from [structure guide](./structure.md) |
 | FILE-4 | Mild Violation 🟡 | UI subfolder layout doesn't match feature complexity | Simple → `bloc/`, `screen/`, `widget/`. Complex → split by flow (`list/`, `details/`, `operation/`) |
 
 ---
+
+## Pagination (`PAG-*`) — see [pagination.md](pagination.md)
+
+| ID | Type | Description | Suggested Fix |
+|---|---|---|---|
+| PAG-1 | Severe Violation 🔴 | Paged DataSource/Repository does not return `PaginatedListItems<T>` with `{required int page}`, or the mock returns another shape | 1-based `page`; mock slices `(page - 1) * pageSize` |
+| PAG-2 | Severe Violation 🔴 | Separate `loadingMore` variant/bool or `int _page` field | `PaginatedData<T> data` + `loadMoreState` in the data-carrying variant |
+| PAG-3 | Mild Violation 🟡 | Event names or transformer off the standard | `requested()`, `loadMoreRequested()`, `refreshed()`; `droppable()` on load-more |
+| PAG-4 | Severe Violation 🔴 | Load-more handler fires without `canLoadMore`, or skips the `emit.isDone` guard | Early-return, emit `loadMoreState: loading`, fetch `data.nextPage` |
+| PAG-5 | Severe Violation 🔴 | Next page mutates `items` or hand-builds `PaginatedData` | `data.merge(PaginatedData.fromApi(page))` |
+| PAG-6 | Severe Violation 🔴 | Load-more failure emits top-level `failure(e)` | `copyWith(loadMoreState: failure)`, keep `data` |
+| PAG-7 | Severe Violation 🔴 | Manual `ListView.builder` + scroll listener | `PaginatedListView` / `SliverPaginatedListView` |
+| PAG-8 | Severe Violation 🔴 | Refresh merges onto old pages, or `RefreshableBloc` contract broken | Reload page 1; `finally { refreshing = false; }`, `close()` → `dispose()` |
+| PAG-9 | Mild Violation 🟡 | Load-more not covered by `blocTest`, or the test waits on retry backoff | Merge / no-op / failure-keeps-data cases with an immediately-throwing DS |
+
+## Model (`MODEL-*`) and Reuse (`REUSE-*`)
+
+| ID | Type | Description | Suggested Fix |
+|---|---|---|---|
+| MODEL-1 | Mild Violation 🟡 | Serialized enum without an `unknown` fallback | Add `unknown` + `@JsonKey(unknownEnumValue: …)` |
+| REUSE-1 | Non-optimal 🟡 | Same enum/sealed type switched in 3+ places | UI model with one `from()` switch, or strategy — see [polymorphism.md](polymorphism.md) |
+| REUSE-2 | Non-optimal 🟢 | Same algorithm repeated with small differences | Extract and parameterize |
 
 ## Testing (`TEST-*`)
 
@@ -120,9 +147,10 @@
 |---|---|---|---|
 | TEST-1 | Severe Violation 🔴 | Domain models constructed inline in tests | Build via JSON fixture + `fromJson` in `test/features/{feature}/assets/` |
 | TEST-2 | Severe Violation 🔴 | `MissingStubError` because `any(named: ...)` lacks fallback | `registerFallbackValue` for every custom type used inside `any(named:)` |
-| TEST-3 | Mild Violation 🟡 | `blocTest` under retry decorator without retry-aware `wait:` | Set `wait` to match retry settings (for example `8s` for `2s × 3`, `300ms` for `10ms × 3`) |
+| TEST-3 | Mild Violation 🟡 | `blocTest` sized to sit through retry backoff (e.g. `wait: 8s`) | Assert failure with an immediately-throwing repo; `wait:` is for debounce only — retry timing belongs to the central executor test |
 | TEST-4 | Mild Violation 🟡 | BLoC test missing failure-path coverage | Cover success, empty, and failure for every event |
-| TEST-5 | Mild Violation 🟡 | Integration test mocking the Repository | Mock only `ApiClient`. Everything else stays real. |
+| TEST-5 | Mild Violation 🟡 | Feature-flow (integration) test stubbing the repository or executor | Wire real BLoC → real Repo → real `Mock*DataSource` (built with `MockNetworkBehavior.instant()`); stub nothing. Lock the `ApiClient` contract separately in the API-DS test. |
+| TEST-6 | Mild Violation 🟡 | New DataSource method without a `Mock*DataSource` twin, or a twin using `Future.delayed` / UI strings / `UnimplementedError` instead of `MockNetworkBehavior` + a backend-shaped `AppException` | Add the twin method per [mocking.md](./mocking.md) (`M1`–`M10`) |
 
 ---
 
@@ -136,6 +164,7 @@
 | STYLE-4 | Formatting 🟢 | Missing trailing comma | Add — required by formatter |
 | STYLE-5 | Formatting 🟢 | Double quotes for a string `[lint]` | Single quotes |
 | STYLE-6 | Formatting 🟢 | Relative import inside `lib/` `[lint]` | `package:` import |
+| STYLE-7 | Formatting 🟢 | Rule re-derived from raw fields at call sites | Named getter/method on the owning type ("tell, don't ask", `code_preferences.md` § 15) |
 
 ---
 

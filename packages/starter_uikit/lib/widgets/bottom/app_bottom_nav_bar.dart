@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
-/// Surface-colored bottom navigation bar laying out its [children]
-/// (typically [BottomNavItem] widgets, which expand to share the screen
-/// width evenly) in a row.
+/// Flat surface-colored bottom navigation bar, separated from the page by a
+/// top hairline, laying out its [children] (typically [BottomNavItem]
+/// widgets, which expand to share the width evenly) in a row.
 class AppBottomNavBar extends StatelessWidget {
   const AppBottomNavBar({required this.children, super.key});
 
@@ -14,9 +14,12 @@ class AppBottomNavBar extends StatelessWidget {
     final theme = ThemeProvider.of(context).theme;
 
     return DecoratedBox(
-      decoration: BoxDecoration(color: theme.surface),
+      decoration: BoxDecoration(
+        color: theme.surface,
+        border: Border(top: BorderSide(color: theme.border)),
+      ),
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 10),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Row(children: children),
       ),
     );

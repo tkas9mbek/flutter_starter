@@ -10,7 +10,7 @@ class AvoidNamingAntipatterns extends DartLintRule {
   static const _implCode = LintCode(
     name: 'avoid_naming_antipatterns',
     problemMessage: 'Avoid "Impl" suffix. Use concrete naming instead.',
-    correctionMessage: 'Rename: TaskDataSourceImpl → RemoteTaskDataSource.',
+    correctionMessage: 'Rename: TaskDataSourceImpl → ApiTaskDataSource.',
     errorSeverity: DiagnosticSeverity.WARNING,
   );
 

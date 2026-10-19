@@ -17,6 +17,8 @@ class TaskMockModels {
       _getJsonFromFile('task2.json') as Map<String, dynamic>;
   static final Map<String, dynamic> _rawTask3 =
       _getJsonFromFile('task3.json') as Map<String, dynamic>;
+  static final Map<String, dynamic> _rawSearchPage =
+      _getJsonFromFile('search_page.json') as Map<String, dynamic>;
 
   static final Task _task1 = Task.fromJson(_rawTask1);
   static final Task _task2 = Task.fromJson(_rawTask2);
@@ -34,6 +36,10 @@ class TaskMockModels {
 
   static Map<String, dynamic> get rawTask3 =>
       Map<String, dynamic>.from(_rawTask3);
+
+  // First of two search pages; its elements are task1 and task2.
+  static Map<String, dynamic> get rawSearchPage =>
+      Map<String, dynamic>.from(_rawSearchPage);
 
   static Task get task1 => _task1;
 

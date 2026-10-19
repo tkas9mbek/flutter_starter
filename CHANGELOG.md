@@ -2,6 +2,55 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.1.0] - 2026-10-19
+
+### Added
+- Flat navy design system in `starter_uikit`: new `AppColors` palette (navy brand, blue-tinted slate/ink neutrals, cyan secondary), `AppRadii` radius scale, a 28px title style, and role tokens `accent`, `onSecondary`, `borderStrong`, `successText` and `errorText` on `AppTheme` — navy is the primary color in both themes, status fills are dark green / dark red
+- Shared widgets `AppCard`, `GroupedRowsCard`, `AppListTile` and `StatusPill`, with gallery sections and behavior tests
+- `TextFieldVisualState` — one place that resolves a text field's idle / focused / error / disabled look — and the shared `FieldErrorText`
+- `request_logger` package: in-app HTTP request logger (list, details, JSON view, redaction) wired into Dio and the environment banner
+- `MockNetworkBehavior` in `starter_toolkit` for configurable mock latency and failures; mock data sources keep canned data in `mock_*_scenarios.dart` and are picked in DI with `mockOrProd`
+- Crashlytics reporting behind `FirebaseConfig`
+- CI/CD pipeline for TestFlight and Firebase App Distribution (`docs/guides/deployment.md`)
+- `AppStatusScreen` and a "UI Kit Examples" entry in the dev menu
+- Mocking, pagination and polymorphism guides, `docs/rules/uikit.md`, and the `planner` agent and `split-large-widget` skill for Claude Code
+- Behavior tests for the shared uikit widgets, settings screen and request logger UI
+- `AppTapArea` in `starter_uikit` (`InkWell` plus button semantics, no splash), with a gallery section and behavior test; localized `clearField` / `togglePasswordVisibility` screen-reader labels
+- `BLOC-14` and `UI-13` review rules, `POLY-10` (`@nonVirtual` template methods), a docs-prose rule in `AGENTS.md`, and `pumpTall()` / `visibleTexts()` test helpers
+
+### Changed
+- **Breaking**: flat design everywhere — no shadows, elevation, ripples or surface tint; the app bar and scaffold share `theme.background`, and cards, sheets, dialogs, fields and snackbars are separated by 1px borders. `AppTheme` gains new tokens and `AppColors` is a new palette
+- **Breaking**: the old `AppColors` names (`mainBlue`, `darkBlue`, `pureWhite`, …) are gone; widgets must read `AppTheme` tokens
+- **Breaking**: remote data sources renamed `Remote*` → `Api*`; mocks moved to `data/mock/`
+- `FilledTextFieldDecoration.hasBorder` is deprecated and ignored (fields are always bordered)
+- Restyled every uikit widget (app bars, bottom nav, buttons, bottom sheets, form fields, checkbox/radio groups, snackbars, status screens, shimmer, avatars) and the widget gallery; `DropdownBottomSheet` options are now selectable cards, and `TitleSubtitle` uses `mediumTitle24`
+- Redesigned auth, profile, settings, task (list, calendar, details, search, create), root navigation and request logger screens on `AppCard` / `GroupedRowsCard` / `AppListTile` / `StatusPill`; task rows show their time range and status pill instead of the description
+- Request logger status pills are colored by HTTP class (2xx green, 4xx orange, 5xx/failed red)
+- Feature tests migrated to mock-first feature-flow tests; documentation reorganized (`code_standards` / `code_preferences` split, contradictions and stale references fixed, jetjat_mobile fixes synced)
+
+- Package versions: `starter_uikit` and `starter_toolkit` aligned to 3.1.0 (uikit has breaking theme/palette changes), new `request_logger` 0.1.0
+- CI runs the `starter_uikit` and `request_logger` test suites; package READMEs and changelogs, guides, rules and AI-context docs brought up to date
+- **Breaking**: `withRetry(maxRetries:)` / `RetryExecutor.maxRetries` renamed to `maxAttempts` — it always counted total calls (first call plus retries), so `3` meant two retries; the executor now asserts `maxAttempts >= 1`
+- `UnknownException.canRetry` is now `false` (retrying a bug only repeats it); `ExceptionUiMapper` regenerated to match
+- Submit, resend and delete handlers (`LoginBloc`, `RegistrationBloc`, `OtpBloc`, `TaskCreationBloc`, `TaskDeleteBloc`) use `droppable()`, so a second tap while a request runs is ignored
+- `AppCard`, `AppListTile`, `AppCheckboxField`, the text-field clear / show-password icons and the calendar date item are tappable through `AppTapArea` (reachable by screen readers and keyboard)
+- The app shell (`Application`, `ThemedMaterialApp`) composes providers and the `GlobalRouteWrapper` / `ApplicationWrapper` with `Nested` (`nested` is now a direct dependency); both wrappers are `SingleChildStatelessWidget`s
+- `TapActivator` moved from `starter_uikit` into the app (`features/application/environment/ui/switcher/widget/`) — it only serves the hidden dev menu
+- BLoC rules live only in `docs/rules/bloc.md`; the `freezed_bloc` and `ai_agent` guides were removed (the ai-context maintenance notes moved to `docs/ai-context/README.md`)
+
+### Removed
+- Hand-rolled `SettingsCard`, `SettingsTile`, `ProfileInfoTile` and the gallery `ExampleTile`, superseded by the shared widgets
+- Per-repository unit tests superseded by the feature-flow tests
+- CocoaPods leftovers from the iOS Runner project
+
+### Fixed
+- Registration screen was titled "Login"
+- Search icon rendered as a solid disk (replaced with a stroked magnifier)
+- Mock tasks did not persist because each repository got its own `TaskDataSource`
+- Error cause was lost in `AppException` and the request logger — error type, message and server body are now shown
+- Auth token save bypassed the repository executor
+- Swift 6 build errors from `app_settings` (overridden)
+
 ## [3.0.0] - 2026-07-25
 
 ### Added

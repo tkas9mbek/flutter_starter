@@ -45,6 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "cancel": MessageLookupByLibrary.simpleMessage("Отмена"),
         "cancellation": MessageLookupByLibrary.simpleMessage("Отмена"),
         "checkboxField": MessageLookupByLibrary.simpleMessage("Чекбокс"),
+        "clearField": MessageLookupByLibrary.simpleMessage("Очистить"),
         "confirm": MessageLookupByLibrary.simpleMessage("Подтвердить"),
         "confirmAction":
             MessageLookupByLibrary.simpleMessage("Подтвердить действие"),
@@ -154,6 +155,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Тонкий разделитель"),
         "titleAppBar": MessageLookupByLibrary.simpleMessage("Title App Bar"),
         "toSelect": MessageLookupByLibrary.simpleMessage("Выбрать"),
+        "togglePasswordVisibility": MessageLookupByLibrary.simpleMessage(
+            "Показать или скрыть пароль"),
         "transparentAppBar":
             MessageLookupByLibrary.simpleMessage("Transparent App Bar"),
         "tryRefreshPage": MessageLookupByLibrary.simpleMessage(

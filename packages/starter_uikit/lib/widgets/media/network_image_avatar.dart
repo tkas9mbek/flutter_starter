@@ -4,11 +4,9 @@ import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
 
-final _colors = [
-  AppColors.brightAmber,
-  AppColors.vibrantGreen,
-  AppColors.vividPurple,
-];
+// Raw palette on purpose: the fallback needs several fills, each deep enough
+// for the `onPrimary` initial in both brightnesses.
+final _colors = [AppColors.navy600, AppColors.greenDark, AppColors.cyan700];
 
 /// Circular avatar that loads [imageUrl] with caching, showing a spinner
 /// while loading. On error it falls back to [placeholder], or to the first
@@ -29,6 +27,7 @@ class NetworkImageAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
     final randomColor = _colors[imageUrl.hashCode % _colors.length];
 
@@ -42,16 +41,14 @@ class NetworkImageAvatar extends StatelessWidget {
           imageUrl: imageUrl,
           fit: BoxFit.cover,
           placeholder: (context, url) =>
-              const CustomCircularProgressIndicator.adaptive(
-                color: AppColors.pureWhite,
-              ),
+              CustomCircularProgressIndicator.adaptive(color: theme.onPrimary),
           errorWidget: (context, url, error) => placeholder != null
               ? Image(image: placeholder!, fit: BoxFit.cover)
               : Center(
                   child: Text(
                     name?.isEmpty ?? true ? '-' : name![0].toUpperCase(),
                     style: textStyles.boldTitle18.copyWith(
-                      color: AppColors.pureWhite,
+                      color: theme.onPrimary,
                     ),
                   ),
                 ),

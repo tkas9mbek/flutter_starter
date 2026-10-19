@@ -4,7 +4,8 @@ import 'package:starter/features/task/ui/search/bloc/tasks_search_bloc.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
-import 'package:starter_uikit/widgets/media/svg_icon.dart';
+import 'package:starter_uikit/widgets/misc/app_list_tile.dart';
+import 'package:starter_uikit/widgets/misc/grouped_rows_card.dart';
 import 'package:starter_uikit/widgets/status/empty_information_body.dart';
 
 /// Idle-state body: recent queries the user can re-run, or a hint when
@@ -25,29 +26,44 @@ class RecentQueriesList extends StatelessWidget {
     }
 
     return ListView(
-      padding: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(localizer.recentSearches, style: textStyles.mediumBody14),
-            TextButton(
-              onPressed: () => context.read<TasksSearchBloc>().add(
-                const TasksSearchEvent.recentCleared(),
+        Padding(
+          padding: const EdgeInsets.only(left: 16),
+          child: Row(
+            children: [
+              Expanded(
+                child: Text(
+                  localizer.recentSearches,
+                  style: textStyles.mediumBody13.copyWith(
+                    color: theme.textSecondary,
+                  ),
+                ),
               ),
-              child: Text(localizer.clearAll),
-            ),
-          ],
-        ),
-        ...queries.map(
-          (query) => ListTile(
-            contentPadding: EdgeInsets.zero,
-            leading: SvgIcon(UiSvgIcons.clockTime, color: theme.textSecondary),
-            title: Text(query, style: textStyles.regularBody14),
-            onTap: () => context.read<TasksSearchBloc>().add(
-              TasksSearchEvent.querySubmitted(query),
-            ),
+              TextButton(
+                onPressed: () => context.read<TasksSearchBloc>().add(
+                  const TasksSearchEvent.recentCleared(),
+                ),
+                child: Text(
+                  localizer.clearAll,
+                  style: textStyles.mediumBody13.copyWith(color: theme.accent),
+                ),
+              ),
+            ],
           ),
+        ),
+        GroupedRowsCard(
+          children: [
+            for (final query in queries) ...[
+              AppListTile(
+                icon: UiSvgIcons.clockTime,
+                title: query,
+                onTap: () => context.read<TasksSearchBloc>().add(
+                  TasksSearchEvent.querySubmitted(query),
+                ),
+              ),
+            ],
+          ],
         ),
       ],
     );

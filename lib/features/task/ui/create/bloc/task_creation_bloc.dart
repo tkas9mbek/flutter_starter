@@ -1,3 +1,4 @@
+import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
@@ -12,7 +13,7 @@ part 'task_creation_event_state.dart';
 class TaskCreationBloc extends Bloc<TaskCreationEvent, TaskCreationState> {
   TaskCreationBloc(this._taskRepository)
     : super(const TaskCreationState.initial()) {
-    on<_SubmittedTaskCreationEvent>(_onSubmitted);
+    on<_SubmittedTaskCreationEvent>(_onSubmitted, transformer: droppable());
   }
 
   final TaskRepository _taskRepository;

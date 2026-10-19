@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:starter_uikit/theme/app_radii.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
 /// How an [AppShimmer] group renders.
@@ -78,8 +79,8 @@ class _AppShimmerState extends State<AppShimmer> with WidgetsBindingObserver {
     return Shimmer.fromColors(
       enabled: animate,
       period: const Duration(milliseconds: 1500),
-      baseColor: theme.surface,
-      highlightColor: theme.surfaceMuted,
+      baseColor: theme.shimmerBase,
+      highlightColor: theme.shimmerHighlight,
       child: widget.child,
     );
   }
@@ -88,7 +89,12 @@ class _AppShimmerState extends State<AppShimmer> with WidgetsBindingObserver {
 /// Static rounded placeholder shape for use inside an [AppShimmer]. Has no
 /// animation of its own — the surrounding [AppShimmer] drives the shimmer.
 class AppShimmerBox extends StatelessWidget {
-  const AppShimmerBox({this.radius = 8, this.width, this.height, super.key});
+  const AppShimmerBox({
+    this.radius = AppRadii.md,
+    this.width,
+    this.height,
+    super.key,
+  });
 
   final double radius;
   final double? width;
@@ -102,7 +108,7 @@ class AppShimmerBox extends StatelessWidget {
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: theme.surface,
+        color: theme.shimmerBase,
         borderRadius: BorderRadius.circular(radius),
       ),
     );
@@ -123,7 +129,7 @@ class AppShimmerCircle extends StatelessWidget {
       width: size,
       height: size,
       decoration: BoxDecoration(
-        color: theme.surface,
+        color: theme.shimmerBase,
         shape: BoxShape.circle,
       ),
     );
@@ -137,7 +143,7 @@ class AppShimmerCircle extends StatelessWidget {
 class AppShimmerText extends StatelessWidget {
   const AppShimmerText({
     this.height = 12,
-    this.radius = 6,
+    this.radius = AppRadii.xs,
     this.sampleText = 'Lorem ipsum dolor',
     this.width,
     this.style,

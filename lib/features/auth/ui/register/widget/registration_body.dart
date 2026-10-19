@@ -3,6 +3,7 @@ import 'package:starter/features/auth/ui/register/widget/registration_form_field
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
+import 'package:starter_uikit/widgets/text/title_subtitle.dart';
 
 class RegistrationBody extends StatelessWidget {
   const RegistrationBody({
@@ -18,29 +19,32 @@ class RegistrationBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final textStyles = ThemeProvider.of(context).textStyles;
     final theme = ThemeProvider.of(context).theme;
+    final localizer = Localizer.of(context);
 
-    return Center(
+    return SafeArea(
       child: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+        padding: const EdgeInsets.fromLTRB(16, 32, 16, 24),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            Text(Localizer.of(context).signUp, style: textStyles.boldTitle20),
+            TitleSubtitle(title: localizer.signUp, textAlign: TextAlign.start),
             const SizedBox(height: 24),
             const RegistrationFormFields(),
             const SizedBox(height: 24),
-            GestureDetector(
-              onTap: onLoginTap,
-              child: Text(
-                Localizer.of(context).haveAccount,
-                style: textStyles.boldBody13.copyWith(color: theme.primary),
-              ),
-            ),
-            const SizedBox(height: 32),
             AppElevatedButton.big(
               context: context,
-              text: Localizer.of(context).toRegister,
+              text: localizer.toRegister,
               onPressed: onRegisterPressed,
+            ),
+            const SizedBox(height: 16),
+            Center(
+              child: TextButton(
+                onPressed: onLoginTap,
+                child: Text(
+                  localizer.haveAccount,
+                  style: textStyles.mediumBody14.copyWith(color: theme.accent),
+                ),
+              ),
             ),
           ],
         ),

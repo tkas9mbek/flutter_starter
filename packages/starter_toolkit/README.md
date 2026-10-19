@@ -1,6 +1,6 @@
 # Starter Toolkit
 
-Pure Dart utilities and common functionality for Flutter applications. This package contains no Flutter UI dependencies and focuses on business logic, data layer utilities, and shared helpers.
+Shared data-layer code and utilities for Flutter applications: HTTP client, exceptions, repository executors, mock helpers, form validation, formatting and platform helpers. It contains no widgets (some helpers take a `BuildContext` for localization).
 
 ## Features
 
@@ -8,7 +8,8 @@ Pure Dart utilities and common functionality for Flutter applications. This pack
 - **API Client**: Abstract HTTP client interface with response type-based methods
 - **Exception Handling**: Sealed class exception system with UI configuration annotations
 - **Repository Executors**: Decorator pattern for cross-cutting concerns (retry, error handling); `RepositoryCache` collaborator for keyed TTL caching
-- **Interceptors**: Authentication refresh and error handling for Dio
+- **Interceptors**: Authentication refresh (`AuthRefreshInterceptor`) and error mapping (`AppErrorInterceptor`) for Dio
+- **Mock Helpers**: `MockNetworkBehavior` — shared latency and random failures for `Mock*DataSource` twins
 
 ### Utilities
 - **Date/Time Helpers**: Extensions and functions for date manipulation and formatting
@@ -16,16 +17,19 @@ Pure Dart utilities and common functionality for Flutter applications. This pack
 - **Form Formatters**: Input formatters for masks and special characters
 - **String Functions**: Capitalize, formatting, and string manipulation utilities
 - **Converters**: Type converters for JSON serialization (money, primitives)
+- **Misc**: `Debouncer`, `SemanticVersion`
 
 ### BLoC Utilities
 - **BlocLoadState**: Enum for tracking loading states
 - **PaginatedData**: Helper for paginated list management
+- **RefreshableBloc**: Mixin that drives pull-to-refresh indicators
 
 ### Platform Helpers
-- **File Upload**: Image picker integration
-- **Screenshot**: App screenshot capture utilities
-- **Permission Dialogs**: Permission request helpers
-- **URL Launcher**: Safe URL launching with error handling
+- **File Upload**: Builds Dio `FormData` for picked images
+- **Screenshot**: Widget screenshot capture (`RepaintBoundary` + `GlobalKey`)
+- **Permission Dialogs**: Permission request helpers with a rationale dialog
+- **URL Launcher**: Phone, messenger, store and web launching that throws `UrlLaunchFailedException`
+- **Crash Reporting**: `CrashReporter` interface with a Firebase Crashlytics implementation
 
 ### Models
 - **TitleItem**: Common title/value pair model
@@ -52,24 +56,32 @@ import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 // Use predefined exceptions
 throw const NoInternetException();
-throw const ServerException(statusCode: 500, message: 'Server error');
+throw const ServerException(statusCode: 502, message: 'Bad gateway');
 throw const UnauthorizedException();
 
-// Create from Dio response
+// Create from Dio response (401 / 403 / 500 map to their own types,
+// everything else becomes ServerException)
 final exception = AppException.fromDioResponse(
   statusCode: response.statusCode,
   response: response,
 );
 ```
 
-**Available exceptions:**
+**Available exceptions** (`AppException` is a sealed class; every subtype has `name` and `canRetry`):
 - `NoInternetException` - Network connectivity issues
-- `ServerException` - Server errors (5xx)
+- `ServerException` - Any other HTTP error (`statusCode`, optional `message`)
 - `UnauthorizedException` - Authentication required (401)
 - `ForbiddenException` - Insufficient permissions (403)
-- `NotFoundException` - Resource not found (404)
-- `ValidationException` - Request validation errors (400)
-- `UnexpectedErrorException` - Generic unexpected errors
+- `InternalServerErrorException` - Backend failure (500)
+- `UnknownException` - Unexpected error (`error`, `stackTrace`); not retryable, since retrying a bug only repeats it
+- `DevelopmentException` - Programming error, never shown in detail
+- `UrlLaunchFailedException` - A URL could not be opened
+
+`toString()` prints the type name with its payload (e.g. `Server(statusCode: 502, message: Bad gateway)`, `Unknown(<error>)`), so logs show the cause. `AppErrorInterceptor` likewise copies the original Dio error text into `DioException.message` when it replaces `error` with an `AppException`.
+
+```dart
+dio.interceptors.add(const AppErrorInterceptor());
+```
 
 ### Repository Executors
 
@@ -108,7 +120,7 @@ class TaskRepository {
   return TaskRepository(
     executor: base,
     creationExecutor: base.withRetry(
-      maxRetries: 5,
+      maxAttempts: 5,
       retryDelay: const Duration(seconds: 1),
     ),
     dataSource: getIt<TaskDataSource>(),
@@ -123,17 +135,17 @@ to named params when a second behavior appears. See the full walkthrough
 
 **Available executors:**
 - `RawRepositoryExecutor` - Base executor, no additional behavior
-- `ErrorHandlingExecutor` - Converts all exceptions to AppException; always innermost
-- `RetryExecutor` - Automatic retry with exponential backoff
+- `ErrorHandlingExecutor` - Converts Dio errors to `AppException`; unexpected errors become `DevelopmentException` in release (rethrown as-is in debug); always innermost
+- `RetryExecutor` - Automatic retry with linear backoff (`maxAttempts` total calls)
 
 **Available collaborators:**
 - `RepositoryCache` / `InMemoryRepositoryCache` - Keyed TTL cache; injected as a
   sibling dependency (not a decorator), registered as an app-wide singleton
 
 **Retry configuration:**
-- Default: 3 attempts with 2-second exponential backoff
-- Delay formula: `retryDelay * (attempt + 1)`
-- Example: 0s, 2s, 4s, 6s (total ~12s for 3 retries)
+- Default: 3 attempts in total (`maxAttempts`) with a 2-second base delay
+- Linear backoff: after failed attempt *n* (counting from 1) it waits `retryDelay * n`
+- Default timeline: attempt, wait 2s, attempt, wait 4s, final attempt (errors with `canRetry == false` are rethrown immediately)
 
 ### API Client
 
@@ -143,8 +155,8 @@ Abstract client for type-safe HTTP operations:
 import 'package:starter_toolkit/data/client/api_client.dart';
 import 'package:starter_toolkit/data/client/http_method.dart';
 
-class UserRemoteDataSource {
-  const UserRemoteDataSource(this._client);
+class UserApiDataSource {
+  const UserApiDataSource(this._client);
 
   final ApiClient _client;
 
@@ -180,12 +192,59 @@ class UserRemoteDataSource {
 }
 ```
 
+Other response types: `requestPlainText` (`String`) and `requestStream` (`Stream<List<int>>`). Every method also accepts `body`, `queryParameters` and `headers`; `DioApiClient` is the Dio-backed implementation.
+
 **HTTP Methods:**
 - `HttpMethod.get`
 - `HttpMethod.post`
 - `HttpMethod.put`
 - `HttpMethod.patch`
 - `HttpMethod.delete`
+
+### Mock Network Behavior
+
+One shared source of latency and random failures for every `Mock*DataSource`, so mock builds feel like a real backend on every screen:
+
+```dart
+import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
+
+class MockTaskDataSource implements TaskDataSource {
+  const MockTaskDataSource(this._network);
+
+  final MockNetworkBehavior _network;
+
+  @override
+  Future<List<Task>> getTasks() async {
+    await _network.simulate();   // wait, then fail at `failureRate`
+
+    return _tasks;
+  }
+}
+
+// Register once (defaults: 500 ms wait, 5% failure rate)
+getIt.registerSingleton<MockNetworkBehavior>(const MockNetworkBehavior());
+
+// Tests: no wait, never fails
+const MockNetworkBehavior.instant();
+```
+
+- `simulate()` waits `wait`, then throws `InternalServerErrorException` with probability `failureRate`.
+- `delay()` only waits — use it in twins that also serve non-mock builds and must never fail at random.
+- `chance(rate)` varies a response shape (e.g. an occasional empty list); inject `random` for deterministic tests.
+
+### Crash Reporting
+
+`CrashReporter` keeps Firebase out of everything below `main.dart`. The global `crashReporter` defaults to `NoopCrashReporter`, so tests and pre-bootstrap code never touch Firebase; swap it once Firebase initializes:
+
+```dart
+import 'package:starter_toolkit/utils/crash/crash_reporter.dart' as crash;
+
+await Firebase.initializeApp();
+crash.crashReporter = const crash.FirebaseCrashReporter();
+
+// Anywhere later
+await crash.crashReporter.recordError(error, stackTrace, reason: 'sync failed');
+```
 
 ### Date/Time Extensions
 
@@ -214,16 +273,16 @@ import 'package:starter_toolkit/utils/date/date_time_functions.dart';
 
 // Get localized date label
 final label = getLocalizedDateLabel(context, DateTime.now());
-// Returns: "Today", "Tomorrow", or formatted date
+// Returns: "Today", "Yesterday", or a "d MMMM" date
 
 // Format time range
 final timeRange = getFormattedTimeRange(
-  context,
-  startTime: DateTime(2025, 11, 21, 9, 0),
-  endTime: DateTime(2025, 11, 21, 17, 30),
+  DateTime(2025, 11, 21, 9, 0),
+  DateTime(2025, 11, 21, 17, 30),
 );
-// Returns: "09:00 - 17:30"
 ```
+
+More range formatters live in `package:starter_toolkit/utils/functions/format_time_range.dart` (`formatDateRange`, `formatTimeRange`, `formatTimeRangeAndDay`).
 
 ### Form Validators
 
@@ -246,6 +305,10 @@ FormBuilderTextField(
 )
 ```
 
+Also available: `email`, `passwordMinLength`, `phonePattern`. Every validator takes an optional `message` and (except `required`) passes empty values, so combine with `required` to forbid them.
+
+Validate a whole `FormBuilder` and scroll to the first invalid field with `saveAndValidateForm(formKey)` (`utils/form/save_and_validate_form.dart`); for single-field screens use `ValidatableTextEditingController` with `validateAll`.
+
 ### Form Input Formatters
 
 ```dart
@@ -253,7 +316,8 @@ import 'package:starter_toolkit/utils/form/form_input_formatters.dart';
 
 TextField(
   inputFormatters: [
-    FormInputFormatters.phone(),  // Phone number mask
+    FormInputFormatters.phoneShortMask,  // (###) ###-##-##
+    FormInputFormatters.phoneMaxLength,
   ],
 )
 ```
@@ -285,11 +349,11 @@ emit(state.copyWith(loadState: BlocLoadState.loaded, items: items));
 ```dart
 import 'package:starter_toolkit/utils/helpers/file_upload_helper.dart';
 
-// Pick image from gallery
-final file = await FileUploadHelper.pickImageFromGallery(context);
+// Wrap a picked image (image_picker `XFile`) as multipart form data
+final formData = await FileUploadHelper.createImageFormData(xFile);
 
-// Pick image from camera
-final file = await FileUploadHelper.pickImageFromCamera(context);
+// Several images, each sent under the `file` field
+final multiple = await FileUploadHelper.createMultipleImagesFormData(xFiles);
 ```
 
 ### Screenshot Helper
@@ -300,6 +364,7 @@ import 'package:starter_toolkit/utils/helpers/app_screenshot_helper.dart';
 final helper = AppScreenshotHelper();
 
 // Capture widget screenshot
+// `globalKey` must belong to a RepaintBoundary; returns PNG bytes or null
 final bytes = await helper.captureScreenshot(
   globalKey,
   context: context,
@@ -311,15 +376,15 @@ final bytes = await helper.captureScreenshot(
 ```dart
 import 'package:starter_toolkit/utils/helpers/url_launcher_helper.dart';
 
-// Launch URL with error handling
-await UrlLauncherHelper.launchUrlString(context, 'https://example.com');
+// Throws UrlLaunchFailedException when the platform cannot open the URL
+await UrlLauncherHelper.launchWebUrl('https://example.com');
+await UrlLauncherHelper.launchWebUrl('https://example.com', useExternalBrowser: true);
 
-// Launch phone number
-await UrlLauncherHelper.launchUrlString(context, 'tel:+1234567890');
-
-// Launch email
-await UrlLauncherHelper.launchUrlString(context, 'mailto:support@example.com');
+await UrlLauncherHelper.launchPhone('+1234567890');
+await UrlLauncherHelper.launchSms('+1234567890');
 ```
+
+Also: `launchWhatsapp`, `launchTelegram`, `launchMessenger`, `launchStore`.
 
 ### String Formatting
 
@@ -330,8 +395,9 @@ import 'package:starter_toolkit/utils/functions/string_formatting_functions.dart
 final text = 'hello world';
 final capitalized = capitalizeFirstLetter(text);  // "Hello world"
 
-// Format phone number
-final phone = formatPhoneNumber('+71234567890');  // "+7 (123) 456-78-90"
+// Strip display formatting from a phone number
+final phone = cleanPhoneNumber('+7 (123) 456-78-90');  // "+71234567890"
+final compact = removeSpaceAndSymbols('a b-c');         // "abc"
 ```
 
 ### Time Formatting
@@ -340,12 +406,12 @@ final phone = formatPhoneNumber('+71234567890');  // "+7 (123) 456-78-90"
 import 'package:starter_toolkit/utils/functions/format_duration.dart';
 import 'package:starter_toolkit/utils/functions/format_hours_minutes_seconds.dart';
 
-// Format duration
+// Localized "Xh Ym" (hours dropped when under one hour)
 final duration = Duration(hours: 2, minutes: 30);
-final formatted = formatDuration(duration);  // "2h 30m"
+final formatted = formatDuration(context, duration);
 
-// Format time components
-final time = formatHoursMinutesSeconds(hours: 1, minutes: 30);  // "01:30"
+// Seconds remaining as a countdown string
+final countdown = formatHoursMinutesSeconds(90);  // "01:30"
 ```
 
 ## Localization
@@ -392,9 +458,9 @@ final class NoInternetException extends AppException {
 ```
 
 **Adding new exceptions:**
-1. Create sealed class extending `AppException` with `@ExceptionUiConfig`
-2. Run: `dart run utils/generators/generate_exception_mapper.dart`
-3. Code generator automatically updates mapper and decorator
+1. Add a `final class` subtype of the sealed `AppException` with `@ExceptionUiConfig` (override `name` and `canRetry`)
+2. Add its ARB keys and run `fvm flutter --no-color pub global run intl_utils:generate`
+3. Run (from the repo root): `dart run utils/generators/generate_exception_mapper.dart` — it updates `ExceptionUiMapper` in `starter_uikit`
 
 ### Repository Executor Pattern
 
@@ -410,7 +476,7 @@ final withErrors = base.withErrorHandling();
 
 // Add retry logic
 final withRetry = withErrors.withRetry(
-  maxRetries: 3,
+  maxAttempts: 3,
   retryDelay: const Duration(seconds: 2),
 );
 ```
@@ -446,7 +512,7 @@ Generate Freezed models and JSON serialization:
 fvm flutter pub run build_runner build --delete-conflicting-outputs
 ```
 
-Generate exception mapper:
+Generate exception mapper (from the repo root, after `AppException` changes):
 
 ```bash
 dart run utils/generators/generate_exception_mapper.dart
@@ -488,9 +554,11 @@ fvm flutter test --coverage
 - `mask_text_input_formatter` - Input masks
 
 **Platform:**
-- `image_picker` - Image selection
+- `image_picker` - Image selection (`XFile` for upload helpers)
 - `permission_handler` - Permission requests
 - `url_launcher` - Open URLs
+- `firebase_crashlytics` - `FirebaseCrashReporter`
+- `http_parser` - Multipart content types
 
 **Localization:**
 - `intl` - Internationalization
@@ -499,6 +567,7 @@ fvm flutter test --coverage
 ## Related Packages
 
 - **starter_uikit**: UI components and theme system (depends on starter_toolkit)
+- **request_logger**: In-app HTTP request logger (a Dio interceptor; independent of this package)
 
 ## License
 

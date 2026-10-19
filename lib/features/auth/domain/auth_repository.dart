@@ -59,7 +59,9 @@ class AuthRepository {
       () => _unauthorizedDataSource.login(body),
     );
 
-    await _localDataSource.saveToken(response);
+    await _repositoryExecutor.execute(
+      () => _localDataSource.saveToken(response),
+    );
 
     _controller.add(AuthStatus.authenticated);
   }
@@ -80,7 +82,9 @@ class AuthRepository {
       () => _unauthorizedDataSource.register(body),
     );
 
-    await _localDataSource.saveToken(response);
+    await _repositoryExecutor.execute(
+      () => _localDataSource.saveToken(response),
+    );
 
     _controller.add(AuthStatus.authenticated);
   }
@@ -102,7 +106,9 @@ class AuthRepository {
       () => _unauthorizedDataSource.verifyOtp(body),
     );
 
-    await _localDataSource.saveToken(response);
+    await _repositoryExecutor.execute(
+      () => _localDataSource.saveToken(response),
+    );
 
     _controller.add(AuthStatus.authenticated);
   }

@@ -3,17 +3,17 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:starter_toolkit/data/exceptions/app_exception.dart';
-import 'package:starter_uikit/configs/ui_consts.dart';
 import 'package:starter_uikit/resources/resources.dart';
+import 'package:starter_uikit/theme/app_radii.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/mappers/exception_ui_mapper.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
 
 enum _NotificationSnackBarStyle { success, error, information }
 
-/// Top-of-screen notification bar with a themed background, message text and
-/// a leading icon.
+/// Top-of-screen flat notification bar with a leading icon and message:
+/// success/error are solid status fills, information is a bordered surface.
 ///
 /// Create via [NotificationSnackBar.success], [NotificationSnackBar.error] or
 /// [NotificationSnackBar.information] — each has a default icon that can be
@@ -50,7 +50,7 @@ class NotificationSnackBar extends StatelessWidget {
     key: key,
   );
 
-  /// Primary-colored bar for neutral information.
+  /// Bordered surface bar for neutral information.
   factory NotificationSnackBar.information({
     required String text,
     String iconPath = UiSvgIcons.notificationBell,
@@ -70,44 +70,50 @@ class NotificationSnackBar extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
-
-    final backgroundColor = switch (_style) {
-      _NotificationSnackBarStyle.success => theme.success,
-      _NotificationSnackBarStyle.error => theme.error,
-      _NotificationSnackBarStyle.information => theme.primary,
+    final (fill, outline, foreground, iconColor) = switch (_style) {
+      _NotificationSnackBarStyle.success => (
+        theme.success,
+        theme.success,
+        theme.onStatus,
+        theme.onStatus,
+      ),
+      _NotificationSnackBarStyle.error => (
+        theme.error,
+        theme.error,
+        theme.onStatus,
+        theme.onStatus,
+      ),
+      _NotificationSnackBarStyle.information => (
+        theme.surface,
+        theme.borderStrong,
+        theme.textPrimary,
+        theme.accent,
+      ),
     };
-    final color = theme.onStatus;
 
+    // Transparent Material only supplies a text theme to the overlay entry.
     return Material(
-      elevation: 5,
-      borderRadius: BorderRadius.circular(6),
-      color: backgroundColor,
-      child: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Row(
-          children: [
-            Expanded(
-              child: RichText(
-                textAlign: TextAlign.center,
-                text: TextSpan(
-                  children: <InlineSpan>[
-                    WidgetSpan(
-                      child: SvgPicture.asset(
-                        iconPath,
-                        package: UiConsts.package,
-                        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
-                      ),
-                    ),
-                    const WidgetSpan(child: SizedBox(width: 16)),
-                    TextSpan(
-                      text: text,
-                      style: textStyles.regularBody13.copyWith(color: color),
-                    ),
-                  ],
+      type: MaterialType.transparency,
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          color: fill,
+          borderRadius: BorderRadius.circular(AppRadii.md),
+          border: Border.all(color: outline),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+          child: Row(
+            children: [
+              SvgIcon(iconPath, size: 20, color: iconColor),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  text,
+                  style: textStyles.regularBody14.copyWith(color: foreground),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

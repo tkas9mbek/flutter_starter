@@ -14,6 +14,7 @@ class DioProvider {
     bool useToken = true,
     Function(DioException)? customDioErrorHandler,
     String? baseUrl,
+    List<Interceptor> extraInterceptors = const [],
   }) {
     final baseOptions = BaseOptions(
       receiveDataWhenStatusError: true,
@@ -45,6 +46,8 @@ class DioProvider {
             customDioErrorHandler?.call(exception),
       ),
     );
+
+    dio.interceptors.addAll(extraInterceptors);
 
     return dio;
   }

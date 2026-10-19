@@ -1,13 +1,21 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/utils/bloc/bloc_load_state.dart';
 import 'package:starter_toolkit/utils/bloc/paginated_data.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
+import 'package:starter_uikit/resources/resources.dart';
+import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
+import 'package:starter_uikit/widgets/media/svg_icon.dart';
+import 'package:starter_uikit/widgets/misc/app_card.dart';
+import 'package:starter_uikit/widgets/misc/app_list_tile.dart';
 import 'package:starter_uikit/widgets/screen/paginated_list_view.dart';
+import 'package:starter_uikit/widgets/status/failure_widget.dart';
 
 /// **INTERNAL USE ONLY**: Demonstrates [PaginatedListView] driven by
 /// [PaginatedData] and [BlocLoadState] — in an app these live in a bloc.
+/// The third page fails once to show the footer error row and its retry.
 @visibleForTesting
 @RoutePage()
 class PaginationExampleScreen extends StatefulWidget {
@@ -30,6 +38,7 @@ class _PaginationExampleScreenState extends State<PaginationExampleScreen> {
     perPage: _pageSize,
   );
   var _status = BlocLoadState.initial;
+  var _failedOnce = false;
 
   Future<void> _loadNextPage() async {
     if (_status.isLoading) {
@@ -40,6 +49,15 @@ class _PaginationExampleScreenState extends State<PaginationExampleScreen> {
 
     await Future.delayed(const Duration(milliseconds: 800));
     if (!mounted) {
+      return;
+    }
+
+    if (_data.nextPage == 3 && !_failedOnce) {
+      setState(() {
+        _failedOnce = true;
+        _status = BlocLoadState.failure;
+      });
+
       return;
     }
 
@@ -61,17 +79,22 @@ class _PaginationExampleScreenState extends State<PaginationExampleScreen> {
   void _reset() => setState(() {
     _data = _data.copyWith(page: 0, items: []);
     _status = BlocLoadState.initial;
+    _failedOnce = false;
   });
 
   @override
   Widget build(BuildContext context) {
     final localizer = UikitLocalizer.of(context);
+    final theme = ThemeProvider.of(context).theme;
 
     return Scaffold(
       appBar: TitleAppBar(
         title: localizer.paginationWidgets,
         actions: [
-          IconButton(icon: const Icon(Icons.refresh), onPressed: _reset),
+          IconButton(
+            icon: SvgIcon(UiSvgIcons.refreshArrow, color: theme.textPrimary),
+            onPressed: _reset,
+          ),
         ],
       ),
       body: PaginatedListView<int>(
@@ -81,12 +104,15 @@ class _PaginationExampleScreenState extends State<PaginationExampleScreen> {
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),
         separator: const SizedBox(height: 8),
-        itemBuilder: (context, item, index) => Card(
-          margin: EdgeInsets.zero,
-          child: ListTile(
-            title: Text(localizer.paginationItem(item)),
+        errorWidget: FailureWidget.small(
+          exception: const NoInternetException(),
+          onRetry: _loadNextPage,
+        ),
+        itemBuilder: (context, item, index) => AppCard(
+          child: AppListTile(
+            title: localizer.paginationItem(item),
             subtitle: _data.reachedEnd && index == _data.length - 1
-                ? Text(localizer.endReached)
+                ? localizer.endReached
                 : null,
           ),
         ),

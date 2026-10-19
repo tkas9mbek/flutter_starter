@@ -2,7 +2,9 @@
 
 ## Core Principles
 
-1. **Dependency Inversion**: Both Data and UI layers depend on Domain abstractions
+1. **Dependency Inversion (Data → Domain only)**: Data implements the abstract `*DataSource`
+   contracts Domain defines. Presentation depends on Domain's concrete Repositories directly — that
+   edge is an ordinary downward dependency, not an inverted one (see "Why Concrete Repositories?")
 2. **Testability**: Easy testing through proper abstraction and dependency injection
 3. **Separation of Concerns**: Each layer has clearly defined responsibilities
 4. **Simplicity**: Minimize unnecessary abstractions
@@ -22,8 +24,8 @@
              ↓
 ┌─────────────────────────────────┐
 │       Domain Layer              │
-│  (Abstract DS, Repository)      │  ← Both layers depend on this!
-└────────────┬────────────────────┘
+│  (Abstract DS, Repository)      │  ← Data implements the abstract DS here;
+└────────────┬────────────────────┘    Presentation calls the concrete Repository
              ↑ implements
 ┌────────────┴────────────────────┐
 │        Data Layer               │
@@ -31,7 +33,9 @@
 └─────────────────────────────────┘
 ```
 
-**Key Insight**: Domain defines contracts (interfaces). Both Presentation and Data depend on Domain.
+**Key Insight**: Domain defines the abstract `*DataSource` contract that Data implements (the
+inverted edge), and hosts the concrete Repository that Presentation calls directly (an ordinary
+downward dependency — see "Why Concrete Repositories?").
 
 ---
 
@@ -80,13 +84,16 @@ abstract class UserDataSource {
   Future<User> getUserById(String id);
 }
 
-// Repository (concrete, delegates to abstract DS)
+// Repository (concrete, delegates to abstract DS through a RepositoryExecutor)
 class UserRepository {
-  final UserDataSource _dataSource;
-  const UserRepository(this._dataSource);
+  const UserRepository(this._executor, this._dataSource);
 
-  Future<List<User>> getUsers() => _dataSource.getUsers();
-  Future<User> getUserById(String id) => _dataSource.getUserById(id);
+  final RepositoryExecutor _executor;
+  final UserDataSource _dataSource;
+
+  Future<List<User>> getUsers() => _executor.execute(_dataSource.getUsers);
+  Future<User> getUserById(String id) =>
+      _executor.execute(() => _dataSource.getUserById(id));
 }
 ```
 
@@ -105,15 +112,15 @@ class UserRepository {
 **Purpose:** Implement data contracts
 
 **Contains:**
-- **DataSource Implementations**: Remote, Local, Mock
+- **DataSource Implementations**: `Api*` (REST), `Local*`/`Secure*`, and offline `Mock*` twins in `data/mock/` ([mocking.md](./mocking.md))
 
 **Note:** We use the same domain models for API responses (no separate DTOs).
 
 ```dart
 // DataSource Implementation (implements Domain contract)
-class RemoteUserDataSource implements UserDataSource {
+class ApiUserDataSource implements UserDataSource {
   final ApiClient _client;
-  const RemoteUserDataSource(this._client);
+  const ApiUserDataSource(this._client);
 
   @override
   Future<List<User>> getUsers() => _client.requestJsonList<User>(
@@ -146,30 +153,36 @@ class RemoteUserDataSource implements UserDataSource {
 
 **Purpose:** Display UI and manage presentation state
 
+**Layout:** `ui/` contains only subfeature folders (`ui/{subfeature}/{bloc,screen,widget}`) — never
+`bloc/`, `screen/`, or `widget/` at its root. Single-flow features use one subfeature named after the
+feature (e.g. `profile/ui/overview/`).
+
 **Contains:**
 - **BLoCs**: State management
 - **Widgets**: Reusable UI components
 - **Screens**: Full screen views
 
 ```dart
-// BLoC (depends on Domain)
+// BLoC (depends on Domain). Event case classes are private, states public.
 class UserListBloc extends Bloc<UserListEvent, UserListState> {
   final UserRepository _repository;
 
   UserListBloc(this._repository) : super(const UserListState.initial()) {
-    on<UserListRequested>(_onRequested);
+    on<_RequestedUserListEvent>(_onRequested);
   }
 
   Future<void> _onRequested(
-    UserListRequested event,
+    _RequestedUserListEvent event,
     Emitter<UserListState> emit,
   ) async {
     emit(const UserListState.loading());
+
     try {
       final users = await _repository.getUsers();
-      emit(UserListState.success(users));
+
+      return emit(UserListState.success(users));
     } on AppException catch (e) {
-      emit(UserListState.failure(e));
+      return emit(UserListState.failure(e));
     }
   }
 }
@@ -196,41 +209,31 @@ abstract class TaskDataSource {
 }
 
 // Data provides implementations
-class RemoteTaskDataSource implements TaskDataSource { ... }
-class LocalTaskDataSource implements TaskDataSource { ... }
-class MockTaskDataSource implements TaskDataSource { ... }
+class ApiTaskDataSource implements TaskDataSource { ... }   // REST
+class MockTaskDataSource implements TaskDataSource { ... }  // offline twin (data/mock/)
 
-// Easy switching via DI
-getIt.registerFactory<TaskDataSource>(() {
-  if (env == AppEnvironment.dev) return MockTaskDataSource();
-  return RemoteTaskDataSource(getIt<ApiClient>());
-});
+// Chosen in the feature's DI module (lib/core/di/mock_or_prod.dart)
+getIt.registerFactory<TaskDataSource>(
+  mockOrProd(
+    mock: () => MockTaskDataSource(getIt<MockNetworkBehavior>()),
+    prod: () => ApiTaskDataSource(getIt<ApiClient>()),
+  ),
+);
 ```
 
 ### Easy Testing
 
+Feature-flow tests wire the real twin — no hand-written fakes:
+
 ```dart
-// Test with mock DataSource
-class MockUserDataSource implements UserDataSource {
-  @override
-  Future<List<User>> getUsers() async => [mockUser1, mockUser2];
-}
-
-// Integration test
-final mockDS = MockUserDataSource();
-final repository = UserRepository(mockDS);
-final bloc = UserListBloc(repository);
-
-blocTest<UserListBloc, UserListState>(
-  'emits success when users loaded',
-  build: () => bloc,
-  act: (bloc) => bloc.add(const UserListEvent.requested()),
-  expect: () => [
-    const UserListState.loading(),
-    UserListState.success([mockUser1, mockUser2]),
-  ],
+final repository = TaskRepository(
+  const RawRepositoryExecutor().withErrorHandling(),
+  MockTaskDataSource(const MockNetworkBehavior.instant()),
 );
+final bloc = TasksListBloc(repository); // real bloc → real repo → real twin
 ```
+
+See [testing.md](./testing.md) §5.4.
 
 ---
 
@@ -238,18 +241,19 @@ blocTest<UserListBloc, UserListState>(
 
 Repositories are usually concrete because:
 
-1. **No logic** - Just delegation to DataSource
+1. **No logic** - Just delegation to DataSource through the executor
 2. **Single implementation** - Rarely need variants
 3. **Simpler** - Less boilerplate
 
 ```dart
 // ✅ Typical: Concrete Repository
 class TaskRepository {
-  final TaskDataSource _dataSource;
-  const TaskRepository(this._dataSource);
+  const TaskRepository(this._executor, this._dataSource);
 
-  Future<List<Task>> getTasks() => _dataSource.getTasks();
-  Future<Task> getTaskById(String id) => _dataSource.getTaskById(id);
+  final RepositoryExecutor _executor;
+  final TaskDataSource _dataSource;
+
+  Future<List<Task>> getTasks() => _executor.execute(_dataSource.getTasks);
 }
 
 // ❌ Unnecessary: Abstract Repository (unless you need it!)
@@ -281,7 +285,7 @@ Repository → dataSource.fetch()  ← Abstract interface
     ↓
 DataSource (Impl) → apiClient.request()  ← HTTP client
     ↓
-API Response → Domain Model (via Freezed @JsonSerializable)
+API Response → Domain Model (Freezed + json_serializable `fromJson`)
     ↓
 BLoC → emit(State)
     ↓
@@ -301,8 +305,10 @@ ElevatedButton(
 // 2. BLoC handler
 Future<void> _onRequested(event, emit) async {
   emit(const UserListState.loading());
+
   final users = await _repository.getUsers();  // 3. Call Repository
-  emit(UserListState.success(users));          // 6. Emit state
+
+  return emit(UserListState.success(users));   // 6. Emit state
 }
 
 // 3-5. Repository → DataSource → ApiClient → API
@@ -384,127 +390,33 @@ Use two-layer exception architecture:
 
 ### Data Layer Exceptions
 
-**Location:** `packages/starter_toolkit/lib/data/exceptions/`
-
-**Purpose:** Pure Dart exceptions without UI dependencies
-
-```dart
-// Domain exceptions use sealed class hierarchy
-sealed class AppException implements Exception {
-  const AppException();
-
-  String get name;
-  bool get canRetry;
-}
-
-@ExceptionUiConfig(
-  descriptionKey: 'noInternetConnection',
-  canRetry: true,
-)
-final class NoInternetException extends AppException {
-  const NoInternetException();
-
-  @override
-  String get name => 'NoInternet';
-
-  @override
-  bool get canRetry => true;
-}
-
-@ExceptionUiConfig(
-  descriptionKey: 'serverError',
-  canRetry: true,
-)
-final class ServerException extends AppException {
-  const ServerException({
-    required this.statusCode,
-    this.message,
-  });
-
-  final int? statusCode;
-  final String? message;
-
-  @override
-  String get name => 'Server';
-
-  @override
-  bool get canRetry => true;
-}
-```
+`AppException` is a `sealed` hierarchy in `packages/starter_toolkit/lib/data/exceptions/` (pure Dart, `name`,
+`canRetry`); each subtype carries `@ExceptionUiConfig(titleKey:, descriptionKey:, snackbarKey:)`.
 
 ### UI Layer Exception Models
 
-**Location:** `packages/starter_uikit/lib/models/`
-
-**Purpose:** UI presentation with localized messages
-
-```dart
-// UI model with BuildContext-dependent localization
-class ExceptionUiModel extends Equatable {
-  final String? title;
-  final String description;
-  final String? snackbarDescription;
-  final bool canRefresh;
-  final bool canRetry;
-}
-
-// Mapper converts domain exceptions to UI models using switch expressions
-class ExceptionUiMapper {
-  final BuildContext context;
-
-  ExceptionUiModel map(AppException exception) {
-    return switch (exception) {
-      NoInternetException() => ExceptionUiModel(
-        description: Localizer.of(context).noInternetConnection,
-        canRetry: true,
-      ),
-      ServerException(:final statusCode, :final message) => ExceptionUiModel(
-        description: message ?? Localizer.of(context).serverError,
-        canRetry: true,
-      ),
-      // ... other cases
-    };
-  }
-}
-```
+`ExceptionUiModel` (`packages/starter_uikit/lib/models/`) is the presentation data; `ExceptionUiMapper` (generated
+`switch` over `AppException` in `starter_uikit/lib/utils/mappers/`) converts one to the other using `UikitLocalizer`.
+Never hand-edit the mapper — see [exception_handling.md](./exception_handling.md).
 
 ### Usage in BLoC
 
-```dart
-Future<void> _onRequested(event, emit) async {
-  emit(const State.loading());
-
-  try {
-    final data = await _repository.getData();
-
-    return emit(State.success(data));
-  } on AppException catch (e) {
-    return emit(State.failure(e));  // Store domain exception
-  }
-}
-```
+Catch `AppException` in the handler and store it in the `failure` state (see the BLoC example above and [bloc.md](../rules/bloc.md)).
 
 ### Usage in UI
 
 ```dart
-// Map to UI model in widget via if-case on the sealed state
+// FailureWidget maps the exception internally — pass the AppException itself
 if (state case FailureMyState(:final exception)) {
-  final uiModel = ExceptionUiMapper(context).map(exception);
-
   return FailureWidget.large(
-    uiModel: uiModel,
+    exception: exception,
     onRetry: _retry,
   );
 }
 ```
 
 **Benefits:**
-- Data layer has no BuildContext dependency
-- UI layer handles localization
-- Extensible via decorator pattern
-- Code generation reduces boilerplate
-
-See [Exception Handling Guide](./exception_handling.md) for step-by-step instructions on adding new exceptions.
+Data has no `BuildContext` dependency; the UI layer localizes. See [Exception Handling Guide](./exception_handling.md) for step-by-step instructions on adding new exceptions.
 
 ---
 
@@ -524,22 +436,10 @@ final base = const RawRepositoryExecutor()
 **Built-in executors:**
 - `RawRepositoryExecutor` - Base executor
 - `ErrorHandlingExecutor` - Normalizes errors to AppException
-- `RetryExecutor` - Automatic retry with exponential backoff
+- `RetryExecutor` - Automatic retry with linear backoff (`maxAttempts` total calls)
 
 Caching is the `RepositoryCache` collaborator (`InMemoryRepositoryCache`), a
 sibling dependency rather than a decorator.
-
-**Usage in Repository:**
-```dart
-class UserRepository {
-  final UserDataSource _dataSource;
-  final RepositoryExecutor _executor;
-
-  Future<List<User>> getUsers() {
-    return _executor.execute(() => _dataSource.getUsers());
-  }
-}
-```
 
 See [Repository Executors Guide](./repository_executor.md) for step-by-step instructions on creating custom executors.
 
@@ -547,21 +447,23 @@ See [Repository Executors Guide](./repository_executor.md) for step-by-step inst
 
 ## Testing Strategy
 
-### Three Testing Layers
+Testing is mock-first: the feature-flow slice over the shipping `Mock*DataSource` is the
+backbone. See the [Testing Guide](./testing.md) for the full policy; in summary:
 
-1. **Data Layer Unit Tests** (Required for Repositories)
-   - Repository (Real) → DataSource (Mock)
-   - DataSource (Real) → ApiClient (Mock)
-
-2. **BLoC Unit Tests** (Required)
+1. **BLoC Unit Tests** (required per bloc)
    - BLoC (Real) → Repository (Mock)
-   - Test all events: success, empty, failure scenarios
+   - Cover success, empty, and failure per event; failures via an immediately-throwing repo
 
-3. **Integration Tests** (Recommended)
-   - BLoC (Real) → Repository (Real) → DataSource (Real) → ApiClient (Mock)
-   - Verify full feature flow works end-to-end
+2. **Feature-Flow / Integration Tests** (mandatory per feature)
+   - BLoC (Real) → Repository (Real) → `Mock*DataSource` (Real) — nothing stubbed
+   - Happy path plus one failure-state assertion
 
-See [Testing Guide](./testing.md) for detailed examples.
+3. **Central tests** (once, app-wide)
+   - Repository executor (error mapping / retry / cache) in `starter_toolkit`
+   - DI graph smoke test (`test/core/di_graph_test.dart`)
+   - API-DS contract tests with a mocked `ApiClient`, exercising the real `fromJson`/`toJson`
+
+**No per-repository unit tests** — a repo is a thin facade; its delegation is proven by the feature-flow test.
 
 ---
 
@@ -569,6 +471,6 @@ See [Testing Guide](./testing.md) for detailed examples.
 
 - [Project Structure](./structure.md) - File organization
 - [Testing Guide](./testing.md) - Testing strategies
-- [BLoC & Freezed](./freezed_bloc.md) - BLoC patterns
-- [Code Formatting](../rules/code_formatting.md) - Code style guide
+- [BLoC rules](../rules/bloc.md) - BLoC patterns
+- [Code Standards](../rules/code_standards.md) - Code style guide
 - [Naming Conventions](../rules/naming.md) - Naming standards

@@ -4,8 +4,8 @@ import 'package:starter/features/task/model/task.dart';
 import 'package:starter/features/task/ui/list/widget/task_list_item_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_toolkit/utils/date/date_time_extension.dart';
-import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/misc/grouped_rows_card.dart';
 
 class TaskDateGroupCard extends StatelessWidget {
   const TaskDateGroupCard({required this.date, required this.tasks, super.key});
@@ -22,47 +22,35 @@ class TaskDateGroupCard extends StatelessWidget {
     final tasksCount = tasks.length;
     final tasksWord = _getTasksWord(context, tasksCount);
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 24),
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: const EdgeInsets.only(left: 4, bottom: 12),
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
             child: Row(
               children: [
-                Text(dateLabel, style: textStyles.boldBody16),
+                Text(
+                  dateLabel,
+                  style: textStyles.mediumBody13.copyWith(
+                    color: theme.textSecondary,
+                  ),
+                ),
                 const SizedBox(width: 8),
                 Text(
                   '$tasksCount $tasksWord',
-                  style: textStyles.regularBody14.copyWith(
-                    color: theme.textSecondary,
+                  style: textStyles.regularBody13.copyWith(
+                    color: theme.textTertiary,
                   ),
                 ),
               ],
             ),
           ),
-          DecoratedBox(
-            decoration: BoxDecoration(
-              color: theme.surface,
-              borderRadius: BorderRadius.circular(12),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.blackText.withValues(alpha: 0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: ListView.separated(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: tasks.length,
-              separatorBuilder: (context, index) =>
-                  Divider(height: 1, color: theme.border),
-              itemBuilder: (context, index) =>
-                  TaskListItemTile(task: tasks[index]),
-            ),
+          GroupedRowsCard(
+            children: [
+              for (final task in tasks) ...[TaskListItemTile(task: task)],
+            ],
           ),
         ],
       ),

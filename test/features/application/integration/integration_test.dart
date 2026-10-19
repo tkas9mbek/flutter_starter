@@ -8,8 +8,23 @@ import 'package:starter/features/application/environment/domain/environment_data
 import 'package:starter/features/application/environment/domain/environment_repository.dart';
 import 'package:starter/features/application/environment/model/app_environment.dart';
 import 'package:starter/features/application/environment/ui/switcher/bloc/environment_cubit.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 
 class MockFlutterSecureStorage extends Mock implements FlutterSecureStorage {}
+
+/// Failure-branch double: writes throw, reads succeed so the cubit is still constructible
+/// (`EnvironmentCubit` reads the environment in its initializer).
+class _ThrowingEnvironmentDataSource implements EnvironmentDataSource {
+  @override
+  String? getEnvName() => null;
+
+  @override
+  Future<void> saveEnvName(String url) async =>
+      throw const DevelopmentException();
+
+  @override
+  Future<void> clearSecureStorage() async => throw const DevelopmentException();
+}
 
 /// Integration tests: EnvironmentCubit → EnvironmentRepository → LocalEnvironmentDataSource → SharedPreferences (in-memory)
 ///
@@ -54,7 +69,10 @@ void main() {
       build: () => environmentCubit,
       act: (cubit) => cubit.setEnvironment(AppEnvironment.dev()),
       expect: () => [AppEnvironment.dev()],
-      verify: (_) => expect(sharedPreferences.getString('env_url_key'), 'dev'),
+      verify: (_) {
+        expect(sharedPreferences.getString('env_url_key'), 'dev');
+        verify(() => mockSecureStorage.deleteAll()).called(1);
+      },
     );
 
     blocTest<EnvironmentCubit, AppEnvironment>(
@@ -83,6 +101,14 @@ void main() {
       final cubit = EnvironmentCubit(environmentRepository);
 
       expect(cubit.state, AppEnvironment.dev());
+    });
+
+    test('falls back to Mock when the stored name is unrecognised', () async {
+      await sharedPreferences.setString('env_url_key', 'unknown');
+
+      final cubit = EnvironmentCubit(environmentRepository);
+
+      expect(cubit.state, AppEnvironment.mock());
     });
 
     blocTest<EnvironmentCubit, AppEnvironment>(
@@ -145,6 +171,40 @@ void main() {
       verify: (_) {
         expect(callbackInvoked, isTrue);
         expect(callbackEnvironment, AppEnvironment.mock()); // Last value
+      },
+    );
+  });
+
+  group('EnvironmentCubit failure branch', () {
+    late EnvironmentCubit environmentCubit;
+    var callbackInvoked = false;
+
+    setUp(() {
+      callbackInvoked = false;
+      environmentCubit = EnvironmentCubit(
+        EnvironmentRepository(_ThrowingEnvironmentDataSource(), (_) async {
+          callbackInvoked = true;
+        }),
+      );
+    });
+
+    test('surfaces a data-source failure end-to-end', () async {
+      await expectLater(
+        environmentCubit.setEnvironment(AppEnvironment.dev()),
+        throwsA(isA<DevelopmentException>()),
+      );
+    });
+
+    test(
+      'does not emit or notify when persisting the environment fails',
+      () async {
+        await expectLater(
+          environmentCubit.setEnvironment(AppEnvironment.dev()),
+          throwsA(isA<DevelopmentException>()),
+        );
+
+        expect(environmentCubit.state, AppEnvironment.mock());
+        expect(callbackInvoked, isFalse);
       },
     );
   });

@@ -1,6 +1,6 @@
 # Flutter Starter Template
 
-> **Version 3.0.0** - [View Changelog](CHANGELOG.md)
+> **Version 3.1.0** - [View Changelog](CHANGELOG.md)
 
 A production-ready Flutter template for building small to medium-sized applications.
 
@@ -28,16 +28,19 @@ This template provides a complete, production-ready foundation with:
 - **Two-layer exception handling** (domain exceptions + UI models)
 
 ### Features
-- **Authentication flow** (login, registration, token management)
+- **Authentication flow** (phone login with OTP, registration, token management)
 - **User profile** management
 - **Settings** (theme toggle, language selection)
 - **Task management** with calendar (example feature)
-- **Theme system** (light/dark mode)
+- **Flat navy design system** (light/dark mode, role-token theme, bordered surfaces)
 - **Localization** (English & Russian)
-- **Environment configuration** (mock, dev, prod)
+- **Environment configuration** (mock, dev, prod) with an in-app HTTP request logger on non-prod builds
+- **Offline mock environment** (`Mock*DataSource` twins with configurable latency/failures)
+- **Crash reporting** (Crashlytics, off by default behind `FirebaseConfig`)
+- **CI/CD** to TestFlight and Firebase App Distribution
 
 ### Code Quality
-- **170+ tests passing** (100% pass rate)
+- **680+ tests passing** (100% pass rate)
 - **Comprehensive BLoC and integration tests**
 - **Full-stack integration testing** for all features
 - **Zero analyzer warnings**
@@ -48,7 +51,7 @@ This template provides a complete, production-ready foundation with:
 - **Type-safe API client** with response-based methods
 - **Code generation** for routes, models, exceptions
 - **UIKit example app** showcasing all components
-- **Theme-aware widgets** with consistent styling
+- **Theme-aware flat widgets** (cards, grouped rows, pills, forms) built only from theme tokens
 - **Complete localization setup**
 - **AI-friendly documentation** (optimized for Codex and Claude Code)
 
@@ -80,11 +83,15 @@ GitHub Actions is configured in `.github/workflows/ci.yml` and runs:
 1. `flutter pub get`
 2. `dart run custom_lint --no-fatal-infos --no-fatal-warnings`
 3. `flutter analyze`
-4. `flutter test --concurrency 4` locally, with CI also split across per-feature shards in parallel
+4. `flutter test --concurrency 4` (in CI, one parallel job per package in a matrix)
 
 Optional strict lint gate:
 
 - Use **Run workflow** (`workflow_dispatch`) with `strict_lint = true` to run `dart run custom_lint --no-fatal-infos` (fatal warnings, infos reported).
+
+Once CI is green on `main`, `.github/workflows/release.yml` ships an iOS build to TestFlight and an Android build to
+Firebase App Distribution (fastlane). Secrets, local deploy and runner choice:
+[docs/guides/deployment.md](docs/guides/deployment.md).
 
 ---
 
@@ -97,35 +104,39 @@ flutter_starter/
 │   │   ├── global/        # Constants (API URLs, etc.), DI globals
 │   │   ├── di/            # Dependency injection modules
 │   │   ├── router/        # Navigation (auto_route)
-│   │   └── notifications/ # Push notifications, remote config
+│   │   ├── notifications/ # Push notifications
+│   │   └── remote_config/ # Remote config (Firebase or asset-backed)
 │   │
 │   ├── features/          # Feature modules
 │   │   ├── auth/          # Authentication (login, registration)
 │   │   ├── profile/       # User profile
 │   │   ├── settings/      # App settings (theme, language)
 │   │   ├── task/          # Example feature (task management)
-│   │   └── application/   # Global app state
+│   │   └── application/   # App shell, environment switcher, dev menu
 │   │
 │   ├── l10n/              # Localization files
 │   └── main.dart          # App entry point
 │
 ├── packages/
 │   ├── starter_toolkit/   # Shared utilities and data infrastructure
-│   │   ├── data/          # API client, exceptions, executors, cache
-│   │   ├── utils/         # Helpers, validators, formatters
+│   │   ├── data/          # API client, exceptions, executors, cache, mock behavior
+│   │   ├── utils/         # Helpers, validators, formatters, crash reporter
 │   │   └── README.md
 │   │
 │   ├── starter_uikit/     # Flutter UI components
 │   │   ├── widgets/       # Reusable widgets
-│   │   ├── theme/         # Theme system
-│   │   ├── example/       # Demo app
+│   │   ├── theme/         # AppColors, AppTheme tokens, AppRadii, text styles
+│   │   ├── example/       # Demo app (widget gallery)
 │   │   └── README.md
+│   │
+│   ├── request_logger/    # In-app HTTP request logger (Dio interceptor + UI)
+│   │   └── lib/           # interceptor/, data/, screen/, widget/, controller/
 │   │
 │   └── starter_lints/     # Custom lint rules
 │       ├── lib/src/lints/ # Lint implementations
 │       └── README.md
 │
-├── test/                  # Tests (170+ tests across the app and packages)
+├── test/                  # Tests (680+ tests across the app and packages)
 ├── docs/                  # Documentation
 ├── AGENTS.md              # AI assistant guide (canonical rules, tool-agnostic)
 ├── CLAUDE.md              # Claude Code-specific pointer to AGENTS.md
@@ -139,8 +150,11 @@ Each feature follows a consistent pattern:
 ```
 features/feature_name/
 ├── data/                  # DataSource implementations
-│   ├── remote_x_data_source.dart
-│   └── local_x_data_source.dart
+│   ├── api_x_data_source.dart
+│   ├── local_x_data_source.dart
+│   └── mock/              # Offline twins + canned data
+│       ├── mock_x_data_source.dart
+│       └── mock_x_scenarios.dart
 │
 ├── domain/                # Repository + abstract DataSource
 │   ├── x_repository.dart
@@ -152,11 +166,15 @@ features/feature_name/
 ├── configs/               # DI module
 │   └── x_module.dart
 │
-└── ui/                    # Presentation layer
-    ├── bloc/              # BLoC (state management)
-    ├── screen/            # UI screens
-    └── widget/            # UI widgets
+└── ui/                    # Presentation layer: subfeature folders only
+    └── {subfeature}/
+        ├── bloc/          # BLoC (state management)
+        ├── screen/        # UI screens
+        └── widget/        # UI widgets
 ```
+
+The module picks the twin or the `Api*` implementation with `mockOrProd(...)` — see
+[docs/guides/mocking.md](docs/guides/mocking.md).
 
 ---
 
@@ -207,7 +225,7 @@ single local `base` and injected into repositories via constructor params:
 // In the repository's registration closure:
 final base = const RawRepositoryExecutor()
         .withErrorHandling()  // Convert exceptions (innermost)
-        .withRetry();         // Exponential backoff
+        .withRetry();         // 3 attempts, linear backoff
 
 // In the repository:
 Future<List<User>> getUsers() {
@@ -220,14 +238,14 @@ Caching is a `RepositoryCache` collaborator, not a decorator. See
 
 ### 4. Theme System (UIKit)
 
-Centralized theme management:
+Centralized, flat theme (no shadows or elevation — surfaces are separated by borders). Widgets read semantic role
+tokens, never raw colors:
 
 ```dart
 final theme = ThemeProvider.of(context).theme;
 final textStyles = ThemeProvider.of(context).textStyles;
 
-Container(color: theme.primary)
-Text('Hello', style: textStyles.mediumBody14)
+AppCard(child: Text('Hello', style: textStyles.mediumBody14.copyWith(color: theme.accent)))
 ```
 
 ### 5. Localization
@@ -264,7 +282,7 @@ open coverage/html/index.html
 ```
 
 **Test Summary:**
-- **170+ tests passing** (100% pass rate) across the app and `starter_toolkit`
+- **680+ tests** across the app and the packages (`starter_toolkit`, `starter_uikit`, `request_logger`; `starter_lints` has none)
 - Unit tests (BLoC, repositories, data sources) and full-stack integration tests per feature
 
 **Integration Test Coverage:**
@@ -308,6 +326,8 @@ are not dependencies of this template.
 - API client with type-safe methods
 - Exception system with sealed classes
 - Repository executors (retry, error handling) + `RepositoryCache` collaborator for keyed TTL caching
+- `MockNetworkBehavior` (shared latency and random failures for mock data sources)
+- `CrashReporter` interface (Firebase Crashlytics or no-op)
 - Date/time helpers and extensions
 - Form validators and formatters
 - BLoC utilities
@@ -319,18 +339,30 @@ are not dependencies of this template.
 ### Starter UIKit (Flutter Widgets)
 
 **What it provides:**
-- Status widgets (loading, empty, error states)
+- Status widgets (loading, empty, error states, `AppStatusScreen`)
 - App bars (title, base, transparent)
 - Buttons (elevated, outlined with loading)
 - Form components (text fields, dropdowns, date pickers)
+- Surfaces (`AppCard`, `GroupedRowsCard`, `AppListTile`, `StatusPill`) and the accessible tap target `AppTapArea`
 - Notifications (snackbar)
-- Theme system (light/dark mode)
+- Flat navy theme system (light/dark mode; `AppColors` palette, `AppTheme` role tokens, `AppRadii`)
 - Exception UI mapper
 - Interactive example app
 
 **Use it for:** Consistent UI across apps sharing design
 
 [📖 UIKit Documentation](packages/starter_uikit/README.md)
+
+### Request Logger (In-App HTTP Logger)
+
+**What it provides:**
+- `RequestLogger.dioInterceptor()` capturing requests, responses and errors (last 50 calls, in memory)
+- Redaction of `Authorization` headers and token fields before anything is stored
+- Log list and details screens with a JSON viewer, opened from the environment banner button
+
+Wired into Dio and the banner only in environments with `showBanner` (`dev`, `mock`), never in `prod`.
+
+**Use it for:** Inspecting backend traffic on a test build without a proxy
 
 ### Starter Lints (Custom Lint Rules)
 
@@ -353,17 +385,23 @@ The template includes extensive documentation:
 - **[CLAUDE.md](CLAUDE.md)** - Companion guide for Claude Code workflows
 - **[AI Context](docs/ai-context/)** - Concise AI-friendly cheat-sheets per topic
 - **[Architecture Guide](docs/guides/architecture.md)** - Three-layer architecture, dependency inversion
-- **[BLoC & Freezed Guide](docs/guides/freezed_bloc.md)** - State management patterns
+- **[BLoC Rules](docs/rules/bloc.md)** - Freezed states/events, state shapes, handler rules, UI integration
 - **[Code Review Guide](docs/guides/code_review.md)** - Severity-based review checklist
+- **[Deployment Guide](docs/guides/deployment.md)** - TestFlight & Firebase App Distribution CI/CD, fastlane, secrets
 - **[Estimation Guide](docs/guides/estimation.md)** - Story-point estimation method
+- **[Mocking Guide](docs/guides/mocking.md)** - `Mock*DataSource` twins, scenarios, `MockNetworkBehavior`
+- **[Pagination Guide](docs/guides/pagination.md)** - `PaginatedData`, load-more, refresh
+- **[Polymorphism Guide](docs/guides/polymorphism.md)** - Sealed/UI-model patterns instead of repeated enum switches
+- **[Repository Executor Guide](docs/guides/repository_executor.md)** - Error handling, retry, caching composition
 - **[Exception Handling](docs/guides/exception_handling.md)** - Two-layer exception system, code generation
 - **[Structure Guide](docs/guides/structure.md)** - File organization, feature layout
 - **[Testing Guide](docs/guides/testing.md)** - Testing strategies, patterns, best practices
-- **[Coding Rules](docs/rules/coding_rules.md)** - Consolidated rule set + lint mapping
+- **[Code Standards](docs/rules/code_standards.md)** - Objective, tool-enforced, and architecture rules + lint mapping
+- **[Code Preferences](docs/rules/code_preferences.md)** - Personal/AI-session stylistic conventions
 - **[BLoC File Rules](docs/rules/bloc.md)** - File layout & basic flow
-- **[Code Formatting](docs/rules/code_formatting.md)** - Code style, BLoC patterns, conventions
 - **[Git Workflow](docs/rules/git_workflow.md)** - Branch / commit / PR naming
 - **[Naming Conventions](docs/rules/naming.md)** - Consistent naming patterns
+- **[UIKit Rules](docs/rules/uikit.md)** - Token-only theming, widget folder layout, gallery + test per widget
 
 ---
 
@@ -381,9 +419,12 @@ The template includes extensive documentation:
 ### Customize Theme
 
 Edit theme files in `packages/starter_uikit/lib/theme/`:
-- `app_theme.dart` - Colors, dimensions
+- `app_colors.dart` - Raw palette (navy brand, slate/ink neutrals)
+- `app_theme.dart` - Semantic role tokens per brightness (`AppTheme.light()` / `.dark()`)
+- `app_radii.dart` - Corner-radius scale
 - `app_text_styles.dart` - Typography
-- Update example app to preview changes
+
+Preview changes in the UIKit example app (gallery). Widgets must read `AppTheme` tokens only — see [docs/rules/uikit.md](docs/rules/uikit.md).
 
 ### Add Localizations
 

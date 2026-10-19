@@ -2,9 +2,44 @@
 
 All notable changes to starter_uikit will be documented in this file.
 
-## [3.1.0] - 2026-07-25
+## [3.1.0] - 2026-10-19
+
+Version aligned with the app (`3.1.0`); this replaces the package-local 3.1.0 of 2026-07-25 (folded in below) and the draft 4.0.0 numbering. Flat navy redesign: every widget now paints from semantic theme tokens with 1px borders instead of shadows, so apps that referenced the old palette or relied on the old look must migrate.
 
 ### Added
+- `AppRadii` shared corner-radius steps (`xs` 4, `sm` 8, `md` 12, `control` 14, `lg` 16, `xl` 20, `pill`)
+- `AppTheme` role tokens: `accent`, `onSecondary`, `selectedSurface`, `shimmerBase`, `shimmerHighlight`, `borderStrong`, `successText`, `errorText`, `warning`, `info`
+- `AppTextStyles` `regularTitle28` / `mediumTitle28` / `boldTitle28`
+- Surfaces: `AppCard` (optional `selected` and `onTap`), `GroupedRowsCard`, `AppListTile` (icon, subtitle, value, `danger`, `loading`; replaces the tile removed in 3.0.0), `StatusPill`
+- `AppStatusScreen` — full-screen success/error outcome with injected copy and primary/secondary actions
+- Form decoration: public `TextFieldVisualState` enum (`idle`, `focused`, `error`, `disabled`), `FieldErrorText`, and `TextFieldDecoration.buildWithState` (default delegates to `build`)
+- Behavior tests per widget under `test/widgets/` with a shared `test/support/pump_app.dart`
+- Example gallery: `ExampleSection`, surface demos (`AppCard`, `GroupedRowsCard`/`AppListTile`, `StatusPill`) and an `AppStatusScreen` demo
+- `AppTapArea` (`widgets/misc/`) — `InkWell` plus button semantics, no splash; gallery section and behavior test
+- `clearField` / `togglePasswordVisibility` localized screen-reader labels
+
+### Changed
+- **Breaking**: `AppColors` is a new palette named by hue and shade (`navy50`–`navy900`, `slate*`, `ink*`, `cyan*`, status fills `greenDark`/`redDark`/`orangeDark`/`blueDark`, `greenLight`/`redLight`); the old purple/amber/grey names (`vividPurple`, `lightPurple`, `brightAmber`, `lightGrey`, `pureWhite`, `darkGrey`, `darkSurface`, `deepRed`, `lightRed`, `vibrantGreen`, `blackText`, `greyText`, `whiteText`, `lightGreyText`, `statusText`, `lightBorder`, `darkBorder`) are gone. `AppTheme.primary`/`secondary`/`background`/`surface`/text values change accordingly
+- **Breaking**: `AppTheme` now has `accent` (brand color for text, icons, outlines and spinners drawn on the page); widgets that tinted such elements with `primary` use `accent`
+- **Breaking**: `themeDataFromTheme` is fully flat — no elevation, shadow, ripple or surface tint; every outline is a 1px border; input borders stay stripped (fields draw their own container)
+- **Breaking**: app bars use `theme.background` (same as the scaffold); `BottomSheetScreen` is a bordered `surface` panel with `AppRadii.xl` top corners and default padding `16/16/16/24`; `AppBottomNavBar` gets a top hairline and `BottomNavItem` tints with `accent` / `textTertiary`
+- **Breaking**: buttons use `AppRadii.control` (default `borderRadius` 14) and medium-weight labels; the outlined button draws in `accent`, disabled `border`/`textTertiary`
+- **Breaking**: `FilledTextFieldDecoration` is always bordered and follows `TextFieldVisualState` (focus outlines in `accent`, errors in `errorText`); `hasBorder` is deprecated and ignored
+- `CustomCircularProgressIndicator` defaults to `accent`
+- `DropdownBottomSheet` options are selectable cards with the current one highlighted; `AppRadioGroup` / `AppCheckboxGroup` rows are bordered `AppCard`s
+- `NotificationSnackBar` is flat: solid `success`/`error` fills with `onStatus` content, and a bordered surface for `information`
+- Shimmer skeletons use `shimmerBase` / `shimmerHighlight`; `TransparentAppBar` follows the theme brightness for the status bar
+- Chevron and search icons redrawn as stroked glyphs
+- Example gallery restyled: menu is a `GroupedRowsCard`, screens are built from `ExampleSection`
+- `AppCard`, `AppListTile`, `AppCheckboxField` and the `AppTextField` / `ControllerTextField` clear and show-password icons use `AppTapArea` instead of a bare `GestureDetector`
+- `ExceptionUiMapper` maps `UnknownException` with `canRetry: false`
+
+### Removed
+- **Breaking**: example `ExampleTile` (replaced by `ExampleSection`)
+- `TapActivator` — moved into the app (`DevModeActivator` is its only user); copy it if your app needs a hidden multi-tap trigger
+
+### Carried over from the earlier package-local 3.1.0 (2026-07-25, shipped with app 3.0.0)
+#### Added
 - Size factory constructors on the button family:
   `AppElevatedButton.big/.medium/.small` and
   `AppOutlinedButton.big/.medium/.small` (theme-aware text styles, fixed
@@ -13,7 +48,7 @@ All notable changes to starter_uikit will be documented in this file.
   (Cupertino on iOS/macOS, Material elsewhere)
 - Icons `eye_open`, `eye_slash`, `inbox_tray`
 
-### Changed
+#### Changed
 - `EmptyInformationBody`'s fallback icon and the text-field obscure toggles
   now use `SvgIcon` instead of Material `Icons`, closing the package's own
   Material-icon ban (`svg_icon.dart`)

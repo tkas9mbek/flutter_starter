@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/features/settings/model/language_option.dart';
 import 'package:starter/features/settings/ui/language/bloc/language_cubit.dart';
-import 'package:starter/features/settings/ui/menu/widget/settings_tile.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/resources/resources.dart';
-import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 import 'package:starter_uikit/widgets/dialogs/dropdown_bottom_sheet.dart';
-import 'package:starter_uikit/widgets/media/svg_icon.dart';
+import 'package:starter_uikit/widgets/misc/app_list_tile.dart';
 
 class LanguageSettingsTile extends StatelessWidget {
   const LanguageSettingsTile({super.key});
@@ -34,19 +32,13 @@ class LanguageSettingsTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeProvider.of(context).theme;
     final localizer = Localizer.of(context);
 
     return BlocBuilder<LanguageCubit, LanguageOption>(
-      builder: (context, currentLanguage) => SettingsTile(
+      builder: (context, currentLanguage) => AppListTile(
         icon: UiSvgIcons.globeLanguage,
         title: localizer.language,
-        subtitle: currentLanguage.name,
-        trailing: SvgIcon(
-          UiSvgIcons.chevronRight,
-          size: 24,
-          color: theme.textSecondary,
-        ),
+        value: currentLanguage.name,
         onTap: () => _showLanguageSelector(context),
       ),
     );

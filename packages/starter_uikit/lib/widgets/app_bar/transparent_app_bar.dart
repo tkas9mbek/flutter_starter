@@ -79,8 +79,6 @@ class _TransparentAppBarState extends State<TransparentAppBar> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeProvider.of(context).theme;
-
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 200),
       child: visible
@@ -92,42 +90,55 @@ class _TransparentAppBarState extends State<TransparentAppBar> {
               height: widget.height,
               bottom: widget.bottom,
             )
-          : AppBar(
-              key: const ValueKey('transparent'),
-              backgroundColor: AppColors.transparent,
-              surfaceTintColor: AppColors.transparent,
-              systemOverlayStyle: SystemUiOverlayStyle.dark,
-              automaticallyImplyLeading: false,
-              titleSpacing: 0,
-              elevation: 0,
-              centerTitle: false,
-              flexibleSpace: Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      theme.background,
-                      theme.background.withValues(alpha: 0),
-                    ],
-                    begin: Alignment.topCenter,
-                    end: Alignment.bottomCenter,
-                  ),
-                ),
-              ),
-              bottom: PreferredSize(
-                preferredSize: widget.bottom?.preferredSize ?? Size.zero,
-                child: IgnorePointer(
-                  child: Opacity(opacity: 0, child: widget.bottom),
-                ),
-              ),
-              title: SizedBox(
-                height: widget.height,
-                child: AppBarContent(
-                  title: widget.title,
-                  automaticallyImplyLeading: widget.automaticallyImplyLeading,
-                  actions: widget.actions,
-                ),
-              ),
-            ),
+          : _FadingAppBar(key: const ValueKey('transparent'), bar: widget),
+    );
+  }
+}
+
+class _FadingAppBar extends StatelessWidget {
+  const _FadingAppBar({required this.bar, super.key});
+
+  final TransparentAppBar bar;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
+
+    return AppBar(
+      backgroundColor: AppColors.transparent,
+      surfaceTintColor: AppColors.transparent,
+      shadowColor: AppColors.transparent,
+      systemOverlayStyle: theme.themeMode == ThemeMode.dark
+          ? SystemUiOverlayStyle.light
+          : SystemUiOverlayStyle.dark,
+      automaticallyImplyLeading: false,
+      titleSpacing: 0,
+      elevation: 0,
+      scrolledUnderElevation: 0,
+      centerTitle: false,
+      // Fades from the page background so content scrolling under the bar
+      // dissolves into the same plane instead of hitting a hard edge.
+      flexibleSpace: DecoratedBox(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [theme.background, theme.background.withValues(alpha: 0)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+      ),
+      bottom: PreferredSize(
+        preferredSize: bar.bottom?.preferredSize ?? Size.zero,
+        child: IgnorePointer(child: Opacity(opacity: 0, child: bar.bottom)),
+      ),
+      title: SizedBox(
+        height: bar.height,
+        child: AppBarContent(
+          title: bar.title,
+          automaticallyImplyLeading: bar.automaticallyImplyLeading,
+          actions: bar.actions,
+        ),
+      ),
     );
   }
 }

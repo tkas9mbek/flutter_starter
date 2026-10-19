@@ -2,14 +2,15 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:starter_uikit/configs/ui_consts.dart';
+import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/widgets/form/decoration/field_error_text.dart';
 import 'package:starter_uikit/widgets/form/decoration/filled_text_field_decoration.dart';
 import 'package:starter_uikit/widgets/form/decoration/text_field_decoration.dart';
+import 'package:starter_uikit/widgets/form/decoration/text_field_visual_state.dart';
 import 'package:starter_uikit/widgets/media/svg_icon.dart';
-import 'package:starter_uikit/widgets/misc/animated_visibility.dart';
+import 'package:starter_uikit/widgets/misc/app_tap_area.dart';
 import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
 
 /// Controller-based text field that does not depend on FormBuilder.
@@ -98,6 +99,7 @@ class ControllerTextField<T extends TextEditingController>
 class _ControllerTextFieldState<T extends TextEditingController>
     extends State<ControllerTextField<T>> {
   late bool obscureText;
+  bool focused = false;
 
   @override
   void initState() {
@@ -139,6 +141,12 @@ class _ControllerTextFieldState<T extends TextEditingController>
     final textStyles = ThemeProvider.of(context).textStyles;
     final error = errorText;
     final value = widget.controller.text;
+    final state = TextFieldVisualState.resolve(
+      enabled: widget.enabled,
+      focused: focused,
+      hasError: error != null,
+    );
+    final inputColor = widget.enabled ? widget.color : theme.textTertiary;
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
@@ -146,75 +154,72 @@ class _ControllerTextFieldState<T extends TextEditingController>
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          widget.decoration.build(
-            context,
-            Row(
-              children: [
-                Expanded(
-                  child: TextField(
-                    controller: widget.controller,
-                    focusNode: widget.focusNode,
-                    onTap: widget.onTap,
-                    onChanged: widget.onChanged,
-                    onEditingComplete: widget.onEditingComplete,
-                    onSubmitted: widget.onSubmitted,
-                    enabled: widget.enabled,
-                    readOnly: widget.readOnly,
-                    autofocus: widget.autofocus,
-                    obscureText: obscureText,
-                    textCapitalization: widget.textCapitalization,
-                    style:
-                        widget.textStyle ??
-                        textStyles.regularBody14.copyWith(color: widget.color),
-                    keyboardType: widget.keyboardType,
-                    textInputAction: widget.textInputAction,
-                    inputFormatters: [
-                      ...?widget.inputFormatters,
-                      if (widget.maxLength != null) ...[
-                        LengthLimitingTextInputFormatter(widget.maxLength),
+          Focus(
+            canRequestFocus: false,
+            skipTraversal: true,
+            onFocusChange: (hasFocus) => setState(() => focused = hasFocus),
+            child: widget.decoration.buildWithState(
+              context,
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: widget.controller,
+                      focusNode: widget.focusNode,
+                      onTap: widget.onTap,
+                      onChanged: widget.onChanged,
+                      onEditingComplete: widget.onEditingComplete,
+                      onSubmitted: widget.onSubmitted,
+                      enabled: widget.enabled,
+                      readOnly: widget.readOnly,
+                      autofocus: widget.autofocus,
+                      obscureText: obscureText,
+                      textCapitalization: widget.textCapitalization,
+                      style:
+                          widget.textStyle ??
+                          textStyles.regularBody14.copyWith(color: inputColor),
+                      keyboardType: widget.keyboardType,
+                      textInputAction: widget.textInputAction,
+                      inputFormatters: [
+                        ...?widget.inputFormatters,
+                        if (widget.maxLength != null) ...[
+                          LengthLimitingTextInputFormatter(widget.maxLength),
+                        ],
                       ],
-                    ],
-                    maxLines: widget.maxLines,
-                    minLines: widget.minLines,
-                    decoration: InputDecoration(
-                      hintText: widget.hint,
-                      labelText: widget.label,
-                      prefix: widget.prefix,
-                      floatingLabelStyle: textStyles.boldBody13.copyWith(
-                        fontSize: 14 * 1.4,
-                        height: 1,
-                        color: error != null
-                            ? theme.error
-                            : (widget.color ?? theme.textPrimary),
+                      maxLines: widget.maxLines,
+                      minLines: widget.minLines,
+                      decoration: InputDecoration(
+                        hintText: widget.hint,
+                        labelText: widget.label,
+                        prefix: widget.prefix,
+                        // Floating labels render at 3/4 size, so 16 lands on 12.
+                        floatingLabelStyle: textStyles.mediumBody16.copyWith(
+                          color: state.labelColor(theme),
+                        ),
+                        hintMaxLines: widget.maxLines,
                       ),
-                      hintMaxLines: widget.maxLines,
                     ),
                   ),
-                ),
-                _TrailingContent(
-                  loading: widget.loading,
-                  suffix: widget.suffix,
-                  hasClearButton: widget.hasClearButton && value.isNotEmpty,
-                  canObscureText: widget.canObscureText,
-                  obscureText: obscureText,
-                  maxLength: widget.maxLength,
-                  value: value,
-                  onCleared: onCleared,
-                  onObscureToggled: () =>
-                      setState(() => obscureText = !obscureText),
-                ),
-              ],
+                  _TrailingContent(
+                    loading: widget.loading,
+                    suffix: widget.suffix,
+                    hasClearButton: widget.hasClearButton && value.isNotEmpty,
+                    canObscureText: widget.canObscureText,
+                    obscureText: obscureText,
+                    maxLength: widget.maxLength,
+                    value: value,
+                    onCleared: onCleared,
+                    onObscureToggled: () =>
+                        setState(() => obscureText = !obscureText),
+                  ),
+                ],
+              ),
+              state,
             ),
           ),
-          AnimatedVisibility(
+          FieldErrorText(
             visible: error != null && !widget.hideErrorText,
-            child: Padding(
-              padding: const EdgeInsets.only(top: 6),
-              child: Text(
-                '* ${error ?? ''}',
-                style: textStyles.regularBody14.copyWith(color: theme.error),
-              ),
-            ),
+            errorText: error,
           ),
         ],
       ),
@@ -257,29 +262,30 @@ class _TrailingContent extends StatelessWidget {
       children: [
         if (loading) ...[
           const SizedBox(width: 12),
-          const CustomCircularProgressIndicator.adaptive(size: 24),
+          const CustomCircularProgressIndicator.adaptive(size: 20),
         ] else if (suffix != null) ...[
           const SizedBox(width: 12),
           suffix!,
         ] else if (hasClearButton) ...[
           const SizedBox(width: 12),
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
+          AppTapArea(
             onTap: onCleared,
-            child: SvgPicture.asset(
+            semanticLabel: UikitLocalizer.of(context).clearField,
+            child: SvgIcon(
               UiSvgIcons.closeMark,
-              package: UiConsts.package,
+              size: 20,
+              color: theme.textTertiary,
             ),
           ),
         ] else if (canObscureText) ...[
           const SizedBox(width: 12),
-          GestureDetector(
-            behavior: HitTestBehavior.translucent,
+          AppTapArea(
             onTap: onObscureToggled,
+            semanticLabel: UikitLocalizer.of(context).togglePasswordVisibility,
             child: SvgIcon(
               obscureText ? UiSvgIcons.eyeSlash : UiSvgIcons.eyeOpen,
               size: 20,
-              color: theme.textSecondary,
+              color: theme.textTertiary,
             ),
           ),
         ],
@@ -287,7 +293,7 @@ class _TrailingContent extends StatelessWidget {
           const SizedBox(width: 12),
           Text(
             value.isEmpty ? maxLength.toString() : '${value.length}/$maxLength',
-            style: textStyles.regularBody13.copyWith(color: theme.textPrimary),
+            style: textStyles.regularBody12.copyWith(color: theme.textTertiary),
           ),
         ],
       ],

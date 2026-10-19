@@ -22,6 +22,7 @@ class ConfirmationBottomSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
 
     return BottomSheetScreen(
@@ -32,9 +33,14 @@ class ConfirmationBottomSheet extends StatelessWidget {
         children: [
           if (text != null) ...[
             const SizedBox(height: 8),
-            Text(text!, style: textStyles.regularBody13),
+            Text(
+              text!,
+              style: textStyles.regularBody14.copyWith(
+                color: theme.textSecondary,
+              ),
+            ),
           ],
-          const SizedBox(height: 16),
+          const SizedBox(height: 24),
           AppElevatedButton.big(
             context: context,
             text: buttonText,

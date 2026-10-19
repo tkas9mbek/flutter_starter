@@ -20,7 +20,7 @@ class RegistrationFormFields extends StatelessWidget {
           keyboardType: TextInputType.name,
           required: true,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         AppDatePickerField(
           name: RegistrationForm.birthdayField,
           label: Localizer.of(context).birthday,
@@ -29,7 +29,7 @@ class RegistrationFormFields extends StatelessWidget {
           maxDate: DateTime.now(),
           required: true,
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         AppTextField(
           name: RegistrationForm.phoneField,
           label: Localizer.of(context).phoneNumber,
@@ -39,7 +39,7 @@ class RegistrationFormFields extends StatelessWidget {
           required: true,
           validators: [FormValidators.phone(context)],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         AppTextField(
           name: RegistrationForm.passwordField,
           label: Localizer.of(context).password,
@@ -48,7 +48,6 @@ class RegistrationFormFields extends StatelessWidget {
           canObscureText: true,
           required: true,
         ),
-        const SizedBox(height: 24),
       ],
     );
   }

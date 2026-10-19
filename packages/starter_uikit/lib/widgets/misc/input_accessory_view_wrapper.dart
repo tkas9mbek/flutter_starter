@@ -35,9 +35,7 @@ class InputAccessoryViewWrapper extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 color: theme.surface,
-                border: Border(
-                  top: BorderSide(color: theme.border, width: 0.5),
-                ),
+                border: Border(top: BorderSide(color: theme.border)),
               ),
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Row(
@@ -49,8 +47,8 @@ class InputAccessoryViewWrapper extends StatelessWidget {
                         FocusManager.instance.primaryFocus?.unfocus(),
                     child: Text(
                       UikitLocalizer.of(context).done,
-                      style: textStyles.regularBody16.copyWith(
-                        color: theme.primary,
+                      style: textStyles.mediumBody16.copyWith(
+                        color: theme.accent,
                       ),
                     ),
                   ),

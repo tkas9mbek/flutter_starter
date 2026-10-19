@@ -2,7 +2,7 @@
 
 ## Root Structure
 
-Three main directories: `lib/`, `packages/`, `assets/`
+Main directories: `lib/`, `packages/`, `assets/`, `test/`, `docs/`, `utils/`. A `work/` scratch directory (agent plans/reviews) is created on demand and is not part of a clean checkout.
 
 ```
 flutter_starter/
@@ -12,9 +12,13 @@ flutter_starter/
 │   └── l10n/             # Localization (generated)
 ├── packages/
 │   ├── starter_toolkit/  # Shared utilities and data infrastructure
-│   └── starter_uikit/    # UI components (Flutter)
+│   ├── starter_uikit/    # UI components (Flutter)
+│   ├── request_logger/   # In-app HTTP request logger (Dio interceptor + UI)
+│   └── starter_lints/    # Custom lint rules
 ├── assets/               # Images, icons
-└── test/                 # Tests
+├── test/                 # Tests
+├── docs/                 # Project context, rules, and guides
+└── utils/                # Deploy scripts, coverage.sh, code generators
 ```
 
 ### Generated Files
@@ -34,14 +38,12 @@ Only application-wide, feature-independent code
 
 ```
 lib/core/
-├── consts/               # Constants
+├── global/               # Constants, storage keys, global flags
 ├── data/                 # Core data (NO Flutter imports)
-│   ├── error/
-│   ├── network/
-│   └── storage/
 ├── di/                   # Dependency injection
-│   └── modules/
-└── router/              # auto_route configuration
+├── notifications/        # Push notification setup, FCM/API token data sources
+├── remote_config/        # Firebase/asset-backed remote config
+└── router/               # auto_route configuration
 ```
 
 ## Feature Structure
@@ -50,8 +52,8 @@ Standard pattern: data → domain → model → configs → ui
 
 ```
 lib/features/{feature}/
-├── data/                 # DataSource (abstract + implementations)
-├── domain/               # Repository (usually concrete)
+├── data/                 # DataSource implementations (Api*/Local/Secure) + mock/ twins and scenarios
+├── domain/               # Repository (concrete) + abstract DataSource
 ├── model/                # Freezed models (*.freezed.dart, *.g.dart)
 ├── configs/              # DI module
 └── ui/                   # BLoC + screens + widgets
@@ -67,8 +69,8 @@ Follow these strictly
 
 | Layer | Flutter? | Contains | Rules |
 |-------|----------|----------|-------|
-| **data/** | ❌ | DataSource implementations (Remote/Local/Mock) | Pure Dart, implements Domain |
-| **domain/** | ❌ | Repository (concrete) | Pure Dart, delegates to DS |
+| **data/** | ❌ | DataSource implementations (Api/Local) + `mock/` twins | Pure Dart, implements Domain |
+| **domain/** | ❌ | Repository (concrete), abstract DataSource | Pure Dart, delegates to DS |
 | **model/** | ❌ | Freezed classes, JSON | Use `freezed` + `json_serializable` |
 | **ui/** | ✅ | BLoC, Screens, Widgets | Horizontal deps OK, no business logic |
 
@@ -88,18 +90,8 @@ lib/features/application/
 
 ## UI Organization
 
-Flat structure for simple, subdivided for complex
-
-### Simple Features (1-2 screens)
-
-```
-ui/
-├── bloc/
-├── screen/
-└── widget/
-```
-
-### Complex Features (multiple screens/flows)
+`ui/` always contains subfeature folders — never `bloc/`, `screen/`, or `widget/` directly at its root.
+Each subfeature owns its own `bloc/`, `screen/`, `widget/` (and `model/` if needed).
 
 ```
 ui/
@@ -111,19 +103,31 @@ ui/
 └── operation/     # Create/Edit
 ```
 
+A feature with a single flow still gets one subfeature folder, named after the feature
+(e.g. `profile/ui/overview/`). Widgets shared across subfeatures live in the subfeature that owns
+them; cross-subfeature imports within a feature are fine.
+
 **Common subdivisions**: `list/`, `details/`, `operation/`, `settings/`
 
 ## Package Structure
 
 Extract to packages only when used in 3+ features
 
-### starter_toolkit (Shared Utilities)
+### starter_toolkit (Shared Utilities & Data Infrastructure)
 
 ```
 packages/starter_toolkit/lib/
-├── extensions/        # Dart extensions
-├── utils/            # Utilities
-└── validators/       # Input validators
+├── configs/              # Shared constants
+├── data/
+│   ├── client/           # ApiClient, DioApiClient, HttpMethod
+│   ├── exceptions/       # AppException hierarchy + @ExceptionUiConfig
+│   ├── interceptor/      # Dio interceptors (errors, auth refresh)
+│   ├── mock/             # MockNetworkBehavior (shared by every Mock*DataSource)
+│   ├── model/            # Shared data models (pagination, …)
+│   ├── repository_cache/ # RepositoryCache + InMemoryRepositoryCache
+│   └── repository_executor/  # Raw/ErrorHandling/Retry executors + extensions
+├── l10n/                 # ToolkitLocalizer (generated)
+└── utils/                # bloc/, converters/, crash/ (CrashReporter), date/, form/, functions/, helpers/, version/
 ```
 
 **Use when**: Cross-feature helpers, data/client abstractions, reusable infrastructure
@@ -132,12 +136,41 @@ packages/starter_toolkit/lib/
 
 ```
 packages/starter_uikit/lib/
-├── theme/            # Theming
-└── widgets/          # Generic widgets (buttons, inputs, cards)
+├── configs/          # UI constants
+├── example/          # In-package example/demo screens
+├── l10n/             # UikitLocalizer + ARB files (exception messages live here)
+├── models/           # UI models (ExceptionUiModel, …)
+├── resources/        # Spider-generated asset refs (UiSvgIcons, Images, fonts)
+├── theme/            # AppColors (palette), AppTheme (role tokens), AppRadii, AppTextStyles, ThemeProvider
+├── utils/            # ExceptionUiMapper (+ decorator), form/image helpers
+└── widgets/          # app_bar/, bottom/, button/, dialogs/, external/, form/, media/, misc/ (AppCard, GroupedRowsCard, AppListTile, StatusPill, …), screen/, size/, status/, text/
 ```
 
 **Use when**: Used in 3+ features, generic, no feature logic
 **Keep in feature when**: Feature-specific or single use
+
+### request_logger (In-app HTTP logger)
+
+```
+packages/request_logger/lib/
+├── controller/       # RequestLogger.dioInterceptor() — the only entry point DI touches
+├── interceptor/      # DioLogInterceptor, LogRedactor (hides tokens before storing)
+├── data/             # Request/response/error beans, HttpLogManager (last 50 calls, in memory)
+├── screen/           # Log list + details screens
+└── widget/           # RequestLoggerButton (shown by the environment banner), list item, JSON view
+```
+
+**Wired in**: `DataModule` (Dio interceptor) and the environment banner, both gated by `AppEnvironment.showBanner`
+(dev/mock builds only). Debug tooling — keep feature code free of it.
+
+### starter_lints
+
+```
+packages/starter_lints/lib/
+└── src/lints/        # custom_lint rules
+```
+
+**Use when**: A style/architecture rule should be enforced automatically.
 
 ## File Naming
 
@@ -145,7 +178,7 @@ packages/starter_uikit/lib/
 
 ```
 authentication_data_source.dart          → AuthenticationDataSource
-remote_authentication_data_source.dart   → RemoteAuthenticationDataSource
+api_authentication_data_source.dart      → ApiAuthenticationDataSource
 authentication_repository.dart           → AuthenticationRepository
 user.dart                                → User
 login_bloc.dart                          → LoginBloc
@@ -164,8 +197,8 @@ Follow this order
 1. Create `lib/features/{feature}/`
 2. Add models (freezed classes with JSON serialization)
 3. Add domain layer (abstract DataSource + concrete Repository)
-4. Add data layer (DataSource implementations: Remote/Local/Mock)
-5. Add DI module
+4. Add data layer (`Api*`/Local DataSources, plus `data/mock/` twin + `mock_<feature>_scenarios.dart`; see [mocking.md](./mocking.md))
+5. Add DI module (`mockOrProd(mock:, prod:)` for twin vs `Api*`)
 6. Add UI (BLoC, screens, widgets)
 7. Register module in `lib/core/di/app_configurator.dart`
 8. Add routes in `app_router.dart`
@@ -176,5 +209,7 @@ Follow this order
 
 - [Architecture](./architecture.md) - Layer structure
 - [Naming](../rules/naming.md) - Naming standards
-- [Code Formatting](../rules/code_formatting.md) - Style guide
+- [Code Standards](../rules/code_standards.md) - Style guide
 - [Testing](./testing.md) - Test strategies
+- [Mocking](./mocking.md) - `data/mock/` twins
+- [Deployment](./deployment.md) - CI/CD (`.github/workflows`, fastlane)

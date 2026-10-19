@@ -21,7 +21,7 @@ class LoginFormFields extends StatelessWidget {
           required: true,
           validators: [FormValidators.phone(context)],
         ),
-        const SizedBox(height: 20),
+        const SizedBox(height: 16),
         AppTextField(
           name: LoginForm.passwordField,
           label: Localizer.of(context).password,
@@ -30,7 +30,6 @@ class LoginFormFields extends StatelessWidget {
           canObscureText: true,
           required: true,
         ),
-        const SizedBox(height: 24),
       ],
     );
   }

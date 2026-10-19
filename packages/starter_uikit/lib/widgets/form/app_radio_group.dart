@@ -4,10 +4,11 @@ import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:starter_uikit/theme/app_colors.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/form/option_label_builders.dart';
+import 'package:starter_uikit/widgets/misc/app_card.dart';
 import 'package:starter_uikit/widgets/misc/thin_horizontal_divider.dart';
 
-/// FormBuilder-backed single-select list of radio rows separated by thin
-/// dividers, storing the chosen option of [options] as the form value.
+/// FormBuilder-backed single-select list of bordered radio rows (the chosen
+/// one tinted), storing the chosen option of [options] as the form value.
 class AppRadioGroup<T extends Object> extends StatelessWidget {
   const AppRadioGroup({
     required this.name,
@@ -30,7 +31,6 @@ class AppRadioGroup<T extends Object> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeProvider.of(context).theme;
     final textStyles = ThemeProvider.of(context).textStyles;
 
     return FormBuilderField<T>(
@@ -39,54 +39,32 @@ class AppRadioGroup<T extends Object> extends StatelessWidget {
       validator: validator,
       onChanged: (value) => onChanged?.call(value),
       builder: (field) => Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           ...options.mapIndexed((index, option) {
             final selected = field.value == option;
 
-            return GestureDetector(
-              behavior: HitTestBehavior.opaque,
-              onTap: () => field.didChange(option),
-              child: Column(
-                children: [
-                  if (index != 0) ...[
-                    const ThinHorizontalDivider(),
-                    const SizedBox(height: 12),
-                  ],
-                  Row(
-                    children: [
-                      Container(
-                        height: 22,
-                        width: 22,
-                        padding: const EdgeInsets.all(4),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: selected ? theme.primary : theme.border,
-                            width: 2,
-                          ),
-                        ),
-                        child: DecoratedBox(
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? theme.primary
-                                : AppColors.transparent,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
+            return Padding(
+              padding: EdgeInsets.only(top: index == 0 ? 0 : 8),
+              child: AppCard(
+                selected: selected,
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 14,
+                ),
+                onTap: () => field.didChange(option),
+                child: Row(
+                  children: [
+                    _RadioDot(selected: selected),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        optionLabelBuilder(option),
+                        style: textStyles.regularBody16,
                       ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Text(
-                          optionLabelBuilder(option),
-                          style: textStyles.regularBody14,
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (index != options.length - 1) ...[
-                    const SizedBox(height: 12),
+                    ),
                   ],
-                ],
+                ),
               ),
             );
           }),
@@ -96,6 +74,42 @@ class AppRadioGroup<T extends Object> extends StatelessWidget {
           ],
         ],
       ),
+    );
+  }
+}
+
+class _RadioDot extends StatelessWidget {
+  const _RadioDot({required this.selected});
+
+  final bool selected;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
+
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      height: 22,
+      width: 22,
+      alignment: Alignment.center,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: selected ? theme.primary : AppColors.transparent,
+        border: Border.all(
+          color: selected ? theme.primary : theme.borderStrong,
+          width: 1.5,
+        ),
+      ),
+      child: selected
+          ? Container(
+              height: 8,
+              width: 8,
+              decoration: BoxDecoration(
+                color: theme.onPrimary,
+                shape: BoxShape.circle,
+              ),
+            )
+          : null,
     );
   }
 }

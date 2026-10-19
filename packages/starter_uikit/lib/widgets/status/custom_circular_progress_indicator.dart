@@ -1,8 +1,10 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
-/// Centered, theme-aware circular progress indicator.
+/// Centered circular progress indicator, tinted `theme.accent` unless
+/// [color] is set.
 ///
 /// Already wraps itself in a [Center] — do not wrap it in another one.
 /// Prefer [CustomCircularProgressIndicator.adaptive], which renders the
@@ -25,10 +27,10 @@ class CustomCircularProgressIndicator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
-    final indicatorColor = color ?? theme.primary;
-    final platform = Theme.of(context).platform;
+    final indicatorColor = color ?? theme.accent;
     final isCupertino =
-        platform == TargetPlatform.iOS || platform == TargetPlatform.macOS;
+        defaultTargetPlatform == TargetPlatform.iOS ||
+        defaultTargetPlatform == TargetPlatform.macOS;
 
     return Center(
       child: SizedBox(

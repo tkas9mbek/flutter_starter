@@ -35,7 +35,7 @@ left to right:
 
 ```dart
 final base = const RawRepositoryExecutor().withErrorHandling();
-final retrying = base.withRetry(maxRetries: 3);
+final retrying = base.withRetry(maxAttempts: 3);
 ```
 
 **The three invariants** (everything else in this guide follows from them):
@@ -83,7 +83,7 @@ class ProfileRepository {
 ..registerLazySingleton<ProfileRepository>(
   () => ProfileRepository(
     const RawRepositoryExecutor().withErrorHandling().withRetry(
-      maxRetries: 3,
+      maxAttempts: 3,
       retryDelay: const Duration(seconds: 2),
     ),
     getIt<ProfileDataSource>(),
@@ -131,7 +131,7 @@ class TaskRepository {
   return TaskRepository(
     executor: base,
     creationExecutor: base.withRetry(
-      maxRetries: 5,
+      maxAttempts: 5,
       retryDelay: const Duration(seconds: 1),
     ),
     dataSource: getIt<TaskDataSource>(),
@@ -415,17 +415,17 @@ the chain is cheap, deterministic, and part of the behavior under test; the
 new lever is that *you* choose its construction parameters per test.
 
 ```dart
-late MockTaskDataSource mockDataSource;
+late _MockTaskDataSource mockDataSource; // mocktail `extends Mock implements TaskDataSource`, not the data/mock/ twin
 late TaskRepository repository;
 
 setUp(() {
-  mockDataSource = MockTaskDataSource();
+  mockDataSource = _MockTaskDataSource();
   final base = const RawRepositoryExecutor().withErrorHandling();
 
   repository = TaskRepository(
     executor: base,
     creationExecutor:
-        base.withRetry(maxRetries: 5, retryDelay: Duration.zero),
+        base.withRetry(maxAttempts: 5, retryDelay: Duration.zero),
     dataSource: mockDataSource,
   );
 });
@@ -451,7 +451,7 @@ test('createTask surfaces error after exhausting retries', () async {
     () => repository.createTask(request),
     throwsA(isA<ServerException>()),
   );
-  verify(() => mockDataSource.createTask(any())).called(5); // maxRetries
+  verify(() => mockDataSource.createTask(any())).called(5); // maxAttempts
 });
 ```
 
@@ -499,8 +499,8 @@ fake implementing `RepositoryCache` that always calls `fetch`.
 |------|------|----------|
 | `RawRepositoryExecutor` | executor | Pass-through; the chain's core |
 | `ErrorHandlingExecutor` | decorator (Bucket A) | Converts any throw to `AppException`; always innermost |
-| `RetryExecutor` | decorator (Bucket A) | Up to `maxRetries` attempts, backoff `retryDelay * attempt`, only when `canRetry` |
+| `RetryExecutor` | decorator (Bucket A) | Up to `maxAttempts` attempts, backoff `retryDelay * attempt`, only when `canRetry` |
 | `RepositoryCache` / `InMemoryRepositoryCache` | collaborator (Bucket C) | Keyed TTL cache; singleton; hits bypass the executor pipeline |
 
-Retry backoff example (defaults `maxRetries: 3`, `retryDelay: 2s`): waits
+Retry backoff example (defaults `maxAttempts: 3`, `retryDelay: 2s`): waits
 2s, then 4s between attempts; three attempts total before the final rethrow.
