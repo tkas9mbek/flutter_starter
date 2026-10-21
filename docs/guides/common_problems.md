@@ -9,6 +9,7 @@ Add a recipe here when you solve the same problem a second time.
 | User logs out, reopens the app, and is signed in again | [1. Sign-out must not wait for the server](#1-sign-out-must-not-wait-for-the-server) |
 | One screen changes data, another screen still shows the old data | [2. Other screens show old data](#2-other-screens-show-old-data) |
 | A form error stays after the user fixes the field, or shows too early | [3. Form errors](#3-form-errors) |
+| Text overflows or breaks mid-word at large accessibility text sizes | [4. Large text](#4-large-text) |
 
 ---
 
@@ -151,6 +152,24 @@ Notes for field widgets:
 - Do not call `setState` straight from a validator. Auto-validation runs validators while the field builds, and Flutter rejects it. `AppTextField.showError` shows how to defer it.
 
 **Where.** `packages/starter_uikit/lib/widgets/form/app_form.dart` (gallery: "Form fields"), used by login, registration and task create. Tests in `packages/starter_uikit/test/widgets/form/app_form_test.dart`.
+
+---
+
+## 4. Large text
+
+**Symptom.** With the largest iOS text size, a screen shows overflow stripes, a title wraps one letter per line, or a button label is cut off.
+
+**Fix.** Do not fix sizes; let text grow, and change the layout when it gets big.
+
+- **Fixed heights are minimums.** Give a button `minimumSize`, not a `SizedBox(height:)`. `AppBaseButton` does this.
+- **Stack side-by-side rows.** When `context.hasLargeText` is true, put the value or badge under the title instead of next to it (`AppListTile`, the calendar card).
+- **Clamp small chrome.** Tab labels, the calendar day chips and the time column stay readable at 1.3x and cannot grow with the page: wrap them in `MediaQuery.withClampedTextScaling(maxScaleFactor: 1.3)`.
+- **Let headers wrap.** Use `Wrap` instead of `Row` for a label plus a count.
+- **Debug banners ignore text scale.** They are tools, not content.
+
+Test it by pumping the widget under `MediaQuery(data: MediaQueryData(textScaler: TextScaler.linear(3)), ...)` and checking `tester.takeException()` is null. On a simulator: `xcrun simctl ui booted content_size accessibility-extra-extra-extra-large`, and reset with `large`.
+
+**Where.** `packages/starter_uikit/lib/utils/text/text_scale_context.dart`, `AppListTile`, `BottomNavItem`, `TaskTimelineContentCard`.
 
 ---
 

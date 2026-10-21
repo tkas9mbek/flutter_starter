@@ -6,6 +6,11 @@ All notable changes to starter_uikit will be documented in this file.
 
 ### Added
 - `AppForm` — a `FormBuilder` that stays quiet until the first submit, then re-validates fields as the user edits them (`saveAndValidate()`, `validateField(name)`), with a gallery entry and behavior tests
+- `TextScaleContext.hasLargeText`; `AppForm.maybeOf` and `AppFormState.fieldValue` let a field depend on another field
+- Date, time and dropdown fields show the shared required-field message
+
+### Changed
+- `AppBaseButton.height` is a minimum height; `AppListTile` stacks its value and trailing widget under the title at large text sizes; `BottomNavItem` keeps its label on one line
 
 ### Fixed
 - `AppTextField` no longer calls `setState` from its validator while the field builds, so it works with `AutovalidateMode.onUserInteraction`
