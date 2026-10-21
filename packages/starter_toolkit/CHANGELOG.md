@@ -2,6 +2,10 @@
 
 All notable changes to starter_toolkit will be documented in this file.
 
+## [3.2.0] - 2026-10-21
+
+Version aligned with the app (`3.2.0`); no code changes in this package.
+
 ## [3.1.0] - 2026-10-19
 
 Version aligned with the app (`3.1.0`), replacing the package-local 4.x numbering below; the 4.0.0 changes were already released with app `3.0.0`.
