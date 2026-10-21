@@ -96,5 +96,22 @@ void main() {
       expect(find.text('Trailing'), findsOneWidget);
       expect(chevron, findsNothing);
     });
+
+    testWidgets('at a large text size the value moves under the title', (
+      tester,
+    ) async {
+      await tester.pumpApp(
+        const MediaQuery(
+          data: MediaQueryData(textScaler: TextScaler.linear(3)),
+          child: AppListTile(title: 'Theme', value: 'System'),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(
+        tester.getTopLeft(find.text('System')).dy,
+        greaterThan(tester.getBottomLeft(find.text('Theme')).dy - 1),
+      );
+    });
   });
 }

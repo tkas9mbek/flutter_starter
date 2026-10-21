@@ -65,7 +65,6 @@ class AppBaseButton extends StatelessWidget {
 
     return SizedBox(
       width: width,
-      height: height,
       child: ElevatedButton(
         onPressed: active ? onPressed : inactivePressed,
         onLongPress: active ? onLongPressed : inactivePressed,
@@ -78,8 +77,10 @@ class AppBaseButton extends StatelessWidget {
           elevation: const WidgetStatePropertyAll(0),
           backgroundColor: WidgetStatePropertyAll(background),
           foregroundColor: WidgetStatePropertyAll(foreground),
+          // [height] is a minimum so large text grows the button, not clips.
+          minimumSize: WidgetStatePropertyAll(Size(0, height ?? 0)),
           maximumSize: WidgetStatePropertyAll(
-            Size(width ?? double.infinity, height ?? double.infinity),
+            Size(width ?? double.infinity, double.infinity),
           ),
           shape: WidgetStatePropertyAll(
             RoundedRectangleBorder(
