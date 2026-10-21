@@ -1,5 +1,7 @@
 // ignore_for_file: class_size_warning — one search flow: query, suggestion, and result handlers
 
+import 'dart:async';
+
 import 'package:bloc_concurrency/bloc_concurrency.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -35,11 +37,24 @@ class TasksSearchBloc extends Bloc<TasksSearchEvent, TasksSearchState> {
     on<_RecentClearedTasksSearchEvent>(
       (event, emit) => emit(state.copyWith(recentQueries: const [])),
     );
+    _changesSubscription = _taskRepository.changes.listen((_) {
+      if (state.status is ResultsTasksSearchStatus) {
+        add(const TasksSearchEvent.refreshed());
+      }
+    });
   }
 
   static const _maxRecentQueries = 5;
 
   final TaskRepository _taskRepository;
+  late final StreamSubscription<void> _changesSubscription;
+
+  @override
+  Future<void> close() async {
+    await _changesSubscription.cancel();
+
+    return super.close();
+  }
 
   Future<void> _onQueryChanged(
     _QueryChangedTasksSearchEvent event,
@@ -134,10 +149,7 @@ class TasksSearchBloc extends Bloc<TasksSearchEvent, TasksSearchState> {
     }
   }
 
-  Future<void> _runQuery(
-    String query,
-    Emitter<TasksSearchState> emit,
-  ) async {
+  Future<void> _runQuery(String query, Emitter<TasksSearchState> emit) async {
     emit(
       state.copyWith(
         query: query,

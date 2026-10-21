@@ -26,7 +26,12 @@ PaginatedListItems<Task> _page(List<Task> tasks, {int countPages = 1}) =>
 void main() {
   late MockTaskRepository repository;
 
-  setUp(() => repository = MockTaskRepository());
+  setUp(() {
+    repository = MockTaskRepository();
+    when(
+      () => repository.changes,
+    ).thenAnswer((_) => const Stream<void>.empty());
+  });
 
   const query = 'Task';
   const exception = ServerException(statusCode: 500);

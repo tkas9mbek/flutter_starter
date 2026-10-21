@@ -51,6 +51,15 @@ class _TasksSearchViewState extends State<_TasksSearchView> {
     super.dispose();
   }
 
+  /// Shows the chosen query in the box so the user can see and edit it.
+  void _submitRecent(String query) {
+    _queryController.value = TextEditingValue(
+      text: query,
+      selection: TextSelection.collapsed(offset: query.length),
+    );
+    context.read<TasksSearchBloc>().add(TasksSearchEvent.querySubmitted(query));
+  }
+
   @override
   Widget build(BuildContext context) {
     final localizer = Localizer.of(context);
@@ -64,9 +73,6 @@ class _TasksSearchViewState extends State<_TasksSearchView> {
             NotificationSnackBar.success(
               text: localizer.taskDeletedSuccessfully,
             ),
-          );
-          context.read<TasksSearchBloc>().add(
-            const TasksSearchEvent.refreshed(),
           );
         }
       },
@@ -101,6 +107,7 @@ class _TasksSearchViewState extends State<_TasksSearchView> {
                   builder: (context, state) => switch (state.status) {
                     IdleTasksSearchStatus() => RecentQueriesList(
                       queries: state.recentQueries,
+                      onSelected: _submitRecent,
                     ),
                     LoadingTasksSearchStatus() =>
                       const SearchResultsLoadingSkeleton(),

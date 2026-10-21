@@ -47,7 +47,6 @@ class _CalendarView extends StatelessWidget {
               text: localizer.taskDeletedSuccessfully,
             ),
           );
-          context.read<CalendarBloc>().add(const CalendarEvent.refreshed());
         }
 
         if (state is FailureTaskDeleteState) {

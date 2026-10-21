@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
@@ -50,9 +52,13 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState>
   CalendarBloc(this._repository) : super(CalendarState.initial()) {
     on<_DateSelectedCalendarEvent>(_onDateSelected);
     on<_RefreshedCalendarEvent>(_onRefreshed);
+    _changesSubscription = _repository.changes.listen(
+      (_) => add(const CalendarEvent.refreshed()),
+    );
   }
 
   final TaskRepository _repository;
+  late final StreamSubscription<void> _changesSubscription;
 
   Future<void> _onDateSelected(
     _DateSelectedCalendarEvent event,
@@ -68,7 +74,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState>
     try {
       final tasks = await _repository.getTasksByDate(event.date);
 
-      return emit(state.copyWith(status: CalendarStatus.success(tasks: tasks)));
+      return emit(
+        state.copyWith(status: CalendarStatus.success(tasks: _byStartTime(tasks))),
+      );
     } on AppException catch (e) {
       return emit(state.copyWith(status: CalendarStatus.failure(exception: e)));
     }
@@ -86,7 +94,9 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState>
     try {
       final tasks = await _repository.getTasksByDate(state.selectedDate);
 
-      return emit(state.copyWith(status: CalendarStatus.success(tasks: tasks)));
+      return emit(
+        state.copyWith(status: CalendarStatus.success(tasks: _byStartTime(tasks))),
+      );
     } on AppException catch (e) {
       return emit(state.copyWith(status: CalendarStatus.failure(exception: e)));
     } finally {
@@ -94,8 +104,12 @@ class CalendarBloc extends Bloc<CalendarEvent, CalendarState>
     }
   }
 
+  List<Task> _byStartTime(List<Task> tasks) =>
+      [...tasks]..sort((a, b) => a.startTime.compareTo(b.startTime));
+
   @override
-  Future<void> close() {
+  Future<void> close() async {
+    await _changesSubscription.cancel();
     dispose();
 
     return super.close();

@@ -309,4 +309,109 @@ void main() {
       expect(bloc.state.recentQueries, [query]);
     });
   });
+
+  group('change propagation', () {
+    // One shared repository, like the app's singleton: a change made anywhere
+    // reloads every screen that shows tasks, with no manual refresh.
+    test(
+      'a deleted task leaves the list, the calendar and the search',
+      () async {
+        final repository = buildRepository(mockDataSource());
+        final today = DateTime.now();
+
+        final list = track(TasksListBloc(repository))
+          ..add(const TasksListEvent.requested());
+        final calendar = track(CalendarBloc(repository))
+          ..add(CalendarEvent.dateSelected(today));
+        final search = track(TasksSearchBloc(repository))
+          ..add(const TasksSearchEvent.querySubmitted('Code'));
+
+        await list.stream.firstWhere((state) => state is SuccessTasksListState);
+        await calendar.stream.firstWhere(
+          (state) => state.status is SuccessCalendarStatus,
+        );
+        await search.stream.firstWhere(
+          (state) => state.status is ResultsTasksSearchStatus,
+        );
+        const deletedId = '2';
+
+        final deleteBloc = track(TaskDeleteBloc(repository))
+          ..add(const TaskDeleteEvent.deleted(deletedId));
+        await deleteBloc.stream.firstWhere(
+          (state) => state is SuccessTaskDeleteState,
+        );
+
+        final listState = await list.stream.firstWhere(
+          (state) =>
+              state is SuccessTasksListState &&
+              state.tasks.every((task) => task.id != deletedId),
+        );
+        expect(listState, isA<SuccessTasksListState>());
+
+        final calendarState = await calendar.stream.firstWhere(
+          (state) => switch (state.status) {
+            SuccessCalendarStatus(:final tasks) => tasks.every(
+              (task) => task.id != deletedId,
+            ),
+            _ => false,
+          },
+        );
+        expect(calendarState.status, isA<SuccessCalendarStatus>());
+
+        final searchState = await search.stream.firstWhere(
+          (state) => switch (state.status) {
+            ResultsTasksSearchStatus(:final data) => data.items.every(
+              (task) => task.id != deletedId,
+            ),
+            _ => false,
+          },
+        );
+        expect(searchState.status, isA<ResultsTasksSearchStatus>());
+      },
+    );
+
+    test('a created task shows up in the list', () async {
+      final repository = buildRepository(mockDataSource());
+      final list = track(TasksListBloc(repository))
+        ..add(const TasksListEvent.requested());
+      await list.stream.firstWhere((state) => state is SuccessTasksListState);
+
+      final creation = track(TaskCreationBloc(repository))
+        ..add(TaskCreationEvent.submitted(_form));
+      await creation.stream.firstWhere(
+        (state) => state is SuccessTaskCreationState,
+      );
+
+      final listState = await list.stream.firstWhere(
+        (state) =>
+            state is SuccessTasksListState &&
+            state.tasks.any((task) => task.title == _form.title),
+      );
+      expect(listState, isA<SuccessTasksListState>());
+    });
+
+    test('an updated task is announced', () async {
+      final repository = buildRepository(mockDataSource());
+      final announced = expectLater(repository.changes, emits(anything));
+
+      await repository.updateTask('1', _request('Renamed'));
+
+      await announced;
+    });
+
+    test('a failed change is not announced', () async {
+      final repository = buildRepository(const _ThrowingTaskDataSource());
+      var announced = false;
+      final subscription = repository.changes.listen((_) => announced = true);
+      addTearDown(subscription.cancel);
+
+      await expectLater(
+        repository.deleteTask('1'),
+        throwsA(isA<NoInternetException>()),
+      );
+      await Future<void>.delayed(Duration.zero);
+
+      expect(announced, isFalse);
+    });
+  });
 }

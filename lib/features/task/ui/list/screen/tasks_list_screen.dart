@@ -50,7 +50,6 @@ class _TasksListView extends StatelessWidget {
               text: localizer.taskDeletedSuccessfully,
             ),
           );
-          context.read<TasksListBloc>().add(const TasksListEvent.requested());
         }
 
         if (state is FailureTaskDeleteState) {
@@ -76,20 +75,7 @@ class _TasksListView extends StatelessWidget {
           focusElevation: 0,
           hoverElevation: 0,
           highlightElevation: 0,
-          onPressed: () async {
-            final created = await context.router.push<bool>(
-              const TaskCreateRoute(),
-            );
-
-            if (created ?? false) {
-              if (!context.mounted) {
-                return;
-              }
-              context.read<TasksListBloc>().add(
-                const TasksListEvent.requested(),
-              );
-            }
-          },
+          onPressed: () => context.router.push(const TaskCreateRoute()),
           child: SvgIcon(UiSvgIcons.plusSign, size: 24, color: theme.onPrimary),
         ),
         body: MultiBlocRefreshIndicator(
