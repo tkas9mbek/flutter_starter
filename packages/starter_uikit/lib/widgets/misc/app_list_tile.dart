@@ -63,21 +63,8 @@ class AppListTile extends StatelessWidget {
                     danger: danger,
                     // Big text: the value and trailing widget go under the
                     // title instead of squeezing it into one letter per line.
-                    below: context.hasLargeText
-                        ? [
-                            if (value != null)
-                              Text(
-                                value!,
-                                style: textStyles.regularBody14.copyWith(
-                                  color: theme.textSecondary,
-                                ),
-                              ),
-                            if (trailing != null) ...[
-                              const SizedBox(height: 8),
-                              trailing!,
-                            ],
-                          ]
-                        : const [],
+                    stackedValue: context.hasLargeText ? value : null,
+                    stackedTrailing: context.hasLargeText ? trailing : null,
                   ),
                 ),
                 if (value != null && !context.hasLargeText) ...[
@@ -122,14 +109,16 @@ class _TitleColumn extends StatelessWidget {
   const _TitleColumn({
     required this.title,
     required this.danger,
-    required this.below,
     this.subtitle,
+    this.stackedValue,
+    this.stackedTrailing,
   });
 
   final String title;
   final String? subtitle;
   final bool danger;
-  final List<Widget> below;
+  final String? stackedValue;
+  final Widget? stackedTrailing;
 
   @override
   Widget build(BuildContext context) {
@@ -154,7 +143,18 @@ class _TitleColumn extends StatelessWidget {
             ),
           ),
         ],
-        ...below,
+        if (stackedValue != null) ...[
+          Text(
+            stackedValue!,
+            style: textStyles.regularBody14.copyWith(
+              color: theme.textSecondary,
+            ),
+          ),
+        ],
+        if (stackedTrailing != null) ...[
+          const SizedBox(height: 8),
+          stackedTrailing!,
+        ],
       ],
     );
   }

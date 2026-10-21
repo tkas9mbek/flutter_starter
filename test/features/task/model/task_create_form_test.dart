@@ -65,29 +65,32 @@ void main() {
   group('endsAfterStart', () {
     const nine = TimeOfDay(hour: 9, minute: 0);
 
-    test('accepts an end later than the start', () {
-      expect(
+    test(
+      'accepts an end later than the start',
+      () => expect(
         TaskCreateForm.endsAfterStart(
           nine,
           const TimeOfDay(hour: 9, minute: 1),
         ),
         isTrue,
-      );
-    });
+      ),
+    );
 
-    test('rejects an end before the start', () {
-      expect(
+    test(
+      'rejects an end before the start',
+      () => expect(
         TaskCreateForm.endsAfterStart(
           nine,
           const TimeOfDay(hour: 8, minute: 59),
         ),
         isFalse,
-      );
-    });
+      ),
+    );
 
-    test('rejects an end equal to the start', () {
-      expect(TaskCreateForm.endsAfterStart(nine, nine), isFalse);
-    });
+    test(
+      'rejects an end equal to the start',
+      () => expect(TaskCreateForm.endsAfterStart(nine, nine), isFalse),
+    );
 
     test('leaves an unset time to the required check', () {
       expect(TaskCreateForm.endsAfterStart(null, nine), isTrue);

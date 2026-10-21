@@ -19,36 +19,12 @@ class EnvironmentBannerStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = ThemeProvider.of(context).theme;
-
     return BlocBuilder<EnvironmentCubit, AppEnvironment>(
       builder: (context, env) => Column(
         children: [
-          if (env.showBanner)
-            ColoredBox(
-              color: theme.background,
-              child: Material(
-                type: MaterialType.transparency,
-                child: SizedBox(
-                  width: double.infinity,
-                  child: SafeArea(
-                    bottom: false,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 2),
-                      child: MediaQuery.withNoTextScaling(
-                        child: Center(
-                          child: RequestLoggerButton(
-                            label: env.name,
-                            color: env.useMock ? theme.info : theme.warning,
-                            navigatorKey: navigatorKey,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+          if (env.showBanner) ...[
+            _BannerStrip(env: env, navigatorKey: navigatorKey),
+          ],
           Expanded(
             key: const ValueKey('app-content'),
             child: MediaQuery.removePadding(
@@ -58,6 +34,43 @@ class EnvironmentBannerStack extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _BannerStrip extends StatelessWidget {
+  const _BannerStrip({required this.env, required this.navigatorKey});
+
+  final AppEnvironment env;
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = ThemeProvider.of(context).theme;
+
+    return ColoredBox(
+      color: theme.background,
+      child: Material(
+        type: MaterialType.transparency,
+        child: SizedBox(
+          width: double.infinity,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: MediaQuery.withNoTextScaling(
+                child: Center(
+                  child: RequestLoggerButton(
+                    label: env.name,
+                    color: env.useMock ? theme.info : theme.warning,
+                    navigatorKey: navigatorKey,
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }

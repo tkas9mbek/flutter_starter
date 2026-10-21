@@ -69,13 +69,15 @@ void main() {
       return result;
     }
 
-    testWidgets('resolves true when the user confirms', (tester) async {
-      expect(await openAndTap(tester, 'Delete'), isTrue);
-    });
+    testWidgets(
+      'resolves true when the user confirms',
+      (tester) async => expect(await openAndTap(tester, 'Delete'), isTrue),
+    );
 
-    testWidgets('resolves false when the user cancels', (tester) async {
-      expect(await openAndTap(tester, 'Cancel'), isFalse);
-    });
+    testWidgets(
+      'resolves false when the user cancels',
+      (tester) async => expect(await openAndTap(tester, 'Cancel'), isFalse),
+    );
   });
 
   group('RecentQueriesList', () {
