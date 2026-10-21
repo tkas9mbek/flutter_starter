@@ -62,6 +62,22 @@ void main() {
     );
 
     blocTest<CalendarBloc, CalendarState>(
+      'sorts the tasks by start time',
+      build: () {
+        when(
+          () => mockDataSource.getTasksByDate(testDate),
+        ).thenAnswer((_) async => [TaskMockModels.task2, TaskMockModels.task1]);
+
+        return calendarBloc;
+      },
+      act: (bloc) => bloc.add(CalendarEvent.dateSelected(testDate)),
+      verify: (bloc) {
+        final status = bloc.state.status as SuccessCalendarStatus;
+        expect(status.tasks, [TaskMockModels.task1, TaskMockModels.task2]);
+      },
+    );
+
+    blocTest<CalendarBloc, CalendarState>(
       'emits [loading, success] with empty task list',
       build: () {
         when(

@@ -134,5 +134,19 @@ void main() {
       expect(find.text(badEmail), findsOneWidget);
       expect(find.text('Required field'), findsNothing);
     });
+
+    testWidgets('lets a field read another field and find its form', (
+      tester,
+    ) async {
+      final formKey = await pumpForm(tester);
+      await type(tester, nameField, 'Ada');
+
+      expect(formKey.currentState!.fieldValue<String>(nameField), 'Ada');
+      expect(formKey.currentState!.fieldValue<String>('missing'), isNull);
+      expect(
+        AppForm.maybeOf(tester.element(find.byType(AppTextField).first)),
+        formKey.currentState,
+      );
+    });
   });
 }
