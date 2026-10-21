@@ -1,7 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:starter/features/auth/data/mock/mock_auth_authorized_data_source.dart';
 import 'package:starter/features/auth/data/mock/mock_auth_scenarios.dart';
 import 'package:starter/features/auth/data/mock/mock_auth_unauthorized_data_source.dart';
+import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
 import 'package:starter/features/auth/domain/auth_repository.dart';
 import 'package:starter/features/auth/domain/auth_unauthorized_data_source.dart';
@@ -72,6 +75,28 @@ class _ThrowingAuthUnauthorizedDataSource
       throw const NoInternetException();
 }
 
+class _ThrowingAuthAuthorizedDataSource implements AuthAuthorizedDataSource {
+  const _ThrowingAuthAuthorizedDataSource();
+
+  @override
+  Future<void> logout(AuthToken token) async =>
+      throw const NoInternetException();
+}
+
+/// A logout request that never answers — proves sign-out does not wait on it.
+class _HangingAuthAuthorizedDataSource implements AuthAuthorizedDataSource {
+  _HangingAuthAuthorizedDataSource();
+
+  final requests = <AuthToken>[];
+
+  @override
+  Future<void> logout(AuthToken token) {
+    requests.add(token);
+
+    return Completer<void>().future;
+  }
+}
+
 const _loginForm = LoginForm(phone: '+79991234567', password: 'password123');
 
 final _registrationForm = RegistrationForm(
@@ -89,10 +114,12 @@ void main() {
   AuthRepository buildRepository([
     AuthUnauthorizedDataSource unauthorizedDataSource =
         const MockAuthUnauthorizedDataSource(MockNetworkBehavior.instant()),
+    AuthAuthorizedDataSource authorizedDataSource =
+        const MockAuthAuthorizedDataSource(MockNetworkBehavior.instant()),
   ]) {
     final repository = AuthRepository(
       const RawRepositoryExecutor().withErrorHandling(),
-      const MockAuthAuthorizedDataSource(MockNetworkBehavior.instant()),
+      authorizedDataSource,
       unauthorizedDataSource,
       localDataSource,
     );
@@ -100,6 +127,65 @@ void main() {
 
     return repository;
   }
+
+  group('logout flow', () {
+    const unauthorized = MockAuthUnauthorizedDataSource(
+      MockNetworkBehavior.instant(),
+    );
+
+    Future<AuthRepository> signedInRepository(
+      AuthAuthorizedDataSource authorizedDataSource,
+    ) async {
+      final repository = buildRepository(unauthorized, authorizedDataSource);
+      await repository.login(phone: '+79991234567', password: 'password123');
+
+      return repository;
+    }
+
+    test('clears the token and signs out', () async {
+      final repository = await signedInRepository(
+        const MockAuthAuthorizedDataSource(MockNetworkBehavior.instant()),
+      );
+
+      await repository.logout();
+
+      expect(await localDataSource.getToken(), isNull);
+      expect(repository.status.value, AuthStatus.unauthenticated);
+    });
+
+    test('clears the token even when the server request fails', () async {
+      final repository = await signedInRepository(
+        const _ThrowingAuthAuthorizedDataSource(),
+      );
+
+      await repository.logout();
+      await Future<void>.delayed(Duration.zero);
+
+      expect(await localDataSource.getToken(), isNull);
+    });
+
+    test(
+      'does not wait for the server and sends the token it had before clearing',
+      () async {
+        final server = _HangingAuthAuthorizedDataSource();
+        final repository = await signedInRepository(server);
+
+        await repository.logout().timeout(const Duration(seconds: 1));
+
+        expect(await localDataSource.getToken(), isNull);
+        expect(server.requests, [MockAuthScenarios.token]);
+      },
+    );
+
+    test('skips the server request when there is no token', () async {
+      final server = _HangingAuthAuthorizedDataSource();
+      final repository = buildRepository(unauthorized, server);
+
+      await repository.logout();
+
+      expect(server.requests, isEmpty);
+    });
+  });
 
   group('login flow', () {
     LoginBloc buildBloc([
