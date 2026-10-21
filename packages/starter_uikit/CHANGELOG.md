@@ -2,7 +2,9 @@
 
 All notable changes to starter_uikit will be documented in this file.
 
-## [Unreleased]
+## [3.2.0] - 2026-10-21
+
+Adds `AppForm` and makes tiles, tabs and buttons hold up at large text sizes. No breaking changes.
 
 ### Added
 - `AppForm` — a `FormBuilder` that stays quiet until the first submit, then re-validates fields as the user edits them (`saveAndValidate()`, `validateField(name)`), with a gallery entry and behavior tests

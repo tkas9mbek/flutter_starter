@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## [Unreleased]
+## [3.2.0] - 2026-10-21
 
 ### Added
 - `AppForm` in `starter_uikit`: a `FormBuilder` that stays quiet until the first submit, then re-validates fields as the user edits them (`saveAndValidate()`, `validateField(name)`); login, registration and task create use it
@@ -19,6 +19,7 @@ All notable changes to this project will be documented in this file.
 - `AppBaseButton.height` is a minimum height, so large text grows the button instead of clipping the label
 - Date, time and dropdown fields use the same "Required field" message as text fields; "coming soon" messages use the information snackbar
 - Swiping a task away asks for confirmation, like the details screen
+- Guides, READMEs and AI-context docs updated for `AppForm`, the repository `changes` stream and the new `logout` signature (`AGENTS.md`, `code_review`, `testing`, `repository_executor`, `pagination`, `uikit` rules, package READMEs)
 
 ### Fixed
 - A failed logout request left the token on the device, so the next launch signed the user back in
