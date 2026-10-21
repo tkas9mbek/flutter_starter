@@ -29,7 +29,8 @@ class TaskDateGroupCard extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Row(
+            child: Wrap(
+              spacing: 8,
               children: [
                 Text(
                   dateLabel,
@@ -37,7 +38,6 @@ class TaskDateGroupCard extends StatelessWidget {
                     color: theme.textSecondary,
                   ),
                 ),
-                const SizedBox(width: 8),
                 Text(
                   '$tasksCount $tasksWord',
                   style: textStyles.regularBody13.copyWith(
