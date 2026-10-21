@@ -67,7 +67,7 @@ Rules tagged `[lint]` are auto-enforced — skip in manual review.
 | UI-5 | 🟡 `[lint]` | Spread `if (cond) ...[Widget()]` even for one |
 | UI-6 | 🟡 `[lint]` | `=>` except `build()`, nested callbacks, and `if-case` listener bodies |
 | UI-7 | 🟡 | `if (!context.mounted) return;` after every `await` that uses context (`S7`) |
-| UI-8 | 🟡 | Use `starter_uikit` form widgets, not bare `FormBuilder*` |
+| UI-8 | 🟡 | Use `AppForm` and `starter_uikit` form widgets, not bare `FormBuilder` / `FormBuilder*` |
 | UI-9 | 🟡 `[lint]` | `build()` widget nesting ≤ 8 levels — extract deep subtrees |
 | UI-10 | 🔴 | Shared widget takes color/typography only from `ThemeProvider` tokens (role tokens used for their role: `accent`, `errorText`/`successText`, `onStatus`) — no `Color(0x…)`, `Colors.*` (except `AppColors.transparent`), hand-built `TextStyle`; flat design: no shadow/elevation/ripple/tint, radii from `AppRadii` ([uikit.md](../rules/uikit.md)) |
 | UI-11 | 🟡 | New/changed `starter_uikit` widget has a gallery section in `lib/example/` and a behavior test in `packages/starter_uikit/test/widgets/<category>/` |

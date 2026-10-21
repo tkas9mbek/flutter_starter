@@ -9,7 +9,7 @@ Section numbers are cited from other docs (`§ 11`, `§ 14`, `§ 15`) — keep t
 1. [Flat widget folders](#flat-widget-folders)
 2. [Class Member Ordering](#class-member-ordering)
 3. [Required-named for 5+ parameters](#required-named-for-5-parameters)
-4. [Form fields inside a `FormBuilder`](#form-fields-inside-a-formbuilder)
+4. [Form fields inside a form](#form-fields-inside-a-form)
 5. [Comments stay within two lines](#comments-stay-within-two-lines)
 6. [Container padding is horizontal-only](#container-padding-is-horizontal-only)
 7. [Top-level private consts go right after imports](#top-level-private-consts-go-right-after-imports)
@@ -82,16 +82,16 @@ configure(host: 'localhost', port: 8080, secure: true, retries: 3, timeout: 5);
 
 ---
 
-## Form fields inside a `FormBuilder`
+## Form fields inside a form
 
-When a field sits inside an ancestor `FormBuilder`, seed its starting value through `FormBuilder(initialValue: {...})`, not the field's own `initialValue:`. The `FormBuilder` is the single source of truth for what the form starts with; a field-level `initialValue` only makes sense when the field has no `FormBuilder` ancestor.
+When a field sits inside an ancestor `AppForm` (or `FormBuilder`), seed its starting value through `AppForm(initialValue: {...})`, not the field's own `initialValue:`. The form is the single source of truth for what it starts with; a field-level `initialValue` only makes sense when the field has no form ancestor.
 
 ```dart
 // ❌ Bad
 AppTextField(name: AddressDetailsForm.cityField, initialValue: initialAddress.city);
 
 // ✅ Good
-FormBuilder(
+AppForm(
   initialValue: {AddressDetailsForm.cityField: initialAddress.city},
   child: AppTextField(name: AddressDetailsForm.cityField),
 );

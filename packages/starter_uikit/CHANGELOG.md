@@ -2,6 +2,21 @@
 
 All notable changes to starter_uikit will be documented in this file.
 
+## [3.2.0] - 2026-10-21
+
+Adds `AppForm` and makes tiles, tabs and buttons hold up at large text sizes. No breaking changes.
+
+### Added
+- `AppForm` — a `FormBuilder` that stays quiet until the first submit, then re-validates fields as the user edits them (`saveAndValidate()`, `validateField(name)`), with a gallery entry and behavior tests
+- `TextScaleContext.hasLargeText`; `AppForm.maybeOf` and `AppFormState.fieldValue` let a field depend on another field
+- Date, time and dropdown fields show the shared required-field message
+
+### Changed
+- `AppBaseButton.height` is a minimum height; `AppListTile` stacks its value and trailing widget under the title at large text sizes; `BottomNavItem` keeps its label on one line
+
+### Fixed
+- `AppTextField` no longer calls `setState` from its validator while the field builds, so it works with `AutovalidateMode.onUserInteraction`
+
 ## [3.1.0] - 2026-10-19
 
 Version aligned with the app (`3.1.0`); this replaces the package-local 3.1.0 of 2026-07-25 (folded in below) and the draft 4.0.0 numbering. Flat navy redesign: every widget now paints from semantic theme tokens with 1px borders instead of shadows, so apps that referenced the old palette or relied on the old look must migrate.

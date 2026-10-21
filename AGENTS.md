@@ -57,7 +57,7 @@ Presentation (Flutter, BLoC) → Domain (Repo, AbstractDS, Model) ← Data (DS i
 
 Feature folder: `lib/features/{feature}/{data (+ mock/ twins), domain, model, configs, ui}`; `ui/` holds subfeature folders ONLY (`ui/{subfeature}/{bloc,screen,widget}`, ≥2 files) — layout detail in `architecture.md`. Example: `lib/features/task/ui/{list,details,calendar,search,create}/`.
 
-Repo cross-cutting concerns (error handling, retry, cache): executors composed only in the DI module; caching is the `RepositoryCache` collaborator — see [repository_executor.md](docs/ai-context/repository_executor.md). Mock twins and `mockOrProd`: [mocking.md](docs/ai-context/mocking.md) (`M1`–`M10`). Paged lists: [pagination.md](docs/ai-context/pagination.md). Repeated enum switches: [polymorphism.md](docs/ai-context/polymorphism.md).
+Repo cross-cutting concerns (error handling, retry, cache): executors composed only in the DI module; caching is the `RepositoryCache` collaborator — see [repository_executor.md](docs/ai-context/repository_executor.md). Mock twins and `mockOrProd`: [mocking.md](docs/ai-context/mocking.md) (`M1`–`M10`). Screens that show the same data reload from a repository `changes` stream (singleton repo; no stream → pop with `true`), and sign-out clears local state without waiting for the server: [common_problems.md](docs/guides/common_problems.md). Paged lists: [pagination.md](docs/ai-context/pagination.md). Repeated enum switches: [polymorphism.md](docs/ai-context/polymorphism.md).
 
 ---
 
@@ -119,11 +119,11 @@ Class size: target <100 lines, split at >200. Never `Widget _buildFoo()` — ext
 Check before writing anything new; never re-implement.
 
 - **starter_toolkit**: `DateTimeHelpers`, date formatting (`getLocalizedDateLabel`, `getFormattedTimeRange`), validators, `AppException` hierarchy, `MockNetworkBehavior` (mock twins), `CrashReporter`.
-- **starter_uikit**: status (`EmptyInformationBody`, `FailureWidget.large/.small`, `CustomCircularProgressIndicator.adaptive`, `AppStatusScreen`), `NotificationSnackBar`, theme (`AppTheme`, `AppTextStyles`, `AppRadii`, `ThemeProvider`), app bars (`TitleAppBar`, `BaseAppBar`, `TransparentAppBar`), forms (`AppTextField`, `AppDropdownField`, `AppCheckbox`, `AppDatePickerField`), buttons (`AppElevatedButton`, `AppOutlinedButton`), surfaces (`AppCard`, `GroupedRowsCard` + `AppListTile` for settings-style rows, `StatusPill`), taps (`AppTapArea`). Shared-widget rules: `docs/rules/uikit.md`.
+- **starter_uikit**: status (`EmptyInformationBody`, `FailureWidget.large/.small`, `CustomCircularProgressIndicator.adaptive`, `AppStatusScreen`), `NotificationSnackBar`, theme (`AppTheme`, `AppTextStyles`, `AppRadii`, `ThemeProvider`), app bars (`TitleAppBar`, `BaseAppBar`, `TransparentAppBar`), forms (`AppForm`, `AppTextField`, `AppDropdownField`, `AppCheckbox`, `AppDatePickerField`), buttons (`AppElevatedButton`, `AppOutlinedButton`), surfaces (`AppCard`, `GroupedRowsCard` + `AppListTile` for settings-style rows, `StatusPill`), taps (`AppTapArea`). Shared-widget rules: `docs/rules/uikit.md`.
 - **Flat design**: no shadows, elevation, ripples or surface tint — surfaces are separated by a 1px `theme.border` (`borderStrong` for emphasis) and an `AppRadii` step; app bar and scaffold both use `theme.background`. Colors only via `AppTheme` role tokens (`primary`/`onPrimary`, `accent` for brand-colored text/icons, `surface`, `error`/`errorText`, `success`/`successText`, …), never raw `Color(...)`/`Colors.*` or palette `AppColors.*` (only `AppColors.transparent`). Compose `AppCard`/`AppListTile` in features instead of writing feature-local card/tile widgets.
 - **Imports**: the specific file (`package:starter_uikit/widgets/app_bar/title_app_bar.dart`) — no barrel exports.
 - **Taps**: `AppTapArea` / `InkWell` / Material buttons, never a bare `GestureDetector` (not reachable by screen readers or keyboard); icon-only taps get a localized `semanticLabel`, disabled → `onTap: null` (`UI-13`).
-- **Forms**: never bare `FormBuilder*` fields. Multi-field screens → `FormBuilder` + `AppTextField`/`App*PickerField`; single-field (search) → `ControllerTextField` + `ValidatableTextEditingController`.
+- **Forms**: never bare `FormBuilder*` fields. Multi-field screens → `AppForm` (quiet until the first submit, then validates on edit) + `AppTextField`/`App*PickerField`; single-field (search) → `ControllerTextField` + `ValidatableTextEditingController`.
 
 **Reference implementations**: `lib/features/task/` is the canonical end-to-end example (BLoC states, exceptions, forms, executor wiring, pagination, mock twins). `packages/starter_uikit/lib/example/` is the live widget gallery — in a debug build tap the hidden `DevModeActivator` (7 taps) → "UI Kit Examples". Read both before writing a new feature or widget.
 
@@ -173,6 +173,7 @@ Commits: `TICKET-ID: Capitalized imperative` or `type: Capitalized imperative` (
 | [docs/ai-context/git.md](docs/ai-context/git.md) | Branch / commit / PR format |
 | [docs/ai-context/estimation.md](docs/ai-context/estimation.md) | Story-point model |
 | [docs/guides/deployment.md](docs/guides/deployment.md) | CI/CD: TestFlight + Firebase App Distribution, secrets, fastlane |
+| [docs/guides/common_problems.md](docs/guides/common_problems.md) | Recipes: sign-out, stale data across screens (repo stream / pop result), form errors |
 | [docs/rules/bloc.md](docs/rules/bloc.md) | BLoC rules: Freezed shapes, handler rules, UI integration |
 | [docs/rules/uikit.md](docs/rules/uikit.md) | `starter_uikit` rules: token-only theming, folder layout, gallery + test per widget |
 

@@ -50,5 +50,19 @@ void main() {
       expect(colorOf(tester, 'Profile'), theme.accent);
       expect(colorOf(tester, 'Home'), theme.textTertiary);
     });
+
+    testWidgets('keeps labels on one line at an accessibility text size', (
+      tester,
+    ) async {
+      await tester.pumpApp(
+        MediaQuery(
+          data: const MediaQueryData(textScaler: TextScaler.linear(3)),
+          child: buildBar(active: 0, onTap: (_) {}),
+        ),
+      );
+
+      expect(tester.takeException(), isNull);
+      expect(tester.getSize(find.text('Profile')).height, lessThan(30));
+    });
   });
 }

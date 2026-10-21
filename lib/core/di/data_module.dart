@@ -40,6 +40,12 @@ class DataModule extends AppModule {
     final secureStorage = getIt<FlutterSecureStorage>();
     final authInterceptor = InterceptorsWrapper(
       onRequest: (options, handler) async {
+        // An explicit header wins: logout sends the token it captured before
+        // clearing storage.
+        if (options.headers.containsKey('Authorization')) {
+          return handler.next(options);
+        }
+
         final token = await secureStorage.read(
           key: SecureStorageKeys.jwtTokenKey,
         );

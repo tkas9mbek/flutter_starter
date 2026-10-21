@@ -41,19 +41,22 @@ class CalendarDatePickerItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppRadii.md),
           border: isMarkedToday ? Border.all(color: theme.accent) : null,
         ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              DateFormat('EEE').format(date),
-              style: textStyles.regularBody12.copyWith(color: weekdayColor),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              date.day.toString(),
-              style: textStyles.mediumBody16.copyWith(color: dayColor),
-            ),
-          ],
+        child: MediaQuery.withClampedTextScaling(
+          maxScaleFactor: 1.3,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                DateFormat('EEE').format(date),
+                style: textStyles.regularBody12.copyWith(color: weekdayColor),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                date.day.toString(),
+                style: textStyles.mediumBody16.copyWith(color: dayColor),
+              ),
+            ],
+          ),
         ),
       ),
     );

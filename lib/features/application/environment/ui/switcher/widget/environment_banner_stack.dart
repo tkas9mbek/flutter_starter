@@ -5,6 +5,8 @@ import 'package:starter/features/application/environment/model/app_environment.d
 import 'package:starter/features/application/environment/ui/switcher/bloc/environment_cubit.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 
+/// Puts the environment banner in a slim strip above the app, so it never
+/// covers an app-bar title. The strip takes over the status-bar inset.
 class EnvironmentBannerStack extends StatelessWidget {
   const EnvironmentBannerStack({
     required this.child,
@@ -17,34 +19,59 @@ class EnvironmentBannerStack extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return BlocBuilder<EnvironmentCubit, AppEnvironment>(
+      builder: (context, env) => Column(
+        children: [
+          if (env.showBanner) ...[
+            _BannerStrip(env: env, navigatorKey: navigatorKey),
+          ],
+          Expanded(
+            key: const ValueKey('app-content'),
+            child: MediaQuery.removePadding(
+              context: context,
+              removeTop: env.showBanner,
+              child: child,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _BannerStrip extends StatelessWidget {
+  const _BannerStrip({required this.env, required this.navigatorKey});
+
+  final AppEnvironment env;
+  final GlobalKey<NavigatorState> navigatorKey;
+
+  @override
+  Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
 
-    return Stack(
-      children: [
-        child,
-        Align(
-          alignment: Alignment.topRight,
-          child: Material(
-            type: MaterialType.transparency,
-            child: SafeArea(
-              child: Padding(
-                padding: EdgeInsets.only(
-                  right: MediaQuery.sizeOf(context).width * 0.25,
-                ),
-                child: BlocBuilder<EnvironmentCubit, AppEnvironment>(
-                  builder: (context, env) => env.showBanner
-                      ? RequestLoggerButton(
-                          label: env.name,
-                          color: env.useMock ? theme.info : theme.warning,
-                          navigatorKey: navigatorKey,
-                        )
-                      : const SizedBox.shrink(),
+    return ColoredBox(
+      color: theme.background,
+      child: Material(
+        type: MaterialType.transparency,
+        child: SizedBox(
+          width: double.infinity,
+          child: SafeArea(
+            bottom: false,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 2),
+              child: MediaQuery.withNoTextScaling(
+                child: Center(
+                  child: RequestLoggerButton(
+                    label: env.name,
+                    color: env.useMock ? theme.info : theme.warning,
+                    navigatorKey: navigatorKey,
+                  ),
                 ),
               ),
             ),
           ),
         ),
-      ],
+      ),
     );
   }
 }

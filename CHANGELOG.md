@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.2.0] - 2026-10-21
+
+### Added
+- `AppForm` in `starter_uikit`: a `FormBuilder` that stays quiet until the first submit, then re-validates fields as the user edits them (`saveAndValidate()`, `validateField(name)`); login, registration and task create use it
+- `TaskRepository.changes`: a stream that fires after a task is created, updated or deleted; the task list, calendar and search blocs listen and reload
+- `docs/guides/common_problems.md`: recipes for sign-out, stale data across screens (repository stream or pop with a result), form errors and large text
+- `TaskCreateForm.endsAfterStart` and a localized `endTimeMustBeAfterStart` message: the create form rejects an end time that is not after the start time
+- `hasLargeText` in `starter_uikit` (`TextScaleContext`)
+
+### Changed
+- **Breaking**: `AuthAuthorizedDataSource.logout` takes the `AuthToken` to revoke; `AuthRepository.logout` clears local storage right away and sends the server request in parallel
+- `TaskRepository` is a lazy singleton (it owns the `changes` stream) and the task screens no longer reload by hand after a create or delete
+- The auth interceptor keeps an explicit `Authorization` header instead of overwriting it from storage
+- The environment banner is a slim strip above the app instead of a pill over the app-bar title
+- `AppBaseButton.height` is a minimum height, so large text grows the button instead of clipping the label
+- Date, time and dropdown fields use the same "Required field" message as text fields; "coming soon" messages use the information snackbar
+- Swiping a task away asks for confirmation, like the details screen
+- Guides, READMEs and AI-context docs updated for `AppForm`, the repository `changes` stream and the new `logout` signature (`AGENTS.md`, `code_review`, `testing`, `repository_executor`, `pagination`, `uikit` rules, package READMEs)
+
+### Fixed
+- A failed logout request left the token on the device, so the next launch signed the user back in
+- Deleting a task from the details screen did not update the task list, calendar or search results behind it
+- Form field errors stayed on screen after the user fixed the field
+- The task details date was always formatted in Russian
+- The calendar timeline listed tasks in insertion order instead of by start time
+- Tapping a recent search left the search box empty
+- Overflow and mid-word wrapping at accessibility text sizes (tab bar, calendar, tiles, buttons, list headers)
+
 ## [3.1.0] - 2026-10-19
 
 ### Added

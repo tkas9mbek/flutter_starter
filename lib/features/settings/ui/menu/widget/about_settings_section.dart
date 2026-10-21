@@ -25,7 +25,7 @@ class AboutSettingsSection extends StatelessWidget {
           title: localizer.termsAndConditions,
           onTap: () => NotificationSnackBar.show(
             context,
-            NotificationSnackBar.error(text: localizer.termsComingSoon),
+            NotificationSnackBar.information(text: localizer.termsComingSoon),
           ),
         ),
         AppListTile(
@@ -33,7 +33,9 @@ class AboutSettingsSection extends StatelessWidget {
           title: localizer.privacyPolicy,
           onTap: () => NotificationSnackBar.show(
             context,
-            NotificationSnackBar.error(text: localizer.privacyPolicyComingSoon),
+            NotificationSnackBar.information(
+              text: localizer.privacyPolicyComingSoon,
+            ),
           ),
         ),
       ],

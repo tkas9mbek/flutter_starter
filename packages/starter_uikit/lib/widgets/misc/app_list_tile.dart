@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
+import 'package:starter_uikit/utils/text/text_scale_context.dart';
 import 'package:starter_uikit/widgets/media/svg_icon.dart';
 import 'package:starter_uikit/widgets/misc/app_tap_area.dart';
 import 'package:starter_uikit/widgets/status/custom_circular_progress_indicator.dart';
@@ -47,6 +48,9 @@ class AppListTile extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           child: LayoutBuilder(
             builder: (context, box) => Row(
+              crossAxisAlignment: context.hasLargeText
+                  ? CrossAxisAlignment.start
+                  : CrossAxisAlignment.center,
               children: [
                 if (icon != null) ...[
                   SvgIcon(icon!, size: 22, color: tint),
@@ -57,9 +61,13 @@ class AppListTile extends StatelessWidget {
                     title: title,
                     subtitle: subtitle,
                     danger: danger,
+                    // Big text: the value and trailing widget go under the
+                    // title instead of squeezing it into one letter per line.
+                    stackedValue: context.hasLargeText ? value : null,
+                    stackedTrailing: context.hasLargeText ? trailing : null,
                   ),
                 ),
-                if (value != null) ...[
+                if (value != null && !context.hasLargeText) ...[
                   const SizedBox(width: 12),
                   ConstrainedBox(
                     constraints: BoxConstraints(maxWidth: box.maxWidth * 0.5),
@@ -77,7 +85,7 @@ class AppListTile extends StatelessWidget {
                 if (loading) ...[
                   const SizedBox(width: 8),
                   CustomCircularProgressIndicator(size: 18, color: tint),
-                ] else if (trailing != null) ...[
+                ] else if (trailing != null && !context.hasLargeText) ...[
                   const SizedBox(width: 8),
                   trailing!,
                 ] else if (showChevron) ...[
@@ -102,11 +110,15 @@ class _TitleColumn extends StatelessWidget {
     required this.title,
     required this.danger,
     this.subtitle,
+    this.stackedValue,
+    this.stackedTrailing,
   });
 
   final String title;
   final String? subtitle;
   final bool danger;
+  final String? stackedValue;
+  final Widget? stackedTrailing;
 
   @override
   Widget build(BuildContext context) {
@@ -130,6 +142,18 @@ class _TitleColumn extends StatelessWidget {
               color: theme.textSecondary,
             ),
           ),
+        ],
+        if (stackedValue != null) ...[
+          Text(
+            stackedValue!,
+            style: textStyles.regularBody14.copyWith(
+              color: theme.textSecondary,
+            ),
+          ),
+        ],
+        if (stackedTrailing != null) ...[
+          const SizedBox(height: 8),
+          stackedTrailing!,
         ],
       ],
     );

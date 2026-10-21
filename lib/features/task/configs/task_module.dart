@@ -26,7 +26,9 @@ class TaskModule extends AppModule {
     unregisterIfRegistered<TasksSearchBloc>,
     unregisterIfRegistered<TasksListBloc>,
     unregisterIfRegistered<CalendarBloc>,
-    unregisterIfRegistered<TaskRepository>,
+    () => unregisterIfRegistered<TaskRepository>(
+      disposingFunction: (repository) => repository.dispose(),
+    ),
     unregisterIfRegistered<TaskDataSource>,
   ];
 
@@ -39,7 +41,7 @@ class TaskModule extends AppModule {
           prod: () => ApiTaskDataSource(getIt<ApiClient>()),
         ),
       )
-      ..registerFactory(
+      ..registerLazySingleton(
         () => TaskRepository(
           const RawRepositoryExecutor().withErrorHandling(),
           getIt<TaskDataSource>(),

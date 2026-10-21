@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:rxdart/rxdart.dart';
 import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
 import 'package:starter/features/auth/domain/auth_local_data_source.dart';
@@ -6,8 +8,11 @@ import 'package:starter/features/auth/model/auth_login_request_body.dart';
 import 'package:starter/features/auth/model/auth_otp_request_body.dart';
 import 'package:starter/features/auth/model/auth_register_request_body.dart';
 import 'package:starter/features/auth/model/auth_status.dart';
+import 'package:starter/features/auth/model/auth_token.dart';
 import 'package:starter/features/auth/model/auth_verify_otp_request_body.dart';
+import 'package:starter_toolkit/data/exceptions/app_exception.dart';
 import 'package:starter_toolkit/data/repository_executor/repository_executor.dart';
+
 class AuthRepository {
   AuthRepository(
     this._repositoryExecutor,
@@ -27,9 +32,8 @@ class AuthRepository {
 
   /// Clears secure storage on first launch. Returns whether the app
   /// had been launched before.
-  Future<bool> clearIfNotLaunchedBefore() => _repositoryExecutor.execute(
-    _localDataSource.clearIfNotLaunchedBefore,
-  );
+  Future<bool> clearIfNotLaunchedBefore() =>
+      _repositoryExecutor.execute(_localDataSource.clearIfNotLaunchedBefore);
 
   Future<bool> hasToken() => _repositoryExecutor.execute(() async {
     final token = await _localDataSource.getToken();
@@ -37,19 +41,29 @@ class AuthRepository {
     return token != null;
   });
 
+  /// Signs out locally right away. The server call is best effort and runs in
+  /// parallel, so a slow or failing request can never leave the token on the
+  /// device.
   Future<void> logout() async {
     _controller.add(AuthStatus.unauthenticated);
 
     final token = await _localDataSource.getToken();
 
-    if (token == null) {
-      return _localDataSource.clearStorage();
+    if (token != null) {
+      unawaited(_revokeOnServer(token));
     }
 
-    await _repositoryExecutor.execute(() async {
-      await _authorizedDataSource.logout();
-      await _localDataSource.clearStorage();
-    });
+    await _localDataSource.clearStorage();
+  }
+
+  Future<void> _revokeOnServer(AuthToken token) async {
+    try {
+      await _repositoryExecutor.execute(
+        () => _authorizedDataSource.logout(token),
+      );
+    } on AppException {
+      // The user is already signed out locally; the token expires on its own.
+    }
   }
 
   Future<void> login({required String phone, required String password}) async {

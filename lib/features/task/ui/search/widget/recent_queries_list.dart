@@ -11,9 +11,14 @@ import 'package:starter_uikit/widgets/status/empty_information_body.dart';
 /// Idle-state body: recent queries the user can re-run, or a hint when
 /// there is no history yet.
 class RecentQueriesList extends StatelessWidget {
-  const RecentQueriesList({required this.queries, super.key});
+  const RecentQueriesList({
+    required this.queries,
+    required this.onSelected,
+    super.key,
+  });
 
   final List<String> queries;
+  final ValueChanged<String> onSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -58,9 +63,7 @@ class RecentQueriesList extends StatelessWidget {
               AppListTile(
                 icon: UiSvgIcons.clockTime,
                 title: query,
-                onTap: () => context.read<TasksSearchBloc>().add(
-                  TasksSearchEvent.querySubmitted(query),
-                ),
+                onTap: () => onSelected(query),
               ),
             ],
           ],

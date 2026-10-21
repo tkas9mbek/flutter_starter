@@ -1,0 +1,95 @@
+# EXAMPLE ONLY — this file is disabled (renamed to *.yml.example and fully commented out).
+# To enable: rename to ci.yml and uncomment every line below.
+
+# name: CI
+#
+# on:
+#   pull_request:
+#   push:
+#     branches:
+#       - main
+#   workflow_dispatch:
+#     inputs:
+#       strict_lint:
+#         description: Run strict custom_lint (fatal warnings, infos reported)
+#         required: false
+#         default: false
+#         type: boolean
+#
+# jobs:
+#   flutter-quality:
+#     name: Flutter Quality
+#     runs-on: ubuntu-latest
+#
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#
+#       - name: Set up Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           # Keep in sync with .fvmrc
+#           flutter-version: '3.44.5'
+#           cache: true
+#
+#       - name: Install dependencies
+#         run: flutter pub get
+#
+#       - name: Custom lint (warnings/info non-fatal)
+#         run: dart run custom_lint --no-fatal-infos --no-fatal-warnings
+#
+#       - name: Analyze (warnings/info non-fatal)
+#         run: flutter analyze --no-pub --no-fatal-warnings --no-fatal-infos
+#
+#   flutter-quality-strict:
+#     name: Flutter Quality (Strict Lints)
+#     if: ${{ github.event_name == 'workflow_dispatch' && inputs.strict_lint }}
+#     runs-on: ubuntu-latest
+#
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#
+#       - name: Set up Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           # Keep in sync with .fvmrc
+#           flutter-version: '3.44.5'
+#           cache: true
+#
+#       - name: Install dependencies
+#         run: flutter pub get
+#
+#       - name: Custom lint (strict warnings)
+#         run: dart run custom_lint --no-fatal-infos
+#
+#   flutter-tests:
+#     name: Flutter Tests (${{ matrix.package }})
+#     runs-on: ubuntu-latest
+#     strategy:
+#       fail-fast: false
+#       matrix:
+#         # Root app is "." — packages/starter_lints is excluded, it has no test/ directory.
+#         package:
+#           - .
+#           - packages/request_logger
+#           - packages/starter_toolkit
+#           - packages/starter_uikit
+#
+#     steps:
+#       - name: Checkout
+#         uses: actions/checkout@v4
+#
+#       - name: Set up Flutter
+#         uses: subosito/flutter-action@v2
+#         with:
+#           # Keep in sync with .fvmrc
+#           flutter-version: '3.44.5'
+#           cache: true
+#
+#       - name: Install dependencies
+#         run: flutter pub get
+#
+#       - name: Test
+#         working-directory: ${{ matrix.package }}
+#         run: flutter test --no-pub --reporter compact --concurrency 4

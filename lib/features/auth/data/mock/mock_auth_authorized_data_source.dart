@@ -1,4 +1,5 @@
 import 'package:starter/features/auth/domain/auth_authorized_data_source.dart';
+import 'package:starter/features/auth/model/auth_token.dart';
 import 'package:starter_toolkit/data/mock/mock_network_behavior.dart';
 
 class MockAuthAuthorizedDataSource implements AuthAuthorizedDataSource {
@@ -7,7 +8,7 @@ class MockAuthAuthorizedDataSource implements AuthAuthorizedDataSource {
   final MockNetworkBehavior _network;
 
   @override
-  Future<void> logout() async {
+  Future<void> logout(AuthToken token) async {
     await _network.simulate();
   }
 }

@@ -35,7 +35,7 @@ No `Impl`/`Model`/`Helper`/`Manager`/`Data`/`Info`/`Util` suffixes (lint exempts
 - ❌ Shadows, elevation, ripple, surface tint — the design is flat: bordered `theme.surface`, radii from `AppRadii` ([uikit.md](../rules/uikit.md)).
 - ❌ Material `Icon`/`Icons.*` — render `UiSvgIcons` (Spider-generated) via `SvgIcon(UiSvgIcons.chevronRight, size: 20, color: ...)`.
 - ❌ `FormBuilder*` field widgets directly — use `starter_uikit` form widgets.
-- ❌ `ControllerTextField` on multi-field screens — `FormBuilder` + `App*Field` there; `ControllerTextField` + `ValidatableTextEditingController` only for single-field screens (search, chat, OTP).
+- ❌ `ControllerTextField` on multi-field screens — `AppForm` + `App*Field` there; `ControllerTextField` + `ValidatableTextEditingController` only for single-field screens (search, chat, OTP).
 - ❌ Raw string keys in forms — form UI model in `ui/{subfeature}/model/` with static field constants and `fromForm(...)` (`name: LoginForm.phoneField`, `LoginForm.fromForm(formKey.currentState!.value)`).
 - ❌ Feature-local cards/tiles/pills — compose `AppCard`, `GroupedRowsCard`, `AppListTile`, `StatusPill`.
 - ❌ Re-implementing widgets in `starter_uikit` (status, snackbars, app bars, buttons, fields) or helpers in `starter_toolkit` (`DateTimeHelpers`, validators, `AppException`).

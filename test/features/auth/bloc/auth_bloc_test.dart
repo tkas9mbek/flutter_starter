@@ -22,11 +22,10 @@ class MockUnauthorizedDataSource extends Mock
 class MockLocalDataSource extends Mock implements AuthLocalDataSource {}
 
 void main() {
-  setUpAll(
-    () => registerFallbackValue(
-      const AuthLoginRequestBody(phone: '', password: ''),
-    ),
-  );
+  setUpAll(() {
+    registerFallbackValue(const AuthLoginRequestBody(phone: '', password: ''));
+    registerFallbackValue(AuthMockModels.authToken);
+  });
 
   late AuthBloc authBloc;
   late MockAuthorizedDataSource authorizedDataSource;
@@ -159,7 +158,7 @@ void main() {
           () => localDataSource.getToken(),
         ).thenAnswer((_) async => AuthMockModels.authToken);
         when(() => localDataSource.clearStorage()).thenAnswer((_) async {});
-        when(() => authorizedDataSource.logout()).thenAnswer((_) async {});
+        when(() => authorizedDataSource.logout(any())).thenAnswer((_) async {});
 
         return authBloc;
       },
@@ -167,7 +166,9 @@ void main() {
       expect: () => [const AuthState.unauthenticated()],
       verify: (_) {
         verify(() => localDataSource.clearStorage()).called(1);
-        verify(() => authorizedDataSource.logout()).called(1);
+        verify(
+          () => authorizedDataSource.logout(AuthMockModels.authToken),
+        ).called(1);
       },
     );
   });
@@ -187,7 +188,7 @@ void main() {
       expect: () => [const AuthState.unauthenticated()],
       verify: (_) {
         verify(() => localDataSource.clearStorage()).called(1);
-        verifyNever(() => authorizedDataSource.logout());
+        verifyNever(() => authorizedDataSource.logout(any()));
       },
     );
 

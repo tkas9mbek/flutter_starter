@@ -104,5 +104,6 @@
   "create": "Create",
   "taskCreatedSuccessfully": "Task created successfully",
   "confirm": "Confirm",
-  "signInWithCode": "Sign in with code"
+  "signInWithCode": "Sign in with code",
+  "endTimeMustBeAfterStart": "End time must be after start time"
 }

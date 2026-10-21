@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:starter/features/task/ui/details/bloc/task_delete_bloc.dart';
+import 'package:starter/features/task/ui/details/widget/delete_task_dialog.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/theme/app_radii.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
@@ -33,27 +34,9 @@ class TaskDetailsDeleteButton extends StatelessWidget {
   }
 
   Future<void> _showDeleteConfirmation(BuildContext context) async {
-    final localizer = Localizer.of(context);
+    final confirmed = await DeleteTaskDialog.confirm(context);
 
-    final confirmed = await showDialog<bool>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(localizer.deleteTask),
-        content: Text(localizer.deleteTaskConfirmation),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: Text(localizer.cancel),
-          ),
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: Text(localizer.delete),
-          ),
-        ],
-      ),
-    );
-
-    if ((confirmed ?? false) && context.mounted) {
+    if (confirmed && context.mounted) {
       context.read<TaskDeleteBloc>().add(TaskDeleteEvent.deleted(taskId));
     }
   }

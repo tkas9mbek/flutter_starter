@@ -5,7 +5,7 @@ class CoreConsts {
       'https://play.google.com/store/apps/details?id=com.example.app';
 
   // Keep in sync with pubspec.yaml version.
-  static const String appVersion = '3.1.0';
+  static const String appVersion = '3.2.0';
 
   // Placeholders — replace BOTH with your real backend hosts before pointing
   // the app at a live environment. DataModule asserts (debug builds only)

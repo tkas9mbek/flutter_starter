@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:starter/features/task/domain/task_repository.dart';
@@ -36,9 +38,13 @@ class TasksListBloc extends Bloc<TasksListEvent, TasksListState>
   TasksListBloc(this._repository) : super(const TasksListState.initial()) {
     on<_RequestedTasksListEvent>(_onRequested);
     on<_RefreshedTasksListEvent>(_onRefreshed);
+    _changesSubscription = _repository.changes.listen(
+      (_) => add(const TasksListEvent.refreshed()),
+    );
   }
 
   final TaskRepository _repository;
+  late final StreamSubscription<void> _changesSubscription;
 
   Future<void> _onRequested(
     _RequestedTasksListEvent event,
@@ -76,7 +82,8 @@ class TasksListBloc extends Bloc<TasksListEvent, TasksListState>
   }
 
   @override
-  Future<void> close() {
+  Future<void> close() async {
+    await _changesSubscription.cancel();
     dispose();
 
     return super.close();

@@ -222,7 +222,9 @@ Walk this decision tree **before** writing a decorator:
    *state* must be a DI singleton; the decorator is a thin stateless shell
    referencing it (Bucket B). Never hold such state in decorator fields:
    repositories may be `registerFactory` (a fresh chain per bloc resolution),
-   so instance-held state silently resets.
+   so instance-held state silently resets. A repository that owns a stream
+   (`TaskRepository.changes`) is a `registerLazySingleton` for the same reason;
+   see [common_problems.md](common_problems.md#2-other-screens-show-old-data).
 3. **Otherwise** (stateless, fits `execute(fn)`) → a plain decorator
    (Bucket A). `RetryExecutor` is the exemplar.
 

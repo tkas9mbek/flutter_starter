@@ -22,23 +22,26 @@ class TaskTimelineItemCard extends StatelessWidget {
         children: [
           SizedBox(
             width: 56,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  timeFormat.format(task.startTime),
-                  style: textStyles.mediumBody13.copyWith(
-                    color: theme.textPrimary,
+            child: MediaQuery.withClampedTextScaling(
+              maxScaleFactor: 1.3,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    timeFormat.format(task.startTime),
+                    style: textStyles.mediumBody13.copyWith(
+                      color: theme.textPrimary,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 2),
-                Text(
-                  timeFormat.format(task.endTime),
-                  style: textStyles.regularBody12.copyWith(
-                    color: theme.textTertiary,
+                  const SizedBox(height: 2),
+                  Text(
+                    timeFormat.format(task.endTime),
+                    style: textStyles.regularBody12.copyWith(
+                      color: theme.textTertiary,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Column(

@@ -30,7 +30,7 @@ class TaskDetailsContent extends StatelessWidget {
             AppListTile(
               icon: UiSvgIcons.calendarDates,
               title: localizer.calendar,
-              value: DateFormat('dd MMMM yyyy', 'ru').format(task.date),
+              value: DateFormat('dd MMMM yyyy').format(task.date),
             ),
             AppListTile(
               icon: UiSvgIcons.clockTime,

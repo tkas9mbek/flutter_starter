@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:starter/features/task/ui/create/model/task_create_form.dart';
 import 'package:starter/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/form/app_date_picker_field.dart';
+import 'package:starter_uikit/widgets/form/app_form.dart';
 import 'package:starter_uikit/widgets/form/app_text_field.dart';
 import 'package:starter_uikit/widgets/form/app_time_picker_field.dart';
 
@@ -54,6 +55,17 @@ class TaskCreateFormFields extends StatelessWidget {
                 label: localizer.endTime,
                 hint: localizer.endTime,
                 required: true,
+                validators: [
+                  (end) =>
+                      TaskCreateForm.endsAfterStart(
+                        AppForm.maybeOf(
+                          context,
+                        )?.fieldValue<TimeOfDay>(TaskCreateForm.startTimeField),
+                        end,
+                      )
+                      ? null
+                      : localizer.endTimeMustBeAfterStart,
+                ],
               ),
             ),
           ],

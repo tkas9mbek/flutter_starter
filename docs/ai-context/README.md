@@ -22,7 +22,7 @@ directory (plans, reviews) is scratch and usually absent — don't rely on it.
 - [git.md](git.md) - branch, commit, PR naming. Source: [git workflow](../rules/git_workflow.md).
 - [estimation.md](estimation.md) - estimates. Source: [estimation](../guides/estimation.md).
 
-Also: [deployment.md](../guides/deployment.md) (CI/CD: TestFlight + Firebase App Distribution).
+Also: [deployment.md](../guides/deployment.md) (CI/CD: TestFlight + Firebase App Distribution); [common_problems.md](../guides/common_problems.md) (recipes: sign-out, stale data across screens, form errors).
 
 ## Fast Loading Paths
 

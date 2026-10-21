@@ -46,7 +46,15 @@ class BottomNavItem extends StatelessWidget {
               colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
             ),
             const SizedBox(height: 4),
-            Text(title, style: textStyles.mediumBody12.copyWith(color: color)),
+            MediaQuery.withClampedTextScaling(
+              maxScaleFactor: 1.3,
+              child: Text(
+                title,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: textStyles.mediumBody12.copyWith(color: color),
+              ),
+            ),
             const SafeVerticalBox(height: 8, bottom: true),
           ],
         ),

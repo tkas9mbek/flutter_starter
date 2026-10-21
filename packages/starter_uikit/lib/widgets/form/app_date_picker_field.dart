@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 import 'package:intl/intl.dart';
+import 'package:starter_toolkit/utils/form/form_validators.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 import 'package:starter_uikit/widgets/dialogs/date_time_picker_bottom_sheet.dart';
@@ -87,7 +88,7 @@ class _AppDatePickerFieldState extends State<AppDatePickerField> {
       enabled: widget.enabled,
       validator: FormBuilderValidators.compose([
         ...?widget.validators,
-        if (widget.required) ...[FormBuilderValidators.required()],
+        if (widget.required) ...[FormValidators.required<DateTime>(context)],
       ]),
       builder: (form) => AppTextField(
         name: childName,

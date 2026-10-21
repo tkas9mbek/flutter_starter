@@ -155,10 +155,10 @@ test('PUTs the User serialized via the real toJson, then deserializes the reply'
 - **Void endpoints** (`requestVoid`, e.g. `logout`) carry no model — assert the wiring only:
   ```dart
   test('logout POSTs /auth/logout', () async {
-    when(() => mockApiClient.requestVoid(method: HttpMethod.post, path: '/auth/logout'))
+    when(() => mockApiClient.requestVoid(method: HttpMethod.post, path: '/auth/logout', headers: any(named: 'headers')))
         .thenAnswer((_) async {});
-    await dataSource.logout();
-    verify(() => mockApiClient.requestVoid(method: HttpMethod.post, path: '/auth/logout')).called(1);
+    await dataSource.logout(AuthMockModels.authToken);
+    verify(() => mockApiClient.requestVoid(method: HttpMethod.post, path: '/auth/logout', headers: any(named: 'headers'))).called(1);
   });
   ```
 
