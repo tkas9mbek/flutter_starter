@@ -22,6 +22,9 @@ Presentation (Flutter, BLoC) → Domain (Repo, AbstractDS, Model) ← Data (DS i
 - Offline twin for a DataSource → `Mock*DataSource` + `Mock*Scenarios` in `data/mock/`, takes `MockNetworkBehavior`; chosen with `mockOrProd(mock:, prod:)` ([mocking.md](mocking.md)).
 - Crash reporting → `crashReporter` (`CrashReporter` in `starter_toolkit`, swapped to `FirebaseCrashReporter` in `main.dart` only when `FirebaseConfig.enabled`); never import Crashlytics elsewhere.
 - New exception type → `final class` subtype of `AppException` with `@ExceptionUiConfig` → run generator ([exception.md](exception.md)).
+- Several screens show the same data → the repository (a `registerLazySingleton`) exposes a `changes` stream and each bloc adds `.refreshed()` on it; no stream → pop with `true` and the opener reloads. Recipes: [../guides/common_problems.md](../guides/common_problems.md).
+- Sign-out → clear local state first, call the server in parallel and ignore its failure ([../guides/common_problems.md](../guides/common_problems.md)).
+- Forms → `AppForm` from `starter_uikit`, never a bare `FormBuilder`.
 - Shared widget/util → check `starter_uikit` / `starter_toolkit` first.
 
 ## Code generation

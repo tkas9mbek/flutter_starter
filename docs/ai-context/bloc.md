@@ -101,6 +101,8 @@ on<_WatchStartedMyEvent>(
 );
 ```
 
+Cross-screen refresh (a repository `changes` stream) and the pop-with-result fallback: [../guides/common_problems.md](../guides/common_problems.md#2-other-screens-show-old-data).
+
 ## Debounced / restartable handlers
 
 - `bloc_concurrency` transformers: `on<_QueryChangedEvent>(_onQueryChanged, transformer: restartable())` cancels the in-flight handler on a newer event (`TasksSearchBloc`).

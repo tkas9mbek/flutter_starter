@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- `AppForm` in `starter_uikit`: a `FormBuilder` that stays quiet until the first submit, then re-validates fields as the user edits them (`saveAndValidate()`, `validateField(name)`); login, registration and task create use it
+- `TaskRepository.changes`: a stream that fires after a task is created, updated or deleted; the task list, calendar and search blocs listen and reload
+- `docs/guides/common_problems.md`: recipes for sign-out, stale data across screens (repository stream or pop with a result) and form errors
+
+### Changed
+- **Breaking**: `AuthAuthorizedDataSource.logout` takes the `AuthToken` to revoke; `AuthRepository.logout` clears local storage right away and sends the server request in parallel
+- `TaskRepository` is a lazy singleton (it owns the `changes` stream) and the task screens no longer reload by hand after a create or delete
+- The auth interceptor keeps an explicit `Authorization` header instead of overwriting it from storage
+
+### Fixed
+- A failed logout request left the token on the device, so the next launch signed the user back in
+- Deleting a task from the details screen did not update the task list, calendar or search results behind it
+- Form field errors stayed on screen after the user fixed the field
+
 ## [3.1.0] - 2026-10-19
 
 ### Added
