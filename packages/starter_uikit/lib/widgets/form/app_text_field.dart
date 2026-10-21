@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:starter_toolkit/utils/form/form_validators.dart';
@@ -129,6 +130,27 @@ class _AppTextFieldState extends State<AppTextField> {
     return null;
   }
 
+  /// Autovalidation runs the validator while the field builds, when setState
+  /// is not allowed; the error then appears on the next frame.
+  void showError(String? error) {
+    if (errorText == error) {
+      return;
+    }
+
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) {
+          setState(() => errorText = error);
+        }
+      });
+
+      return;
+    }
+
+    setState(() => errorText = error);
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = ThemeProvider.of(context).theme;
@@ -184,7 +206,7 @@ class _AppTextFieldState extends State<AppTextField> {
                       ],
                       validator: (value) {
                         final error = validateField(value);
-                        setState(() => errorText = error);
+                        showError(error);
 
                         return error;
                       },

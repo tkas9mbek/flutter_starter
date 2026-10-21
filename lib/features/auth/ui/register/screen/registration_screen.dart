@@ -1,14 +1,13 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:starter/core/global/global_variables.dart';
 import 'package:starter/core/router/app_router.dart';
 import 'package:starter/features/application/environment/ui/switcher/widget/dev_mode_activator.dart';
 import 'package:starter/features/auth/ui/register/bloc/registration_bloc.dart';
 import 'package:starter/features/auth/ui/register/model/registration_form.dart';
 import 'package:starter/features/auth/ui/register/widget/registration_body.dart';
-import 'package:starter_toolkit/utils/form/save_and_validate_form.dart';
+import 'package:starter_uikit/widgets/form/app_form.dart';
 
 @RoutePage()
 class RegistrationScreen extends StatefulWidget {
@@ -19,10 +18,10 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
-  final formKey = GlobalKey<FormBuilderState>();
+  final formKey = GlobalKey<AppFormState>();
 
   void onSubmitted(BuildContext context) {
-    if (saveAndValidateForm(formKey)) {
+    if (formKey.currentState!.saveAndValidate()) {
       final form = RegistrationForm.fromForm(formKey.currentState!.value);
       context.read<RegistrationBloc>().add(RegistrationEvent.submitted(form));
     }
@@ -33,7 +32,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     return BlocProvider<RegistrationBloc>(
       create: (context) => getIt<RegistrationBloc>(),
       child: BlocBuilder<RegistrationBloc, RegistrationState>(
-        builder: (context, state) => FormBuilder(
+        builder: (context, state) => AppForm(
           key: formKey,
           child: DevModeActivator(
             child: Scaffold(

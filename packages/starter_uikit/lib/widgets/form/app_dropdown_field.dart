@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:starter_toolkit/utils/form/form_validators.dart';
 import 'package:starter_uikit/resources/resources.dart';
 import 'package:starter_uikit/theme/theme_provider.dart';
 import 'package:starter_uikit/utils/form/option_label_builders.dart';
@@ -103,7 +104,7 @@ class _AppDropdownFieldState<T extends Object>
       initialValue: widget.initialValue,
       validator: FormBuilderValidators.compose([
         ...?widget.validators,
-        if (widget.required) ...[FormBuilderValidators.required()],
+        if (widget.required) ...[FormValidators.required<T>(context)],
       ]),
       builder: (field) => AppTextField(
         name: textFieldName,

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
+import 'package:starter_toolkit/utils/form/form_validators.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
 import 'package:starter_uikit/widgets/dialogs/bottom_sheet_screen.dart';
 import 'package:starter_uikit/widgets/dialogs/time_picker_bottom_sheet.dart';
@@ -75,7 +76,7 @@ class _AppTimePickerFieldState extends State<AppTimePickerField> {
       enabled: widget.enabled,
       validator: FormBuilderValidators.compose([
         ...?widget.validators,
-        if (widget.required) ...[FormBuilderValidators.required()],
+        if (widget.required) ...[FormValidators.required<TimeOfDay>(context)],
       ]),
       builder: (form) => AppTextField(
         name: childName,

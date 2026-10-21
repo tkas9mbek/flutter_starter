@@ -1,6 +1,5 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:starter_toolkit/utils/form/validatable_text_editing_controller.dart';
 import 'package:starter_uikit/example/widgets/example_section.dart';
 import 'package:starter_uikit/l10n/generated/l10n.dart';
@@ -12,6 +11,7 @@ import 'package:starter_uikit/widgets/form/app_checkbox_field.dart';
 import 'package:starter_uikit/widgets/form/app_checkbox_group.dart';
 import 'package:starter_uikit/widgets/form/app_date_picker_field.dart';
 import 'package:starter_uikit/widgets/form/app_dropdown_field.dart';
+import 'package:starter_uikit/widgets/form/app_form.dart';
 import 'package:starter_uikit/widgets/form/app_radio_group.dart';
 import 'package:starter_uikit/widgets/form/app_text_field.dart';
 import 'package:starter_uikit/widgets/form/app_time_picker_field.dart';
@@ -35,7 +35,7 @@ class FormFieldsExampleScreen extends StatefulWidget {
 }
 
 class _FormFieldsExampleScreenState extends State<FormFieldsExampleScreen> {
-  final _formKey = GlobalKey<FormBuilderState>();
+  final _formKey = GlobalKey<AppFormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +43,7 @@ class _FormFieldsExampleScreenState extends State<FormFieldsExampleScreen> {
 
     return Scaffold(
       appBar: TitleAppBar(title: localizer.formFields),
-      body: FormBuilder(
+      body: AppForm(
         key: _formKey,
         initialValue: const {
           'checkbox_disabled': true,

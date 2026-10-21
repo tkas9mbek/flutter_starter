@@ -3,20 +3,18 @@ import 'dart:async';
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_form_builder/flutter_form_builder.dart';
 import 'package:starter/core/global/global_variables.dart';
 import 'package:starter/features/task/ui/create/bloc/task_creation_bloc.dart';
 import 'package:starter/features/task/ui/create/model/task_create_form.dart';
 import 'package:starter/features/task/ui/create/widget/task_create_form_fields.dart';
 import 'package:starter/l10n/generated/l10n.dart';
-import 'package:starter_toolkit/utils/form/save_and_validate_form.dart';
 import 'package:starter_uikit/widgets/app_bar/title_app_bar.dart';
 import 'package:starter_uikit/widgets/button/app_elevated_button.dart';
+import 'package:starter_uikit/widgets/form/app_form.dart';
 import 'package:starter_uikit/widgets/misc/unfocus_area.dart';
 import 'package:starter_uikit/widgets/size/safe_vertical_box.dart';
 import 'package:starter_uikit/widgets/status/notification_snack_bar.dart';
 
-/// Pops with `true` on success so the caller can refresh its list.
 @RoutePage()
 class TaskCreateScreen extends StatelessWidget {
   const TaskCreateScreen({super.key});
@@ -38,10 +36,10 @@ class _TaskCreateView extends StatefulWidget {
 }
 
 class _TaskCreateViewState extends State<_TaskCreateView> {
-  final formKey = GlobalKey<FormBuilderState>();
+  final formKey = GlobalKey<AppFormState>();
 
   void onSubmitted(BuildContext context) {
-    if (!saveAndValidateForm(formKey)) {
+    if (!formKey.currentState!.saveAndValidate()) {
       return;
     }
 
@@ -62,7 +60,7 @@ class _TaskCreateViewState extends State<_TaskCreateView> {
               text: localizer.taskCreatedSuccessfully,
             ),
           );
-          unawaited(context.router.maybePop(true));
+          unawaited(context.router.maybePop());
         }
 
         if (state case FailureTaskCreationState(:final exception)) {
@@ -72,7 +70,7 @@ class _TaskCreateViewState extends State<_TaskCreateView> {
           );
         }
       },
-      builder: (context, state) => FormBuilder(
+      builder: (context, state) => AppForm(
         key: formKey,
         child: UnfocusArea(
           child: Scaffold(
