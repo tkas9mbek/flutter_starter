@@ -255,12 +255,18 @@ Scaffold(
 ### Forms
 
 ```dart
+import 'package:starter_uikit/widgets/form/app_form.dart';
 import 'package:starter_uikit/widgets/form/app_text_field.dart';
 import 'package:starter_uikit/widgets/form/app_dropdown_field.dart';
 import 'package:starter_uikit/widgets/form/app_checkbox_field.dart';
 import 'package:starter_uikit/widgets/form/app_date_picker_field.dart';
 
-// Text field (must live under a FormBuilder)
+// Form: quiet until the first submit, then re-validates fields as the user edits
+final formKey = GlobalKey<AppFormState>();
+AppForm(key: formKey, child: ...);
+if (formKey.currentState!.saveAndValidate()) { final values = formKey.currentState!.value; }
+
+// Text field (must live under an AppForm)
 AppTextField(
   name: 'email',
   label: 'Email',

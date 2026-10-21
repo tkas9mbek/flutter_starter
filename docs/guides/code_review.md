@@ -85,7 +85,7 @@
 | UI-5 | Mild Violation 🟡 | Single widget added to a `children:` list as a literal element | Use spread: `if (cond) ...[Widget()]` even for one |
 | UI-6 | Mild Violation 🟡 | Block body where arrow body fits | Use `=>` (except `build()`, nested callbacks, and `if-case` listener bodies) |
 | UI-7 | Mild Violation 🟡 | `BuildContext` used after `await` without `mounted` check | `if (!context.mounted) return;` after the await |
-| UI-8 | Mild Violation 🟡 | `FormBuilder*` used directly | Use `starter_uikit` form widgets (`AppTextField`, `AppDropdownField`, …) |
+| UI-8 | Mild Violation 🟡 | `FormBuilder` / `FormBuilder*` used directly | Use `AppForm` and the `starter_uikit` form widgets (`AppTextField`, `AppDropdownField`, …) |
 | UI-9 | Mild Violation 🟡 | `build()` widget tree is too deeply nested | Extract deep subtrees into their own widget classes |
 | UI-10 | Severe Violation 🔴 | Shared widget uses raw `Color(0x…)`, `Colors.*` (except `AppColors.transparent`) or a hand-built `TextStyle` | Read from `ThemeProvider` tokens — see `docs/rules/uikit.md` |
 | UI-11 | Mild Violation 🟡 | New/changed `starter_uikit` widget lacks a `packages/starter_uikit/lib/example/` gallery section or a behavior test | Add both (`packages/starter_uikit/test/widgets/<category>/`) |

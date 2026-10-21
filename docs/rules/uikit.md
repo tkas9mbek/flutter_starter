@@ -84,6 +84,7 @@ _ButtonVisualState get _state => switch ((loading, enabled)) {
 - [ ] One public class per file; `///` summary (1–3 lines) on the public class
 - [ ] Strings localized or injected; icons via `UiSvgIcons` + `SvgIcon`
 - [ ] Interaction state resolved in one place; loading outranks disabled
+- [ ] Survives large text: fixed heights are minimums, side-by-side rows stack on `context.hasLargeText`, compact chrome is clamped ([common_problems.md](../guides/common_problems.md#4-large-text))
 - [ ] Taps go through `AppTapArea` / `InkWell` / a Material button; icon-only taps carry a localized `semanticLabel`
 - [ ] Gallery section added in `lib/example/`
 - [ ] Behavior test added in `test/widgets/<category>/`

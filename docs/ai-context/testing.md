@@ -105,7 +105,7 @@ final body = verify(() => client.requestJson<User>(
 expect(body['birthday'], '1990-01-01T00:00:00.000');   // real toJson ran
 ```
 
-Void endpoints (`logout`): `when(() => client.requestVoid(method: HttpMethod.post, path: '/auth/logout')).thenAnswer((_) async {})` + `verify(...).called(1)` — wiring only.
+Void endpoints (`logout`): `when(() => client.requestVoid(method: HttpMethod.post, path: '/auth/logout', headers: any(named: 'headers'))).thenAnswer((_) async {})` + `verify(...).called(1)` — wiring only; capture `headers` when the call must carry the token.
 
 ## DI graph smoke & coverage filter
 

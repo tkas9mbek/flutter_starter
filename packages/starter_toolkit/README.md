@@ -307,7 +307,7 @@ FormBuilderTextField(
 
 Also available: `email`, `passwordMinLength`, `phonePattern`. Every validator takes an optional `message` and (except `required`) passes empty values, so combine with `required` to forbid them.
 
-Validate a whole `FormBuilder` and scroll to the first invalid field with `saveAndValidateForm(formKey)` (`utils/form/save_and_validate_form.dart`); for single-field screens use `ValidatableTextEditingController` with `validateAll`.
+Validate a whole `FormBuilder` and scroll to the first invalid field with `saveAndValidateForm(formKey)` (`utils/form/save_and_validate_form.dart`); in an app use `AppForm` from `starter_uikit`, which wraps it and validates on edit after the first submit; for single-field screens use `ValidatableTextEditingController` with `validateAll`.
 
 ### Form Input Formatters
 

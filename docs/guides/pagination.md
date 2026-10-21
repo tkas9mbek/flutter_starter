@@ -162,7 +162,7 @@ First page and refresh share one private method (`_runQuery`): emit `loading`, f
 (`..registerFactory(() => TasksSearchBloc(getIt<TaskRepository>()))` in `task_module.dart`).
 
 For a Shape A list the handler is the same with `successState.copyWith(...)` instead of `status.copyWith(...)`. Add
-`with RefreshableBloc` for pull-to-refresh and copy `_onRefreshed` / `close()` from `TasksListBloc`:
+`with RefreshableBloc` for pull-to-refresh and copy `_onRefreshed` / `close()` from `TasksListBloc` (its `close()` also cancels the `TaskRepository.changes` subscription that adds `.refreshed()` after a create or delete; see [common_problems.md](common_problems.md#2-other-screens-show-old-data)):
 
 ```dart
 /// No `loading` emit: the indicator is already visible and `loading` would unmount the scrollable.

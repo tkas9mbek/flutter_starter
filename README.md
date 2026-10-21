@@ -387,6 +387,7 @@ The template includes extensive documentation:
 - **[Architecture Guide](docs/guides/architecture.md)** - Three-layer architecture, dependency inversion
 - **[BLoC Rules](docs/rules/bloc.md)** - Freezed states/events, state shapes, handler rules, UI integration
 - **[Code Review Guide](docs/guides/code_review.md)** - Severity-based review checklist
+- **[Common Problems](docs/guides/common_problems.md)** - Recipes: sign-out, stale data across screens, form errors, large text
 - **[Deployment Guide](docs/guides/deployment.md)** - TestFlight & Firebase App Distribution CI/CD, fastlane, secrets
 - **[Estimation Guide](docs/guides/estimation.md)** - Story-point estimation method
 - **[Mocking Guide](docs/guides/mocking.md)** - `Mock*DataSource` twins, scenarios, `MockNetworkBehavior`
