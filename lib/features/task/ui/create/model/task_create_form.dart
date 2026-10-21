@@ -23,6 +23,12 @@ class TaskCreateForm {
   static const String startTimeField = 'startTime';
   static const String endTimeField = 'endTime';
 
+  /// An unset time passes: the required check reports it, not this rule.
+  static bool endsAfterStart(TimeOfDay? start, TimeOfDay? end) =>
+      start == null ||
+      end == null ||
+      end.hour * 60 + end.minute > start.hour * 60 + start.minute;
+
   final String title;
   final String description;
   final DateTime date;

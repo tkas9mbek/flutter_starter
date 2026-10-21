@@ -104,5 +104,6 @@
   "create": "Создать",
   "taskCreatedSuccessfully": "Задача успешно создана",
   "confirm": "Подтвердить",
-  "signInWithCode": "Войти по коду"
+  "signInWithCode": "Войти по коду",
+  "endTimeMustBeAfterStart": "Время окончания должно быть позже начала"
 }
